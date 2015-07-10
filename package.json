@@ -1,6 +1,5 @@
 {
   "name": "Alien-Empire",
-  "version": "0.1.0",
   "description": "A strategy boardgame for web.",
   "author": "Andrew Albers <andrew.albers@gmail.com>",
   "dependencies": {
