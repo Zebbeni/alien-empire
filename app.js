@@ -23,9 +23,6 @@ var io = require('./node_modules/socket.io').listen(server);
 var users = new Object();
 var num_users = 0;
 
-/* Include the app engine handlers to respond to start, stop, and health checks. */
-app.use(require('./lib/appengine-handlers'));
-
 io.on('connection', function(client) {
     client.emit('messages');
 
@@ -50,6 +47,9 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 // [END hello_world]
+
+// var port = 8080;
+// app.listen(port);
 
 // [START server]
 /* Start the server */
