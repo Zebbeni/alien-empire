@@ -8,7 +8,7 @@ A strategy boardgame written for web using node.js and socket.io
 ### To set up mongodb locally:
 * npm install mongodb
 * brew install mongodb
-* in ~/.bashrc, export PATH=<mongodb-install-directory>/bin:$PATH
+* in ~/.bashrc, export PATH=/<mongodb-install-directory/>/bin:$PATH
  * (source ~/.bashrc)
 * sudo mkdir -p /data/db
 * sudo chown -R `id -u` /data/db
