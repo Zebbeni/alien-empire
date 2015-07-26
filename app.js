@@ -1,17 +1,3 @@
-/*
-	Copyright 2015, Google, Inc. 
- Licensed under the Apache License, Version 2.0 (the "License"); 
- you may not use this file except in compliance with the License. 
- You may obtain a copy of the License at 
-  
-    http://www.apache.org/licenses/LICENSE-2.0 
-  
- Unless required by applicable law or agreed to in writing, software 
- distributed under the License is distributed on an "AS IS" BASIS, 
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- See the License for the specific language governing permissions and 
- limitations under the License.
-*/
 "use strict";
 
 var express = require('express');
@@ -20,14 +6,31 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
-var users = new Object();
+var mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
+var url = 'mongodb://localhost:27017/alien-empire-db';
+// var url = 'mongodb://Zebbeni:wakkawakka1984$@apollo.modulusmongo.net:27017/heHuqy5b';
+
+var users = {};
 var num_users = 0;
+
+//when server is created, populate users variable with users from database
+MongoClient.connect(url, function (err, db) {
+    if (err) {
+        console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+        var collection = db.collection('users-db');
+        collection.find().toArray( function(err, result ) {
+            updateUsersFromDb(err, result);
+            db.close();
+        });
+    }
+});
 
 io.on('connection', function(client) {
     client.emit('messages');
 
     client.on('login', function(name) {
-    	num_users += 1;
     	users[num_users] = name;
     	client.id_num = num_users;
     	client.broadcast.emit('user login', users);
@@ -41,17 +44,33 @@ io.on('connection', function(client) {
     });
 });
 
-// [START hello_world]
-/* Say hello! */
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-// [END hello_world]
 
-// var port = 8080;
-// app.listen(port);
+function updateUsersFromDb( err, result ) {
+    if (err) {
+        console.log(err);
+    } else if ( result ){
+        users = result;
+        num_users = users.count();
+        console.log(users);
+    } else {
+        console.log('No document(s) found with with name "users"');
+    }
+};
 
-// [START server]
+function updateDbFromUsers( err, result ) {
+    if (err) {
+        console.log(err);
+    } else if ( result ){
+        users = result;
+        console.log(users);
+    } else {
+        console.log('No document(s) found with with name "users"');
+    }
+};
+
 /* Start the server */
 server.listen(process.env.PORT || '8080', '0.0.0.0', function() {
   console.log('App listening at http://%s:%s', server.address().address, server.address().port);

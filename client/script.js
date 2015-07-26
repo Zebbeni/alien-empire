@@ -23,9 +23,18 @@ socket.on('user logoff', function(users) {
     }
 });
 
+function login() {
+    console.log('logged in as ', document.getElementById('username').value );
+    socket.emit('login', document.getElementById('username').value );
+};
+
 $(document).ready(function() {
     $('#logoff').click(function() {
-        console.log("hit the logoff button");
         socket.emit('logoff');
     });
+
+    $('#get_username').click(function() {
+        console.log("client username: " + this.username);
+        console.log("client id: " + this.id_num);
+    })
 });

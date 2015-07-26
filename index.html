@@ -6,12 +6,18 @@
         <script src="script.js"></script>
     </head>
     <body>
-    <h3>Alien Empire</h3>
+    <h2>Alien Empire</h3>
+    <form id="login_panel" onsubmit="login()">
+        <h3>Login</h3>
+        <p><input type="text" id="username" value="" placeholder="Username"></p>
+        <p><input type="submit" value="Login"></p>
+    </form>
     <table>
-    <tr>
-    <td id="users"></td>
-    </tr>
+        <tr>
+            <td id="users"></td>
+        </tr>
     </table>
     <button id="logoff">Logout</button>
+    <button id="get_username">Get Username</button>
     </body>
 </html>
