@@ -1,17 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="store">
     <head>
+        <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="custom.css" />
         <script src="/socket.io/socket.io.js"></script>
         <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
         <script src="script.js"></script>
     </head>
-    <body>
-    <h3>Alien Empire</h3>
-    <table>
-    <tr>
-    <td id="users"></td>
-    </tr>
-    </table>
-    <button id="logoff">Logout</button>
+    <body ng-controller="StoreController as store">
+        <section ng-controller="LoginController as login">
+            <h1 align="center">Alien Empire</h1>
+            <div class="login-area" width = "35%" align="center">
+                <table>
+                    <tr><td>
+                        <div>
+                            <input placeholder="Username" rows="1" cols="25"/>
+                        </div>
+                    </td></tr>
+                    <tr><td>
+                        <div ng-hide="login.isRegistering()">
+                            <div>
+                                <input placeholder="Password" type="password" rows="1" cols="25"/>
+                            </div>
+                        </div>
+                        <div ng-show="login.isRegistering()">
+                            <div>
+                                <input placeholder="Choose Password" type="password" rows="1" cols="25"/>
+                            </div>
+                            <div>
+                                <input placeholder="Repeat Password" type="password" rows="1" cols="25"/>
+                            </div>
+                        </div>
+                    </td></tr>
+                    <tr><td>
+                        <button ng-click="login.selectLogin()">Login</button>
+                    </td></tr>
+                    <tr><td>
+                        <button ng-click="login.selectRegister()">New User</button>
+                    </td></tr>
+                </table>
+            </div>
+        </section>
+        <script type="text/javascript" src="angular/angular.min.js"></script>
+        <script type="text/javascript" src="app.js"></script>
     </body>
 </html>

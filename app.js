@@ -17,6 +17,7 @@
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/client'));
+app.use(express.static(__dirname + '/node_modules'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
@@ -41,17 +42,11 @@ io.on('connection', function(client) {
     });
 });
 
-// [START hello_world]
-/* Say hello! */
+/* Send index.html to client*/
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-// [END hello_world]
 
-// var port = 8080;
-// app.listen(port);
-
-// [START server]
 /* Start the server */
 server.listen(process.env.PORT || '8080', '0.0.0.0', function() {
   console.log('App listening at http://%s:%s', server.address().address, server.address().port);
