@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="store">
+<html ng-app="alien-empire">
     <head>
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="custom.css" />
@@ -7,38 +7,26 @@
         <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
         <script src="script.js"></script>
     </head>
-    <body ng-controller="StoreController as store">
-        <section ng-controller="LoginController as login">
-            <h1 align="center">Alien Empire</h1>
-            <div class="login-area" width = "35%" align="center">
-                <table>
-                    <tr><td>
-                        <div>
-                            <input placeholder="Username" rows="1" cols="25"/>
-                        </div>
-                    </td></tr>
-                    <tr><td>
-                        <div ng-hide="login.isRegistering()">
-                            <div>
-                                <input placeholder="Password" type="password" rows="1" cols="25"/>
-                            </div>
-                        </div>
-                        <div ng-show="login.isRegistering()">
-                            <div>
-                                <input placeholder="Choose Password" type="password" rows="1" cols="25"/>
-                            </div>
-                            <div>
-                                <input placeholder="Repeat Password" type="password" rows="1" cols="25"/>
-                            </div>
-                        </div>
-                    </td></tr>
-                    <tr><td>
-                        <button ng-click="login.selectLogin()">Login</button>
-                    </td></tr>
-                    <tr><td>
-                        <button ng-click="login.selectRegister()">New User</button>
-                    </td></tr>
-                </table>
+    <body ng-controller="SiteController as site">
+        <section ng-controller="LoginController as loginCtrl" ng-show"logged_in === false">
+            <h1 align="center">Login</h1>
+            <div align="center" width = "35%">
+                <form name="loginForm" ng-submit="loginForm.$valid && loginCtrl.selectLogin()" class="login-area" novalidate>
+                    <table>
+                        <tr><td>
+                            <input ng-model="loginCtrl.username" id="name-text" type="text" placeholder="Username" rows="1" cols="25" required />
+                        </td></tr>
+                        <tr><td>
+                            <input type="submit" value="Login"/>
+                        </td></tr>
+                    </table>
+                </form>
+            </div>
+        </section>
+        <section ng-show="logged_in === true" ng-controller="LobbyController as lobby">
+            <h2 align="center">Lobby</h2>
+            <div ng-repeat="user in lobbyCtrl.users">
+                <h3>{{user}}</h3>
             </div>
         </section>
         <script type="text/javascript" src="angular/angular.min.js"></script>

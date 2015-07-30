@@ -28,6 +28,7 @@ io.on('connection', function(client) {
     client.emit('messages');
 
     client.on('login', function(name) {
+        console.log(name, " has logged in");
     	num_users += 1;
     	users[num_users] = name;
     	client.id_num = num_users;

@@ -1,36 +1,29 @@
 (function(){
-	var app = angular.module('store', []);
+	var app = angular.module('alien-empire', []);
 
-	app.controller('StoreController', function(){
-		this.product = options; //we're making 'product' a property of our controller
+	app.controller('SiteController', function(){
+		this.logged_in = false;
 	});
 
 	app.controller('LoginController', function(){
-		this.register = false;
-
-		this.selectRegister = function(){
-			this.register = true;
-		};
+		this.username = "";
 
 		this.selectLogin = function(){
-			this.register = false;
+		    this.username = document.getElementById('name-text').value;
+			console.log(this.username);
+			socket.emit('login', this.username);
 		};
 
-		this.isRegistering = function() {
-			return this.register;
-		};
 	});
 
-	var options = [
-		{
-			name: 'Login',
-			description: 'I have an existing account',
-			show: true
-		},
-		{
-			name: 'New User',
-			description: 'I need an account!',
-			show: true
-		}
-	];
+	app.controller('LobbyController', function(){
+		this.users = [];
+
+		socket.on('user login', function(users) {
+			logged_in = true;
+			this.users = users;
+			console.log(this.users);
+		});
+	});
+
 })();

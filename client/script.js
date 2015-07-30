@@ -1,5 +1,5 @@
 var socket = io.connect();
-var name = "";
+// var name = "";
 
 socket.on('messages', function () {
     // var name = prompt("what's your username?");

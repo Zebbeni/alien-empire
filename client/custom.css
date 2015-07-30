@@ -1,0 +1,13 @@
+#login-div {
+	width: 25%;
+	margin: 0 auto;
+}
+
+input {
+	text-align: center;
+	width: 100%;
+}
+
+div, button, form {
+	width: 100%;
+}
