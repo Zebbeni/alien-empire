@@ -7,8 +7,8 @@
         <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
         <script src="script.js"></script>
     </head>
-    <body ng-controller="SiteController as site">
-        <section ng-controller="LoginController as loginCtrl" ng-show"logged_in === false">
+    <body>
+        <section ng-controller="LoginController as loginCtrl" ng-hide="loginCtrl.show_login === false">
             <h1 align="center">Login</h1>
             <div align="center" width = "35%">
                 <form name="loginForm" ng-submit="loginForm.$valid && loginCtrl.selectLogin()" class="login-area" novalidate>
@@ -23,10 +23,9 @@
                 </form>
             </div>
         </section>
-        <section ng-show="logged_in === true" ng-controller="LobbyController as lobby">
+        <section ng-controller="LobbyController as lobbyCtrl" ng-hide="lobbyCtrl.show_lobby === false">
+        <div>
             <h2 align="center">Lobby</h2>
-            <div ng-repeat="user in lobbyCtrl.users">
-                <h3>{{user}}</h3>
             </div>
         </section>
         <script type="text/javascript" src="angular/angular.min.js"></script>
