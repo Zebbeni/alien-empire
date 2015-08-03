@@ -14,6 +14,7 @@
 */
 "use strict";
 
+var debug=require('debug')('app');
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/client'));
@@ -27,20 +28,17 @@ var num_users = 0;
 app.use(require('./lib/appengine-handlers'));
 
 io.on('connection', function(client) {
-    client.emit('messages');
 
-    client.on('login', function(name) {
+    client.on('login', function(name, fn) {
+        fn('woot');
     	num_users += 1;
-    	users[num_users] = name;
-    	client.id_num = num_users;
-    	client.broadcast.emit('user login', users);
-    	client.emit('user login', users);
-    });
-
-    client.on('logoff', function() {
-    	delete users[ client.id_num ];
-    	client.broadcast.emit('user logoff', users);
-    	client.emit('user logoff', users);
+        users[num_users] = name;
+        debug('users on server: %s', users);
+        debug('name of new person: %s', name);
+        client.emit('enter lobby', users, function(data){
+            debug(data);
+        });
+        client.broadcast.emit('user login', users);
     });
 });
 

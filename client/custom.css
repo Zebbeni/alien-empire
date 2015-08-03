@@ -1,0 +1,28 @@
+#d {
+   position:fixed;
+    top: 50%;
+    left: 50%;
+    width:156px;
+    height:50px;
+    margin-top: -25px; /*set to a negative number 1/2 of your height*/
+    margin-left: -78px; /*set to a negative number 1/2 of your width*/
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+}
+
+canvas {
+	position:fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -300px; /*set to a negative number 1/2 of your height*/
+	margin-left: -400px; /*set to a negative number 1/2 of your width*/
+	border: 1px solid #ccc;
+}
+
+table {
+	position:relative;
+	width:100%;
+	height:100%;
+	border: 1px solid #ccc;
+	background-color: #f3f3f3;
+}

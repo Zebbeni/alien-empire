@@ -3,15 +3,30 @@
     <head>
         <script src="/socket.io/socket.io.js"></script>
         <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
         <script src="script.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="custom.css" />
+        <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     </head>
-    <body>
-    <h3>Alien Empire</h3>
-    <table>
-    <tr>
-    <td id="users"></td>
-    </tr>
-    </table>
-    <button id="logoff">Logout</button>
+    <body onload="init();">
+        <canvas id="loginCanvas" width="800" height="600"></canvas>
+        <canvas id="lobbyCanvas" width="800" height="600"></canvas>
+        <div id="d">
+            <form action="javascript:submitLogin();">
+                <table>
+                <tr><td>
+                <input id="input-username" type="text", placeholder="Username" />
+                </td></tr><tr><td>
+                <input id="input-password" type="password", placeholder="Password"/>
+                </td></tr><tr><td>
+                <input type="submit"/>
+                </td></tr>
+                </table>
+            </form>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
+        <script src="script.js"></script>
     </body>
 </html>
