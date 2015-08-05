@@ -1,28 +1,95 @@
-#d {
+*{
+	border: none;
+}
+
+#login-div {
    position:fixed;
     top: 50%;
     left: 50%;
-    width:156px;
-    height:50px;
-    margin-top: -25px; /*set to a negative number 1/2 of your height*/
-    margin-left: -78px; /*set to a negative number 1/2 of your width*/
-    border: 1px solid #ccc;
-    background-color: #ffffff;
+    width:200px;
+    height:100px;
+    margin-top: -50px; /*set to a negative number 1/2 of your height*/
+    margin-left: -100px; /*set to a negative number 1/2 of your width*/
+}
+
+#lobby-div {
+	position: fixed;
+	top: 450px;
+	left: 50%;
+	width: 1000px;
+	height: 700px;
+	margin-left: -500px;
+	margin-top: -400px;
+}
+
+#users-div, #chat-div, #games-div {
+	margin: 6px;
+	height: 100%;
+	background: rgba(131, 203, 180, .38);
+}
+
+#messages-div, #users-scroll {
+	position: relative;
+	padding: 10px;
+	overflow-y: auto;
+	background: rgba(50, 50, 50, .78);
+}
+
+#users-scroll {
+	font-size: 12pt;
+	height: 682px;
+	width: 92%;
+	left: 4%;
+	top: 1.3%;
+	color: rgba(255, 255, 255, .9);
+}
+
+#messages-div{
+	font-size: 10pt;
+	width: 94%;
+	left: 3%;
+	height: 600px;
+	top: 1.3%;
+	color: rgba(255, 255, 255, .7);
+}
+
+#chat-input {
+	font-size: 10pt;
+	position: relative;
+	width: 94%;
+	height: 73px;
+	left: 3%;
+	top: 18px;
+	padding: 5px;
+	overflow-y: scroll;
+	color: rgba(0,0,0,1);
+	background: rgba(255, 255, 255, .78);
+}
+
+#input-username, #input-password, input {
+	background: rgba(131, 203, 180, .38)
+}
+
+body {
+	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: "center center fixed";
 }
 
 canvas {
-	position:fixed;
-	top: 50%;
-	left: 50%;
-	margin-top: -300px; /*set to a negative number 1/2 of your height*/
-	margin-left: -400px; /*set to a negative number 1/2 of your width*/
-	border: 1px solid #ccc;
+	position: absolute;
+	left: 130px;
+	right: 130px;
+	top: 50px;
+	bottom: 50px;
 }
 
 table {
 	position:relative;
 	width:100%;
 	height:100%;
-	border: 1px solid #ccc;
 	background-color: #f3f3f3;
 }

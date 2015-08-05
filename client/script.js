@@ -20,34 +20,41 @@ var stage = null;
 //create login and lobby stages, hide lobby stage
 var init = function() {
     stageLogin = new createjs.Stage("loginCanvas");
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill("Blue").drawCircle(50, 30, 50);
-    circle.x = 300;
-    circle.y = 250;
-    stageLogin.addChild(circle);
-    stageLogin.update();
     stageLogin.update();
 
     stageLobby = new createjs.Stage("lobbyCanvas");
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill("Red").drawCircle(50, 30, 50);
-    circle.x = 300;
-    circle.y = 250;
-    stageLobby.addChild(circle);
     stageLobby.update();
 
     document.getElementById('lobbyCanvas').style.visibility = "hidden";
+    document.getElementById('lobby-div').style.visibility = "hidden";
 };
 
 var displayUsers = function(users) {
+    var usersScrollItems = '';
+    document.getElementById('users-scroll').innerHTML = '';
+
+    var y = 50;
+    for (var u in users){
+        var text = new createjs.Text(users[u], "20px Arial", "#ff7700");
+        text.y = y;
+        text.x = 50;
+        y += 30;
+        stageLobby.addChild(text);
+
+        usersScrollItems += '<div class="username-class">' + users[u] + '</div>';
+    }
+    stageLobby.update();
     console.log("Displaying Users", users);
+
+    document.getElementById('users-scroll').innerHTML = usersScrollItems;
 };
 
 //update lobby stage, make it visible, and hide login stage
 var moveToLobby = function(users) {
-    document.getElementById('d').style.visibility = "hidden";
+    document.getElementById('login-div').style.visibility = "hidden";
     document.getElementById('loginCanvas').style.visibility = "hidden";
-    document.getElementById('lobbyCanvas').style.visibility = "visible";
+    // document.getElementById('lobbyCanvas').style.visibility = "visible";
+    document.getElementById('lobby-div').style.visibility = "visible";
     displayUsers(users);
 };
 

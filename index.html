@@ -9,14 +9,14 @@
         <link rel="stylesheet" type="text/css" href="custom.css" />
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     </head>
-    <body onload="init();">
+    <body background="images/space_background.jpg" onload="init();">
         <canvas id="loginCanvas" width="800" height="600"></canvas>
         <canvas id="lobbyCanvas" width="800" height="600"></canvas>
-        <div id="d">
+        <div id="login-div">
             <form action="javascript:submitLogin();">
                 <table>
                 <tr><td>
-                <input id="input-username" type="text", placeholder="Username" />
+                <input id="input-username" type="text", placeholder="Username" autofocus/>
                 </td></tr><tr><td>
                 <input id="input-password" type="password", placeholder="Password"/>
                 </td></tr><tr><td>
@@ -24,6 +24,52 @@
                 </td></tr>
                 </table>
             </form>
+        </div>
+        <div id="lobby-div">
+            <table>
+                <tr>
+                    <td width="25%" height="100%">
+                        <div id="users-div">
+                            <div id="users-scroll"></div>
+                        </div>
+                    </td><td width="35%" height="100%">
+                        <div id="chat-div">
+                            <div id="messages-div">
+                                Margie: At any time it is a strange sight to the tyro to see with what wondrous habitude of unconscious skill the whaleman will maintain.
+
+                                <br>Evan: Still more strange to see him giddily perched upon the loggerhead itself, under such circumstances. 
+
+                                <br>Margie: But the sight of little Flask mounted upon gigantic Daggoo was yet more curious; for sustaining himself with a cool, indifferent, easy, unthought of, barbaric majesty, the noble negro to every roll of the sea harmoniously rolled his fine form.
+
+                                <br>Andrew: On his broad back, flaxen-haired Flask seemed a snow-flake. The bearer looked nobler than the rider. 
+
+                                <br>Mark: Though truly vivacious, tumultuous, ostentatious little Flask would now and then stamp with impatience
+
+                                <br>Evan: but not one added heave did he thereby give to the negro's lordly chest.
+
+                                <br>Margie: So have I seen Passion and Vanity stamping the living magnanimous earth, but the earth did not alter her tides and her seasons for that.
+
+                                <br>Evan: Still more strange to see him giddily perched upon the loggerhead itself, under such circumstances. 
+
+                                <br>Margie: But the sight of little Flask mounted upon gigantic Daggoo was yet more curious; for sustaining himself with a cool, indifferent, easy, unthought of, barbaric majesty, the noble negro to every roll of the sea harmoniously rolled his fine form.
+
+                                <br>Andrew: On his broad back, flaxen-haired Flask seemed a snow-flake. The bearer looked nobler than the rider. 
+
+                                <br>Mark: Though truly vivacious, tumultuous, ostentatious little Flask would now and then stamp with impatience
+
+                                <br>Evan: but not one added heave did he thereby give to the negro's lordly chest.
+
+                                <br>Margie: So have I seen Passion and Vanity stamping the living magnanimous earth, but the earth did not alter her tides and her seasons for that.
+                            </div>
+                                <textarea id="chat-input" placeholder="Send a message!"></textarea>
+                        </div>
+                    </td><td width="40%" height="100%">
+                        <div id="games-div">
+                    
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
