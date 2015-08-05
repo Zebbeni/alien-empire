@@ -14,6 +14,7 @@
 */
 "use strict";
 
+var debug=require('debug')('app');
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/client'));
@@ -21,24 +22,39 @@ var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
 var users = new Object();
+var messages = new Object();
 var num_users = 0;
+var num_messages = 0;
 
 io.on('connection', function(client) {
-    client.emit('messages');
+    client.on('login', function(name, fn) {
+        
+        client.name = name;
 
-    client.on('login', function(name) {
+        fn('received login');
     	num_users += 1;
-    	users[num_users] = name;
-    	client.id_num = num_users;
-    	client.broadcast.emit('user login', users);
-    	client.emit('user login', users);
+        users[num_users] = name;
+        debug('users on server: %s', users);
+        debug('name of new person: %s', name);
+        client.emit('enter lobby', users, messages, function(data){
+            debug(data);
+        });
+        client.broadcast.emit('user login', users);
     });
 
-    client.on('logoff', function() {
-    	delete users[ client.id_num ];
-    	client.broadcast.emit('user logoff', users);
-    	client.emit('user logoff', users);
-    });
+    client.on('send chat message', function(msg, fn) {
+        fn('received chat message');
+        num_messages += 1;
+        messages[num_messages] = {
+            name: client.name,
+            message: msg
+        };
+        debug('# messages on server: %s', num_messages);
+        client.emit('new chat message', messages, function(data){
+            debug(data);
+        });
+        client.broadcast.emit('new chat message', messages);
+    }); 
 });
 
 // [START hello_world]
