@@ -4,12 +4,12 @@
 
 #login-div {
    position:fixed;
-    top: 50%;
-    left: 50%;
-    width:200px;
-    height:100px;
-    margin-top: -50px; /*set to a negative number 1/2 of your height*/
-    margin-left: -100px; /*set to a negative number 1/2 of your width*/
+   top: 50%;
+   left: 50%;
+   width:200px;
+   height:100px;
+   margin-top: -50px; /*set to a negative number 1/2 of your height*/
+   margin-left: -100px; /*set to a negative number 1/2 of your width*/
 }
 
 #lobby-div {
@@ -32,7 +32,7 @@
 	position: relative;
 	padding: 10px;
 	overflow-y: auto;
-	background: rgba(50, 50, 50, .78);
+	background: rgba(40, 40, 40, .78);
 }
 
 #users-scroll {
@@ -63,7 +63,7 @@
 	padding: 5px;
 	overflow-y: scroll;
 	color: rgba(0,0,0,1);
-	background: rgba(255, 255, 255, .78);
+	background: rgba(255, 255, 255, .75);
 }
 
 #input-username, #input-password, input {

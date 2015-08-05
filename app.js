@@ -22,24 +22,42 @@ var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
 var users = new Object();
+var messages = new Object();
 var num_users = 0;
+var num_messages = 0;
 
 /* Include the app engine handlers to respond to start, stop, and health checks. */
 app.use(require('./lib/appengine-handlers'));
 
 io.on('connection', function(client) {
-
     client.on('login', function(name, fn) {
-        fn('woot');
+        
+        client.name = name;
+
+        fn('received login');
     	num_users += 1;
         users[num_users] = name;
         debug('users on server: %s', users);
         debug('name of new person: %s', name);
-        client.emit('enter lobby', users, function(data){
+        client.emit('enter lobby', users, messages, function(data){
             debug(data);
         });
         client.broadcast.emit('user login', users);
     });
+
+    client.on('send chat message', function(msg, fn) {
+        fn('received chat message');
+        num_messages += 1;
+        messages[num_messages] = {
+            name: client.name,
+            message: msg
+        };
+        debug('# messages on server: %s', num_messages);
+        client.emit('new chat message', messages, function(data){
+            debug(data);
+        });
+        client.broadcast.emit('new chat message', messages);
+    }); 
 });
 
 // [START hello_world]
