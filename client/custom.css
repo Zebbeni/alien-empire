@@ -19,6 +19,24 @@
    margin-left: -100px; /*set to a negative number 1/2 of your width*/
 }
 
+#logout-button {
+	position: relative;
+	left: 94%;
+	top: -30px;
+	color: rgba(131, 203, 180, .6);
+	background: rgba(0,0,0,0);
+}
+
+#main-div {
+	position: fixed;
+	top: 450px;
+	left: 50%;
+	width: 1000px;
+	height: 700px;
+	margin-left: -500px;
+	margin-top: -400px;
+}
+
 #lobby-div {
 	position: fixed;
 	top: 450px;

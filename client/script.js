@@ -7,13 +7,25 @@ socket.on('enter lobby', function(users, messages, fn) {
     moveToLobby(users, messages);
 });
 
-socket.on('user login', function(users) {
+socket.on('leave lobby', function(fn) {
+    fn('client has left lobby');
+    leaveLobby();
+});
+
+socket.on('user login', function(users, messages) {
     displayUsers(users);
+    displayMessages(messages);
+});
+
+socket.on('user logout', function(users, messages) {
+    displayUsers(users);
+    displayMessages(messages);
 });
 
 socket.on('new chat message', function(messages) {
     displayMessages(messages);
 });
+
 //ADDED FOR EASEL STUFF
 
 var stage = null;
@@ -36,7 +48,12 @@ var displayUsers = function(users) {
 var displayMessages = function(messages) {
     var messagesHtml = '';
     for (var m in messages){
-        messagesHtml += '<div>' + messages[m].name + ': ' + messages[m].message + '</div>';
+        if (messages[m].name == "Server") {
+            messagesHtml += '<div style="color:gray; text-align:center">' + messages[m].message + '</div>';
+        }
+        else {
+            messagesHtml += '<div>' + messages[m].name + ': ' + messages[m].message + '</div>';
+        }
     }
     document.getElementById('messages-div').innerHTML = messagesHtml;
 };
@@ -45,13 +62,25 @@ var displayMessages = function(messages) {
 var moveToLobby = function(users, messages) {
     document.getElementById('login-div').style.visibility = "hidden";
     document.getElementById('lobby-div').style.visibility = "visible";
+    document.getElementById('logout-button').style.visibility = "visible";
     displayUsers(users);
     displayMessages(messages);
+};
+
+var leaveLobby = function() {
+    document.getElementById('login-div').style.visibility = "visible";
+    document.getElementById('lobby-div').style.visibility = "hidden";
+    document.getElementById('logout-button').style.visibility = "hidden";
 };
 
 var submitLogin = function() {
     var name = document.getElementById('input-username').value;
     login(name);
+};
+
+var submitLogout = function() {
+    console.log("Attempting to logout");
+    logout();
 };
 
 var submitMessage = function() {
@@ -65,6 +94,12 @@ var login = function(name) {
         console.log('received login: ', data);
     });
 };
+
+var logout = function() {
+    socket.emit('logout', function(data){
+        console.log('received logout: ', data);
+    })
+}
 
 var sendChatMessage = function(msg) {
     socket.emit('send chat message', msg, function(data){

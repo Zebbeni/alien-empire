@@ -28,18 +28,46 @@ var num_messages = 0;
 
 io.on('connection', function(client) {
     client.on('login', function(name, fn) {
-        
-        client.name = name;
-
         fn('received login');
-    	num_users += 1;
+        num_users += 1;
+
+        client.name = name;
+        client.id = num_users;
+
         users[num_users] = name;
+
         debug('users on server: %s', users);
         debug('name of new person: %s', name);
+
+        num_messages += 1;
+        messages[num_messages] = {
+            name: "Server",
+            message: name + " has joined the room"
+        };
+
         client.emit('enter lobby', users, messages, function(data){
             debug(data);
         });
-        client.broadcast.emit('user login', users);
+        client.broadcast.emit('user login', users, messages);
+    });
+
+    client.on('logout', function(fn){
+        var username = client.name;
+        delete(users[client.id]);
+
+        debug('users on server: %s', users);
+        debug('name of person leaving: %s', client.name);
+
+        client.emit('leave lobby', function(data){
+            debug(data);
+        });
+
+        num_messages += 1;
+        messages[num_messages] = {
+            name: "Server",
+            message: username + " has left the room"
+        };
+        client.broadcast.emit('user logout', users, messages);
     });
 
     client.on('send chat message', function(msg, fn) {

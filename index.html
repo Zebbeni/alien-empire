@@ -10,32 +10,35 @@
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     </head>
     <body onload="init();">
-        <div id="login-div">
-            <div id="text-title-div">Alien Empire</div>
-            <form action="javascript:submitLogin();">
-                <input id="input-username" type="text", placeholder="Enter a Username!" autofocus/>
-            </form>
-        </div>
-        <div id="lobby-div" style="visibility: hidden">
-            <table>
-                <tr>
-                    <td width="25%" height="100%">
-                        <div id="users-div">
-                            <div id="users-scroll"></div>
-                        </div>
-                    </td><td width="35%" height="100%">
-                        <div id="chat-div">
-                            <div id="messages-div">Chat here!</div>
-                                <form action="javascript:submitMessage();">
-                                    <input type="text" id="chat-input" placeholder="Send a message!"></input>
-                                </form>
-                        </div>
-                    </td><td width="40%" height="100%">
-                        <div id="games-div">
-                        </div>
-                    </td>
-                </tr>
-            </table>
+        <div id="main-div">
+            <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
+            <div id="login-div">
+                <div id="text-title-div">Alien Empire</div>
+                <form action="javascript:submitLogin();">
+                    <input id="input-username" type="text", placeholder="Enter a Username!" autofocus/>
+                </form>
+            </div>
+            <div id="lobby-div" style="visibility: hidden">
+                <table>
+                    <tr>
+                        <td width="25%" height="100%">
+                            <div id="users-div">
+                                <div id="users-scroll"></div>
+                            </div>
+                        </td><td width="35%" height="100%">
+                            <div id="chat-div">
+                                <div id="messages-div">Chat here!</div>
+                                    <form action="javascript:submitMessage();">
+                                        <input type="text" id="chat-input" placeholder="Send a message!"></input>
+                                    </form>
+                            </div>
+                        </td><td width="40%" height="100%">
+                            <div id="games-div">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
