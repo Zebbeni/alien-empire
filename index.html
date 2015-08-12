@@ -9,23 +9,14 @@
         <link rel="stylesheet" type="text/css" href="custom.css" />
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     </head>
-    <body background="images/space_background.jpg" onload="init();">
-        <canvas id="loginCanvas" width="800" height="600"></canvas>
-        <canvas id="lobbyCanvas" width="800" height="600"></canvas>
+    <body onload="init();">
         <div id="login-div">
+            <div id="text-title-div">Alien Empire</div>
             <form action="javascript:submitLogin();">
-                <table>
-                <tr><td>
-                <input id="input-username" type="text", placeholder="Username" autofocus/>
-                </td></tr><tr><td>
-                <input id="input-password" type="password", placeholder="Password"/>
-                </td></tr><tr><td>
-                <input type="submit"/>
-                </td></tr>
-                </table>
+                <input id="input-username" type="text", placeholder="Enter a Username!" autofocus/>
             </form>
         </div>
-        <div id="lobby-div">
+        <div id="lobby-div" style="visibility: hidden">
             <table>
                 <tr>
                     <td width="25%" height="100%">
@@ -34,16 +25,13 @@
                         </div>
                     </td><td width="35%" height="100%">
                         <div id="chat-div">
-                            <div id="messages-div">
-                                Chat here!
-                            </div>
+                            <div id="messages-div">Chat here!</div>
                                 <form action="javascript:submitMessage();">
                                     <input type="text" id="chat-input" placeholder="Send a message!"></input>
                                 </form>
                         </div>
                     </td><td width="40%" height="100%">
                         <div id="games-div">
-                    
                         </div>
                     </td>
                 </tr>

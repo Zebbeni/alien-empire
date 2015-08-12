@@ -1,13 +1,20 @@
 *{
 	border: none;
+	font-size: 11pt;
+	color: rgba(255, 255, 255, .8);
+}
+
+#text-title-div {
+	font-size: 23pt;
+	color: rgba(131, 203, 180, .5);
 }
 
 #login-div {
    position:fixed;
-   top: 50%;
+   top: 40%;
    left: 50%;
    width:200px;
-   height:100px;
+   height:50px;
    margin-top: -50px; /*set to a negative number 1/2 of your height*/
    margin-left: -100px; /*set to a negative number 1/2 of your width*/
 }
@@ -35,26 +42,21 @@
 	background: rgba(40, 40, 40, .78);
 }
 
-#users-scroll {
-	font-size: 12pt;
-	height: 682px;
-	width: 92%;
-	left: 4%;
-	top: 1.3%;
-	color: rgba(255, 255, 255, .9);
-}
-
 #messages-div{
-	font-size: 10pt;
 	width: 94%;
 	left: 3%;
 	height: 600px;
 	top: 1.3%;
-	color: rgba(255, 255, 255, .7);
+}
+
+#users-scroll {
+	height: 682px;
+	width: 92%;
+	left: 4%;
+	top: 1.3%;
 }
 
 #chat-input {
-	font-size: 10pt;
 	position: relative;
 	width: 94%;
 	height: 73px;
@@ -62,29 +64,32 @@
 	top: 18px;
 	padding: 5px;
 	overflow-y: scroll;
-	color: rgba(0,0,0,1);
-	background: rgba(255, 255, 255, .75);
+	background: rgba(255,255,255,.8);
+	color: black;
 }
 
-#input-username, #input-password, input {
-	background: rgba(131, 203, 180, .38)
+#input-username, input{
+	position: absolute center center;
+	border-radius: 5px;
+	padding: 5px;
+	background: rgba(131, 203, 180, .38);
 }
 
-body {
+html {
+	background: url(images/space_background.jpg) no-repeat center center fixed;
 	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
   	background-size: cover;
-	background-repeat: no-repeat;
-	background-position: "center center fixed";
 }
 
-canvas {
-	position: absolute;
-	left: 130px;
-	right: 130px;
-	top: 50px;
-	bottom: 50px;
+td, div, input {
+	border-radius: 10px
+}
+
+form {
+	height: 100%;
+	width: 100%;
 }
 
 table {
