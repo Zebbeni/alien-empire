@@ -1,9 +1,13 @@
 var socket = io.connect();
 var stageLogin = null;
 var stageLobby = null;
+var clientId = null;
+var clientName = null;
 
-socket.on('enter lobby', function(users, messages, fn) {
+socket.on('login success', function(users, userid, username, messages, fn) {
     fn('client entered lobby');
+    clientId = userid;
+    clientName = username;
     moveToLobby(users, messages);
 });
 
@@ -39,23 +43,39 @@ var displayUsers = function(users) {
     var usersScrollItems = '';
 
     for (var u in users){
-        usersScrollItems += '<div class="username-class">' + users[u] + '</div>';
+        if (u == clientId){
+            usersScrollItems += '<div class="self-list-div">' + users[u] + '</div>';
+        }
+        else {
+            usersScrollItems += '<div class="user-list-div">' + users[u] + '</div>';
+        }
     }
 
     document.getElementById('users-scroll').innerHTML = usersScrollItems;
 };
 
 var displayMessages = function(messages) {
-    var messagesHtml = '';
+    var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
+
     for (var m in messages){
+        messagesHtml += '<tr msg-tr>'
         if (messages[m].name == "Server") {
-            messagesHtml += '<div style="color:gray; text-align:center">' + messages[m].message + '</div>';
+            messagesHtml += '<td class="msg-server-td" colspan="2" >' + messages[m].message + '</td>';
+        }
+        else if (messages[m].name == clientName) {
+            messagesHtml += '<td class="msg-self-td">' + messages[m].name + '</td><td class="msg-content-td msg-self-content-td">' + messages[m].message + '</strong></td>';
         }
         else {
-            messagesHtml += '<div>' + messages[m].name + ': ' + messages[m].message + '</div>';
+            messagesHtml += '<td class="msg-user-td">' + messages[m].name + '</td><td class="msg-content-td">' + messages[m].message + '</td>';
         }
+        messagesHtml += '</tr>'
     }
-    document.getElementById('messages-div').innerHTML = messagesHtml;
+    messagesHtml += '</table>'
+
+    var msgDiv = document.getElementById("messages-div");
+
+    msgDiv.innerHTML = messagesHtml;
+    msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
 };
 
 //update lobby stage, make it visible, and hide login stage

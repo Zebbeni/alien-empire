@@ -42,10 +42,10 @@ io.on('connection', function(client) {
         num_messages += 1;
         messages[num_messages] = {
             name: "Server",
-            message: name + " has joined the room"
+            message: name + " joined the room"
         };
 
-        client.emit('enter lobby', users, messages, function(data){
+        client.emit('login success', users, client.id, client.name, messages, function(data){
             debug(data);
         });
         client.broadcast.emit('user login', users, messages);
@@ -65,7 +65,7 @@ io.on('connection', function(client) {
         num_messages += 1;
         messages[num_messages] = {
             name: "Server",
-            message: username + " has left the room"
+            message: username + " left the room"
         };
         client.broadcast.emit('user logout', users, messages);
     });
