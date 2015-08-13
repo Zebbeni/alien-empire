@@ -83,6 +83,8 @@ var moveToLobby = function(users, messages) {
     document.getElementById('login-div').style.visibility = "hidden";
     document.getElementById('lobby-div').style.visibility = "visible";
     document.getElementById('logout-button').style.visibility = "visible";
+    $("#lobby-div").animate({top: '450px'}, 500);
+
     displayUsers(users);
     displayMessages(messages);
 };
