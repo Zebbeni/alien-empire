@@ -120,6 +120,10 @@
 	text-align: right;
 }
 
+.msg-self-td, .msg-user-td, .msg-content-td {
+	line-height: 99%;
+}
+
 .msg-content-td, .msg-user-td {
 	color: rgb(131, 203, 180);
 }
@@ -129,11 +133,11 @@
 }
 
 .msg-self-td, .msg-user-td {
-	width: 25%;
+	width: 30%;
 }
 
 .msg-content-td {
-	width: 75%;
+	width: 70%;
 }
 
 .user-list-div, .self-list-div {
@@ -188,6 +192,7 @@ html {
 
 td, div, input {
 	border-radius: 10px;
+	word-wrap:break-word;
 }
 
 form {

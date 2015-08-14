@@ -21,31 +21,59 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
+var games = new Object();
 var users = new Object();
 var messages = new Object();
+
 var num_users = 0;
 var num_messages = 0;
+var num_games = 0;
 
 io.on('connection', function(client) {
+
     client.on('login', function(name, fn) {
         fn('received login');
         num_users += 1;
 
         client.name = name;
-        client.id = num_users;
 
-        users[num_users] = name;
+        var is_existing_user = false;
+
+        for (var u in users) {
+            // If user name already exists in users, update that users' status to ONLINE 
+            // (we should REALLY have a password for this)
+            if (users[u].name == client.name) {
+
+                client.id = u;
+
+                users[u].status = 1;
+                is_existing_user = true;
+
+                break;
+            }
+        }
+
+        if (!is_existing_user) {
+            // Otherwise, if no user found with that name, create a new one and increment num_users
+            num_users += 1;
+            client.id = num_users;
+
+            users[num_users] = {
+                name: client.name,
+                status: 1 // 0: OFFLINE, 1: ONLINE, 2: INGAME (make these constants)
+            }
+        }
 
         debug('users on server: %s', users);
         debug('name of new person: %s', name);
 
         num_messages += 1;
         messages[num_messages] = {
-            name: "Server",
+            id: 0,
             message: name + " joined the room"
         };
 
-        client.emit('login success', users, client.id, client.name, messages, function(data){
+        client.emit('login success', users, client.id, client.name, messages, games, function(data){
             debug(data);
         });
         client.broadcast.emit('user login', users, messages);
@@ -53,7 +81,9 @@ io.on('connection', function(client) {
 
     client.on('logout', function(fn){
         var username = client.name;
-        delete(users[client.id]);
+
+        // delete(users[client.id]); // old way
+        users[client.id].status = 0; // 0: OFFLINE
 
         debug('users on server: %s', users);
         debug('name of person leaving: %s', client.name);
@@ -64,17 +94,17 @@ io.on('connection', function(client) {
 
         num_messages += 1;
         messages[num_messages] = {
-            name: "Server",
+            id: 0,
             message: username + " left the room"
         };
         client.broadcast.emit('user logout', users, messages);
     });
 
     client.on('send chat message', function(msg, fn) {
-        fn('received chat message');
+        fn('true');
         num_messages += 1;
         messages[num_messages] = {
-            name: client.name,
+            id: client.id,
             message: msg
         };
         debug('# messages on server: %s', num_messages);
@@ -83,6 +113,24 @@ io.on('connection', function(client) {
         });
         client.broadcast.emit('new chat message', messages);
     }); 
+
+    client.on('create game', function(fn) {
+
+        fn('true');
+
+        var game = new Object();
+        num_games += 1;
+
+        games[num_games] = {
+            status: "staging",
+            players: [client.id]
+        };
+
+        client.emit('new game added', games, function(data) {
+            debug(data);
+        });
+        client.broadcast.emit('new game added', games);
+    });
 });
 
 // [START hello_world]
@@ -90,10 +138,6 @@ io.on('connection', function(client) {
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-// [END hello_world]
-
-// var port = 8080;
-// app.listen(port);
 
 // [START server]
 /* Start the server */
