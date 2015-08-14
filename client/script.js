@@ -11,8 +11,8 @@ socket.on('login success', function(users, userid, username, messages, games, fn
     fn('client entered lobby');
     clientId = userid;
     clientName = username;
-    updateLobby(users, messages, games);
     moveToLobby();
+    updateLobby(users, messages, games);
 });
 
 socket.on('leave lobby', function(fn) {
@@ -33,6 +33,10 @@ socket.on('new chat message', function(messages) {
 });
 
 socket.on('new game added', function(games) {
+    updateLobby(false, false, games);
+});
+
+socket.on('user joined game', function(games) {
     updateLobby(false, false, games);
 });
 
@@ -98,7 +102,7 @@ var displayGames = function() {
             gamesHtml += all_users[players[p]].name + '  ';
         }
 
-        gamesHtml += '"></input>';
+        gamesHtml += '" onclick="javascript:joinGame(' + g + ')"></input>';
     }
     document.getElementById('games-list-div').innerHTML = gamesHtml;
 };
@@ -136,45 +140,55 @@ var leaveLobby = function() {
 
 var submitLogin = function() {
     var name = document.getElementById('input-username').value;
-    login(name);
+    socket_login(name);
 };
 
 var submitLogout = function() {
     console.log("Attempting to logout");
-    logout();
+    socket_logout();
 };
 
 var submitMessage = function() {
     var msg = document.getElementById('chat-input').value;
     document.getElementById('chat-input').value = '';
-    sendChatMessage(msg);
+    socket_sendMessage(msg);
 };
 
 var submitNewGame = function() {
-    createGame();
+    socket_createGame();
+};
+
+var joinGame = function(gameId) {
+    socket_joinGame(gameId);
 };
 
 //socket event emitting handlers
-var login = function(name) {
+var socket_login = function(name) {
     socket.emit('login', name, function(data){
         console.log('received login: ', data);
     });
 };
 
-var logout = function() {
+var socket_logout = function() {
     socket.emit('logout', function(data){
         console.log('received logout: ', data);
     });
 };
 
-var sendChatMessage = function(msg) {
+var socket_sendMessage = function(msg) {
     socket.emit('send chat message', msg, function(data){
         console.log('received chat message: ', data);
     });
 };
 
-var createGame = function() {
+var socket_createGame = function() {
     socket.emit('create game', function(data) {
         console.log('received new game request: ', data);
+    });
+};
+
+var socket_joinGame = function(gameId) {
+    socket.emit('join game', gameId, function(data){
+        console.log('joined game: ', data)
     });
 };

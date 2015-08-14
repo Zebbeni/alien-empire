@@ -126,10 +126,26 @@ io.on('connection', function(client) {
             players: [client.id]
         };
 
-        client.emit('new game added', games, function(data) {
-            debug(data);
-        });
+        //TODO emit a different function to the client who created the game
+        // as they are also joining it
+        client.emit('new game added', games);
         client.broadcast.emit('new game added', games);
+    });
+
+    client.on('join game', function(gameId, fn) {
+        var game = games[gameId];
+
+        debug("attempting to join game ", gameId);
+        if ( game.players.indexOf(client.id) == -1 && game.players.length < 4)
+        {
+            game.players.push(client.id);
+
+            client.emit('user joined game', games);
+            client.broadcast.emit('user joined game', games);
+            fn('true');
+        }
+
+        fn('false');
     });
 });
 
