@@ -1,5 +1,6 @@
 var socket = io.connect();
 var all_users = null;
+var all_messages = null;
 var all_games = null;
 var stageLogin = null;
 var stageLobby = null;
@@ -10,7 +11,8 @@ socket.on('login success', function(users, userid, username, messages, games, fn
     fn('client entered lobby');
     clientId = userid;
     clientName = username;
-    moveToLobby(users, messages, games);
+    updateLobby(users, messages, games);
+    moveToLobby();
 });
 
 socket.on('leave lobby', function(fn) {
@@ -19,24 +21,19 @@ socket.on('leave lobby', function(fn) {
 });
 
 socket.on('user login', function(users, messages) {
-    updateUsers(users);
-    displayUsers();
-    displayMessages(messages);
+    updateLobby(users, messages, false);
 });
 
 socket.on('user logout', function(users, messages) {
-    updateUsers(users);
-    displayUsers();
-    displayMessages(messages);
+    updateLobby(users, messages, false);
 });
 
 socket.on('new chat message', function(messages) {
-    displayMessages(messages);
+    updateLobby(false, messages, false);
 });
 
 socket.on('new game added', function(games) {
-    updateGames(games);
-    displayGames();
+    updateLobby(false, false, games);
 });
 
 //ADDED FOR EASEL STUFF
@@ -46,10 +43,6 @@ var stage = null;
 //TODO: Create game stages, set their visibilities to hidden
 var init = function() {
     document.getElementById('lobby-div').style.visibility = "hidden";
-};
-
-var updateUsers = function(users) {
-    all_users = users;
 };
 
 var displayUsers = function() {
@@ -66,23 +59,22 @@ var displayUsers = function() {
             }
         }
     }
-
     document.getElementById('users-scroll').innerHTML = usersScrollItems;
 };
 
-var displayMessages = function(messages) {
+var displayMessages = function() {
     var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
 
-    for (var m in messages){
+    for (var m in all_messages){
         messagesHtml += '<tr msg-tr>'
-        if (messages[m].id == 0) {
-            messagesHtml += '<td class="msg-server-td" colspan="2" >' + messages[m].message + '</td>';
+        if (all_messages[m].id == 0) {
+            messagesHtml += '<td class="msg-server-td" colspan="2" >' + all_messages[m].message + '</td>';
         }
-        else if (messages[m].id == clientId) {
-            messagesHtml += '<td class="msg-self-td">' + all_users[messages[m].id].name + '</td><td class="msg-content-td msg-self-content-td">' + messages[m].message + '</strong></td>';
+        else if (all_messages[m].id == clientId) {
+            messagesHtml += '<td class="msg-self-td">' + all_users[all_messages[m].id].name + '</td><td class="msg-content-td msg-self-content-td">' + all_messages[m].message + '</strong></td>';
         }
         else {
-            messagesHtml += '<td class="msg-user-td">' + all_users[messages[m].id].name + '</td><td class="msg-content-td">' + messages[m].message + '</td>';
+            messagesHtml += '<td class="msg-user-td">' + all_users[all_messages[m].id].name + '</td><td class="msg-content-td">' + all_messages[m].message + '</td>';
         }
         messagesHtml += '</tr>'
     }
@@ -92,10 +84,6 @@ var displayMessages = function(messages) {
 
     msgDiv.innerHTML = messagesHtml;
     msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
-};
-
-var updateGames = function(games) {
-    all_games = games;
 };
 
 var displayGames = function() {
@@ -116,16 +104,27 @@ var displayGames = function() {
 };
 
 //update lobby stage, make it visible, and hide login stage
-var moveToLobby = function(users, messages, games) {
+var moveToLobby = function() {
     document.getElementById('login-div').style.visibility = "hidden";
     document.getElementById('lobby-div').style.visibility = "visible";
     document.getElementById('logout-button').style.visibility = "visible";
     $("#lobby-div").animate({top: '450px'}, 500);
-    updateUsers(users);
-    displayUsers();
-    displayMessages(messages);
-    updateGames(games);
-    displayGames();
+};
+
+//updates any of the main content areas of the lobby (pass in false for non-updated elements)
+var updateLobby = function(users, messages, games) {
+    if (users){
+        all_users = users;
+        displayUsers();
+    }
+    if (messages) {
+        all_messages = messages;
+        displayMessages();
+    }
+    if (games) {
+        all_games = games;
+        displayGames();
+    }
 };
 
 //javascript functions called from HTML elements
