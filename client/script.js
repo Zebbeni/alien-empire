@@ -1,7 +1,7 @@
 var socket = io.connect();
-var all_users = null;
-var all_messages = null;
-var all_games = null;
+var all_users = [];
+var all_messages = [];
+var all_games = [];
 var stageLogin = null;
 var stageLobby = null;
 var clientId = null;
@@ -22,7 +22,6 @@ socket.on('leave lobby', function(fn) {
 
 socket.on('user login', function(users, messages) {
     updateLobby(users, messages, false);
-    console.log('another user logged in');
 });
 
 socket.on('user logout', function(users, messages) {
@@ -53,7 +52,7 @@ var init = function() {
 var displayUsers = function() {
     var usersScrollItems = '';
 
-    for (var u in all_users){
+    for (var u = 0; u < all_users.length; u++){
         if (all_users[u].status == 1) {
          
             if (u == clientId){
@@ -71,12 +70,12 @@ var displayMessages = function() {
     var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
     var lastUserId = null;
     var msg = null;
-    for (var m in all_messages){
+    for (var m = 0; m < all_messages.length; m++){
 
         msg = all_messages[m];
         messagesHtml += '<tr>'
 
-        if (msg.id == 0) {
+        if (msg.id == -1) {
             messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
         }
         else {
@@ -104,7 +103,7 @@ var displayMessages = function() {
 var displayGames = function() {
     gamesHtml = '';
     var players = null;
-    for (var g in all_games) {
+    for (var g = 0; g < all_games.length; g++) {
 
         gamesHtml += '<input type="button" class="game-button" value="';
         players = all_games[g].players;

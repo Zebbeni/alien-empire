@@ -7,13 +7,9 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
-var games = {};
-var users = {};
-var messages = {};
-
-var num_users = 0;
-var num_messages = 0;
-var num_games = 0;
+var games = [];
+var users = [];
+var messages = [];
 
 io.sockets.on('connection', function(client) {
 
@@ -26,14 +22,14 @@ io.sockets.on('connection', function(client) {
 
         var is_existing_user = false;
 
-        for (var u in users) {
+        for (var u = 0; u < users.length; u++) {
             // If user name already exists in users, update that users' status to ONLINE
             // (we should REALLY have a password for this)
             if (users[u].name == client.name) {
 
                 client.id = u;
-
                 users[u].status = 1;
+
                 is_existing_user = true;
 
                 // break;
@@ -42,20 +38,21 @@ io.sockets.on('connection', function(client) {
 
         if (!is_existing_user) {
             // Otherwise, if no user found with that name, create a new one and increment num_users
-            num_users += 1;
-            client.id = num_users;
+            
+            client.id = users.length;
 
-            users[num_users] = {
-                name: client.name,
-                status: 1 // 0: OFFLINE, 1: ONLINE, 2: INGAME (make these constants)
-            };
+            users.push(
+                {
+                    name: client.name,
+                    status: 1 // 0: OFFLINE, 1: ONLINE, 2: INGAME (make these constants)
+                });
         }
 
-        num_messages += 1;
-        messages[num_messages] = {
-            id: 0,
-            message: name + " joined the room"
-        };
+        messages.push(
+            {
+                id: -1, // -1 indicates a server message
+                message: name + " joined the room"
+            });
 
         client.emit('login success', users, client.id, client.name, messages, games, function(data){
             // debug(data);
@@ -70,28 +67,25 @@ io.sockets.on('connection', function(client) {
         // delete(users[client.id]); // old way
         users[client.id].status = 0; // 0: OFFLINE
 
-        debug('users on server: %s', users);
-        debug('name of person leaving: %s', client.name);
-
         client.emit('leave lobby', function(data){
             // debug(data);
         });
 
-        num_messages += 1;
-        messages[num_messages] = {
-            id: 0,
-            message: username + " left the room"
-        };
+        messages.push( 
+            {
+                id: -1, // -1 indicates a server message
+                message: username + " left the room"
+            });
         client.broadcast.to('lobby').emit('user logout', users, messages);
     });
 
     client.on('send chat message', function(msg, fn) {
         fn('true');
-        num_messages += 1;
-        messages[num_messages] = {
-            id: client.id,
-            message: msg
-        };
+        messages.push(
+            {
+                id: client.id,
+                message: msg
+            });
 
         client.emit('new chat message', messages, function(data){
             // debug(data);
@@ -101,19 +95,19 @@ io.sockets.on('connection', function(client) {
 
     client.on('create game', function(fn) {
 
-        // client.leave('lobby');
-        // client.join('game' + num_games);
-
         fn('true');
 
-        var game = new Object();
-        num_games += 1;
+        var roomId = 'game' + games.length;
 
-        games[num_games] = {
-            status: "staging",
-            players: [client.id],
-            gameRoom: 'game' + num_games
-        };
+        games.push(
+            {
+                status: "staging",
+                players: [client.id],
+                room: roomId
+            });
+
+        client.leave('lobby');
+        client.join( roomId );
 
         // emit a different function to the client who created the game
         // as they are also joining it
@@ -123,6 +117,9 @@ io.sockets.on('connection', function(client) {
 
     client.on('join game', function(gameId, fn) {
         var game = games[gameId];
+
+        client.leave('lobby');
+        client.join( game.room );
 
         if ( game.players.indexOf(client.id) === -1 && game.players.length < 4)
         {
