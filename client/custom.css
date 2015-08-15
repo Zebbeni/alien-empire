@@ -108,7 +108,8 @@
 
 .msg-server-td, .msg-self-td, .msg-user-td, .msg-content-td {
 	vertical-align: top;
-	padding: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .msg-server-td {
@@ -120,9 +121,9 @@
 	text-align: right;
 }
 
-.msg-self-td, .msg-user-td, .msg-content-td {
+/*.msg-self-td, .msg-user-td, .msg-content-td {
 	line-height: 99%;
-}
+}*/
 
 .msg-content-td, .msg-user-td {
 	color: rgb(131, 203, 180);

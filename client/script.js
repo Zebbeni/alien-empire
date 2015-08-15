@@ -22,6 +22,7 @@ socket.on('leave lobby', function(fn) {
 
 socket.on('user login', function(users, messages) {
     updateLobby(users, messages, false);
+    console.log('another user logged in');
 });
 
 socket.on('user logout', function(users, messages) {
