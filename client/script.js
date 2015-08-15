@@ -68,19 +68,29 @@ var displayUsers = function() {
 
 var displayMessages = function() {
     var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
-
+    var lastUserId = null;
+    var msg = null;
     for (var m in all_messages){
-        messagesHtml += '<tr msg-tr>'
-        if (all_messages[m].id == 0) {
-            messagesHtml += '<td class="msg-server-td" colspan="2" >' + all_messages[m].message + '</td>';
-        }
-        else if (all_messages[m].id == clientId) {
-            messagesHtml += '<td class="msg-self-td">' + all_users[all_messages[m].id].name + '</td><td class="msg-content-td msg-self-content-td">' + all_messages[m].message + '</strong></td>';
+
+        msg = all_messages[m];
+        messagesHtml += '<tr>'
+
+        if (msg.id == 0) {
+            messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
         }
         else {
-            messagesHtml += '<td class="msg-user-td">' + all_users[all_messages[m].id].name + '</td><td class="msg-content-td">' + all_messages[m].message + '</td>';
+            messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td">' : '<td class="msg-user-td">' );
+
+            if (msg.id != lastUserId) { // Only display user name if it's a different user talking
+               messagesHtml += all_users[msg.id].name;
+            }
+
+            messagesHtml += '</td><td class="msg-content-td';
+            messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + msg.message + '</td>';
         }
         messagesHtml += '</tr>'
+
+        lastUserId = msg.id;
     }
     messagesHtml += '</table>'
 
