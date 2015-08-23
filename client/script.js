@@ -192,9 +192,7 @@ var socket_sendMessage = function(msg) {
 };
 
 var socket_createGame = function() {
-    socket.emit('create game', function(data) {
-        console.log('received new game request: ', data);
-    });
+    socket.emit('create game', 'lobby');
 };
 
 var socket_joinGame = function(gameId) {

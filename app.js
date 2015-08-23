@@ -11,23 +11,51 @@ var games = [];
 var users = [];
 var messages = [];
 
-io.sockets.on('connection', function(client) {
+io.sockets.on('connection', function(socket) {
 
-    client.on('login', function(name, fn) {
+    // socket.on('create game', function(fn) {
+    socket.on('create game', function(current_room) {
+        // fn('true');
 
-        client.join('lobby');
+        var roomId = 'game' + games.length;
+
+        games.push(
+            {
+                status: "staging",
+                players: [socket.id],
+                room: roomId
+            });
+
+        debug("Before Leaving: In ", current_room, ": ", socket.rooms.indexOf(current_room));
+        debug("Before Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
+
+        socket.leave(current_room);
+        socket.join( roomId );
+
+        debug("After leaving: In ", current_room, ": ", socket.rooms.indexOf(current_room));
+        debug("After Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
+
+        // emit a different function to the socket who created the game
+        // as they are also joining it
+        socket.emit('new game added', games);
+        socket.broadcast.to('lobby').emit('new game added', games);
+    });
+
+    socket.on('login', function(name, fn) {
+
+        socket.join('lobby');
 
         fn('received login');
-        client.name = name;
+        socket.name = name;
 
         var is_existing_user = false;
 
         for (var u = 0; u < users.length; u++) {
             // If user name already exists in users, update that users' status to ONLINE
             // (we should REALLY have a password for this)
-            if (users[u].name == client.name) {
+            if (users[u].name == socket.name) {
 
-                client.id = u;
+                socket.id = u;
                 users[u].status = 1;
 
                 is_existing_user = true;
@@ -39,11 +67,11 @@ io.sockets.on('connection', function(client) {
         if (!is_existing_user) {
             // Otherwise, if no user found with that name, create a new one and increment num_users
             
-            client.id = users.length;
+            socket.id = users.length;
 
             users.push(
                 {
-                    name: client.name,
+                    name: socket.name,
                     status: 1 // 0: OFFLINE, 1: ONLINE, 2: INGAME (make these constants)
                 });
         }
@@ -54,20 +82,21 @@ io.sockets.on('connection', function(client) {
                 message: name + " joined the room"
             });
 
-        client.emit('login success', users, client.id, client.name, messages, games, function(data){
+        socket.emit('login success', users, socket.id, socket.name, messages, games, function(data){
             // debug(data);
         });
 
-        client.broadcast.to('lobby').emit('user login', users, messages);
+        socket.broadcast.to('lobby').emit('user login', users, messages);
     });
 
-    client.on('logout', function(fn){
-        var username = client.name;
+    socket.on('logout', function(fn){
+        var username = socket.name;
+        fn('true');
 
-        // delete(users[client.id]); // old way
-        users[client.id].status = 0; // 0: OFFLINE
+        // delete(users[socket.id]); // old way
+        users[socket.id].status = 0; // 0: OFFLINE
 
-        client.emit('leave lobby', function(data){
+        socket.emit('leave lobby', function(data){
             // debug(data);
         });
 
@@ -76,57 +105,42 @@ io.sockets.on('connection', function(client) {
                 id: -1, // -1 indicates a server message
                 message: username + " left the room"
             });
-        client.broadcast.to('lobby').emit('user logout', users, messages);
+        socket.broadcast.to('lobby').emit('user logout', users, messages);
     });
 
-    client.on('send chat message', function(msg, fn) {
+    socket.on('send chat message', function(msg, fn) {
         fn('true');
         messages.push(
             {
-                id: client.id,
+                id: socket.id,
                 message: msg
             });
 
-        client.emit('new chat message', messages, function(data){
+        socket.emit('new chat message', messages, function(data){
             // debug(data);
         });
-        client.broadcast.to('lobby').emit('new chat message', messages);
+        socket.broadcast.to('lobby').emit('new chat message', messages);
     });
 
-    client.on('create game', function(fn) {
+    socket.on('join game', function(gameId, fn) {
 
-        fn('true');
-
-        var roomId = 'game' + games.length;
-
-        games.push(
-            {
-                status: "staging",
-                players: [client.id],
-                room: roomId
-            });
-
-        client.leave('lobby');
-        client.join( roomId );
-
-        // emit a different function to the client who created the game
-        // as they are also joining it
-        client.emit('new game added', games);
-        client.broadcast.to('lobby').emit('new game added', games);
-    });
-
-    client.on('join game', function(gameId, fn) {
         var game = games[gameId];
 
-        client.leave('lobby');
-        client.join( game.room );
-
-        if ( game.players.indexOf(client.id) === -1 && game.players.length < 4)
+        if ( game.players.indexOf(socket.id) === -1 && game.players.length < 4)
         {
-            game.players.push(client.id);
+            debug("Before Leaving: In ", 'lobby', ": ", socket.rooms.indexOf('lobby'));
+            debug("Before Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
 
-            client.emit('user joined game', games);
-            client.broadcast.to('lobby').emit('user joined game', games);
+            socket.leave(current_room);
+            socket.join( roomId );
+            
+            debug("After leaving: Users in ", 'lobby', ": ", socket.rooms.indexOf('lobby'));
+            debug("After Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
+
+            game.players.push(socket.id);
+
+            socket.emit('user joined game', games);
+            socket.broadcast.to('lobby').emit('user joined game', games);
             fn('true');
         }
         else {
