@@ -40,6 +40,10 @@ socket.on('new game added', function(games) {
     updateLobby(false, false, games);
 });
 
+socket.on('self joined game', function(game) {
+    updateGameStage(game);
+});
+
 socket.on('user joined game', function(games) {
     updateLobby(false, false, games);
 });
@@ -143,6 +147,10 @@ var updateLobby = function(users, messages, games) {
         all_games = games;
         displayGames();
     }
+};
+
+var updateGameStage = function(game) {
+    document.getElementById('screen-div').style.visibility = "visible";
 };
 
 //javascript functions called from HTML elements

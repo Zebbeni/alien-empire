@@ -97,20 +97,20 @@ io.sockets.on('connection', function(socket) {
     socket.on('create game', function(current_room) {
 
         var roomId = 'game' + games.length;
+        var game = {
+                        status: "staging",
+                        players: [socket.userid],
+                        room: roomId
+                    }
 
-        games.push(
-            {
-                status: "staging",
-                players: [socket.userid],
-                room: roomId
-            });
+        games.push(game);
 
         socket.leave('lobby');
         socket.join( roomId );
 
         // emit a different function to the socket who created the game
         // as they are also joining it
-        socket.emit('new game added', games);
+        socket.emit('self joined game', games);
         socket.broadcast.to('lobby').emit('new game added', games);
     });
 
@@ -127,7 +127,7 @@ io.sockets.on('connection', function(socket) {
 
             game.players.push(socket.userid);
 
-            socket.emit('user joined game', games);
+            socket.emit('self joined game', game);
             socket.broadcast.to('lobby').emit('user joined game', games);
             fn('true');
         }
