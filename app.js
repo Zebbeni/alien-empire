@@ -32,7 +32,7 @@ io.sockets.on('connection', function(socket) {
 
                 is_existing_user = true;
 
-                // break;
+                break;
             }
         }
 
