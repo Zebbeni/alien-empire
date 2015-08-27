@@ -7,6 +7,10 @@ var stageLobby = null;
 var clientId = null;
 var clientName = null;
 
+socket.on('connect', function() {
+    console.log('connected');
+});
+
 socket.on('login success', function(users, userid, username, messages, games, fn) {
     fn('client entered lobby');
     clientId = userid;

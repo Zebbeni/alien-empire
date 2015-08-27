@@ -13,34 +13,6 @@ var messages = [];
 
 io.sockets.on('connection', function(socket) {
 
-    // socket.on('create game', function(fn) {
-    socket.on('create game', function(current_room) {
-        // fn('true');
-
-        var roomId = 'game' + games.length;
-
-        games.push(
-            {
-                status: "staging",
-                players: [socket.id],
-                room: roomId
-            });
-
-        debug("Before Leaving: In ", current_room, ": ", socket.rooms.indexOf(current_room));
-        debug("Before Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
-
-        socket.leave(current_room);
-        socket.join( roomId );
-
-        debug("After leaving: In ", current_room, ": ", socket.rooms.indexOf(current_room));
-        debug("After Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
-
-        // emit a different function to the socket who created the game
-        // as they are also joining it
-        socket.emit('new game added', games);
-        socket.broadcast.to('lobby').emit('new game added', games);
-    });
-
     socket.on('login', function(name, fn) {
 
         socket.join('lobby');
@@ -55,7 +27,7 @@ io.sockets.on('connection', function(socket) {
             // (we should REALLY have a password for this)
             if (users[u].name == socket.name) {
 
-                socket.id = u;
+                socket.userid = u;
                 users[u].status = 1;
 
                 is_existing_user = true;
@@ -67,7 +39,7 @@ io.sockets.on('connection', function(socket) {
         if (!is_existing_user) {
             // Otherwise, if no user found with that name, create a new one and increment num_users
             
-            socket.id = users.length;
+            socket.userid = users.length;
 
             users.push(
                 {
@@ -82,7 +54,7 @@ io.sockets.on('connection', function(socket) {
                 message: name + " joined the room"
             });
 
-        socket.emit('login success', users, socket.id, socket.name, messages, games, function(data){
+        socket.emit('login success', users, socket.userid, socket.name, messages, games, function(data){
             // debug(data);
         });
 
@@ -93,8 +65,8 @@ io.sockets.on('connection', function(socket) {
         var username = socket.name;
         fn('true');
 
-        // delete(users[socket.id]); // old way
-        users[socket.id].status = 0; // 0: OFFLINE
+        // delete(users[socket.userid]); // old way
+        users[socket.userid].status = 0; // 0: OFFLINE
 
         socket.emit('leave lobby', function(data){
             // debug(data);
@@ -112,7 +84,7 @@ io.sockets.on('connection', function(socket) {
         fn('true');
         messages.push(
             {
-                id: socket.id,
+                id: socket.userid,
                 message: msg
             });
 
@@ -122,22 +94,38 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.to('lobby').emit('new chat message', messages);
     });
 
+    socket.on('create game', function(current_room) {
+
+        var roomId = 'game' + games.length;
+
+        games.push(
+            {
+                status: "staging",
+                players: [socket.userid],
+                room: roomId
+            });
+
+        socket.leave('lobby');
+        socket.join( roomId );
+
+        // emit a different function to the socket who created the game
+        // as they are also joining it
+        socket.emit('new game added', games);
+        socket.broadcast.to('lobby').emit('new game added', games);
+    });
+
     socket.on('join game', function(gameId, fn) {
 
+        var current_room = 'lobby';
         var game = games[gameId];
 
-        if ( game.players.indexOf(socket.id) === -1 && game.players.length < 4)
+        if ( game.players.indexOf(socket.userid) === -1 && game.players.length < 4)
         {
-            debug("Before Leaving: In ", 'lobby', ": ", socket.rooms.indexOf('lobby'));
-            debug("Before Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
 
-            socket.leave(current_room);
-            socket.join( roomId );
-            
-            debug("After leaving: Users in ", 'lobby', ": ", socket.rooms.indexOf('lobby'));
-            debug("After Leaving: In ", roomId, ": ", socket.rooms.indexOf(roomId));
+            socket.leave('lobby');
+            socket.join( game.room );
 
-            game.players.push(socket.id);
+            game.players.push(socket.userid);
 
             socket.emit('user joined game', games);
             socket.broadcast.to('lobby').emit('user joined game', games);
@@ -145,6 +133,24 @@ io.sockets.on('connection', function(socket) {
         }
         else {
             fn('false');
+        }
+    });
+
+    socket.on('disconnect', function(){
+
+        // broadcast and update status if user hasn't already logged out
+
+        if (users[socket.userid].status != 0){
+            var username = socket.name;
+            users[socket.userid].status = 0; // 0: OFFLINE
+
+            messages.push( 
+                {
+                    id: -1, // -1 indicates a server message
+                    message: username + " left the room"
+                });
+
+            socket.broadcast.to('lobby').emit('user logout', users, messages);
         }
     });
 });
