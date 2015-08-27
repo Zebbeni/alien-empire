@@ -151,6 +151,8 @@ var updateLobby = function(users, messages, games) {
 
 var updateGameStage = function(game) {
     document.getElementById('screen-div').style.visibility = "visible";
+    document.getElementById('staging-div').style.visibility = "visible";
+    $("#staging-div").animate({top: '400px'}, 500);
 };
 
 //javascript functions called from HTML elements

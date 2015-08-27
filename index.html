@@ -10,6 +10,7 @@
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     </head>
     <body onload="init();">
+        <div id="copyright">©2015 Andrew Albers. All rights reserved</div>
         <div id="main-div">
             <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="login-div">
@@ -44,7 +45,9 @@
                 </table>
             </div>
             <div id="screen-div" style="visibility: hidden"></div>
+            <div id="staging-div" style="visibility: hidden">
+                <div id="staging-inner-div"></div>
+            </div>
         </div>
-        <div id="copyright">©2015 Andrew Albers. All rights reserved</div>
     </body>
 </html>

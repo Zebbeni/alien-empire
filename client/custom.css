@@ -65,6 +65,17 @@
 	margin-top: -400px;
 }
 
+#staging-div {
+	position: fixed;
+	top: 200px;
+	left: 50%;
+	width: 800px;
+	height: 600px;
+	margin-left: -400px;
+	margin-top: -300px;
+	background: rgba(131, 203, 180, .58);
+}
+
 #screen-div {
 	position: fixed;
 	padding: 0;
@@ -83,13 +94,20 @@
 	background: rgba(131, 203, 180, .38);
 }
 
-#messages-div, #users-scroll, #games-list-div {
+#messages-div, #users-scroll, #games-list-div, #staging-inner-div {
 	position: relative;
 	padding: 10px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	background: rgba(0, 0, 0, .38);
 }
+
+#staging-inner-div {
+	margin: 10px;
+	height: 580px;
+	width: 780px;
+}
+
 
 #games-list-div {
 	position: relative;
@@ -132,10 +150,6 @@
 .msg-self-td, .msg-user-td {
 	text-align: right;
 }
-
-/*.msg-self-td, .msg-user-td, .msg-content-td {
-	line-height: 99%;
-}*/
 
 .msg-content-td, .msg-user-td {
 	color: rgb(131, 203, 180);
