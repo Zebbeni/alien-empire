@@ -1,6 +1,6 @@
 "use strict";
 
-var debug=require('debug')('app');
+// var debug=require('debug')('app');
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/client'));
