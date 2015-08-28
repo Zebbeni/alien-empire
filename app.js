@@ -65,7 +65,6 @@ io.sockets.on('connection', function(socket) {
         var username = socket.name;
         fn('true');
 
-        // delete(users[socket.userid]); // old way
         users[socket.userid].status = 0; // 0: OFFLINE
 
         socket.emit('leave lobby', function(data){

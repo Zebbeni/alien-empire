@@ -178,6 +178,12 @@ var submitMessage = function() {
     socket_sendMessage(msg);
 };
 
+var submitStagingMessage = function() {
+    var msg = document.getElementById('staging-chat-input').value;
+    document.getElementById('staging-chat-input').value = '';
+    socket_sendStagingMessage(msg);
+};
+
 var submitNewGame = function() {
     socket_createGame();
 };
@@ -186,7 +192,21 @@ var joinGame = function(gameId) {
     socket_joinGame(gameId);
 };
 
-//socket event emitting handlers
+var submitStagingReady = function(){
+    socket_readyStaging();
+};
+
+var submitStagingLeave = function(){
+    socket_leaveStaging();
+};
+
+var submitStagingMessage = function() {
+    var msg = document.getElementById('staging-chat-input').value;
+    document.getElementById('staging-chat-input').value = '';
+    socket_sendMessageStaging(msg);
+};
+
+// socket event emitting handlers
 var socket_login = function(name) {
     socket.emit('login', name, function(data){
         console.log('received login: ', data);
@@ -213,4 +233,19 @@ var socket_joinGame = function(gameId) {
     socket.emit('join game', gameId, function(data){
         console.log('joined game: ', data)
     });
+};
+
+var socket_sendMessageStaging = function(msg) {
+    console.log('you typed', msg);
+    //emit socket message here
+};
+
+var socket_readyStaging = function() {
+    //emit socket message here
+    console.log('you are ready for the game!');
+};
+
+var socket_leaveStaging = function() {
+    //emit socket message here
+    console.log('you are leaving staging area');
 };

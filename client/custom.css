@@ -94,7 +94,7 @@
 	background: rgba(131, 203, 180, .38);
 }
 
-#messages-div, #users-scroll, #games-list-div, #staging-inner-div {
+#messages-div, #users-scroll, #games-list-div, #staging-inner-div, #staging-messages-div {
 	position: relative;
 	padding: 10px;
 	overflow-y: auto;
@@ -107,7 +107,6 @@
 	height: 580px;
 	width: 780px;
 }
-
 
 #games-list-div {
 	position: relative;
@@ -129,11 +128,43 @@
 	color: rgba(131, 203, 180, 1);
 }
 
-#messages-div{
+#staging-leave-button {
+	position: absolute;
+	right: 10px;
+	width: 150px;
+	height: 60px;
+	bottom: 10px;
+	background: rgba( 200, 140, 100, 0.8);
+}
+
+#staging-ready-button {
+	position: absolute;
+	right: 170px;
+	width: 290px;
+	height: 60px;
+	bottom: 10px;
+	background: rgba( 100, 250, 100, 0.8);
+}
+
+#messages-div {
 	width: 94%;
 	left: 3%;
 	height: 600px;
 	top: 1.3%;
+}
+
+#staging-messages-div {
+	width: 300px;
+	height: 470px;
+}
+
+#staging-users-div {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	width: 450px;
+	height: 100px;
+	background: rgba(0, 0, 0, 0.5);
 }
 
 .msg-server-td, .msg-self-td, .msg-user-td, .msg-content-td {
@@ -198,7 +229,17 @@
 	color: black;
 }
 
-#chat-input:hover{
+#staging-chat-input {
+	position: relative;
+	width: 300px;
+	height: 80px;
+	top: 10px;
+	overflow-y: scroll;
+	background: rgba(255,255,255,.8);
+	color: black;
+}
+
+#chat-input:hover, #staging-chat-input:hover{
 	background: white;
 }
 
@@ -223,7 +264,7 @@ td, div, input {
 }
 
 form {
-	height: 100%;
+/*	height: 100%;*/
 	width: 100%;
 }
 
