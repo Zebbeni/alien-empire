@@ -6,6 +6,7 @@ var stageLogin = null;
 var stageLobby = null;
 var clientId = null;
 var clientName = null;
+var clientGame = null;
 
 socket.on('connect', function() {
     console.log('connected');
@@ -41,12 +42,25 @@ socket.on('new game added', function(games) {
 });
 
 socket.on('self joined game', function(game) {
-    updateGameStage(game);
+    clientGame = game;
+    updateGameStage();
 });
 
 socket.on('user joined game', function(games) {
     updateLobby(false, false, games);
 });
+
+// socket.on('self left game staging', function() {
+// });
+
+// socket.on('user left game staging', function(gameid, players) {
+//     clientGame.players = players;
+//     updateGameStage();
+// });
+
+// socket.on('user to lobby from staging', function(gameid, players) {
+    
+// });
 
 //ADDED FOR EASEL STUFF
 
@@ -149,7 +163,7 @@ var updateLobby = function(users, messages, games) {
     }
 };
 
-var updateGameStage = function(game) {
+var updateGameStage = function() {
     document.getElementById('screen-div').style.visibility = "visible";
     document.getElementById('staging-div').style.visibility = "visible";
     $("#staging-div").animate({top: '400px'}, 500);
@@ -246,6 +260,6 @@ var socket_readyStaging = function() {
 };
 
 var socket_leaveStaging = function() {
-    //emit socket message here
+    // socket.emit('leave game staging', clientGame.gameid);
     console.log('you are leaving staging area');
 };

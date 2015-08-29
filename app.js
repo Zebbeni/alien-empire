@@ -97,6 +97,7 @@ io.sockets.on('connection', function(socket) {
 
         var roomId = 'game' + games.length;
         var game = {
+                        gameid: games.length,
                         status: "staging",
                         players: [socket.userid],
                         room: roomId
@@ -127,6 +128,7 @@ io.sockets.on('connection', function(socket) {
             game.players.push(socket.userid);
 
             socket.emit('self joined game', game);
+            // TODO: [EFFICIENCY] don't send all game objects every time
             socket.broadcast.to('lobby').emit('user joined game', games);
             fn('true');
         }
@@ -135,11 +137,27 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
+    // socket.on('leave game staging', function(gameid) {
+    //     var game = games[gameid];
+    //     var index = game.players.indexOf(socket.userid);
+    //     if (index != -1) {
+    //         game.players.splice(index, 1);
+    //     }
+
+    //     socket.leave(game.room);
+    //     socket.join('lobby');
+
+    //     socket.emit('self left game staging', game, users);
+    //     socket.broadcast.to('lobby').emit('user to lobby from staging', game.gameid, game.players);
+    //     socket.broadcast.to(game.room).emit('user left game staging', game.gameid, game.players);
+    // });
+
     socket.on('disconnect', function(){
 
         // broadcast and update status if user hasn't already logged out
 
         if (users[socket.userid].status != 0){
+
             var username = socket.name;
             users[socket.userid].status = 0; // 0: OFFLINE
 
