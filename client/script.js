@@ -7,63 +7,7 @@ var stageLobby = null;
 var clientId = null;
 var clientName = null;
 var clientGame = null;
-
-socket.on('connect', function() {
-    console.log('connected');
-});
-
-socket.on('login success', function(users, userid, username, messages, games, fn) {
-    fn('client entered lobby');
-    clientId = userid;
-    clientName = username;
-    moveToLobby();
-    updateLobby(users, messages, games);
-});
-
-socket.on('leave lobby', function(fn) {
-    fn('client has left lobby');
-    leaveLobby();
-});
-
-socket.on('user login', function(users, messages) {
-    updateLobby(users, messages, false);
-});
-
-socket.on('user logout', function(users, messages) {
-    updateLobby(users, messages, false);
-});
-
-socket.on('new chat message', function(messages) {
-    updateLobby(false, messages, false);
-});
-
-socket.on('new game added', function(games) {
-    updateLobby(false, false, games);
-});
-
-socket.on('self joined game', function(game) {
-    clientGame = game;
-    updateGameStage();
-});
-
-socket.on('user joined game', function(games) {
-    updateLobby(false, false, games);
-});
-
-// socket.on('self left game staging', function() {
-// });
-
-// socket.on('user left game staging', function(gameid, players) {
-//     clientGame.players = players;
-//     updateGameStage();
-// });
-
-// socket.on('user to lobby from staging', function(gameid, players) {
-    
-// });
-
 //ADDED FOR EASEL STUFF
-
 var stage = null;
 
 //TODO: Create game stages, set their visibilities to hidden
@@ -134,7 +78,7 @@ var displayGames = function() {
             gamesHtml += all_users[players[p]].name + '  ';
         }
 
-        gamesHtml += '" onclick="javascript:joinGame(' + g + ')"></input>';
+        gamesHtml += '" onclick="javascript:submitJoinGame(' + g + ')"></input>';
     }
     document.getElementById('games-list-div').innerHTML = gamesHtml;
 };
@@ -167,99 +111,4 @@ var updateGameStage = function() {
     document.getElementById('screen-div').style.visibility = "visible";
     document.getElementById('staging-div').style.visibility = "visible";
     $("#staging-div").animate({top: '400px'}, 500);
-};
-
-//javascript functions called from HTML elements
-var leaveLobby = function() {
-    document.getElementById('login-div').style.visibility = "visible";
-    document.getElementById('lobby-div').style.visibility = "hidden";
-    document.getElementById('logout-button').style.visibility = "hidden";
-};
-
-var submitLogin = function() {
-    var name = document.getElementById('input-username').value;
-    socket_login(name);
-};
-
-var submitLogout = function() {
-    console.log("Attempting to logout");
-    socket_logout();
-};
-
-var submitMessage = function() {
-    var msg = document.getElementById('chat-input').value;
-    document.getElementById('chat-input').value = '';
-    socket_sendMessage(msg);
-};
-
-var submitStagingMessage = function() {
-    var msg = document.getElementById('staging-chat-input').value;
-    document.getElementById('staging-chat-input').value = '';
-    socket_sendStagingMessage(msg);
-};
-
-var submitNewGame = function() {
-    socket_createGame();
-};
-
-var joinGame = function(gameId) {
-    socket_joinGame(gameId);
-};
-
-var submitStagingReady = function(){
-    socket_readyStaging();
-};
-
-var submitStagingLeave = function(){
-    socket_leaveStaging();
-};
-
-var submitStagingMessage = function() {
-    var msg = document.getElementById('staging-chat-input').value;
-    document.getElementById('staging-chat-input').value = '';
-    socket_sendMessageStaging(msg);
-};
-
-// socket event emitting handlers
-var socket_login = function(name) {
-    socket.emit('login', name, function(data){
-        console.log('received login: ', data);
-    });
-};
-
-var socket_logout = function() {
-    socket.emit('logout', function(data){
-        console.log('received logout: ', data);
-    });
-};
-
-var socket_sendMessage = function(msg) {
-    socket.emit('send chat message', msg, function(data){
-        console.log('received chat message: ', data);
-    });
-};
-
-var socket_createGame = function() {
-    socket.emit('create game', 'lobby');
-};
-
-var socket_joinGame = function(gameId) {
-    socket.emit('join game', gameId, function(data){
-        console.log('joined game: ', data)
-    });
-};
-
-var socket_sendMessageStaging = function(msg) {
-    console.log('you typed', msg);
-    //emit socket message here
-};
-
-var socket_readyStaging = function() {
-    //emit socket message here
-    console.log('you are ready for the game!');
-};
-
-var socket_leaveStaging = function() {
-    // socket.emit('leave game staging', clientGame.gameid);
-    console.log('you are leaving staging area');
 };
