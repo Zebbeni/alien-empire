@@ -2,12 +2,13 @@ socket.on('connect', function() {
     console.log('connected');
 });
 
-socket.on('login success', function(users, userid, username, messages, games, fn) {
+// Get starting arrays of users, messages, and games. Draw lobby
+socket.on('login success', function(users, userid, username, newMsg, games, fn) {
     fn('client entered lobby');
     clientId = userid;
     clientName = username;
     moveToLobby();
-    updateLobby(users, messages, games);
+    updateLobby(users, newMsg, games);
 });
 
 socket.on('leave lobby', function(fn) {
@@ -15,16 +16,16 @@ socket.on('leave lobby', function(fn) {
     leaveLobby();
 });
 
-socket.on('user login', function(users, messages) {
-    updateLobby(users, messages, false);
+socket.on('user login', function(users, newMsg) {
+    updateLobby(users, newMsg, false);
 });
 
-socket.on('user logout', function(users, messages) {
-    updateLobby(users, messages, false);
+socket.on('user logout', function(users, newMsg) {
+    updateLobby(users, newMsg, false);
 });
 
-socket.on('new chat message', function(messages) {
-    updateLobby(false, messages, false);
+socket.on('new chat message', function(newMsg) {
+    updateLobby(false, newMsg, false);
 });
 
 socket.on('new game added', function(games) {

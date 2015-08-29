@@ -22,9 +22,8 @@ io.sockets.on('connection', function(socket) {
 
         var is_existing_user = false;
 
+        // If a user name already exists update that users' status to ONLINE
         for (var u = 0; u < users.length; u++) {
-            // If user name already exists in users, update that users' status to ONLINE
-            // (we should REALLY have a password for this)
             if (users[u].name == socket.name) {
 
                 socket.userid = u;
@@ -36,29 +35,35 @@ io.sockets.on('connection', function(socket) {
             }
         }
 
+        // Otherwise create a new one and increment num_users
         if (!is_existing_user) {
-            // Otherwise, if no user found with that name, create a new one and increment num_users
             
             socket.userid = users.length;
 
             users.push(
                 {
                     name: socket.name,
-                    status: 1 // 0: OFFLINE, 1: ONLINE, 2: INGAME (make these constants)
+                    status: 1 // 0: OFFLINE, 1: ONLINE, 2: INGAME
                 });
         }
 
-        messages.push(
-            {
-                id: -1, // -1 indicates a server message
-                message: name + " joined the room"
-            });
+        // index of latest message at time of login
+        socket.loginMsgIndex = messages.length;
 
-        socket.emit('login success', users, socket.userid, socket.name, messages, games, function(data){
-            // debug(data);
-        });
+        var newMsg = {
+                        id: -1, // -1 indicates a server message
+                        message: name + " joined the room"
+                    };
 
-        socket.broadcast.to('lobby').emit('user login', users, messages);
+        messages.push( newMsg );
+
+        socket.emit('login success', users, socket.userid, socket.name, 
+                        newMsg, games, function(data) { 
+                                                // debug(data); 
+                                            }
+        );
+
+        socket.broadcast.to('lobby').emit('user login', users, newMsg);
     });
 
     socket.on('logout', function(fn){
@@ -71,26 +76,29 @@ io.sockets.on('connection', function(socket) {
             // debug(data);
         });
 
-        messages.push( 
-            {
-                id: -1, // -1 indicates a server message
-                message: username + " left the room"
-            });
-        socket.broadcast.to('lobby').emit('user logout', users, messages);
+        var newMsg = {
+                        id: -1, // -1 indicates a server message
+                        message: username + " left the room"
+                    };
+
+        messages.push( newMsg );
+        socket.broadcast.to('lobby').emit('user logout', users, newMsg);
     });
 
     socket.on('send chat message', function(msg, fn) {
         fn('true');
-        messages.push(
-            {
-                id: socket.userid,
-                message: msg
-            });
 
-        socket.emit('new chat message', messages, function(data){
+        var newMsg = {
+                        id: socket.userid,
+                        message: msg
+                    };
+
+        messages.push(newMsg);
+
+        socket.emit('new chat message', newMsg, function(data){
             // debug(data);
         });
-        socket.broadcast.to('lobby').emit('new chat message', messages);
+        socket.broadcast.to('lobby').emit('new chat message', newMsg);
     });
 
     socket.on('create game', function(current_room) {
@@ -101,7 +109,7 @@ io.sockets.on('connection', function(socket) {
                         status: "staging",
                         players: [socket.userid],
                         room: roomId
-                    }
+                    };
 
         games.push(game);
 
@@ -161,13 +169,14 @@ io.sockets.on('connection', function(socket) {
             var username = socket.name;
             users[socket.userid].status = 0; // 0: OFFLINE
 
-            messages.push( 
-                {
-                    id: -1, // -1 indicates a server message
-                    message: username + " left the room"
-                });
+            var newMsg = {
+                            id: -1, // -1 indicates a server message
+                            message: username + " left the room"
+                        };
 
-            socket.broadcast.to('lobby').emit('user logout', users, messages);
+            messages.push( newMsg );
+
+            socket.broadcast.to('lobby').emit('user logout', users, newMsg);
         }
     });
 });

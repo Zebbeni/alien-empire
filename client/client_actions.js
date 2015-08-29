@@ -13,6 +13,7 @@ var submitLogin = function() {
 
 var submitLogout = function() {
     console.log("Attempting to logout");
+    clearClientData();
     socket_logout();
 };
 
@@ -48,4 +49,11 @@ var submitStagingMessage = function() {
     var msg = document.getElementById('staging-chat-input').value;
     document.getElementById('staging-chat-input').value = '';
     socket_sendMessageStaging(msg);
+};
+
+// deletes local info so it isn't repopulated on login as a different user
+var clearClientData = function() {
+    all_users = [];
+    all_messages = [];
+    all_games = [];
 };

@@ -91,14 +91,15 @@ var moveToLobby = function() {
     $("#lobby-div").animate({top: '450px'}, 500);
 };
 
-//updates any of the main content areas of the lobby (pass in false for non-updated elements)
-var updateLobby = function(users, messages, games) {
+//updates any of the main content areas of the lobby 
+//   (pass in false for non-updated elements)
+var updateLobby = function(users, newMsg, games) {
     if (users){
         all_users = users;
         displayUsers();
     }
-    if (messages) {
-        all_messages = messages;
+    if (newMsg) {
+        all_messages.push(newMsg);
         displayMessages();
     }
     if (games) {
