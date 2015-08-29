@@ -73,14 +73,17 @@ var displayGames = function() {
     var players = null;
     for (var g = 0; g < all_games.length; g++) {
 
-        gamesHtml += '<input type="button" class="game-button" value="';
-        players = all_games[g].players;
+        if (all_games[g].status == 1) { // if game is in staging
 
-        for (var p in players) {
-            gamesHtml += all_users[players[p]].name + '  ';
+            gamesHtml += '<input type="button" class="game-button" value="';
+            players = all_games[g].players;
+
+            for (var p in players) {
+                gamesHtml += all_users[players[p]].name + '  ';
+            }
+
+            gamesHtml += '" onclick="javascript:submitJoinGame(' + g + ')"></input>';
         }
-
-        gamesHtml += '" onclick="javascript:submitJoinGame(' + g + ')"></input>';
     }
     document.getElementById('games-list-div').innerHTML = gamesHtml;
 };
@@ -93,26 +96,34 @@ var moveToLobby = function() {
     $("#lobby-div").animate({top: '450px'}, 500);
 };
 
+var initializeLobby = function(users, newMsg, games) {
+    all_users = users;
+    all_games = games;
+    all_messages.push(newMsg);
+};
+
 //updates any of the main content areas of the lobby 
 //   (pass in false for non-updated elements)
-var updateLobby = function(users, newMsg, games) {
+var updateLobby = function(users, newMsg, newGame) {
     if (users){
         all_users = users;
-        if ( status == 1 ){
-            displayUsers();
-        }
     }
     if (newMsg) {
         all_messages.push(newMsg);
-        if ( status == 1 ){
-            displayMessages();
+    }
+    if (newGame) { 
+        // check if update to an existing game
+        if (newGame.gameid < all_games.length) {
+            all_games[newGame.gameid] = newGame;
+        } // otherwise, add it
+        else {
+            all_games.push(newGame);
         }
     }
-    if (games) {
-        all_games = games;
-        if ( status == 1 ){
-            displayGames();
-        }
+    if (status == 1) {
+        displayUsers();
+        displayMessages();
+        displayGames();
     }
 };
 
@@ -121,3 +132,8 @@ var updateGameStage = function() {
     document.getElementById('staging-div').style.visibility = "visible";
     $("#staging-div").animate({top: '400px'}, 500);
 };
+
+var hideGameStage = function() {
+    document.getElementById('screen-div').style.visibility = "hidden";
+    document.getElementById('staging-div').style.visibility = "hidden";
+}

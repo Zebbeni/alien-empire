@@ -8,8 +8,9 @@ socket.on('login success', function(users, userid, username, newMsg, games, fn) 
     status = 1; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
     clientId = userid;
     clientName = username;
+    initializeLobby(users, newMsg, games);
     moveToLobby();
-    updateLobby(users, newMsg, games);
+    updateLobby(false, false, false);
 });
 
 socket.on('leave lobby', function(fn) {
@@ -43,14 +44,19 @@ socket.on('user joined game', function(games) {
     updateLobby(false, false, games);
 });
 
-// socket.on('self left game staging', function() {
-// });
+socket.on('self left game staging', function(game) {
+    status = 1;
+    clientGame = null;
+    hideGameStage();
+    all_games[ game.gameid ] = game;
+    updateLobby(false, false, game);
+});
 
-// socket.on('user left game staging', function(gameid, players) {
-//     clientGame.players = players;
-//     updateGameStage();
-// });
+socket.on('user left game', function(game) {
+    all_games[ game.gameid ] = game;
+    updateLobby(false, false, game);
+});
 
-// socket.on('user to lobby from staging', function(gameid, players) {
+// socket.on('user left staging room', function(game) {
     
 // });

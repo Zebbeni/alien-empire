@@ -7,7 +7,7 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
-var games = [];
+var gamesInfo = [];
 var users = [];
 var messages = [];
 
@@ -61,7 +61,7 @@ io.sockets.on('connection', function(socket) {
         messages.push( newMsg );
 
         socket.emit('login success', users, socket.userid, socket.name, 
-                        newMsg, games, function(data) { 
+                        newMsg, gamesInfo, function(data) { 
                                                 // debug(data); 
                                             }
         );
@@ -106,41 +106,40 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('create game', function(current_room) {
 
-        var roomId = 'game' + games.length;
-        var game = {
-                        gameid: games.length,
-                        status: "staging",
+        var roomId = 'game' + gamesInfo.length;
+        var gameInfo = {
+                        gameid: gamesInfo.length,
+                        status: 1, // 0: CLOSED, 1: STAGING: 2: INGAME
                         players: [socket.userid],
                         room: roomId
                     };
 
-        games.push(game);
+        gamesInfo.push(gameInfo);
 
         socket.leave('lobby');
         socket.join( roomId );
 
         // emit a different function to the socket who created the game
         // as they are also joining it
-        socket.emit('self joined game', games);
-        socket.broadcast.emit('new game added', games);
+        socket.emit('self joined game', gameInfo);
+        socket.broadcast.emit('new game added', gameInfo);
     });
 
     socket.on('join game', function(gameId, fn) {
 
         var current_room = 'lobby';
-        var game = games[gameId];
+        var gameInfo = gamesInfo[gameId];
 
-        if ( game.players.indexOf(socket.userid) === -1 && game.players.length < 4)
+        if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
         {
 
             socket.leave('lobby');
-            socket.join( game.room );
+            socket.join( gameInfo.room );
 
-            game.players.push(socket.userid);
+            gameInfo.players.push(socket.userid);
 
-            socket.emit('self joined game', game);
-            // TODO: [EFFICIENCY] don't send all game objects every time
-            socket.broadcast.emit('user joined game', games);
+            socket.emit('self joined game', gameInfo);
+            socket.broadcast.emit('user joined game', gameInfo);
             fn('true');
         }
         else {
@@ -148,20 +147,27 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
-    // socket.on('leave game staging', function(gameid) {
-    //     var game = games[gameid];
-    //     var index = game.players.indexOf(socket.userid);
-    //     if (index != -1) {
-    //         game.players.splice(index, 1);
-    //     }
+    socket.on('leave game staging', function(gameid) {
+        var gameInfo = gamesInfo[gameid];
+        var index = gameInfo.players.indexOf(socket.userid);
 
-    //     socket.leave(game.room);
-    //     socket.join('lobby');
+        if (index != -1) {
+            gameInfo.players.splice(index, 1);
 
-    //     socket.emit('self left game staging', game, users);
-    //     socket.broadcast.to('lobby').emit('user to lobby from staging', game.gameid, game.players);
-    //     socket.broadcast.to(game.room).emit('user left game staging', game.gameid, game.players);
-    // });
+            if (gameInfo.players.length == 0) {
+                gameInfo.status = 0; // 0: CLOSED, 1: STAGING: 2: INGAME
+            }
+
+            gamesInfo[gameid] = gameInfo;
+        }
+
+        socket.leave(gameInfo.room);
+        socket.join('lobby');
+
+        socket.emit('self left game staging', gameInfo);
+        socket.broadcast.emit('user left game', gameInfo);
+        // socket.broadcast.to(game.room).emit('user left staging room', game.gameid, game.players);
+    });
 
     socket.on('disconnect', function(){
 

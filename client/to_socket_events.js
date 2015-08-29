@@ -38,6 +38,6 @@ var socket_readyStaging = function() {
 };
 
 var socket_leaveStaging = function() {
-    // socket.emit('leave game staging', clientGame.gameid);
+    socket.emit('leave game staging', clientGame.gameid);
     console.log('you are leaving staging area');
 };
