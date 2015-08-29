@@ -21,6 +21,7 @@ io.sockets.on('connection', function(socket) {
         socket.name = name;
 
         var is_existing_user = false;
+        var newUser = null;
 
         // If a user name already exists update that users' status to ONLINE
         for (var u = 0; u < users.length; u++) {
@@ -28,6 +29,8 @@ io.sockets.on('connection', function(socket) {
 
                 socket.userid = u;
                 users[u].status = 1;
+
+                newUser = users[u];
 
                 is_existing_user = true;
 
@@ -37,18 +40,18 @@ io.sockets.on('connection', function(socket) {
 
         // Otherwise create a new one and increment num_users
         if (!is_existing_user) {
-            
+
             socket.userid = users.length;
 
-            users.push(
-                {
-                    name: socket.name,
-                    status: 1 // 0: OFFLINE, 1: ONLINE, 2: INGAME
-                });
-        }
+            newUser = {
+                        userid: socket.userid,
+                        name: socket.name,
+                        status: 1
+                    };
+    
+            users.push(newUser);
 
-        // index of latest message at time of login
-        socket.loginMsgIndex = messages.length;
+        }
 
         var newMsg = {
                         id: -1, // -1 indicates a server message
@@ -63,7 +66,7 @@ io.sockets.on('connection', function(socket) {
                                             }
         );
 
-        socket.broadcast.to('lobby').emit('user login', users, newMsg);
+        socket.broadcast.emit('user login', users, newMsg);
     });
 
     socket.on('logout', function(fn){
@@ -82,7 +85,7 @@ io.sockets.on('connection', function(socket) {
                     };
 
         messages.push( newMsg );
-        socket.broadcast.to('lobby').emit('user logout', users, newMsg);
+        socket.broadcast.emit('user logout', users, newMsg);
     });
 
     socket.on('send chat message', function(msg, fn) {
@@ -98,7 +101,7 @@ io.sockets.on('connection', function(socket) {
         socket.emit('new chat message', newMsg, function(data){
             // debug(data);
         });
-        socket.broadcast.to('lobby').emit('new chat message', newMsg);
+        socket.broadcast.emit('new chat message', newMsg);
     });
 
     socket.on('create game', function(current_room) {
@@ -119,7 +122,7 @@ io.sockets.on('connection', function(socket) {
         // emit a different function to the socket who created the game
         // as they are also joining it
         socket.emit('self joined game', games);
-        socket.broadcast.to('lobby').emit('new game added', games);
+        socket.broadcast.emit('new game added', games);
     });
 
     socket.on('join game', function(gameId, fn) {
@@ -137,7 +140,7 @@ io.sockets.on('connection', function(socket) {
 
             socket.emit('self joined game', game);
             // TODO: [EFFICIENCY] don't send all game objects every time
-            socket.broadcast.to('lobby').emit('user joined game', games);
+            socket.broadcast.emit('user joined game', games);
             fn('true');
         }
         else {
@@ -176,7 +179,7 @@ io.sockets.on('connection', function(socket) {
 
             messages.push( newMsg );
 
-            socket.broadcast.to('lobby').emit('user logout', users, newMsg);
+            socket.broadcast.emit('user logout', users, newMsg);
         }
     });
 });

@@ -5,6 +5,7 @@ socket.on('connect', function() {
 // Get starting arrays of users, messages, and games. Draw lobby
 socket.on('login success', function(users, userid, username, newMsg, games, fn) {
     fn('client entered lobby');
+    status = 1; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
     clientId = userid;
     clientName = username;
     moveToLobby();
@@ -16,7 +17,7 @@ socket.on('leave lobby', function(fn) {
     leaveLobby();
 });
 
-socket.on('user login', function(users, newMsg) {
+socket.on('user login', function( users, newMsg) {
     updateLobby(users, newMsg, false);
 });
 
@@ -33,6 +34,7 @@ socket.on('new game added', function(games) {
 });
 
 socket.on('self joined game', function(game) {
+    status = 2; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
     clientGame = game;
     updateGameStage();
 });

@@ -7,6 +7,8 @@ var stageLobby = null;
 var clientId = null;
 var clientName = null;
 var clientGame = null;
+var status = 0; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
+
 //ADDED FOR EASEL STUFF
 var stage = null;
 
@@ -96,15 +98,21 @@ var moveToLobby = function() {
 var updateLobby = function(users, newMsg, games) {
     if (users){
         all_users = users;
-        displayUsers();
+        if ( status == 1 ){
+            displayUsers();
+        }
     }
     if (newMsg) {
         all_messages.push(newMsg);
-        displayMessages();
+        if ( status == 1 ){
+            displayMessages();
+        }
     }
     if (games) {
         all_games = games;
-        displayGames();
+        if ( status == 1 ){
+            displayGames();
+        }
     }
 };
 
