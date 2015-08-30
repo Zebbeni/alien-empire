@@ -219,9 +219,8 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('disconnect', function(){
-
         // if user hasn't already logged out
-        if (users[socket.userid].status != 0){
+        if (socket.userid && users[socket.userid].status != 0){
 
             var username = socket.name;
             users[socket.userid].status = 0; // 0: OFFLINE
