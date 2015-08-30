@@ -62,13 +62,13 @@ var displayStagingPlayers = function() {
     for (var u = 0; u < players.length; u++){
 
         var playerid = players[u];
-        var divClass = '<div class="staging-user-list-div">';
+        var divClass = '<div class="staging-user-list-div">  ';
 
         // if user is ready, draw white
         var index = ready.indexOf(playerid);
 
         if (index != -1) {
-            divClass = '<div class="staging-user-ready-list-div">';
+            divClass = '<div class="staging-user-ready-list-div">✓ ';
         }
 
         stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
@@ -100,6 +100,7 @@ var updateMessagesHtml = function( messages, div_id ) {
         msg = messages[m]; //different
         messagesHtml += '<tr>'
 
+        // if server message, message spans both columns and is centered
         if (msg.id == -1) {
             messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
         }
