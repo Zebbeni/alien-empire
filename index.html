@@ -2,14 +2,18 @@
 <html>
     <head>
         <script src="/socket.io/socket.io.js"></script>
-        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
         <script src="script.js"></script>
+        <script src="to_socket_events.js"></script>
+        <script src="from_socket_events.js"></script>
+        <script src="client_actions.js"></script>
 
         <link rel="stylesheet" type="text/css" href="custom.css" />
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     </head>
     <body onload="init();">
+        <div id="copyright">©2015 Andrew Albers.</div>
         <div id="main-div">
             <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="login-div">
@@ -43,7 +47,19 @@
                     </tr>
                 </table>
             </div>
+            <div id="screen-div" style="visibility: hidden"></div>
+            <div id="staging-div" style="visibility: hidden">
+                <div id="staging-inner-div">
+                    <div id="staging-messages-div">
+                    </div>
+                    <form action="javascript:submitStagingMessage();">
+                        <input type="text" id="staging-chat-input" placeholder="Send a message!" autofocus></input>
+                    </form>
+                    <div id="staging-users-div"></div>
+                    <input type="button" id="staging-ready-button" value="✓" onclick="javascript:submitStagingReady();"></input>
+                    <input type="button" id="staging-leave-button" value="↩" onclick="javascript:submitStagingLeave();"></input>
+                </div>
+            </div>
         </div>
-        <div id="copyright">©2015 Andrew Albers. All rights reserved</div>
     </body>
 </html>

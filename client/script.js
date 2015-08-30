@@ -6,46 +6,10 @@ var stageLogin = null;
 var stageLobby = null;
 var clientId = null;
 var clientName = null;
-
-socket.on('connect', function() {
-    console.log('connected');
-});
-
-socket.on('login success', function(users, userid, username, messages, games, fn) {
-    fn('client entered lobby');
-    clientId = userid;
-    clientName = username;
-    moveToLobby();
-    updateLobby(users, messages, games);
-});
-
-socket.on('leave lobby', function(fn) {
-    fn('client has left lobby');
-    leaveLobby();
-});
-
-socket.on('user login', function(users, messages) {
-    updateLobby(users, messages, false);
-});
-
-socket.on('user logout', function(users, messages) {
-    updateLobby(users, messages, false);
-});
-
-socket.on('new chat message', function(messages) {
-    updateLobby(false, messages, false);
-});
-
-socket.on('new game added', function(games) {
-    updateLobby(false, false, games);
-});
-
-socket.on('user joined game', function(games) {
-    updateLobby(false, false, games);
-});
+var clientGame = null;
+var status = 0; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
 
 //ADDED FOR EASEL STUFF
-
 var stage = null;
 
 //TODO: Create game stages, set their visibilities to hidden
@@ -70,13 +34,70 @@ var displayUsers = function() {
     document.getElementById('users-scroll').innerHTML = usersScrollItems;
 };
 
+var displayGames = function() {
+    gamesHtml = '';
+    var players = null;
+    for (var g = 0; g < all_games.length; g++) {
+
+        if (all_games[g].status == 1) { // if game is in staging
+
+            gamesHtml += '<input type="button" class="game-button" value="';
+            players = all_games[g].players;
+
+            for (var p in players) {
+                gamesHtml += all_users[players[p]].name + '  ';
+            }
+
+            gamesHtml += '" onclick="javascript:submitJoinGame(' + g + ')"></input>';
+        }
+    }
+    document.getElementById('games-list-div').innerHTML = gamesHtml;
+};
+
+var displayStagingPlayers = function() {
+    var stagingPlayersHtml = '';
+    var players = clientGame.players;
+    var ready = clientGame.ready;
+
+    for (var u = 0; u < players.length; u++){
+
+        var playerid = players[u];
+        var divClass = '<div class="staging-user-list-div">';
+
+        // if user is ready, draw white
+        var index = ready.indexOf(playerid);
+
+        if (index != -1) {
+            divClass = '<div class="staging-user-ready-list-div">';
+        }
+
+        stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
+
+    }
+    document.getElementById('staging-users-div').innerHTML = stagingPlayersHtml;
+};
+
 var displayMessages = function() {
+
+    updateMessagesHtml( all_messages, "messages-div" );
+
+};
+
+var displayStagingMessages = function() {
+
+    updateMessagesHtml( clientGame.messages, "staging-messages-div");
+
+};
+
+var updateMessagesHtml = function( messages, div_id ) {
+
     var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
     var lastUserId = null;
     var msg = null;
-    for (var m = 0; m < all_messages.length; m++){
 
-        msg = all_messages[m];
+    for (var m = 0; m < messages.length; m++){ //different
+
+        msg = messages[m]; //different
         messagesHtml += '<tr>'
 
         if (msg.id == -1) {
@@ -98,27 +119,9 @@ var displayMessages = function() {
     }
     messagesHtml += '</table>'
 
-    var msgDiv = document.getElementById("messages-div");
-
+    var msgDiv = document.getElementById( div_id ); //different
     msgDiv.innerHTML = messagesHtml;
     msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
-};
-
-var displayGames = function() {
-    gamesHtml = '';
-    var players = null;
-    for (var g = 0; g < all_games.length; g++) {
-
-        gamesHtml += '<input type="button" class="game-button" value="';
-        players = all_games[g].players;
-
-        for (var p in players) {
-            gamesHtml += all_users[players[p]].name + '  ';
-        }
-
-        gamesHtml += '" onclick="javascript:joinGame(' + g + ')"></input>';
-    }
-    document.getElementById('games-list-div').innerHTML = gamesHtml;
 };
 
 //update lobby stage, make it visible, and hide login stage
@@ -129,78 +132,68 @@ var moveToLobby = function() {
     $("#lobby-div").animate({top: '450px'}, 500);
 };
 
-//updates any of the main content areas of the lobby (pass in false for non-updated elements)
-var updateLobby = function(users, messages, games) {
+var initializeLobby = function(users, newMsg, games) {
+    all_users = users;
+    all_games = games;
+    all_messages.push(newMsg);
+};
+
+//updates any of the main content areas of the lobby 
+//   (pass in false for non-updated elements)
+var updateLobby = function(users, newMsg, newGame) {
     if (users){
         all_users = users;
-        displayUsers();
     }
-    if (messages) {
-        all_messages = messages;
-        displayMessages();
+    if (newMsg) {
+        all_messages.push(newMsg);
     }
-    if (games) {
-        all_games = games;
-        displayGames();
+    if (newGame) { 
+        // check if update to an existing game
+        if (newGame.gameid < all_games.length) {
+            all_games[newGame.gameid] = newGame;
+        } // otherwise, add it
+        else {
+            all_games.push(newGame);
+        }
     }
+    displayLobby();
 };
 
-//javascript functions called from HTML elements
-var leaveLobby = function() {
-    document.getElementById('login-div').style.visibility = "visible";
-    document.getElementById('lobby-div').style.visibility = "hidden";
-    document.getElementById('logout-button').style.visibility = "hidden";
+var displayLobby = function() {
+    displayUsers();
+    displayMessages();
+    displayGames();
 };
 
-var submitLogin = function() {
-    var name = document.getElementById('input-username').value;
-    socket_login(name);
+var initializeGameStage = function(game) {
+    clientGame = game;
 };
 
-var submitLogout = function() {
-    console.log("Attempting to logout");
-    socket_logout();
+var updateGameStage = function(users, newMsg, ready) {
+    if (users) {
+        clientGame.players = users;
+    }
+    if (newMsg) {
+        clientGame.messages.push(newMsg);
+    }
+    if (ready) {
+        clientGame.ready = ready;
+    }
+    displayGameStage();
 };
 
-var submitMessage = function() {
-    var msg = document.getElementById('chat-input').value;
-    document.getElementById('chat-input').value = '';
-    socket_sendMessage(msg);
+var displayGameStage = function() {
+    displayStagingPlayers();
+    displayStagingMessages();
 };
 
-var submitNewGame = function() {
-    socket_createGame();
+var moveToGameStage = function() {
+    document.getElementById('screen-div').style.visibility = "visible";
+    document.getElementById('staging-div').style.visibility = "visible";
+    $("#staging-div").animate({top: '400px'}, 500);
 };
 
-var joinGame = function(gameId) {
-    socket_joinGame(gameId);
-};
-
-//socket event emitting handlers
-var socket_login = function(name) {
-    socket.emit('login', name, function(data){
-        console.log('received login: ', data);
-    });
-};
-
-var socket_logout = function() {
-    socket.emit('logout', function(data){
-        console.log('received logout: ', data);
-    });
-};
-
-var socket_sendMessage = function(msg) {
-    socket.emit('send chat message', msg, function(data){
-        console.log('received chat message: ', data);
-    });
-};
-
-var socket_createGame = function() {
-    socket.emit('create game', 'lobby');
-};
-
-var socket_joinGame = function(gameId) {
-    socket.emit('join game', gameId, function(data){
-        console.log('joined game: ', data)
-    });
-};
+var hideGameStage = function() {
+    document.getElementById('screen-div').style.visibility = "hidden";
+    document.getElementById('staging-div').style.visibility = "hidden";
+}

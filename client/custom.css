@@ -2,6 +2,34 @@
 	border: none;
 	font-size: 11pt;
 	color: rgba(255, 255, 255, .8);
+	outline: none;
+}
+
+html {
+	background: url(images/space_background.jpg) no-repeat center center fixed;
+	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+}
+
+td, div, input {
+	border-radius: 10px;
+	word-wrap:break-word;
+}
+
+form {
+/*	height: 100%;*/
+	width: 100%;
+}
+
+table {
+	position:relative;
+	table-layout: fixed;
+	width:100%;
+	height:100%;
+	background-color: #f3f3f3;
+	border-collapse: collapse;
 }
 
 #text-title-div {
@@ -37,12 +65,12 @@
 	height: 50px;
 	margin: 10px;
 	padding: 5px;
-	background: rgba(131, 203, 180, .8);
+	background: rgba(127, 233, 243, .8);
 	color: black;
 }
 
 #create-game-button:hover{
-	background: rgba(131, 203, 180, 1);
+	background: rgba(127, 233, 243, 1);
 }
 
 #main-div {
@@ -65,18 +93,47 @@
 	margin-top: -400px;
 }
 
+#staging-div {
+	position: fixed;
+	top: 350px;
+	left: 50%;
+	width: 500px;
+	height: 600px;
+	margin-left: -250px;
+	margin-top: -300px;
+	background: rgba(131, 203, 180, .58);
+}
+
+#screen-div {
+	position: fixed;
+	padding: 0;
+	margin: 0;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 0px;
+	background: rgba(0, 0, 0, .8);
+}
+
 #users-div, #chat-div, #games-div {
 	margin: 5px;
 	height: 100%;
 	background: rgba(131, 203, 180, .38);
 }
 
-#messages-div, #users-scroll, #games-list-div {
+#messages-div, #users-scroll, #games-list-div, #staging-inner-div, #staging-messages-div {
 	position: relative;
 	padding: 10px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	background: rgba(0, 0, 0, .38);
+	background: rgba(0, 0, 0, .5);
+}
+
+#staging-inner-div {
+	margin: 10px;
+	height: 580px;
+	width: 480px;
 }
 
 #games-list-div {
@@ -99,11 +156,61 @@
 	color: rgba(131, 203, 180, 1);
 }
 
-#messages-div{
+#staging-leave-button {
+	position: absolute;
+	right: 10px;
+	width: 150px;
+	height: 60px;
+	bottom: 10px;
+	font-size: 30pt;
+	color: black;
+	background: rgba( 231, 191, 95, .8);
+}
+
+#staging-leave-button:hover {
+	background: rgba(231, 191, 95, 1);
+}
+
+#staging-ready-button {
+	position: absolute;
+	right: 10px;
+	width: 150px;
+	height: 375px;
+	bottom: 80px;
+	font-size: 30pt;
+	color: black;
+	background: rgba(127, 233, 243, .8);
+}
+
+#staging-ready-button:hover {
+	background: rgba(127, 233, 243, 1);
+}
+
+#staging-ready-button:hover {
+	background: rgba(127, 233, 243, 1);
+}
+
+#messages-div {
 	width: 94%;
 	left: 3%;
 	height: 600px;
 	top: 1.3%;
+}
+
+#staging-messages-div {
+	width: 300px;
+	height: 470px;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+#staging-users-div {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	width: 150px;
+	height: 105px;
+	padding: 10px;
+	background: rgba(0, 0, 0, 0.5);
 }
 
 .msg-server-td, .msg-self-td, .msg-user-td, .msg-content-td {
@@ -121,10 +228,6 @@
 	text-align: right;
 }
 
-/*.msg-self-td, .msg-user-td, .msg-content-td {
-	line-height: 99%;
-}*/
-
 .msg-content-td, .msg-user-td {
 	color: rgb(131, 203, 180);
 }
@@ -141,11 +244,27 @@
 	width: 70%;
 }
 
-.user-list-div, .self-list-div {
+.user-list-div, .self-list-div, .staging-user-list-div, .staging-user-ready-list-div {
+	overflow: hidden;
+	height: 22px;
+	border-radius: 0px;
 	font-weight: bold;
 }
 
+.staging-user-list-div, .staging-user-ready-list-div {
+	width: 130px;
+}
+
+.staging-user-list-div {
+	color: rgb(131, 203, 180); 
+}
+
+.staging-user-ready-list-div {
+	color: rgb(127, 233, 243);
+}
+
 .user-list-div {
+	width: 200px;
 	color: rgb(131, 203, 180); 
 }
 
@@ -168,11 +287,21 @@
 	top: 18px;
 	padding: 5px;
 	overflow-y: scroll;
-	background: rgba(255,255,255,.8);
+	background: rgba(255,255,255,.9);
 	color: black;
 }
 
-#chat-input:hover{
+#staging-chat-input {
+	position: relative;
+	width: 300px;
+	height: 80px;
+	top: 10px;
+	overflow-y: scroll;
+	background: rgba(255,255,255,.9);
+	color: black;
+}
+
+#chat-input:hover, #staging-chat-input:hover{
 	background: white;
 }
 
@@ -181,33 +310,6 @@
 	border-radius: 5px;
 	padding: 5px;
 	background: rgba(131, 203, 180, .38);
-}
-
-html {
-	background: url(images/space_background.jpg) no-repeat center center fixed;
-	-webkit-background-size: cover;
-  	-moz-background-size: cover;
-  	-o-background-size: cover;
-  	background-size: cover;
-}
-
-td, div, input {
-	border-radius: 10px;
-	word-wrap:break-word;
-}
-
-form {
-	height: 100%;
-	width: 100%;
-}
-
-table {
-	position:relative;
-	table-layout: fixed;
-	width:100%;
-	height:100%;
-	background-color: #f3f3f3;
-	border-collapse: collapse;
 }
 
 #copyright {
