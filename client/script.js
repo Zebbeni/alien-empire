@@ -34,40 +34,6 @@ var displayUsers = function() {
     document.getElementById('users-scroll').innerHTML = usersScrollItems;
 };
 
-var displayMessages = function() {
-    var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
-    var lastUserId = null;
-    var msg = null;
-    for (var m = 0; m < all_messages.length; m++){
-
-        msg = all_messages[m];
-        messagesHtml += '<tr>'
-
-        if (msg.id == -1) {
-            messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
-        }
-        else {
-            messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td">' : '<td class="msg-user-td">' );
-
-            if (msg.id != lastUserId) { // Only display user name if it's a different user talking
-               messagesHtml += all_users[msg.id].name;
-            }
-
-            messagesHtml += '</td><td class="msg-content-td';
-            messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + msg.message + '</td>';
-        }
-        messagesHtml += '</tr>'
-
-        lastUserId = msg.id;
-    }
-    messagesHtml += '</table>'
-
-    var msgDiv = document.getElementById("messages-div");
-
-    msgDiv.innerHTML = messagesHtml;
-    msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
-};
-
 var displayGames = function() {
     gamesHtml = '';
     var players = null;
@@ -101,17 +67,27 @@ var displayStagingPlayers = function() {
     document.getElementById('staging-users-div').innerHTML = stagingPlayersHtml;
 };
 
+var displayMessages = function() {
+
+    updateMessagesHtml( all_messages, "messages-div" );
+
+};
+
 var displayStagingMessages = function() {
+
+    updateMessagesHtml( clientGame.messages, "staging-messages-div");
+
+};
+
+var updateMessagesHtml = function( messages, div_id ) {
+    
     var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
     var lastUserId = null;
     var msg = null;
 
-    console.log('displaying staging messages.');
-    console.log('clientGame:', clientGame);
+    for (var m = 0; m < messages.length; m++){ //different
 
-    for (var m = 0; m < clientGame.messages.length; m++){ //different
-
-        msg = clientGame.messages[m]; //different
+        msg = messages[m]; //different
         messagesHtml += '<tr>'
 
         if (msg.id == -1) {
@@ -133,8 +109,7 @@ var displayStagingMessages = function() {
     }
     messagesHtml += '</table>'
 
-    var msgDiv = document.getElementById("staging-messages-div"); //different
-
+    var msgDiv = document.getElementById( div_id ); //different
     msgDiv.innerHTML = messagesHtml;
     msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
 };
