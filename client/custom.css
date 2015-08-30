@@ -175,11 +175,12 @@ table {
 	height: 375px;
 	bottom: 80px;
 	color: black;
-	background: rgba(131, 203, 180, .8);
+	background: rgba(77, 183, 193, .8);
+	/*background: rgba(131, 203, 180, .8);*/
 }
 
 #staging-ready-button:hover {
-	background: rgba(131, 203, 180, 1);
+	background: rgba(127, 233, 243, 1);
 }
 
 #messages-div {
@@ -235,16 +236,23 @@ table {
 	width: 70%;
 }
 
-.user-list-div, .self-list-div, .staging-user-list-div {
+.user-list-div, .self-list-div, .staging-user-list-div, .staging-user-ready-list-div {
 	overflow: hidden;
 	height: 22px;
 	border-radius: 0px;
 	font-weight: bold;
 }
 
-.staging-user-list-div {
+.staging-user-list-div, .staging-user-ready-list-div {
 	width: 130px;
+}
+
+.staging-user-list-div {
 	color: rgb(131, 203, 180); 
+}
+
+.staging-user-ready-list-div {
+	color: rgb(77, 183, 193);
 }
 
 .user-list-div {

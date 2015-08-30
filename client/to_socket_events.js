@@ -18,7 +18,7 @@ var socket_sendMessage = function(msg) {
 };
 
 var socket_createGame = function() {
-    socket.emit('create game', 'lobby');
+    socket.emit('create game');
 };
 
 var socket_joinGame = function(gameId) {
@@ -34,8 +34,9 @@ var socket_sendStagingMessage = function(msg) {
 };
 
 var socket_readyStaging = function() {
-    //emit socket message here
-    console.log('you are ready for the game!');
+    socket.emit('ready game staging', function(data) {
+        console.log('recieved ready notification', data);
+    });
 };
 
 var socket_leaveStaging = function() {

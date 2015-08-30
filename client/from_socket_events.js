@@ -43,7 +43,7 @@ socket.on('self joined game', function(game) {
     status = 2; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
     updateLobby(false, false, game);
     initializeGameStage(game);
-    updateGameStage(false, false);
+    updateGameStage(false, false, false);
     moveToGameStage();
 });
 
@@ -53,7 +53,12 @@ socket.on('user joined game', function(game) {
 
 // This should only get sent to users in the correct staging room.
 socket.on('room user joined staging', function(players, newMsg) {
-    updateGameStage(players, newMsg);
+    updateGameStage(players, newMsg, false);
+});
+
+socket.on('room user ready staging', function(ready) {
+    updateGameStage(false, false, ready);
+    console.log('got ready event. clientGame.ready:', clientGame.ready);
 });
 
 socket.on('self left game staging', function(game) {
@@ -65,8 +70,8 @@ socket.on('self left game staging', function(game) {
 });
 
 // This should only get sent to users in the correct staging room.
-socket.on('room user left staging', function(players, newMsg) {
-    updateGameStage(players, newMsg);
+socket.on('room user left staging', function(players, newMsg, ready) {
+    updateGameStage(players, newMsg, ready);
 });
 
 socket.on('user left game', function(game) {

@@ -57,11 +57,21 @@ var displayGames = function() {
 var displayStagingPlayers = function() {
     var stagingPlayersHtml = '';
     var players = clientGame.players;
+    var ready = clientGame.ready;
 
     for (var u = 0; u < players.length; u++){
 
         var playerid = players[u];
-        stagingPlayersHtml += '<div class="staging-user-list-div">' + all_users[playerid].name + '</div>';
+        var divClass = '<div class="staging-user-list-div">';
+
+        // if user is ready, draw white
+        var index = ready.indexOf(playerid);
+
+        if (index != -1) {
+            divClass = '<div class="staging-user-ready-list-div">';
+        }
+
+        stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
 
     }
     document.getElementById('staging-users-div').innerHTML = stagingPlayersHtml;
@@ -80,7 +90,7 @@ var displayStagingMessages = function() {
 };
 
 var updateMessagesHtml = function( messages, div_id ) {
-    
+
     var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
     var lastUserId = null;
     var msg = null;
@@ -159,12 +169,15 @@ var initializeGameStage = function(game) {
     clientGame = game;
 };
 
-var updateGameStage = function(users, newMsg) {
+var updateGameStage = function(users, newMsg, ready) {
     if (users) {
         clientGame.players = users;
     }
     if (newMsg) {
         clientGame.messages.push(newMsg);
+    }
+    if (ready) {
+        clientGame.ready = ready;
     }
     displayGameStage();
 };

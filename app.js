@@ -121,13 +121,14 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.to(gameInfo.room).emit('room new staging message', newMsg);
     });
 
-    socket.on('create game', function(current_room) {
+    socket.on('create game', function() {
 
         var roomId = 'game' + gamesInfo.length;
         var gameInfo = {
                         gameid: gamesInfo.length,
                         status: 1, // 0: CLOSED, 1: STAGING: 2: INGAME
                         players: [],
+                        ready: [],
                         room: roomId,
                         messages: []
                     };
@@ -177,10 +178,24 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
+    socket.on('ready game staging', function(fn) {
+        var gameid = users[socket.userid].gameid;
+        var returnValue = addPlayerToReady(gameid, socket.userid);
+
+        fn(returnValue);
+
+        socket.emit('room user ready staging', gamesInfo[gameid].ready);
+        socket.broadcast.to(gamesInfo[gameid].room).emit(
+                                            'room user ready staging', 
+                                            gamesInfo[gameid].ready );
+    });
+
     socket.on('leave game staging', function(gameid) {
         var gameInfo = gamesInfo[gameid];
 
         removeUserFromGame(gameInfo, socket.userid);
+
+        removePlayerFromReady(gameid, socket.userid);
 
         socket.leave(gameInfo.room);
         socket.join('lobby');
@@ -195,14 +210,17 @@ io.sockets.on('connection', function(socket) {
         gamesInfo[gameid].messages.push(newMsg);
 
         socket.emit('self left game staging', gameInfo);
-        socket.broadcast.to(gameInfo.room).emit('room user left staging', gameInfo.players, newMsg);
+        socket.broadcast.to(gameInfo.room).emit(
+                                            'room user left staging',
+                                            gamesInfo[gameid].players, 
+                                            newMsg, 
+                                            gamesInfo[gameid].ready);
         socket.broadcast.emit('user left game', gameInfo);
     });
 
     socket.on('disconnect', function(){
 
-        // broadcast and update status if user hasn't already logged out
-
+        // if user hasn't already logged out
         if (users[socket.userid].status != 0){
 
             var username = socket.name;
@@ -216,7 +234,7 @@ io.sockets.on('connection', function(socket) {
             messages.push( newMsg );
             socket.broadcast.emit('user logout', users, newMsg);
 
-            // extra work to do if user was in a game
+            // extra loose ends to tie up if user was in a game
             var gameid = users[socket.userid].gameid
             
             if ( gameid != null ) {
@@ -226,9 +244,23 @@ io.sockets.on('connection', function(socket) {
                 if (gameInfo.status == 1) {
 
                     removeUserFromGame(gameInfo, socket.userid);
+                    removePlayerFromReady(gameid, socket.userid);
+
+                    newMsg = {
+                        id: -1, // -1 indicates a server message
+                        message: username + " left the game"
+                    };
+
+                    gamesInfo[gameid].messages.push(newMsg);
+
+                    gameInfo = gamesInfo[gameid];
 
                     socket.emit('self left game staging', gameInfo);
-                    socket.broadcast.to(gameInfo.room).emit('room user left staging', gameInfo);
+                    socket.broadcast.to(gameInfo.room).emit(
+                                                'room user left staging', 
+                                                gameInfo.players, 
+                                                newMsg, 
+                                                gameInfo.ready);
                     socket.broadcast.emit('user left game', gameInfo);
                 }
 
@@ -254,6 +286,18 @@ var addUserToGame = function(gameInfo, userid) {
     gamesInfo[gameid] = gameInfo;
 };
 
+var addPlayerToReady = function(gameid, userid) {
+
+    var gameInfo = gamesInfo[gameid];
+    var index = gameInfo.ready.indexOf(userid);
+
+    if ( index == -1 ){
+        gamesInfo[gameid].ready.push(userid);
+        return true;
+    }
+    return false;
+};
+
 var removeUserFromGame = function(gameInfo, userid) {
     var gameid = gameInfo.gameid;
     var index = gameInfo.players.indexOf(userid);
@@ -269,6 +313,15 @@ var removeUserFromGame = function(gameInfo, userid) {
         gamesInfo[gameid] = gameInfo;
     }
     users[userid].gameid = null;
+};
+
+var removePlayerFromReady = function(gameid, userid) {
+    var gameInfo = gamesInfo[gameid];
+    var index = gameInfo.ready.indexOf(userid);
+
+    if ( index != -1 ) {
+        gamesInfo[gameid].ready.splice(index, 1);
+    }
 };
 
 // [START hello_world]
