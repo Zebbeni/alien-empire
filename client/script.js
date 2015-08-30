@@ -88,6 +88,23 @@ var displayGames = function() {
     document.getElementById('games-list-div').innerHTML = gamesHtml;
 };
 
+var displayStagingPlayers = function() {
+    var stagingPlayersHtml = '';
+    var players = clientGame.players;
+
+    for (var u = 0; u < players.length; u++){
+
+        var playerid = players[u];
+        stagingPlayersHtml += '<div class="staging-user-list-div">' + all_users[playerid].name + '</div>';
+
+    }
+    document.getElementById('staging-users-div').innerHTML = stagingPlayersHtml;
+};
+
+var displayStagingMessages = function() {
+    console.log('this is when we would display staging messages');
+};
+
 //update lobby stage, make it visible, and hide login stage
 var moveToLobby = function() {
     document.getElementById('login-div').style.visibility = "hidden";
@@ -120,14 +137,26 @@ var updateLobby = function(users, newMsg, newGame) {
             all_games.push(newGame);
         }
     }
-    if (status == 1) {
-        displayUsers();
-        displayMessages();
-        displayGames();
-    }
+    displayLobby();
 };
 
-var updateGameStage = function() {
+var displayLobby = function() {
+    displayUsers();
+    displayMessages();
+    displayGames();
+};
+
+var updateGameStage = function(game) {
+    clientGame = game;
+    displayGameStage();
+};
+
+var displayGameStage = function() {
+    displayStagingPlayers();
+    displayStagingMessages();
+};
+
+var moveToGameStage = function() {
     document.getElementById('screen-div').style.visibility = "visible";
     document.getElementById('staging-div').style.visibility = "visible";
     $("#staging-div").animate({top: '400px'}, 500);

@@ -36,12 +36,18 @@ socket.on('new game added', function(games) {
 
 socket.on('self joined game', function(game) {
     status = 2; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
-    clientGame = game;
-    updateGameStage();
+    updateLobby(false, false, game);
+    updateGameStage(game);
+    moveToGameStage();
 });
 
-socket.on('user joined game', function(games) {
-    updateLobby(false, false, games);
+socket.on('user joined game', function(game) {
+    updateLobby(false, false, game);
+});
+
+// This should only get sent to users in the correct staging room.
+socket.on('room user joined staging', function(game) {
+    updateGameStage(game);
 });
 
 socket.on('self left game staging', function(game) {
@@ -52,11 +58,12 @@ socket.on('self left game staging', function(game) {
     updateLobby(false, false, game);
 });
 
+// This should only get sent to users in the correct staging room.
+socket.on('room user left staging', function(game) {
+    updateGameStage(game);
+});
+
 socket.on('user left game', function(game) {
     all_games[ game.gameid ] = game;
     updateLobby(false, false, game);
 });
-
-// socket.on('user left staging room', function(game) {
-    
-// });

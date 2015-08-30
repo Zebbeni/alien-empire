@@ -4,6 +4,33 @@
 	color: rgba(255, 255, 255, .8);
 }
 
+html {
+	background: url(images/space_background.jpg) no-repeat center center fixed;
+	-webkit-background-size: cover;
+  	-moz-background-size: cover;
+  	-o-background-size: cover;
+  	background-size: cover;
+}
+
+td, div, input {
+	border-radius: 10px;
+	word-wrap:break-word;
+}
+
+form {
+/*	height: 100%;*/
+	width: 100%;
+}
+
+table {
+	position:relative;
+	table-layout: fixed;
+	width:100%;
+	height:100%;
+	background-color: #f3f3f3;
+	border-collapse: collapse;
+}
+
 #text-title-div {
 	font-size: 23pt;
 	color: rgba(131, 203, 180, .5);
@@ -145,7 +172,7 @@
 	position: absolute;
 	right: 10px;
 	width: 150px;
-	height: 380px;
+	height: 375px;
 	bottom: 80px;
 	color: black;
 	background: rgba(131, 203, 180, .8);
@@ -172,7 +199,8 @@
 	right: 10px;
 	top: 10px;
 	width: 150px;
-	height: 100px;
+	height: 105px;
+	padding: 10px;
 	background: rgba(0, 0, 0, 0.5);
 }
 
@@ -207,11 +235,20 @@
 	width: 70%;
 }
 
-.user-list-div, .self-list-div {
+.user-list-div, .self-list-div, .staging-user-list-div {
+	overflow: hidden;
+	height: 22px;
+	border-radius: 0px;
 	font-weight: bold;
 }
 
+.staging-user-list-div {
+	width: 130px;
+	color: rgb(131, 203, 180); 
+}
+
 .user-list-div {
+	width: 200px;
 	color: rgb(131, 203, 180); 
 }
 
@@ -257,33 +294,6 @@
 	border-radius: 5px;
 	padding: 5px;
 	background: rgba(131, 203, 180, .38);
-}
-
-html {
-	background: url(images/space_background.jpg) no-repeat center center fixed;
-	-webkit-background-size: cover;
-  	-moz-background-size: cover;
-  	-o-background-size: cover;
-  	background-size: cover;
-}
-
-td, div, input {
-	border-radius: 10px;
-	word-wrap:break-word;
-}
-
-form {
-/*	height: 100%;*/
-	width: 100%;
-}
-
-table {
-	position:relative;
-	table-layout: fixed;
-	width:100%;
-	height:100%;
-	background-color: #f3f3f3;
-	border-collapse: collapse;
 }
 
 #copyright {
