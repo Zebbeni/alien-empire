@@ -66,6 +66,7 @@ table {
 	margin: 10px;
 	padding: 5px;
 	background: rgba(127, 233, 243, .8);
+	font-weight: bold;
 	color: black;
 }
 
@@ -127,7 +128,7 @@ table {
 	padding: 10px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	background: rgba(0, 0, 0, .5);
+	background: rgba(0, 0, 0, .6);
 }
 
 #staging-inner-div {
@@ -146,14 +147,13 @@ table {
 .game-button {
 	height: 60px;
 	width: 350px;
-	background: rgba(131, 203, 180, .28);
+	background: rgba(117, 223, 233, .8);
 	margin: 3px;
-	color: rgba(131, 203, 180, .8);
+	color: black;
 }
 
 .game-button:hover {
-	background: rgba(131, 203, 180, .4);
-	color: rgba(131, 203, 180, 1);
+	background: rgba(117, 223, 233, 1);
 }
 
 #staging-leave-button {
@@ -164,11 +164,11 @@ table {
 	bottom: 10px;
 	font-size: 30pt;
 	color: black;
-	background: rgba( 231, 191, 95, .8);
+	background: rgba(77, 183, 193, .8);
 }
 
 #staging-leave-button:hover {
-	background: rgba(231, 191, 95, 1);
+	background: rgba(77, 183, 193, 1);
 }
 
 #staging-ready-button {

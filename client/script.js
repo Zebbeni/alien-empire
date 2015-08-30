@@ -36,19 +36,17 @@ var displayUsers = function() {
 
 var displayGames = function() {
     gamesHtml = '';
-    var players = null;
+    var hostid = null;
     for (var g = 0; g < all_games.length; g++) {
 
         if (all_games[g].status == 1) { // if game is in staging
 
-            gamesHtml += '<input type="button" class="game-button" value="';
-            players = all_games[g].players;
+            gamesHtml += '<input type="button" class="game-button" ';
 
-            for (var p in players) {
-                gamesHtml += all_users[players[p]].name + '  ';
-            }
-
-            gamesHtml += '" onclick="javascript:submitJoinGame(' + g + ')"></input>';
+            hostid = all_games[g].players[0];
+            gamesHtml += 'value="Join Game | Host: ' + all_users[hostid].name + '"';
+            
+            gamesHtml += ' onclick="javascript:submitJoinGame(' + g + ')"></input>';
         }
     }
     document.getElementById('games-list-div').innerHTML = gamesHtml;
