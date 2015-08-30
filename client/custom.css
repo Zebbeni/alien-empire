@@ -2,6 +2,7 @@
 	border: none;
 	font-size: 11pt;
 	color: rgba(255, 255, 255, .8);
+	outline: none;
 }
 
 html {
@@ -64,12 +65,12 @@ table {
 	height: 50px;
 	margin: 10px;
 	padding: 5px;
-	background: rgba(131, 203, 180, .8);
+	background: rgba(127, 233, 243, .8);
 	color: black;
 }
 
 #create-game-button:hover{
-	background: rgba(131, 203, 180, 1);
+	background: rgba(127, 233, 243, 1);
 }
 
 #main-div {
@@ -126,7 +127,7 @@ table {
 	padding: 10px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	background: rgba(0, 0, 0, .38);
+	background: rgba(0, 0, 0, .5);
 }
 
 #staging-inner-div {
@@ -161,11 +162,13 @@ table {
 	width: 150px;
 	height: 60px;
 	bottom: 10px;
-	background: rgba( 200, 140, 100, 0.8);
+	font-size: 30pt;
+	color: black;
+	background: rgba( 231, 191, 95, .8);
 }
 
 #staging-leave-button:hover {
-	background: rgba(255, 230, 205, 1);
+	background: rgba(231, 191, 95, 1);
 }
 
 #staging-ready-button {
@@ -174,9 +177,13 @@ table {
 	width: 150px;
 	height: 375px;
 	bottom: 80px;
+	font-size: 30pt;
 	color: black;
-	background: rgba(77, 183, 193, .8);
-	/*background: rgba(131, 203, 180, .8);*/
+	background: rgba(127, 233, 243, .8);
+}
+
+#staging-ready-button:hover {
+	background: rgba(127, 233, 243, 1);
 }
 
 #staging-ready-button:hover {
@@ -193,6 +200,7 @@ table {
 #staging-messages-div {
 	width: 300px;
 	height: 470px;
+	background: rgba(0, 0, 0, 0.5);
 }
 
 #staging-users-div {
@@ -252,7 +260,7 @@ table {
 }
 
 .staging-user-ready-list-div {
-	color: rgb(77, 183, 193);
+	color: rgb(127, 233, 243);
 }
 
 .user-list-div {
@@ -279,7 +287,7 @@ table {
 	top: 18px;
 	padding: 5px;
 	overflow-y: scroll;
-	background: rgba(255,255,255,.8);
+	background: rgba(255,255,255,.9);
 	color: black;
 }
 
@@ -289,7 +297,7 @@ table {
 	height: 80px;
 	top: 10px;
 	overflow-y: scroll;
-	background: rgba(255,255,255,.8);
+	background: rgba(255,255,255,.9);
 	color: black;
 }
 

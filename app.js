@@ -66,8 +66,7 @@ io.sockets.on('connection', function(socket) {
                                                 // debug(data); 
                                             }
         );
-
-        socket.broadcast.emit('user login', users, newMsg);
+        socket.broadcast.to('lobby').emit('user login', users, newMsg);
     });
 
     socket.on('logout', function(fn){
@@ -76,9 +75,7 @@ io.sockets.on('connection', function(socket) {
 
         users[socket.userid].status = 0; // 0: OFFLINE
 
-        socket.emit('leave lobby', function(data){
-            // debug(data);
-        });
+        socket.leave('lobby');
 
         var newMsg = {
                         id: -1, // -1 indicates a server message
@@ -86,7 +83,11 @@ io.sockets.on('connection', function(socket) {
                     };
 
         messages.push( newMsg );
-        socket.broadcast.emit('user logout', users, newMsg);
+
+        socket.emit('leave lobby', function(data){
+            // debug(data);
+        });
+        socket.broadcast.to('lobby').emit('user logout', users, newMsg);
     });
 
     socket.on('send chat message', function(msg, fn) {
@@ -99,10 +100,7 @@ io.sockets.on('connection', function(socket) {
 
         messages.push(newMsg);
 
-        socket.emit('new chat message', newMsg, function(data){
-            // debug(data);
-        });
-        socket.broadcast.emit('new chat message', newMsg);
+        io.in('lobby').emit('new chat message', newMsg);
     });
 
     socket.on('send staging message', function(msg, fn) {
@@ -117,8 +115,7 @@ io.sockets.on('connection', function(socket) {
 
         gamesInfo[gameid].messages.push(newMsg);
 
-        socket.emit('room new staging message', newMsg);
-        socket.broadcast.to(gameInfo.room).emit('room new staging message', newMsg);
+        io.in(gameInfo.room).emit('room new staging message', newMsg);
     });
 
     socket.on('create game', function() {
@@ -137,13 +134,12 @@ io.sockets.on('connection', function(socket) {
 
         addUserToGame( gameInfo, socket.userid );
 
-        socket.leave('lobby');
         socket.join( roomId );
 
         // emit a different function to the socket who created the game
         // as they are also joining it
         socket.emit('self joined game', gameInfo);
-        socket.broadcast.emit('new game added', gameInfo);
+        io.in('lobby').emit('new game added', gameInfo);
     });
 
     socket.on('join game', function(gameid, fn) {
@@ -155,7 +151,6 @@ io.sockets.on('connection', function(socket) {
         {
             addUserToGame( gameInfo, socket.userid);
 
-            socket.leave('lobby');
             socket.join( gameInfo.room );
             
             var username = users[socket.userid].name;
@@ -168,8 +163,11 @@ io.sockets.on('connection', function(socket) {
             gamesInfo[gameid].messages.push(newMsg);
 
             socket.emit('self joined game', gameInfo);
-            socket.broadcast.to(gameInfo.room).emit('room user joined staging', gameInfo.players, newMsg );
-            socket.broadcast.emit('user joined game', gameInfo);
+            socket.broadcast.to(gameInfo.room).emit(
+                                            'room user joined staging', 
+                                            gameInfo.players, 
+                                            newMsg );
+            socket.in('lobby').emit('user joined game', gameInfo);
 
             fn('true');
         }
@@ -184,10 +182,19 @@ io.sockets.on('connection', function(socket) {
 
         fn(returnValue);
 
-        socket.emit('room user ready staging', gamesInfo[gameid].ready);
-        socket.broadcast.to(gamesInfo[gameid].room).emit(
-                                            'room user ready staging', 
-                                            gamesInfo[gameid].ready );
+        io.in(gamesInfo[gameid].room).emit(
+                            'room user ready staging', 
+                            gamesInfo[gameid].ready);
+
+        // START game if all players in staging are now ready
+        if ( allPlayersReady(gameid) ) {
+
+            gamesInfo[gameid].status = 2;
+
+            io.in('lobby').emit('game starting', gamesInfo[gameid]);
+            io.in(gamesInfo[gameid].room).emit('room game starting', 
+                                                gamesInfo[gameid]);
+        }
     });
 
     socket.on('leave game staging', function(gameid) {
@@ -198,7 +205,6 @@ io.sockets.on('connection', function(socket) {
         removePlayerFromReady(gameid, socket.userid);
 
         socket.leave(gameInfo.room);
-        socket.join('lobby');
 
         var username = users[socket.userid].name;
 
@@ -215,7 +221,7 @@ io.sockets.on('connection', function(socket) {
                                             gamesInfo[gameid].players, 
                                             newMsg, 
                                             gamesInfo[gameid].ready);
-        socket.broadcast.emit('user left game', gameInfo);
+        io.in('lobby').emit('user left game', gameInfo);
     });
 
     socket.on('disconnect', function(){
@@ -231,7 +237,7 @@ io.sockets.on('connection', function(socket) {
                         };
 
             messages.push( newMsg );
-            socket.broadcast.emit('user logout', users, newMsg);
+            io.in('lobby').emit('user logout', users, newMsg);
 
             // extra loose ends to tie up if user was in a game
             var gameid = users[socket.userid].gameid
@@ -255,12 +261,12 @@ io.sockets.on('connection', function(socket) {
                     gameInfo = gamesInfo[gameid];
 
                     socket.emit('self left game staging', gameInfo);
-                    socket.broadcast.to(gameInfo.room).emit(
-                                                'room user left staging', 
-                                                gameInfo.players, 
-                                                newMsg, 
-                                                gameInfo.ready);
-                    socket.broadcast.emit('user left game', gameInfo);
+                    io.in('lobby').emit('user left game', gameInfo);
+                    io.in(gameInfo.room).emit(
+                                        'room user left staging', 
+                                        gameInfo.players, 
+                                        newMsg, 
+                                        gameInfo.ready);
                 }
 
                 // otherwise, if game running, allow user to reconnect
@@ -321,6 +327,13 @@ var removePlayerFromReady = function(gameid, userid) {
     if ( index != -1 ) {
         gamesInfo[gameid].ready.splice(index, 1);
     }
+};
+
+var allPlayersReady = function(gameid) {
+    var gameInfo = gamesInfo[gameid];
+    var players = gameInfo.players;
+    var ready = gameInfo.ready;
+    return (players.length >= 2 && players.length == ready.length);
 };
 
 // [START hello_world]

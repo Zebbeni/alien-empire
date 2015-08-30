@@ -58,7 +58,6 @@ socket.on('room user joined staging', function(players, newMsg) {
 
 socket.on('room user ready staging', function(ready) {
     updateGameStage(false, false, ready);
-    console.log('got ready event. clientGame.ready:', clientGame.ready);
 });
 
 socket.on('self left game staging', function(game) {
@@ -72,6 +71,20 @@ socket.on('self left game staging', function(game) {
 // This should only get sent to users in the correct staging room.
 socket.on('room user left staging', function(players, newMsg, ready) {
     updateGameStage(players, newMsg, ready);
+});
+
+socket.on('game starting', function(game) {
+    updateLobby(false, false, game);
+});
+
+socket.on('room game starting', function(game) {
+    clientGame = game; // should actually receive the starting state of the game
+                        // OR we could trigger the game interface to come up while
+                        // the server initializes and sends the game info
+
+    // THIS IS WHERE WE TRIGGER THE CLIENT TO START THE GAME UX
+
+    // alert('woo! your game is starting!');
 });
 
 socket.on('user left game', function(game) {
