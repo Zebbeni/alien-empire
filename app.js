@@ -111,14 +111,13 @@ io.sockets.on('connection', function(socket) {
         var gameInfo = {
                         gameid: gamesInfo.length,
                         status: 1, // 0: CLOSED, 1: STAGING: 2: INGAME
-                        players: [socket.userid],
+                        players: [],
                         room: roomId
                     };
 
-        // set this user's gameid to the game they just joined
-        users[socket.userid].gameid = gameInfo.gameid;
-
         gamesInfo.push(gameInfo);
+
+        addUserToGame( gameInfo, socket.userid );
 
         socket.leave('lobby');
         socket.join( roomId );
@@ -136,15 +135,10 @@ io.sockets.on('connection', function(socket) {
 
         if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
         {
+            addUserToGame( gameInfo, socket.userid);
 
             socket.leave('lobby');
             socket.join( gameInfo.room );
-
-            // set this user's gameid to the game they just joined
-            users[socket.userid].gameid = gameInfo.gameid;
-
-            gameInfo.players.push(socket.userid);
-            gamesInfo[gameId] = gameInfo;
 
             socket.emit('self joined game', gameInfo);
             socket.broadcast.to(gameInfo.room).emit('room user joined staging', gameInfo);
@@ -159,9 +153,8 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('leave game staging', function(gameid) {
         var gameInfo = gamesInfo[gameid];
-        var index = gameInfo.players.indexOf(socket.userid);
 
-        removeUserFromGame(gameInfo, index);
+        removeUserFromGame(gameInfo, socket.userid);
 
         socket.leave(gameInfo.room);
         socket.join('lobby');
@@ -193,14 +186,11 @@ io.sockets.on('connection', function(socket) {
             
             if ( gameid != null ) {
                 var gameInfo = gamesInfo[gameid];
-                var index = gameInfo.players.indexOf(socket.userid);
 
                 // if game is still in staging, remove user from game and alert
                 if (gameInfo.status == 1) {
 
-                    removeUserFromGame(gameInfo, index);
-
-                    users[socket.userid].gameid = null;
+                    removeUserFromGame(gameInfo, socket.userid);
 
                     socket.emit('self left game staging', gameInfo);
                     socket.broadcast.to(gameInfo.room).emit('room user left staging', gameInfo);
@@ -216,16 +206,34 @@ io.sockets.on('connection', function(socket) {
     });
 });
 
-var removeUserFromGame = function(gameInfo, index) {
+var addUserToGame = function(gameInfo, userid) {
+    var gameid = gameInfo.gameid;
+
+    // set this user's gameid to the game they just joined
+    users[userid].gameid = gameInfo.gameid;
+
+    // update gameInfo with new player id
+    gameInfo.players.push(userid);
+
+    // update gamesInfo
+    gamesInfo[gameid] = gameInfo;
+};
+
+var removeUserFromGame = function(gameInfo, userid) {
+    var gameid = gameInfo.gameid;
+    var index = gameInfo.players.indexOf(userid);
+
     if (index != -1) {
+
         gameInfo.players.splice(index, 1);
 
         if (gameInfo.players.length == 0) {
             gameInfo.status = 0; // 0: CLOSED, 1: STAGING: 2: INGAME
         }
 
-        gamesInfo[gameInfo.gameid] = gameInfo;
+        gamesInfo[gameid] = gameInfo;
     }
+    users[userid].gameid = null;
 };
 
 // [START hello_world]
