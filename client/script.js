@@ -102,7 +102,41 @@ var displayStagingPlayers = function() {
 };
 
 var displayStagingMessages = function() {
-    console.log('this is when we would display staging messages');
+    var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
+    var lastUserId = null;
+    var msg = null;
+
+    console.log('displaying staging messages.');
+    console.log('clientGame:', clientGame);
+
+    for (var m = 0; m < clientGame.messages.length; m++){ //different
+
+        msg = clientGame.messages[m]; //different
+        messagesHtml += '<tr>'
+
+        if (msg.id == -1) {
+            messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
+        }
+        else {
+            messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td">' : '<td class="msg-user-td">' );
+
+            if (msg.id != lastUserId) { // Only display user name if it's a different user talking
+               messagesHtml += all_users[msg.id].name;
+            }
+
+            messagesHtml += '</td><td class="msg-content-td';
+            messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + msg.message + '</td>';
+        }
+        messagesHtml += '</tr>'
+
+        lastUserId = msg.id;
+    }
+    messagesHtml += '</table>'
+
+    var msgDiv = document.getElementById("staging-messages-div"); //different
+
+    msgDiv.innerHTML = messagesHtml;
+    msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
 };
 
 //update lobby stage, make it visible, and hide login stage
@@ -146,8 +180,17 @@ var displayLobby = function() {
     displayGames();
 };
 
-var updateGameStage = function(game) {
+var initializeGameStage = function(game) {
     clientGame = game;
+};
+
+var updateGameStage = function(users, newMsg) {
+    if (users) {
+        clientGame.players = users;
+    }
+    if (newMsg) {
+        clientGame.messages.push(newMsg);
+    }
     displayGameStage();
 };
 

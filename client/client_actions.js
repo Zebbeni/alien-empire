@@ -20,13 +20,13 @@ var submitLogout = function() {
 var submitMessage = function() {
     var msg = document.getElementById('chat-input').value;
     document.getElementById('chat-input').value = '';
-    socket_sendMessage(msg);
+    socket_sendMessage( msg );
 };
 
 var submitStagingMessage = function() {
     var msg = document.getElementById('staging-chat-input').value;
     document.getElementById('staging-chat-input').value = '';
-    socket_sendStagingMessage(msg);
+    socket_sendStagingMessage( msg );
 };
 
 var submitNewGame = function() {
@@ -48,7 +48,7 @@ var submitStagingLeave = function(){
 var submitStagingMessage = function() {
     var msg = document.getElementById('staging-chat-input').value;
     document.getElementById('staging-chat-input').value = '';
-    socket_sendMessageStaging(msg);
+    socket_sendStagingMessage(msg);
 };
 
 // deletes local info so it isn't repopulated on login as a different user

@@ -27,9 +27,10 @@ var socket_joinGame = function(gameId) {
     });
 };
 
-var socket_sendMessageStaging = function(msg) {
-    console.log('you typed', msg);
-    //emit socket message here
+var socket_sendStagingMessage = function(msg) {
+    socket.emit('send staging message', msg, function(data) {
+        console.log('received staging message', data);
+    });
 };
 
 var socket_readyStaging = function() {

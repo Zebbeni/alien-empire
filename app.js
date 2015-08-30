@@ -9,7 +9,7 @@ var io = require('./node_modules/socket.io').listen(server);
 
 var gamesInfo = [];
 var users = [];
-var messages = [];
+var messages = []; // very possible we don't need this
 
 io.sockets.on('connection', function(socket) {
 
@@ -105,6 +105,22 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.emit('new chat message', newMsg);
     });
 
+    socket.on('send staging message', function(msg, fn) {
+        fn('true');
+        var gameid = users[socket.userid].gameid;
+        var gameInfo = gamesInfo[gameid];
+
+        var newMsg = {
+                        id: socket.userid,
+                        message: msg
+                    };
+
+        gamesInfo[gameid].messages.push(newMsg);
+
+        socket.emit('room new staging message', newMsg);
+        socket.broadcast.to(gameInfo.room).emit('room new staging message', newMsg);
+    });
+
     socket.on('create game', function(current_room) {
 
         var roomId = 'game' + gamesInfo.length;
@@ -112,7 +128,8 @@ io.sockets.on('connection', function(socket) {
                         gameid: gamesInfo.length,
                         status: 1, // 0: CLOSED, 1: STAGING: 2: INGAME
                         players: [],
-                        room: roomId
+                        room: roomId,
+                        messages: []
                     };
 
         gamesInfo.push(gameInfo);
@@ -128,10 +145,10 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.emit('new game added', gameInfo);
     });
 
-    socket.on('join game', function(gameId, fn) {
+    socket.on('join game', function(gameid, fn) {
 
         var current_room = 'lobby';
-        var gameInfo = gamesInfo[gameId];
+        var gameInfo = gamesInfo[gameid];
 
         if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
         {
@@ -139,9 +156,18 @@ io.sockets.on('connection', function(socket) {
 
             socket.leave('lobby');
             socket.join( gameInfo.room );
+            
+            var username = users[socket.userid].name;
+
+            var newMsg = {
+                            id: -1, // -1 indicates a server message
+                            message: username + " joined the game"
+                        };
+
+            gamesInfo[gameid].messages.push(newMsg);
 
             socket.emit('self joined game', gameInfo);
-            socket.broadcast.to(gameInfo.room).emit('room user joined staging', gameInfo);
+            socket.broadcast.to(gameInfo.room).emit('room user joined staging', gameInfo.players, newMsg );
             socket.broadcast.emit('user joined game', gameInfo);
 
             fn('true');
@@ -159,8 +185,17 @@ io.sockets.on('connection', function(socket) {
         socket.leave(gameInfo.room);
         socket.join('lobby');
 
+        var username = users[socket.userid].name;
+
+        var newMsg = {
+                        id: -1, // -1 indicates a server message
+                        message: username + " left the game"
+                    };
+
+        gamesInfo[gameid].messages.push(newMsg);
+
         socket.emit('self left game staging', gameInfo);
-        socket.broadcast.to(gameInfo.room).emit('room user left staging', gameInfo);
+        socket.broadcast.to(gameInfo.room).emit('room user left staging', gameInfo.players, newMsg);
         socket.broadcast.emit('user left game', gameInfo);
     });
 
