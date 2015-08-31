@@ -45,7 +45,7 @@ var displayGames = function() {
 
             hostid = all_games[g].players[0];
             gamesHtml += 'value="Join Game | Host: ' + all_users[hostid].name + '"';
-            
+
             gamesHtml += ' onclick="javascript:submitJoinGame(' + g + ')"></input>';
         }
     }
