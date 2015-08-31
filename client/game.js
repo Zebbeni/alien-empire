@@ -1,8 +1,6 @@
-var loader, stage;
+var loader, stage, planet;
 
 function game_init() {
-
-	// stage = new createjs.Stage("testCanvas");
 
 	manifest = [
 		{src: "images/game/planet_1.jpg", id: "planet_1"},
@@ -42,5 +40,23 @@ function game_init() {
 }
 
 var handleComplete = function() {
+
+	var gameCanvas = document.getElementById('gameCanvas');
+	var ctx = gameCanvas.getContext("2d");
+	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.height = window.innerHeight;
+
+	stage = new createjs.Stage("gameCanvas");
+
+	planetImg = loader.getResult("planet_10");
+
+	planet = new createjs.Shape();
+	planet.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
+
+	stage.addChild(planet);
+
+	stage.update();
+
 	console.log('HANDLE COMPLETE!');
 };
+
