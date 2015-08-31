@@ -80,7 +80,9 @@ socket.on('game starting', function(game) {
 socket.on('room game starting', function(game) {
     clientGame = game; // should actually receive the starting state of the game
                         // OR we could trigger the game interface to come up while
-                        // the server initializes and sends the game info
+                        // the sferver initializes and sends the game info
+
+    moveToGame();
 
     console.log('loading game files');
     game_init();

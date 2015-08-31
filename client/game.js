@@ -1,6 +1,8 @@
-var loader;
+var loader, stage;
 
 function game_init() {
+
+	// stage = new createjs.Stage("testCanvas");
 
 	manifest = [
 		{src: "images/game/planet_1.jpg", id: "planet_1"},
