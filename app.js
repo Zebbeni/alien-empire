@@ -7,6 +7,8 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
+var game_server = require('./game_server');
+
 var gamesInfo = [];
 var users = [];
 var messages = []; // very possible we don't need this
@@ -190,6 +192,8 @@ io.sockets.on('connection', function(socket) {
         if ( allPlayersReady(gameid) ) {
 
             gamesInfo[gameid].status = 2;
+
+            gamesInfo.game = game_server.initializeGame( gamesInfo[gameid].players );
 
             io.in('lobby').emit('game starting', gamesInfo[gameid]);
             io.in(gamesInfo[gameid].room).emit('room game starting', 
