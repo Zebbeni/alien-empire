@@ -1,5 +1,7 @@
 var loader, stage, planet;
 
+var resizeTimer;
+
 function game_init() {
 
 	manifest = [
@@ -41,12 +43,8 @@ function game_init() {
 
 var handleComplete = function() {
 
-	var gameCanvas = document.getElementById('gameCanvas');
-	var ctx = gameCanvas.getContext("2d");
-	ctx.canvas.width  = window.innerWidth;
-	ctx.canvas.height = window.innerHeight;
-
 	stage = new createjs.Stage("gameCanvas");
+	updateCanvasSize();
 
 	planetImg = loader.getResult("planet_10");
 
@@ -58,5 +56,18 @@ var handleComplete = function() {
 	stage.update();
 
 	console.log('HANDLE COMPLETE!');
+};
+
+$(window).resize(function () { 
+	clearTimeout(resizeTimer);
+	resizeTimer = setTimeout(updateCanvasSize, 50);
+ });
+
+var updateCanvasSize = function() {
+	var gameCanvas = document.getElementById('gameCanvas');
+	var ctx = gameCanvas.getContext("2d");
+	ctx.canvas.width  = window.innerWidth;
+	ctx.canvas.height = window.innerHeight;
+	stage.update();
 };
 
