@@ -1,14 +1,19 @@
 (function() {
 
-	module.exports.initializeGame = function( user_ids ) {
+	module.exports.initializeGame = function( user_ids, gameid ) {
 		var newGame = {
+			gameid: gameid,
+			num_players: user_ids.length,
 			players: createPlayerOrder( user_ids ),
+			round: 0,
+			turn: 1,
+			history: {}
 		};
 
 		return newGame;
 	};
 
-	var assignPlayers = function( user_ids ) {
+	var createPlayerOrder = function( user_ids ) {
 		// Returns a randomized array of the user ids
 
 		var players = [];

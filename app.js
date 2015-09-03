@@ -23,6 +23,7 @@ io.sockets.on('connection', function(socket) {
         socket.name = name;
 
         var is_existing_user = false;
+        var is_logged_in = false; // set to true if user is already logged in
         var newUser = null;
 
         // If a user name already exists update that users' status to ONLINE
@@ -30,6 +31,11 @@ io.sockets.on('connection', function(socket) {
             if (users[u].name == socket.name) {
 
                 socket.userid = u;
+
+                if(users[u].status != 0) {
+                    is_logged_in = true;
+                }
+
                 users[u].status = 1;
 
                 newUser = users[u];
@@ -56,19 +62,24 @@ io.sockets.on('connection', function(socket) {
 
         }
 
-        var newMsg = {
-                        id: -1, // -1 indicates a server message
-                        message: name + " joined the room"
-                    };
+        if (is_logged_in) {
+            socket.emit('login failed already logged in', socket.name);
+        }
+        else {
+            var newMsg = {
+                            id: -1, // -1 indicates a server message
+                            message: name + " joined the room"
+                        };
 
-        messages.push( newMsg );
+            messages.push( newMsg );
 
-        socket.emit('login success', users, socket.userid, socket.name, 
-                        newMsg, gamesInfo, function(data) { 
-                                                // debug(data); 
-                                            }
-        );
-        socket.broadcast.to('lobby').emit('user login', users, newMsg);
+            socket.emit('login success', users, socket.userid, socket.name, 
+                            newMsg, gamesInfo, function(data) { 
+                                                    // debug(data); 
+                                                }
+            );
+            socket.broadcast.to('lobby').emit('user login', users, newMsg);
+        }
     });
 
     socket.on('logout', function(fn){
@@ -193,7 +204,7 @@ io.sockets.on('connection', function(socket) {
 
             gamesInfo[gameid].status = 2;
 
-            gamesInfo.game = game_server.initializeGame( gamesInfo[gameid].players );
+            gamesInfo.game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
 
             io.in('lobby').emit('game starting', gamesInfo[gameid]);
             io.in(gamesInfo[gameid].room).emit('room game starting', 
