@@ -13,7 +13,6 @@ var submitTurnDone = function(name) {
 };
 
 var toggleTurnMenu = function() {
-	console.log('toggle turn menu: ', clientGame.game);
 	if( clientGame.game.players[clientGame.game.turn] == clientId) {
     	displayYourTurnMenu();
     } else {

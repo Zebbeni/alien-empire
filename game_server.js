@@ -7,7 +7,7 @@ var ACT_TURN_DONE = 1;
 			gameid: gameid,
 			num_players: user_ids.length,
 			players: createPlayerOrder( user_ids ),
-			// round: 0,
+			round: 0,
 			turn: 0
 			// history: {}
 		};
@@ -16,6 +16,7 @@ var ACT_TURN_DONE = 1;
 	};
 
 	module.exports.resolveAction = function( action, gameInfo ) {
+		// This will be a switch for all different action types.
 		if ( action.actiontype == ACT_TURN_DONE ){
 			return resolveTurnDone( action, gameInfo.game );
 		} else {
@@ -40,15 +41,28 @@ var ACT_TURN_DONE = 1;
 
 	var resolveTurnDone = function( action, game ) {
 		console.log('turn:', game.turn);
+		console.log('round:', game.round);
 		console.log('resolving done turn, game.num_players:', game.num_players);
 
-		if ( game.players[ game.turn ] != action.userid ){
+		// This is stand in logic. This should be checked during the upkeep phase
+		if ( isEndCondition( game ) ){
+			return 'game end';
+		}
+		else if ( game.players[ game.turn ] != action.userid ){
 			return false;
 		}
 		else {
-			game.turn = ( game.turn + 1 ) % game.num_players;
+			game.turn += 1;
+			if ( game.turn >= game.players.length) {
+				game.round += 1;
+				game.turn = 0;
+			}
 			return game;
 		}
+	};
+
+	var isEndCondition = function( game ) {
+		return ( game.round >= 2 );
 	};
 
 }());

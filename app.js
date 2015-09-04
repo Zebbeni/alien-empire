@@ -250,6 +250,9 @@ io.sockets.on('connection', function(socket) {
             console.log('the action is illegal');
             // socket.emit('illegal action');
         }
+        else if ( response == 'game end') {
+            io.in(gameInfo.room).emit('game end');
+        }
         else {
             gamesInfo[gameid].game = response;
             io.in(gameInfo.room).emit('player game action', action, response );
