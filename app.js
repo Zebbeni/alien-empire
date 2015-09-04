@@ -204,7 +204,9 @@ io.sockets.on('connection', function(socket) {
 
             gamesInfo[gameid].status = 2;
 
-            gamesInfo.game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
+            gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
+
+            console.log('app.js, game.players:', gamesInfo[gameid].game.players);
 
             io.in('lobby').emit('game starting', gamesInfo[gameid]);
             io.in(gamesInfo[gameid].room).emit('room game starting', 
@@ -237,6 +239,21 @@ io.sockets.on('connection', function(socket) {
                                             newMsg, 
                                             gamesInfo[gameid].ready);
         io.in('lobby').emit('user left game', gameInfo);
+    });
+
+    socket.on('do game action', function(action) {
+        var gameid = action.gameid;
+        var gameInfo = gamesInfo[gameid];
+        var response = game_server.resolveAction( action, gameInfo );
+
+        if ( !response ) {
+            console.log('the action is illegal');
+            // socket.emit('illegal action');
+        }
+        else {
+            gamesInfo[gameid].game = response;
+            io.in(gameInfo.room).emit('player game action', action, response );
+        }
     });
 
     socket.on('disconnect', function(){

@@ -1,16 +1,35 @@
 var loader, stage, planet;
 
+var ACT_TURN_DONE = 1;
+
 var resizeTimer;
 
 $(document).ready(function() {
 	stage = new createjs.Stage("gameCanvas");
 });
 
-// window.onload = function() {
-// 	stage = new createjs.Stage("gameCanvas");
-// };
+var submitTurnDone = function(name) {
+    socket_submitTurnDone();
+};
 
-function game_init() {
+var toggleTurnMenu = function() {
+	console.log('toggle turn menu: ', clientGame.game);
+	if( clientGame.game.players[clientGame.game.turn] == clientId) {
+    	displayYourTurnMenu();
+    } else {
+    	hideYourTurnMenu();
+    }
+};
+
+var hideYourTurnMenu = function() {
+	document.getElementById('your-turn-div').style.visibility = "hidden";
+}
+
+var displayYourTurnMenu = function() {
+	document.getElementById('your-turn-div').style.visibility = "visible";
+};
+
+var game_init = function() {
 
 	manifest = [
 		{src: "images/game/planet_10.jpg", id: "planet_10"},
@@ -22,7 +41,7 @@ function game_init() {
 	loader.loadManifest(manifest, true);
 
 	// we need to figure out how to prevent flickering while it loads our large manifest
-}
+};
 
 var handleComplete = function() {
 
