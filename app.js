@@ -7,6 +7,9 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
+var EVENT_ONE = 1;
+var EVENT_ALL = 2;
+
 var game_server = require('./game_server');
 
 var gamesInfo = [];
@@ -246,16 +249,11 @@ io.sockets.on('connection', function(socket) {
         var gameInfo = gamesInfo[gameid];
         var response = game_server.resolveAction( action, gameInfo );
 
-        if ( !response ) {
-            console.log('the action is illegal');
-            // socket.emit('illegal action');
+        if ( response[0] == EVENT_ONE ) {
+            socket.emit(response[1], response[2], response[3]);
         }
-        else if ( response == 'game end') {
-            io.in(gameInfo.room).emit('game end');
-        }
-        else {
-            gamesInfo[gameid].game = response;
-            io.in(gameInfo.room).emit('player game action', action, response );
+        else if ( response[0] == EVENT_ALL ) {
+            io.in(gameInfo.room).emit(response[1], response[2], response[3]);
         }
     });
 

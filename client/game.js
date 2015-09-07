@@ -20,6 +20,15 @@ var toggleTurnMenu = function() {
     }
 };
 
+/**
+ * This should eventually be capable of showing specific messages
+ * ex. Not enough resources to complete that action
+ *	   That agent cannot be sent on a mission right now, etc.
+ */
+var toggleIllegalActionMenu = function() {
+	alert("That action is not possible right now");
+};
+
 var hideYourTurnMenu = function() {
 	document.getElementById('your-turn-div').style.visibility = "hidden";
 }
