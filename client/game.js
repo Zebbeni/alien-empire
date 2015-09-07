@@ -1,7 +1,5 @@
 var loader, stage, planet;
 
-var ACT_TURN_DONE = 1;
-
 var resizeTimer;
 
 $(document).ready(function() {
@@ -70,8 +68,6 @@ var handleComplete = function() {
 		stage.addChild(planet);
 
 		stage.update();
-
-		console.log('HANDLE COMPLETE!');
 	}
 };
 
