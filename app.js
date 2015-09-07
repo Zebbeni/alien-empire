@@ -35,6 +35,7 @@ io.sockets.on('connection', function(socket) {
 
                 socket.userid = u;
 
+                // check if user already logged in
                 if(users[u].status != 0) {
                     is_logged_in = true;
                 }
@@ -160,7 +161,6 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('join game', function(gameid, fn) {
 
-        var current_room = 'lobby';
         var gameInfo = gamesInfo[gameid];
 
         if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
@@ -220,7 +220,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('leave game staging', function(gameid) {
         var gameInfo = gamesInfo[gameid];
 
-        removeUserFromGame(gameInfo, socket.userid);
+        removeUserFromStaging(gameInfo, socket.userid);
 
         removePlayerFromReady(gameid, socket.userid);
 
@@ -281,7 +281,7 @@ io.sockets.on('connection', function(socket) {
                 // if game is still in staging, remove user from game and alert
                 if (gameInfo.status == 1) {
 
-                    removeUserFromGame(gameInfo, socket.userid);
+                    removeUserFromStaging(gameInfo, socket.userid);
                     removePlayerFromReady(gameid, socket.userid);
 
                     newMsg = {
@@ -336,7 +336,7 @@ var addPlayerToReady = function(gameid, userid) {
     return false;
 };
 
-var removeUserFromGame = function(gameInfo, userid) {
+var removeUserFromStaging = function(gameInfo, userid) {
     var gameid = gameInfo.gameid;
     var index = gameInfo.players.indexOf(userid);
 
