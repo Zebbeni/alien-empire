@@ -7,6 +7,11 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
+var EVENT_ONE = 1;
+var EVENT_ALL = 2;
+
+var game_server = require('./game_server');
+
 var gamesInfo = [];
 var users = [];
 var messages = []; // very possible we don't need this
@@ -21,6 +26,7 @@ io.sockets.on('connection', function(socket) {
         socket.name = name;
 
         var is_existing_user = false;
+        var is_logged_in = false; // set to true if user is already logged in
         var newUser = null;
 
         // If a user name already exists update that users' status to ONLINE
@@ -28,6 +34,12 @@ io.sockets.on('connection', function(socket) {
             if (users[u].name == socket.name) {
 
                 socket.userid = u;
+
+                // check if user already logged in
+                if(users[u].status != 0) {
+                    is_logged_in = true;
+                }
+
                 users[u].status = 1;
 
                 newUser = users[u];
@@ -54,19 +66,24 @@ io.sockets.on('connection', function(socket) {
 
         }
 
-        var newMsg = {
-                        id: -1, // -1 indicates a server message
-                        message: name + " joined the room"
-                    };
+        if (is_logged_in) {
+            socket.emit('login failed already logged in', socket.name);
+        }
+        else {
+            var newMsg = {
+                            id: -1, // -1 indicates a server message
+                            message: name + " joined the room"
+                        };
 
-        messages.push( newMsg );
+            messages.push( newMsg );
 
-        socket.emit('login success', users, socket.userid, socket.name, 
-                        newMsg, gamesInfo, function(data) { 
-                                                // debug(data); 
-                                            }
-        );
-        socket.broadcast.to('lobby').emit('user login', users, newMsg);
+            socket.emit('login success', users, socket.userid, socket.name, 
+                            newMsg, gamesInfo, function(data) { 
+                                                    // debug(data); 
+                                                }
+            );
+            socket.broadcast.to('lobby').emit('user login', users, newMsg);
+        }
     });
 
     socket.on('logout', function(fn){
@@ -144,7 +161,6 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('join game', function(gameid, fn) {
 
-        var current_room = 'lobby';
         var gameInfo = gamesInfo[gameid];
 
         if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
@@ -191,6 +207,10 @@ io.sockets.on('connection', function(socket) {
 
             gamesInfo[gameid].status = 2;
 
+            gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
+
+            console.log('app.js, game.players:', gamesInfo[gameid].game.players);
+
             io.in('lobby').emit('game starting', gamesInfo[gameid]);
             io.in(gamesInfo[gameid].room).emit('room game starting', 
                                                 gamesInfo[gameid]);
@@ -200,7 +220,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('leave game staging', function(gameid) {
         var gameInfo = gamesInfo[gameid];
 
-        removeUserFromGame(gameInfo, socket.userid);
+        removeUserFromStaging(gameInfo, socket.userid);
 
         removePlayerFromReady(gameid, socket.userid);
 
@@ -222,6 +242,19 @@ io.sockets.on('connection', function(socket) {
                                             newMsg, 
                                             gamesInfo[gameid].ready);
         io.in('lobby').emit('user left game', gameInfo);
+    });
+
+    socket.on('do game action', function(action) {
+        var gameid = action.gameid;
+        var gameInfo = gamesInfo[gameid];
+        var response = game_server.resolveAction( action, gameInfo );
+
+        if ( response[0] == EVENT_ONE ) {
+            socket.emit(response[1], response[2], response[3]);
+        }
+        else if ( response[0] == EVENT_ALL ) {
+            io.in(gameInfo.room).emit(response[1], response[2], response[3]);
+        }
     });
 
     socket.on('disconnect', function(){
@@ -248,7 +281,7 @@ io.sockets.on('connection', function(socket) {
                 // if game is still in staging, remove user from game and alert
                 if (gameInfo.status == 1) {
 
-                    removeUserFromGame(gameInfo, socket.userid);
+                    removeUserFromStaging(gameInfo, socket.userid);
                     removePlayerFromReady(gameid, socket.userid);
 
                     newMsg = {
@@ -303,7 +336,7 @@ var addPlayerToReady = function(gameid, userid) {
     return false;
 };
 
-var removeUserFromGame = function(gameInfo, userid) {
+var removeUserFromStaging = function(gameInfo, userid) {
     var gameid = gameInfo.gameid;
     var index = gameInfo.players.indexOf(userid);
 

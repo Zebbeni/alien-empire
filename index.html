@@ -3,17 +3,25 @@
     <head>
         <script src="/socket.io/socket.io.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
+        <!-- <script src="https://code.createjs.acom/easeljs-0.8.1.min.js"></script> -->
+        <!-- <script src="https://code.createjs.com/preloadjs-0.6.1.min.js"></script> -->
+        <script src="easeljs-0.8.1.min.js"></script>
+        <script src="preloadjs-0.6.1.min.js"></script>
         <script src="script.js"></script>
-        <script src="to_socket_events.js"></script>
         <script src="from_socket_events.js"></script>
+        <script src="to_socket_events.js"></script>
+        <script src="from_socket_game_events.js"></script>
+        <script src="to_socket_game_events.js"></script>
         <script src="client_actions.js"></script>
+        <script src="game.js"></script>
 
         <link rel="stylesheet" type="text/css" href="custom.css" />
+        <link rel="stylesheet" type="text/css" href="game.css" />
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
     </head>
     <body onload="init();">
         <div id="copyright">©2015 Andrew Albers.</div>
+        <div id="game-canvas-div"><canvas id="gameCanvas"></canvas></div>
         <div id="main-div">
             <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="login-div">
@@ -60,6 +68,9 @@
                     <input type="button" id="staging-leave-button" value="↩" onclick="javascript:submitStagingLeave();"></input>
                 </div>
             </div>
+        </div>
+        <div id="your-turn-div" style="visibility: hidden">
+            <input type="button" id="turn-done-button" value="Done" onclick="javascript:submitTurnDone();"></input>
         </div>
     </body>
 </html>

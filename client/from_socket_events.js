@@ -2,6 +2,10 @@ socket.on('connect', function() {
     console.log('connected');
 });
 
+socket.on('login failed already logged in', function(username) {
+    alert('this user has already logged in');
+});
+
 // Get starting arrays of users, messages, and games. Draw lobby
 socket.on('login success', function(users, userid, username, newMsg, games, fn) {
     fn('client entered lobby');
@@ -75,16 +79,6 @@ socket.on('room user left staging', function(players, newMsg, ready) {
 
 socket.on('game starting', function(game) {
     updateLobby(false, false, game);
-});
-
-socket.on('room game starting', function(game) {
-    clientGame = game; // should actually receive the starting state of the game
-                        // OR we could trigger the game interface to come up while
-                        // the server initializes and sends the game info
-
-    // THIS IS WHERE WE TRIGGER THE CLIENT TO START THE GAME UX
-
-    // alert('woo! your game is starting!');
 });
 
 socket.on('user left game', function(game) {
