@@ -136,31 +136,22 @@ var handleComplete = function() {
 			}
 
 			var border = new createjs.Shape();
-			border.graphics.setStrokeStyle(8);
-			border.graphics.beginStroke("#000000");
+			border.graphics.setStrokeStyle(15);
+			border.graphics.beginStroke("rgba(0,0,0,150)");
 			border.graphics.drawRect(0, 0, planets[p].w * sWid, planets[p].w * sWid)
 
 			tile.addChild( stars );
 			tile.addChild( planet );
 			tile.addChild( border );
 
-			// tile.scaleX = scale;
-			// tile.scaleY = scale;
-
 			tile.x = planets[p].x * sWid;
 			tile.y = planets[p].y * sWid;
 
 			board.addChild( tile );
-			// board.addChild(planet);
 		}
 
+		board.y = -200;
 		stage.addChild( board );
-		// board.x = 0;
-		// board.y = 0;
-		// // board.scaleX = 0.25;
-		// // board.scaleY = 0.25;
-		
-		// stage.addChild(board);
 
 		stage.update();
 	}
