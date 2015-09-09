@@ -1,12 +1,25 @@
 var loader, stage, board;
+var scale = 0.5;
 var sWid = 262;
 
 var resizeTimer;
 
 $(document).ready(function() {
 	stage = new createjs.Stage("gameCanvas");
-	// board = new createjs.Container();
+	board = new createjs.Container();
+
+	document.addEventListener('keyup', handleKeyUp, false);
 });
+
+var handleKeyUp = function( e ) {
+	if (e.keyCode == 189){
+		scale *= 0.75;
+		zoomBoard();
+	} else if (e.keyCode == 187) {
+		scale *= 1.3333;
+		zoomBoard();
+	}
+};
 
 var submitTurnDone = function(name) {
     socket_submitTurnDone();
@@ -84,7 +97,6 @@ var handleComplete = function() {
 	if (stage) {
 		
 		updateCanvasSize();
-		var scale = 1;
 		var planets = clientGame.game.board.planets;
 		console.log("in here 1");
 
@@ -132,16 +144,17 @@ var handleComplete = function() {
 			tile.addChild( planet );
 			tile.addChild( border );
 
-			tile.scaleX = scale;
-			tile.scaleY = scale;
+			// tile.scaleX = scale;
+			// tile.scaleY = scale;
 
-			tile.x = planets[p].x * sWid * scale;
-			tile.y = planets[p].y * sWid * scale;
+			tile.x = planets[p].x * sWid;
+			tile.y = planets[p].y * sWid;
 
-			stage.addChild( tile );
+			board.addChild( tile );
 			// board.addChild(planet);
 		}
 
+		stage.addChild( board );
 		// board.x = 0;
 		// board.y = 0;
 		// // board.scaleX = 0.25;
@@ -158,18 +171,18 @@ $(window).resize(function () {
 	resizeTimer = setTimeout(updateCanvasSize, 50);
  });
 
+var zoomBoard = function() {
+	board.scaleX = scale;
+	board.scaleY = scale;
+	stage.update();
+}
+
 var updateCanvasSize = function() {
 	if(stage) { // make sure stage exists before trying this
 		var gameCanvas = document.getElementById('gameCanvas');
 		var ctx = gameCanvas.getContext("2d");
 		ctx.canvas.width  = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
-
-		// if (board) {
-		// 	board.x = 0;
-		// 	board.y = 0;
-		// 	stage.addChild(board);
-		// }
 
 		stage.update();
 	}
