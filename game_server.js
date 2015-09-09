@@ -82,6 +82,8 @@ var EVENT_ALL = 2;
 			// generate random resources
 			board.planets[i].resources = generateResources(board.planets[i].w);
 		}
+
+		return board;
 	};
 
 	/**
