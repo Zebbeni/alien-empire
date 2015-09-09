@@ -1,8 +1,9 @@
 var loader, stage, board;
 var scale = 0.65;
 var move_distance = 5;
-var sWid = 262;
-
+var sWid = 212;
+var is_dragging = false;
+var lastMouse = { x:0, y:0 };
 var resizeTimer;
 
 $(document).ready(function() {
@@ -11,6 +12,32 @@ $(document).ready(function() {
 
 	document.addEventListener('keyup', handleKeyUp, false);
 	document.addEventListener('keydown', handleKeyDown, false);
+
+	// var startDrag = function(event) {
+	stage.on("stagemousedown", function(evt){
+		console.log('starting drag');
+		lastMouse.x = evt.stageX;
+		lastMouse.y = evt.stageY;
+		is_dragging = true;
+	});
+
+	// var endDrag = function(event) {
+	stage.on("stagemouseup", function(evt){
+		console.log('end drag');
+		is_dragging = false;
+	});
+
+	// var doDrag = function(event) {
+	stage.on("stagemousemove", function(evt){
+		if (board && is_dragging) {
+			console.log('doing drag');
+			board.x = board.x + (evt.stageX - lastMouse.x);
+			board.y = board.y + (evt.stageY - lastMouse.y);
+			lastMouse.x = evt.stageX;
+			lastMouse.y = evt.stageY;
+		}
+		stage.update();
+	});
 });
 
 var handleKeyUp = function( e ) {
@@ -116,7 +143,7 @@ var game_init = function() {
 var handleComplete = function() {
 
 	if (stage) {
-		
+
 		updateCanvasSize();
 		var planets = clientGame.game.board.planets;
 		console.log("in here 1");
@@ -143,16 +170,16 @@ var handleComplete = function() {
 			
 			switch ( planets[p].w ) {
 				case 1:
-					planet.scaleX = 0.4179;
-					planet.scaleY = 0.4179;
-					planet.x = 19;;
-					planet.y = -26;
+					planet.scaleX = 0.45;
+					planet.scaleY = 0.45;
+					planet.x = 12;;
+					planet.y = -28;
 					break;
 				case 2:
-					planet.scaleX = 0.9467;
-					planet.scaleY = 0.9467;
-					planet.x = 10;
-					planet.y = -20;
+					planet.scaleX = 1;
+					planet.scaleY = 1;
+					planet.x = 0;
+					planet.y = -25;
 					break;
 			}
 
@@ -171,14 +198,9 @@ var handleComplete = function() {
 			board.addChild( tile );
 		}
 
-		var boardWidth = 7 * sWid * scale;
-		board.x = (window.innerWidth - boardWidth) / 2.0;
-		// start with board centered on stage;
-		board.scaleX = scale;
-		board.scaleY = scale;
 		stage.addChild( board );
-
-		stage.update();
+		
+		zoomBoard(1); // this is a stand in, but it centers our board and doesn't copy/paste code
 	}
 };
 
@@ -189,8 +211,11 @@ $(window).resize(function () {
 
 var zoomBoard = function(magnify) {
 	scale *= magnify;
-	scale = Math.min(scale, 0.9);
-	scale = Math.max(scale, 0.5);
+	scale = Math.min(scale, 1);
+	scale = Math.max(scale, 0.6);
+
+	var boardWidth = 7 * sWid * scale;
+	board.x = (window.innerWidth - boardWidth) / 2.0;
 
 	board.scaleX = scale;
 	board.scaleY = scale;
@@ -212,7 +237,7 @@ var updateCanvasSize = function() {
 		ctx.canvas.width  = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
 
-		stage.update();
+		zoomBoard(1);
 	}
 };
 
