@@ -1,5 +1,6 @@
 var loader, stage, board;
-var scale = 0.5;
+var scale = 0.65;
+var move_distance = 5;
 var sWid = 262;
 
 var resizeTimer;
@@ -9,15 +10,35 @@ $(document).ready(function() {
 	board = new createjs.Container();
 
 	document.addEventListener('keyup', handleKeyUp, false);
+	document.addEventListener('keydown', handleKeyDown, false);
 });
 
 var handleKeyUp = function( e ) {
-	if (e.keyCode == 189){
-		scale *= 0.75;
-		zoomBoard();
-	} else if (e.keyCode == 187) {
-		scale *= 1.3333;
-		zoomBoard();
+	switch (e.keyCode) {
+		case 189: // dash
+			zoomBoard(0.9);
+			break;
+		case 187: // equals (plus sign)
+			zoomBoard(1.1111);
+			break;
+	}
+
+};
+
+var handleKeyDown = function( e ) {
+	switch (e.keyCode) {
+		case 37: // left arrow
+			moveBoard(-1, 0);
+			break;
+		case 38: // up arrow
+			moveBoard(0, -1);
+			break;
+		case 39:
+			moveBoard(1, 0);
+			break;
+		case 40:
+			moveBoard(0, 1);
+			break;
 	}
 };
 
@@ -150,7 +171,11 @@ var handleComplete = function() {
 			board.addChild( tile );
 		}
 
-		board.y = -200;
+		var boardWidth = 7 * sWid * scale;
+		board.x = (window.innerWidth - boardWidth) / 2.0;
+		// start with board centered on stage;
+		board.scaleX = scale;
+		board.scaleY = scale;
 		stage.addChild( board );
 
 		stage.update();
@@ -162,11 +187,23 @@ $(window).resize(function () {
 	resizeTimer = setTimeout(updateCanvasSize, 50);
  });
 
-var zoomBoard = function() {
+var zoomBoard = function(magnify) {
+	scale *= magnify;
+	scale = Math.min(scale, 0.9);
+	scale = Math.max(scale, 0.5);
+
 	board.scaleX = scale;
 	board.scaleY = scale;
+
 	stage.update();
-}
+};
+
+var moveBoard = function(right, down) {
+	board.x += (right * move_distance);
+	board.y += (down * move_distance);
+
+	stage.update();
+};
 
 var updateCanvasSize = function() {
 	if(stage) { // make sure stage exists before trying this
