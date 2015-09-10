@@ -1,38 +1,29 @@
-var loader, stage, board;
-var scale = 0.65;
-var move_distance = 5;
-var sWid = 212;
-var is_dragging = false;
-var lastMouse = { x:0, y:0 };
+var loader, stage, board, planets, tiles, scale, move_distance, sWid, is_dragging, lastMouse;
 var resizeTimer;
 
 $(document).ready(function() {
 	stage = new createjs.Stage("gameCanvas");
-	board = new createjs.Container();
 
 	document.addEventListener('keyup', handleKeyUp, false);
 	document.addEventListener('keydown', handleKeyDown, false);
 
-	// var startDrag = function(event) {
+	// start drag event
 	stage.on("stagemousedown", function(evt){
-		console.log('starting drag');
 		lastMouse.x = evt.stageX;
 		lastMouse.y = evt.stageY;
 		is_dragging = true;
 	});
 
-	// var endDrag = function(event) {
+	// end drag event
 	stage.on("stagemouseup", function(evt){
-		console.log('end drag');
 		is_dragging = false;
 	});
 
-	// var doDrag = function(event) {
+	// move board relative to mouse movement
 	stage.on("stagemousemove", function(evt){
 		if (board && is_dragging) {
-			console.log('doing drag');
-			board.x = board.x + (evt.stageX - lastMouse.x);
-			board.y = board.y + (evt.stageY - lastMouse.y);
+			board.x += (evt.stageX - lastMouse.x);
+			board.y += (evt.stageY - lastMouse.y);
 			lastMouse.x = evt.stageX;
 			lastMouse.y = evt.stageY;
 		}
@@ -100,102 +91,65 @@ var displayYourTurnMenu = function() {
 
 var game_init = function() {
 
+	set_globals();
+
+	planets = clientGame.game.board.planets;
+
 	manifest = [
-		{src: "images/game/planet_1.png", id: "planet_1"},
-		{src: "images/game/planet_2.png", id: "planet_2"},
-		{src: "images/game/planet_3.png", id: "planet_3"},
-		{src: "images/game/planet_4.png", id: "planet_4"},
-		{src: "images/game/planet_5.png", id: "planet_5"},
-		{src: "images/game/planet_6.png", id: "planet_6"},
-		{src: "images/game/planet_7.png", id: "planet_7"},
-		{src: "images/game/planet_8.png", id: "planet_8"},
-		{src: "images/game/planet_9.png", id: "planet_9"},
-		{src: "images/game/planet_10.png", id: "planet_10"},
-		{src: "images/game/planet_11.png", id: "planet_11"},
-		{src: "images/game/planet_12.png", id: "planet_12"},
-		{src: "images/game/planet_13.png", id: "planet_13"},
-		{src: "images/game/planet_14.png", id: "planet_14"},
-		{src: "images/game/planet_15.png", id: "planet_15"},
-		{src: "images/game/planet_16.png", id: "planet_16"},
-		{src: "images/game/planet_17.png", id: "planet_17"},
-		{src: "images/game/planet_18.png", id: "planet_18"},
-		{src: "images/game/planet_19.png", id: "planet_19"},
-		{src: "images/game/planet_20.png", id: "planet_20"},
-		{src: "images/game/planet_21.png", id: "planet_21"},
-		{src: "images/game/planet_22.png", id: "planet_22"},
-		{src: "images/game/planet_23.png", id: "planet_23"},
-		{src: "images/game/planet_24.png", id: "planet_24"},
-		{src: "images/game/planet_25.png", id: "planet_25"},
-		{src: "images/game/planet_26.png", id: "planet_26"},
-		{src: "images/game/planet_27.png", id: "planet_27"},
-		{src: "images/game/planet_28.png", id: "planet_28"},
-		{src: "images/game/planet_29.png", id: "planet_29"},
+		{src: "images/game/metal.png", id: "metal"},
+		{src: "images/game/water.png", id: "water"},
+		{src: "images/game/fuel.png", id: "fuel"},
+		{src: "images/game/food.png", id: "food"},
 		{src: "images/game/stars.png", id: "stars"}
 	];
 
+	for ( var p = 0; p < planets.length; p++ ) {
+		if ( planets[p].explored ) {
+			var img_id = planets[p].art;
+			manifest.push({src: "images/game/planet_" + img_id + ".png", id: "planet_" + img_id });
+		}
+	}
+
 	loader = new createjs.LoadQueue(false);
-	loader.addEventListener("complete", handleComplete);
+	loader.addEventListener("complete", initializeTiles);
 	loader.loadManifest(manifest, true);
 
 	// we need to figure out how to prevent flickering while it loads our large manifest
 };
 
-var handleComplete = function() {
+var set_globals = function() {
+	stage.removeAllChildren();
+	loader = planets = null;
+	board = new createjs.Container();
+	tiles = [];
+	scale = 0.8;
+	sWid = 212;
+	is_dragging = false;
+	lastMouse = { x:0, y:0 };
+};
+
+var initializeTiles = function() {
 
 	if (stage) {
 
 		updateCanvasSize();
-		var planets = clientGame.game.board.planets;
+
 		console.log("in here 1");
 
 		for ( var p = 0; p < planets.length; p++ ) {
-			var tile = new createjs.Container();
 			var img_width = planets[p].w * sWid;
 
-			var stars = new createjs.Shape();
-			var starsImg = loader.getResult("stars");
+			tiles.push(new createjs.Container());
+			tiles[p].name = "tile" + p;
 
-			var starOffsetX = Math.floor(Math.random() * (starsImg.width - (2 * sWid)));
-			var starOffsetY = Math.floor(Math.random() * (starsImg.height - (2 * sWid)));
+			initStars(p, img_width);
+			initPlanet(p);
+			initBorder(p, img_width);
 
-			stars.graphics.beginBitmapFill(starsImg).drawRect(starOffsetX, starOffsetY, img_width, img_width);
+			tiles[p].x = planets[p].x * sWid;
+			tiles[p].y = planets[p].y * sWid;
 
-			stars.x = starOffsetX * -1;
-			stars.y = starOffsetY * -1;
-
-			var planet = new createjs.Shape();
-			var img_id = planets[p].art;
-			var planetImg = loader.getResult("planet_" + img_id);
-			planet.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
-			
-			switch ( planets[p].w ) {
-				case 1:
-					planet.scaleX = 0.45;
-					planet.scaleY = 0.45;
-					planet.x = 12;;
-					planet.y = -28;
-					break;
-				case 2:
-					planet.scaleX = 1;
-					planet.scaleY = 1;
-					planet.x = 0;
-					planet.y = -25;
-					break;
-			}
-
-			var border = new createjs.Shape();
-			border.graphics.setStrokeStyle(15);
-			border.graphics.beginStroke("rgba(0,0,0,150)");
-			border.graphics.drawRect(0, 0, planets[p].w * sWid, planets[p].w * sWid)
-
-			tile.addChild( stars );
-			tile.addChild( planet );
-			tile.addChild( border );
-
-			tile.x = planets[p].x * sWid;
-			tile.y = planets[p].y * sWid;
-
-			board.addChild( tile );
+			board.addChild( tiles[p] );
 		}
 
 		stage.addChild( board );
@@ -209,13 +163,88 @@ $(window).resize(function () {
 	resizeTimer = setTimeout(updateCanvasSize, 50);
  });
 
+var initStars = function( planetid, img_width ) {
+	var stars = new createjs.Shape();
+
+	stars.name = "stars";
+	tiles[planetid].addChild( stars );
+
+	drawStars( planetid, img_width );
+};
+
+var drawStars = function( planetid, img_width ) {
+	var stars = tiles[planetid].getChildByName("stars");
+
+	var starsImg = loader.getResult("stars");
+	var starOffsetX = Math.floor(Math.random() * (starsImg.width - (2 * sWid)));
+	var starOffsetY = Math.floor(Math.random() * (starsImg.height - (2 * sWid)));
+
+	stars.graphics.beginBitmapFill(starsImg).drawRect(starOffsetX, starOffsetY, img_width, img_width);
+
+	stars.x = starOffsetX * -1;
+	stars.y = starOffsetY * -1;
+};
+
+var initPlanet = function ( planetid ) {
+	var planet = new createjs.Shape();
+
+	planet.name = "planet";
+	tiles[planetid].addChild( planet );
+
+	if (planets[planetid].explored){
+		drawPlanet( planetid );
+	}
+};
+
+var drawPlanet = function( planetid ) {
+	var planet = tiles[planetid].getChildByName("planet");
+
+	var planets = clientGame.game.board.planets;
+	var img_id = planets[planetid].art;
+	var planetImg = loader.getResult("planet_" + img_id);
+	
+	planet.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
+	
+	switch ( planets[planetid].w ) {
+		case 1:
+			planet.scaleX = 0.45;
+			planet.scaleY = 0.45;
+			planet.x = 12;
+			planet.y = -28;
+			break;
+		case 2:
+			planet.x = 0;
+			planet.y = -25;
+			break;
+	}
+};
+
+var initBorder = function( planetid, img_width) {
+	var border = new createjs.Shape();
+
+	border.name = "border";
+	tiles[planetid].addChild( border );
+
+	drawBorder( planetid, img_width );
+};
+
+var drawBorder = function( planetid, img_width ) {
+	var border = tiles[planetid].getChildByName("border");
+
+	border.graphics.setStrokeStyle(15);
+	border.graphics.beginStroke("rgba(0,0,0,0.9)");
+	border.graphics.drawRect(0, 0, img_width, img_width);
+};
+
 var zoomBoard = function(magnify) {
 	scale *= magnify;
 	scale = Math.min(scale, 1);
 	scale = Math.max(scale, 0.6);
 
 	var boardWidth = 7 * sWid * scale;
+	var boardHeight = 7 * sWid * scale;
 	board.x = (window.innerWidth - boardWidth) / 2.0;
+	board.y = (window.innerHeight - boardHeight) / 2.0;
 
 	board.scaleX = scale;
 	board.scaleY = scale;

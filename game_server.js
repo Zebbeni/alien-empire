@@ -3,16 +3,23 @@ var ACT_TURN_DONE = 1;
 var EVENT_ONE = 1;
 var EVENT_ALL = 2;
 
+var start_planets = {
+						2: [0, 3, 7],
+						3: [0, 3, 7, 8, 4],
+						4: [0, 3, 7, 1, 5]
+					};
+
 (function() {
 
 	module.exports.initializeGame = function( user_ids, gameid ) {
+		var num_users = user_ids.length;
 		var newGame = {
 			gameid: gameid,
-			num_players: user_ids.length,
+			num_players: num_users,
 			players: createPlayerOrder( user_ids ),
 			round: 0,
 			turn: 0,
-			board: initializeBoard( user_ids.length )
+			board: initializeBoard( num_users )
 		};
 
 		return newGame;
@@ -81,9 +88,17 @@ var EVENT_ALL = 2;
 			planet_art.splice(index, 1);
 			// generate random resources
 			board.planets[i].resources = generateResources(board.planets[i].w);
+			board.planets[i].explored = setExploredStatus(i, num_players);
 		}
 
 		return board;
+	};
+
+	/**
+	 * Returns true if planetid is in the starting set of planets
+	 */
+	var setExploredStatus = function( planetid, num_players ) {
+		return start_planets[num_players].indexOf( planetid ) == -1 ? false : true;
 	};
 
 	/**
@@ -107,7 +122,7 @@ var EVENT_ALL = 2;
 	/**
 	 * Assumes the action type of the player is the ending of a turn
 	 * Returns the appropriate event and game update
-	 * Returns a value indicating the sockets to update, the socket 
+	 * Returns a value indicating the sockets to update, the socket
 	 * event to call, and a game object update.
 	 *
 	 * @action {action} action object sent from client
