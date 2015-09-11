@@ -12,11 +12,6 @@ var status = 0; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
 //ADDED FOR EASEL STUFF
 var stage = null;
 
-//TODO: Create game stages, set their visibilities to hidden
-// var init = function() {
-//     document.getElementById('lobby-div').style.visibility = "hidden";
-// };
-
 var displayUsers = function() {
     var usersScrollItems = '';
 

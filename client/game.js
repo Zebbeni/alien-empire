@@ -1,8 +1,11 @@
 var loader, stage, board, planets, tiles, scale, move_distance, sWid, is_dragging, lastMouse;
 var resizeTimer;
+var is_load_complete = false;
 
 $(document).ready(function() {
+
 	stage = new createjs.Stage("gameCanvas");
+	board = new createjs.Container();
 
 	document.addEventListener('keyup', handleKeyUp, false);
 	document.addEventListener('keydown', handleKeyDown, false);
@@ -89,11 +92,14 @@ var displayYourTurnMenu = function() {
 	document.getElementById('your-turn-div').style.visibility = "visible";
 };
 
-var game_init = function() {
+var async = function(fn, callback){
+	setTimeout(function() {
+		fn();
+		callback();
+	}, 0);
+};
 
-	set_globals();
-
-	planets = clientGame.game.board.planets;
+var load_all_images = function() {
 
 	manifest = [
 		{src: "images/game/metal.png", id: "metal"},
@@ -103,23 +109,57 @@ var game_init = function() {
 		{src: "images/game/stars.png", id: "stars"}
 	];
 
-	for ( var p = 0; p < planets.length; p++ ) {
-		if ( planets[p].explored ) {
-			var img_id = planets[p].art;
-			manifest.push({src: "images/game/planet_" + img_id + ".png", id: "planet_" + img_id });
-		}
+	for ( var p = 1; p <= 29; p++ ) {
+		manifest.push({src: "images/game/planet_" + p + ".png", id: "planet_" + p });
 	}
 
 	loader = new createjs.LoadQueue(false);
-	loader.addEventListener("complete", initializeTiles);
+	// loader.addEventListener("complete", initializeTiles);
+	// loader.addEventListener("complete", setLoadComplete );
 	loader.loadManifest(manifest, true);
+};
+
+var setLoadComplete = function() {
+	is_load_complete = true;
+	console.log('load assets complete');
+};
+
+var game_init = function() {
+
+	set_globals();
+
+	planets = clientGame.game.board.planets;
+
+	while(!is_load_complete) {
+		console.log('load assets not complete yet');
+	}
+
+	initializeTiles();
+	// manifest = [
+	// 	{src: "images/game/metal.png", id: "metal"},
+	// 	{src: "images/game/water.png", id: "water"},
+	// 	{src: "images/game/fuel.png", id: "fuel"},
+	// 	{src: "images/game/food.png", id: "food"},
+	// 	{src: "images/game/stars.png", id: "stars"}
+	// ];
+
+	// for ( var p = 0; p < planets.length; p++ ) {
+	// 	if ( planets[p].explored ) {
+	// 		var img_id = planets[p].art;
+	// 		manifest.push({src: "images/game/planet_" + img_id + ".png", id: "planet_" + img_id });
+	// 	}
+	// }
+
+	// loader = new createjs.LoadQueue(false);
+	// loader.addEventListener("complete", initializeTiles);
+	// loader.loadManifest(manifest, true);
 
 	// we need to figure out how to prevent flickering while it loads our large manifest
 };
 
 var set_globals = function() {
 	stage.removeAllChildren();
-	loader = planets = null;
+	planets = null;
 	board = new createjs.Container();
 	tiles = [];
 	scale = 0.8;
