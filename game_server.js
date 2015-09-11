@@ -153,7 +153,7 @@ var start_planets = {
 	 * @return true or false
 	 */ 
 	var isEndCondition = function( game ) {
-		return ( game.round >= 2 );
+		return ( game.round >= 1 );
 	};
 
 }());

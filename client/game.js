@@ -126,6 +126,7 @@ var set_globals = function() {
 	sWid = 212;
 	is_dragging = false;
 	lastMouse = { x:0, y:0 };
+	stage.update();
 };
 
 var initializeTiles = function() {
@@ -156,6 +157,8 @@ var initializeTiles = function() {
 		
 		zoomBoard(1); // this is a stand in, but it centers our board and doesn't copy/paste code
 	}
+
+	moveToGame(); // only when game board is done being loaded and drawn, move to game
 };
 
 $(window).resize(function () { 

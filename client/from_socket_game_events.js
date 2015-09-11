@@ -9,7 +9,7 @@ socket.on('room game starting', function(gameInfo) {
     
     game_init();
     // THIS IS WHERE WE TRIGGER THE CLIENT TO START THE GAME UX
-    moveToGame();
+    // moveToGame();
 
     toggleTurnMenu();
 });
@@ -21,6 +21,7 @@ socket.on('turn end', function(action, update) {
 
 socket.on('game end', function(action, update) {
     clientGame = null;
+    set_globals();
     moveToLobby();
 });
 
