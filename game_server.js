@@ -81,11 +81,27 @@ var start_planets = {
 		planet_art = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
 					  17,18,19,20,21,22,23,24,25,26,27,28,29];
 
+		planet_names = ["Ezund", "Azuma", "Friani", "Azonimi", 
+						"Azorsi", "Osuido", "Divyr", "Brie",
+						"Engelina", "Krurn", "Yash", "Crarah",
+						"Omeezah", "Fel", "Albya", "Pewbafel",
+						"Led", "Lah", "Droono", "Thie",
+						"Brund", "Guskulk", "Khey", "Ottaigode",
+						"Maxi", "Rhotode", "Kreek", "Heye",
+						"Flel", "Frunif", "Tain", "Roonoma",
+						"Tafea", "Sler", "Olugong", "Uthejon"];
+
 		for ( var i = 0; i < board.planets.length; i++) {
 			// pick random planet art index
 			var index = Math.floor(Math.random() * planet_art.length);
 			board.planets[i].art = planet_art[ index ];
 			planet_art.splice(index, 1);
+
+			// pick random planet name index
+			index = Math.floor(Math.random() * planet_names.length);
+			board.planets[i].name = planet_names[ index ];
+			planet_names.splice(index, 1);
+
 			// generate random resources
 			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].explored = setExploredStatus(i, num_players);

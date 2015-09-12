@@ -28,7 +28,7 @@ var load_assets = function() {
 		is_all_loaded = true;
 	}
 	else {
-		drawBoard();
+		handleComplete();
 	}
 };
 
@@ -52,8 +52,7 @@ var initProgressBar = function() {
 	loadProgress.alpha = 0.9;
 	loadProgress.addChild(loadProgressBar);
 
-	loadProgress.x = (window.innerWidth / 2.0) - 100;
-	loadProgress.y = (window.innerHeight / 2.0) - 100;
+	centerProgressBar();
 
 };
 
@@ -61,6 +60,13 @@ var addProgressBar = function() {
 	setCanvasSize();
 	stage.addChild(loadProgress);
 	stage.update();
+};
+
+var centerProgressBar = function() {
+	if (loadProgress) {
+		loadProgress.x = (window.innerWidth / 2.0) - 100;
+		loadProgress.y = (window.innerHeight / 2.0) - 100;
+	}
 };
 
 var handleProgress = function() {

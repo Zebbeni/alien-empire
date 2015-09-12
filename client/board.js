@@ -19,11 +19,13 @@ var zoomBoard = function(magnify) {
  * Centers board in browser window
  */
 var centerBoard = function() {
-	var boardWidth = 7 * sWid * scale;
-	var boardHeight = 7 * sWid * scale;
-	board.x = (window.innerWidth - boardWidth) / 2.0;
-	board.y = (window.innerHeight - boardHeight) / 2.0;
-	stage.update();
+	if (board) {
+		var boardWidth = 7 * sWid * scale;
+		var boardHeight = 7 * sWid * scale;
+		board.x = (window.innerWidth - boardWidth) / 2.0;
+		board.y = (window.innerHeight - boardHeight) / 2.0;
+		stage.update();
+	}
 };
 
 /**

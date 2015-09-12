@@ -86,7 +86,7 @@ var game_init = function() {
  * TODO: this is a mess. We should split this into a few functions
  */
 var set_globals = function() {
-	stage.removeAllChildren();
+	stage.removeChild(board);
 	planets = null;
 	board = new createjs.Container();
 	tiles = [];

@@ -5,6 +5,8 @@
  *		border
  */
 
+var sectors = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
 /**
  * Create a tile, add it to the list of tiles, and initialize its children
  */
@@ -18,6 +20,7 @@ var initTile = function( planetid ) {
 
 	initStars(planetid);
 	initPlanet(planetid);
+	initNametext(planetid);
 	initBorder(planetid);
 
 	board.addChild( tiles[planetid] );
@@ -31,6 +34,7 @@ var drawTile = function(planetid) {
 
 	drawStars( planetid, img_width );
 	drawPlanet( planetid );
+	drawNametext( planetid );
 	drawBorder( planetid, img_width );
 };
 
@@ -92,6 +96,49 @@ var drawPlanet = function( planetid ) {
 			case 2:
 				planet.x = 0;
 				planet.y = -25;
+				break;
+		}
+	}
+};
+
+/**
+ * Initialize name text, add to tile container
+ */
+var initNametext = function( planetid ) {
+	var nametext = new createjs.Text("Sector " + sectors.charAt(planetid), "25px Arial", "white");
+	nametext.name = "nametext";
+	tiles[planetid].addChild( nametext );
+};
+
+var drawNametext = function( planetid ) {
+	var nametext = tiles[planetid].getChildByName("nametext");
+
+	nametext.textAlign = "center";
+	nametext.x = ( sWid * planets[planetid].w ) / 2.0;
+
+	if ( planets[planetid].explored ){
+
+		nametext.text = planets[planetid].name;
+
+		switch ( planets[planetid].w ) {
+			case 1:
+				nametext.y = 126;
+				break;
+			case 2:
+				nametext.y = 315;
+				break;
+		}
+	}
+	else {
+
+		nametext.alpha = 0.5;
+
+		switch ( planets[planetid].w ) {
+			case 1:
+				nametext.y = 89;
+				break;
+			case 2:
+				nametext.y = 197;
 				break;
 		}
 	}
