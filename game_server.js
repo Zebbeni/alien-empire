@@ -3,15 +3,23 @@ var ACT_TURN_DONE = 1;
 var EVENT_ONE = 1;
 var EVENT_ALL = 2;
 
+var start_planets = {
+						2: [0, 3, 7],
+						3: [0, 3, 7, 8, 4],
+						4: [0, 3, 7, 1, 5]
+					};
+
 (function() {
 
 	module.exports.initializeGame = function( user_ids, gameid ) {
+		var num_users = user_ids.length;
 		var newGame = {
 			gameid: gameid,
-			num_players: user_ids.length,
+			num_players: num_users,
 			players: createPlayerOrder( user_ids ),
 			round: 0,
-			turn: 0
+			turn: 0,
+			board: initializeBoard( num_users )
 		};
 
 		return newGame;
@@ -44,10 +52,77 @@ var EVENT_ALL = 2;
 		return players;
 	};
 
+	var initializeBoard = function( num_players ) {
+		var board = {
+			// TODO: add explored attributes
+			planets: [
+				{ x: 3, y: 3, w: 1 },
+				{ x: 2, y: 1, w: 2 },
+				{ x: 4, y: 1, w: 1 },
+				{ x: 4, y: 2, w: 2 },
+				{ x: 5, y: 4, w: 1 },
+				{ x: 3, y: 4, w: 2 },
+				{ x: 2, y: 5, w: 1 },
+				{ x: 1, y: 3, w: 2 },
+				{ x: 1, y: 2, w: 1 },
+				{ x: 0, y: 0, w: 2 },
+				{ x: 2, y: 0, w: 1 },
+				{ x: 5, y: 0, w: 2 },
+				{ x: 6, y: 2, w: 1 },
+				{ x: 5, y: 5, w: 2 },
+				{ x: 4, y: 6, w: 1 },
+				{ x: 0, y: 5, w: 2 },
+				{ x: 0, y: 4, w: 1 }
+			]
+			// TODO: add borders array
+		};
+
+		//randomly assign 
+		planet_art = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
+					  17,18,19,20,21,22,23,24,25,26,27,28,29];
+
+		for ( var i = 0; i < board.planets.length; i++) {
+			// pick random planet art index
+			var index = Math.floor(Math.random() * planet_art.length);
+			board.planets[i].art = planet_art[ index ];
+			planet_art.splice(index, 1);
+			// generate random resources
+			board.planets[i].resources = generateResources(board.planets[i].w);
+			board.planets[i].explored = setExploredStatus(i, num_players);
+		}
+
+		return board;
+	};
+
+	/**
+	 * Returns true if planetid is in the starting set of planets
+	 */
+	var setExploredStatus = function( planetid, num_players ) {
+		return start_planets[num_players].indexOf( planetid ) == -1 ? false : true;
+	};
+
+	/**
+	 * 
+	 */
+	var generateResources = function( size ) {
+		// num_resources = 3, 4 for planets with w = 2, 1 or 2 for planets of w = 1
+		var num_resources = ( size * 2 ) - 1 + Math.floor( Math.random() * 2 );
+		var resources = [];
+
+		for ( var i = 0; i < num_resources; i++ ) {
+			var new_res = { 
+				type: Math.floor( Math.random() * 4 ),
+		 		num: 1 
+			};
+			resources.push( new_res )
+		}
+		return resources;
+	};
+
 	/**
 	 * Assumes the action type of the player is the ending of a turn
 	 * Returns the appropriate event and game update
-	 * Returns a value indicating the sockets to update, the socket 
+	 * Returns a value indicating the sockets to update, the socket
 	 * event to call, and a game object update.
 	 *
 	 * @action {action} action object sent from client
@@ -78,7 +153,7 @@ var EVENT_ALL = 2;
 	 * @return true or false
 	 */ 
 	var isEndCondition = function( game ) {
-		return ( game.round >= 2 );
+		return ( game.round >= 1 );
 	};
 
 }());

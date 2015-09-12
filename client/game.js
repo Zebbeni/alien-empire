@@ -1,10 +1,47 @@
-var loader, stage, planet;
-
+var stage, board, planets, tiles, scale, move_distance, sWid, is_dragging;
 var resizeTimer;
+var lastMouse = { x:0, y:0 };
+var move_distance = 5;
+var sWid = 212;
+var is_dragging = false;
 
 $(document).ready(function() {
-	stage = new createjs.Stage("gameCanvas");
+
+	init_stage();
+
+	document.addEventListener('keyup', handleKeyUp, false);
+	document.addEventListener('keydown', handleKeyDown, false);
+
 });
+
+var handleKeyUp = function( e ) {
+	switch (e.keyCode) {
+		case 189: // dash
+			zoomBoard(0.9);
+			break;
+		case 187: // equals (plus sign)
+			zoomBoard(1.1111);
+			break;
+	}
+
+};
+
+var handleKeyDown = function( e ) {
+	switch (e.keyCode) {
+		case 37: // left arrow
+			moveBoard(-1, 0, move_distance);
+			break;
+		case 38: // up arrow
+			moveBoard(0, -1, move_distance);
+			break;
+		case 39:
+			moveBoard(1, 0, move_distance);
+			break;
+		case 40:
+			moveBoard(0, 1, move_distance);
+			break;
+	}
+};
 
 var submitTurnDone = function(name) {
     socket_submitTurnDone();
@@ -36,62 +73,46 @@ var displayYourTurnMenu = function() {
 };
 
 var game_init = function() {
-
-	manifest = [
-		{src: "images/game/planet_10.jpg", id: "planet_10"},
-		{src: "images/game/planet_29.jpg", id: "planet_29"}
-	];
-
-	loader = new createjs.LoadQueue(false);
-	loader.addEventListener("complete", handleComplete);
-	loader.loadManifest(manifest, true);
-
-	// we need to figure out how to prevent flickering while it loads our large manifest
+	set_globals();
+	planets = clientGame.game.board.planets;
+	load_assets();
 };
 
-var handleComplete = function() {
+/**
+ * Called on game_init. Clears old game globals, re-sets defaults.
+ *
+ * TODO: this is a mess. We should split this into a few functions
+ */
+var set_globals = function() {
+	stage.removeAllChildren();
+	planets = null;
+	board = new createjs.Container();
+	tiles = [];
+	scale = 0.8;
+	stage.update();
+};
+
+/**
+ * Calls init and draw functions for each tile in game board
+ */
+var drawBoard = function() {
 
 	if (stage) {
-		updateCanvasSize();
 
-		planetImg = loader.getResult("planet_10");
+		setCanvasSize();
 
-		planet = new createjs.Shape();
+		for ( var p = 0; p < planets.length; p++ ) {	
 
-		var x = (window.innerWidth / 2.0) - (planetImg.width / 2.0);
-		var y = (window.innerHeight / 2.0) - (planetImg.height / 2.0);
+			initTile(p);
+			drawTile(p);
 
-		planet.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
-		planet.x = x;
-		planet.y = y;
-
-		stage.addChild(planet);
-
-		stage.update();
-	}
-};
-
-$(window).resize(function () { 
-	clearTimeout(resizeTimer);
-	resizeTimer = setTimeout(updateCanvasSize, 50);
- });
-
-var updateCanvasSize = function() {
-	if(stage) { // make sure stage exists before trying this
-		var gameCanvas = document.getElementById('gameCanvas');
-		var ctx = gameCanvas.getContext("2d");
-		ctx.canvas.width  = window.innerWidth;
-		ctx.canvas.height = window.innerHeight;
-
-		if (planet) {
-			var x = (window.innerWidth / 2.0) - (planetImg.width / 2.0);
-			var y = (window.innerHeight / 2.0) - (planetImg.height / 2.0);
-			planet.x = x;
-			planet.y = y;
-			stage.addChild(planet);
 		}
 
-		stage.update();
+		stage.addChild( board );
+		
+		zoomBoard(1); 
 	}
+
+	moveToGame(); // only when game board is done being loaded and drawn, move to game
 };
 
