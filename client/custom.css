@@ -1,12 +1,12 @@
 *{
 	border: none;
 	font-size: 11pt;
-	color: rgba(255, 255, 255, .8);
+	/*color: rgba(255, 255, 255, .8);*/
 	outline: none;
 }
 
 html {
-	background: url(images/space_background.jpg) no-repeat center center fixed;
+	background: url(images/space_background_white.jpg) no-repeat center bottom fixed;
 	-webkit-background-size: cover;
   	-moz-background-size: cover;
   	-o-background-size: cover;
@@ -19,7 +19,6 @@ td, div, input {
 }
 
 form {
-/*	height: 100%;*/
 	width: 100%;
 }
 
@@ -34,7 +33,7 @@ table {
 
 #text-title-div {
 	font-size: 23pt;
-	color: rgba(131, 203, 180, .5);
+	color: rgba(131, 203, 180, .9);
 }
 
 #login-div {
@@ -51,12 +50,12 @@ table {
 	position: relative;
 	left: 94%;
 	top: -5px;
-	color: rgba(131, 203, 180, .6);
+	color: rgb(77, 183, 193);
 	background: rgba(0,0,0,0);
 }
 
 #logout-button:hover {
-	color: rgba(131, 203, 180, 1);
+	color: rgb(97, 203, 213);
 }
 
 #create-game-button {
@@ -65,13 +64,13 @@ table {
 	height: 50px;
 	margin: 10px;
 	padding: 5px;
-	background: rgba(127, 233, 243, .8);
+	background: rgb(127, 233, 243);
 	font-weight: bold;
 	color: black;
 }
 
 #create-game-button:hover{
-	background: rgba(127, 233, 243, 1);
+	background: rgb(137, 243, 253);
 }
 
 #main-div {
@@ -114,7 +113,7 @@ table {
 	width: 100%;
 	height: 100%;
 	border-radius: 0px;
-	background: rgba(0, 0, 0, .8);
+	background: rgba(255, 255, 255, .8);
 }
 
 #users-div, #chat-div, #games-div {
@@ -164,11 +163,11 @@ table {
 	bottom: 10px;
 	font-size: 30pt;
 	color: black;
-	background: rgba(77, 183, 193, .8);
+	background: rgb(77, 183, 193);
 }
 
 #staging-leave-button:hover {
-	background: rgba(77, 183, 193, 1);
+	background: rgb(97, 203, 213);
 }
 
 #staging-ready-button {
@@ -179,15 +178,11 @@ table {
 	bottom: 80px;
 	font-size: 30pt;
 	color: black;
-	background: rgba(127, 233, 243, .8);
+	background: rgb(127, 233, 243);
 }
 
 #staging-ready-button:hover {
-	background: rgba(127, 233, 243, 1);
-}
-
-#staging-ready-button:hover {
-	background: rgba(127, 233, 243, 1);
+	background: rgb(137, 243, 253);
 }
 
 #messages-div {
@@ -200,7 +195,7 @@ table {
 #staging-messages-div {
 	width: 300px;
 	height: 470px;
-	background: rgba(0, 0, 0, 0.5);
+	background: rgba(0, 0, 0, 0.2);
 }
 
 #staging-users-div {
@@ -210,7 +205,7 @@ table {
 	width: 150px;
 	height: 105px;
 	padding: 10px;
-	background: rgba(0, 0, 0, 0.5);
+	background: rgba(0, 0, 0, 0.2);
 }
 
 .msg-server-td, .msg-self-td, .msg-user-td, .msg-content-td {
@@ -221,7 +216,7 @@ table {
 
 .msg-server-td {
 	text-align: center;
-	color: rgb(100,100,100);
+	color: rgb(150,150,150);
 }
 
 .msg-self-td, .msg-user-td {

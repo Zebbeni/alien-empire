@@ -1,4 +1,4 @@
-var loader, stage, board, planets, tiles, scale, move_distance, sWid, is_dragging, lastMouse;
+var stage, board, planets, tiles, scale, move_distance, sWid, is_dragging, lastMouse;
 var resizeTimer;
 
 $(document).ready(function() {
@@ -90,36 +90,14 @@ var displayYourTurnMenu = function() {
 };
 
 var game_init = function() {
-
 	set_globals();
-
 	planets = clientGame.game.board.planets;
-
-	manifest = [
-		{src: "images/game/metal.png", id: "metal"},
-		{src: "images/game/water.png", id: "water"},
-		{src: "images/game/fuel.png", id: "fuel"},
-		{src: "images/game/food.png", id: "food"},
-		{src: "images/game/stars.png", id: "stars"}
-	];
-
-	for ( var p = 0; p < planets.length; p++ ) {
-		if ( planets[p].explored ) {
-			var img_id = planets[p].art;
-			manifest.push({src: "images/game/planet_" + img_id + ".png", id: "planet_" + img_id });
-		}
-	}
-
-	loader = new createjs.LoadQueue(false);
-	loader.addEventListener("complete", initializeTiles);
-	loader.loadManifest(manifest, true);
-
-	// we need to figure out how to prevent flickering while it loads our large manifest
+	load_assets();
 };
 
 var set_globals = function() {
 	stage.removeAllChildren();
-	loader = planets = null;
+	planets = null;
 	board = new createjs.Container();
 	tiles = [];
 	scale = 0.8;
