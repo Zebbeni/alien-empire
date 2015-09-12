@@ -126,7 +126,6 @@ var updateMessagesHtml = function( messages, div_id ) {
 //update lobby stage, make it visible, and hide login stage
 var moveToLobby = function() {
     document.getElementById('login-div').style.visibility = "hidden";
-    // document.getElementById('game-canvas-div').style.visibility = "hidden";
     document.getElementById('your-turn-div').style.visibility = "hidden";
     document.getElementById('lobby-div').style.visibility = "visible";
     document.getElementById('logout-button').style.visibility = "visible";
@@ -137,11 +136,10 @@ var moveToLobby = function() {
 
 var moveToGame = function() {
     document.getElementById('screen-div').style.visibility = "hidden";
-    // document.getElementById('game-canvas-div').style.visibility = "visible";
-    $("#lobby-div").animate({top: '-850px'}, 1000);
     $("#logout-button").animate({top: '-880px'}, 500);
     $("#staging-div").animate({top: '-800px'}, 500);
     $("#main-div").animate({top: '-1000px'}, 500);
+    $("#lobby-div").animate({top: '-850px'}, 1000, load_assets);
 };
 
 var initializeLobby = function(users, newMsg, games) {

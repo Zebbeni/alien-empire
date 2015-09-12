@@ -14,6 +14,8 @@ $(window).resize(function () {
 var init_stage = function() {
 	
 	stage = new createjs.Stage("gameCanvas");
+	
+	initProgressBar();
 
 	// start drag event
 	stage.on("stagemousedown", function(evt){
