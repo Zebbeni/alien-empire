@@ -311,7 +311,7 @@ table {
 	position: fixed; bottom: 10px;
 	display: block;
 	font-size: 9pt;
-	color: rgba(131, 203, 180, .3);
+	color: rgba(161, 233, 210, .5);
 	text-align: center;
 	width: 100%;
 }
