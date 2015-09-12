@@ -53,7 +53,7 @@ var initProgressBar = function() {
 	loadProgress.addChild(loadProgressBar);
 
 	loadProgress.x = (window.innerWidth / 2.0) - 100;
-	loadProgress.y = (window.innerHeight / 2.0) - 50;
+	loadProgress.y = (window.innerHeight / 2.0) - 100;
 
 };
 
