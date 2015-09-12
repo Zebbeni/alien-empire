@@ -93,6 +93,7 @@ var game_init = function() {
 	set_globals();
 	planets = clientGame.game.board.planets;
 	load_assets();
+	setCanvasSize();
 };
 
 var set_globals = function() {
@@ -101,19 +102,16 @@ var set_globals = function() {
 	board = new createjs.Container();
 	tiles = [];
 	scale = 0.8;
+	move_distance = 5;
 	sWid = 212;
 	is_dragging = false;
 	lastMouse = { x:0, y:0 };
 	stage.update();
 };
 
-var initializeTiles = function() {
+var drawBoard = function() {
 
 	if (stage) {
-
-		updateCanvasSize();
-
-		console.log("in here 1");
 
 		for ( var p = 0; p < planets.length; p++ ) {
 			var img_width = planets[p].w * sWid;
@@ -141,7 +139,7 @@ var initializeTiles = function() {
 
 $(window).resize(function () { 
 	clearTimeout(resizeTimer);
-	resizeTimer = setTimeout(updateCanvasSize, 50);
+	resizeTimer = setTimeout(setCanvasSize, 50);
  });
 
 var initStars = function( planetid, img_width ) {
@@ -222,32 +220,36 @@ var zoomBoard = function(magnify) {
 	scale = Math.min(scale, 1);
 	scale = Math.max(scale, 0.6);
 
+	board.scaleX = scale;
+	board.scaleY = scale;
+
+	centerBoard();
+
+	stage.update();
+};
+
+var centerBoard = function() {
 	var boardWidth = 7 * sWid * scale;
 	var boardHeight = 7 * sWid * scale;
 	board.x = (window.innerWidth - boardWidth) / 2.0;
 	board.y = (window.innerHeight - boardHeight) / 2.0;
-
-	board.scaleX = scale;
-	board.scaleY = scale;
-
-	stage.update();
 };
 
 var moveBoard = function(right, down) {
-	board.x += (right * move_distance);
-	board.y += (down * move_distance);
+	board.x = board.x + (right * move_distance);
+	board.y = board.y + (down * move_distance);
 
 	stage.update();
 };
 
-var updateCanvasSize = function() {
+var setCanvasSize = function() {
 	if(stage) { // make sure stage exists before trying this
 		var gameCanvas = document.getElementById('gameCanvas');
 		var ctx = gameCanvas.getContext("2d");
 		ctx.canvas.width  = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
-
-		zoomBoard(1);
+		centerBoard();
+		stage.update();
 	}
 };
 

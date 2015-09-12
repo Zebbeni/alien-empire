@@ -17,12 +17,12 @@ var load_assets = function() {
 		}
 
 		loader = new createjs.LoadQueue(false);
-		loader.addEventListener("complete", initializeTiles);
+		loader.addEventListener("complete", drawBoard);
 		loader.loadManifest(manifest, true);
 
 		is_all_loaded = true;
 	}
 	else {
-		initializeTiles();
+		drawBoard();
 	}
 };
