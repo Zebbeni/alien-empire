@@ -31,6 +31,15 @@ $(document).ready(function() {
 	});
 });
 
+/**
+ * Periodically checks to see if window has been resized. 
+ * Calls setCanvasSize again if so.
+ */ 
+$(window).resize(function () { 
+	clearTimeout(resizeTimer);
+	resizeTimer = setTimeout(setCanvasSize, 50);
+ });
+
 var handleKeyUp = function( e ) {
 	switch (e.keyCode) {
 		case 189: // dash
@@ -93,9 +102,13 @@ var game_init = function() {
 	set_globals();
 	planets = clientGame.game.board.planets;
 	load_assets();
-	setCanvasSize();
 };
 
+/**
+ * Called on game_init. Clears old game globals, re-sets defaults.
+ *
+ * TODO: this is a mess. We should split this into a few functions
+ */
 var set_globals = function() {
 	stage.removeAllChildren();
 	planets = null;
@@ -109,48 +122,72 @@ var set_globals = function() {
 	stage.update();
 };
 
+/**
+ * Calls init and draw functions for each tile in game board
+ */
 var drawBoard = function() {
 
 	if (stage) {
 
-		for ( var p = 0; p < planets.length; p++ ) {
-			var img_width = planets[p].w * sWid;
+		setCanvasSize();
 
-			tiles.push(new createjs.Container());
-			tiles[p].name = "tile" + p;
+		for ( var p = 0; p < planets.length; p++ ) {	
 
-			initStars(p, img_width);
-			initPlanet(p);
-			initBorder(p, img_width);
+			initTile(p);
+			drawTile(p);
 
-			tiles[p].x = planets[p].x * sWid;
-			tiles[p].y = planets[p].y * sWid;
-
-			board.addChild( tiles[p] );
 		}
 
 		stage.addChild( board );
 		
-		zoomBoard(1); // this is a stand in, but it centers our board and doesn't copy/paste code
+		zoomBoard(1); 
 	}
 
 	moveToGame(); // only when game board is done being loaded and drawn, move to game
 };
 
-$(window).resize(function () { 
-	clearTimeout(resizeTimer);
-	resizeTimer = setTimeout(setCanvasSize, 50);
- });
+/**
+ * Create a tile, add it to the list of tiles, and initialize its children
+ */
+var initTile = function( planetid ) {
+	
+	tiles.push(new createjs.Container());
 
-var initStars = function( planetid, img_width ) {
-	var stars = new createjs.Shape();
+	tiles[planetid].name = "tile" + planetid;
+	tiles[planetid].x = planets[planetid].x * sWid;
+	tiles[planetid].y = planets[planetid].y * sWid;
 
-	stars.name = "stars";
-	tiles[planetid].addChild( stars );
+	initStars(planetid);
+	initPlanet(planetid);
+	initBorder(planetid);
 
-	drawStars( planetid, img_width );
+	board.addChild( tiles[planetid] );
 };
 
+/**
+ * Set img_width of tile, call draw functions for each child
+ */
+var drawTile = function(planetid) {
+	var img_width = planets[planetid].w * sWid;
+
+	drawStars( planetid, img_width );
+	drawPlanet( planetid );
+	drawBorder( planetid, img_width );
+};
+
+/**
+ * Initialize stars shape, add to tile container
+ */
+var initStars = function( planetid) {
+	var stars = new createjs.Shape();
+	stars.name = "stars";
+	tiles[planetid].addChild( stars );
+};
+
+/**
+ * Draws stars by selecting a random section of the stars image
+ * TODO: Rotate as well as offset, so pattern less easy to discern
+ */
 var drawStars = function( planetid, img_width ) {
 	var stars = tiles[planetid].getChildByName("stars");
 
@@ -164,49 +201,55 @@ var drawStars = function( planetid, img_width ) {
 	stars.y = starOffsetY * -1;
 };
 
+/**
+ * Initialize planet shape, add to tile container
+ */
 var initPlanet = function ( planetid ) {
 	var planet = new createjs.Shape();
-
 	planet.name = "planet";
 	tiles[planetid].addChild( planet );
-
-	if (planets[planetid].explored){
-		drawPlanet( planetid );
-	}
 };
 
+/**
+ * Draws a planet if it has been explored
+ */
 var drawPlanet = function( planetid ) {
-	var planet = tiles[planetid].getChildByName("planet");
 
-	var planets = clientGame.game.board.planets;
-	var img_id = planets[planetid].art;
-	var planetImg = loader.getResult("planet_" + img_id);
-	
-	planet.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
-	
-	switch ( planets[planetid].w ) {
-		case 1:
-			planet.scaleX = 0.45;
-			planet.scaleY = 0.45;
-			planet.x = 12;
-			planet.y = -28;
-			break;
-		case 2:
-			planet.x = 0;
-			planet.y = -25;
-			break;
+	if (planets[planetid].explored) {
+
+		var planet = tiles[planetid].getChildByName("planet");
+		var img_id = planets[planetid].art;
+		var planetImg = loader.getResult("planet_" + img_id);
+		
+		planet.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
+		
+		switch ( planets[planetid].w ) {
+			case 1:
+				planet.scaleX = 0.45;
+				planet.scaleY = 0.45;
+				planet.x = 12;
+				planet.y = -28;
+				break;
+			case 2:
+				planet.x = 0;
+				planet.y = -25;
+				break;
+		}
 	}
 };
 
-var initBorder = function( planetid, img_width) {
+/**
+ * Initialize border shape, add to tile container
+ */
+var initBorder = function( planetid ) {
 	var border = new createjs.Shape();
-
 	border.name = "border";
 	tiles[planetid].addChild( border );
-
-	drawBorder( planetid, img_width );
 };
 
+/**
+ * Draw border for a tile given a planet id
+ */
 var drawBorder = function( planetid, img_width ) {
 	var border = tiles[planetid].getChildByName("border");
 
@@ -215,6 +258,10 @@ var drawBorder = function( planetid, img_width ) {
 	border.graphics.drawRect(0, 0, img_width, img_width);
 };
 
+/**
+ * Changes global variable scale (within accepted parameters)
+ * Updates board when done
+ */
 var zoomBoard = function(magnify) {
 	scale *= magnify;
 	scale = Math.min(scale, 1);
@@ -228,13 +275,20 @@ var zoomBoard = function(magnify) {
 	stage.update();
 };
 
+/**
+ * Centers board in browser window
+ */
 var centerBoard = function() {
 	var boardWidth = 7 * sWid * scale;
 	var boardHeight = 7 * sWid * scale;
 	board.x = (window.innerWidth - boardWidth) / 2.0;
 	board.y = (window.innerHeight - boardHeight) / 2.0;
+	stage.update();
 };
 
+/**
+ * Moves board given right and down shifts
+ */
 var moveBoard = function(right, down) {
 	board.x = board.x + (right * move_distance);
 	board.y = board.y + (down * move_distance);
@@ -242,13 +296,19 @@ var moveBoard = function(right, down) {
 	stage.update();
 };
 
+/**
+ * sets Canvas size (usually on window resize)
+ * re-centers the game board and updates the stage
+ */
 var setCanvasSize = function() {
 	if(stage) { // make sure stage exists before trying this
 		var gameCanvas = document.getElementById('gameCanvas');
 		var ctx = gameCanvas.getContext("2d");
 		ctx.canvas.width  = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;
+
 		centerBoard();
+
 		stage.update();
 	}
 };
