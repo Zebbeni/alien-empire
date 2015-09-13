@@ -73,6 +73,12 @@ var start_planets = {
 				{ x: 4, y: 6, w: 1 },
 				{ x: 0, y: 5, w: 2 },
 				{ x: 0, y: 4, w: 1 }
+			],
+			asteroids: [
+				{ x: 3, y: 0, r: 0},
+				{ x: 6, y: 3, r: 1},
+				{ x: 2, y: 6, r: 0},
+				{ x: 0, y: 2, r: 1}
 			]
 			// TODO: add borders array
 		};

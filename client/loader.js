@@ -13,7 +13,8 @@ var load_assets = function() {
 			{src: "images/game/water.png", id: "water"},
 			{src: "images/game/fuel.png", id: "fuel"},
 			{src: "images/game/food.png", id: "food"},
-			{src: "images/game/stars.png", id: "stars"}
+			{src: "images/game/stars.png", id: "stars"},
+			{src: "images/game/asteroids.png", id: "asteroids"}
 		];
 
 		for ( var p = 1; p <= 29; p++ ) {

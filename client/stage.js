@@ -16,6 +16,7 @@ $(window).resize(function () {
 var init_stage = function() {
 	
 	stage = new createjs.Stage("gameCanvas");
+	stage.enableMouseOver(20);
 
 	init_background();
 

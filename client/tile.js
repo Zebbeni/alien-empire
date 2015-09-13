@@ -24,7 +24,23 @@ var initTile = function( planetid ) {
 	initNametext(planetid);
 	initResources(planetid);
 	initDarkScreen(planetid);
+	initLightScreen(planetid);
 	initBorder(planetid);
+
+	tiles[planetid].mouseChildren = false;
+
+	tiles[planetid].on("mouseover", function() {
+		if (planets[planetid].explored) {
+			showLightscreen( planetid );
+			console.log("moused over planet");
+		}
+		stage.update();
+	});
+
+	tiles[planetid].on("mouseout", function() {
+		hideLightscreen( planetid );
+		stage.update();
+	});
 
 	board.addChild( tiles[planetid] );
 };
@@ -39,7 +55,8 @@ var drawTile = function(planetid) {
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
-	drawDarkScreen(planetid);
+	drawDarkScreen(planetid, img_width);
+	drawLightScreen(planetid, img_width);
 	drawBorder( planetid, img_width );
 };
 
@@ -75,6 +92,7 @@ var drawStars = function( planetid, img_width ) {
 var initPlanet = function ( planetid ) {
 	var planet = new createjs.Shape();
 	planet.name = "planet";
+
 	tiles[planetid].addChild( planet );
 };
 
@@ -131,7 +149,7 @@ var drawNametext = function( planetid ) {
 
 		switch ( planets[planetid].w ) {
 			case 1:
-				nametext.y = 123;
+				nametext.y = 121;
 				break;
 			case 2:
 				nametext.y = 315;
@@ -214,11 +232,44 @@ var drawResource = function( planetid, index, num_resources ) {
 };
 
 var initDarkScreen = function(planetid) {
-	
+	var darkscreen = new createjs.Shape();
+	darkscreen.name = "darkscreen";
+	tiles[planetid].addChild(darkscreen);
 };
 
-var drawDarkScreen = function(planetid) {
+var drawDarkScreen = function(planetid, img_width) {
+	var darkscreen = tiles[planetid].getChildByName("darkscreen");
+
+	darkscreen.graphics.beginFill("rgba(0, 0, 0, 0.4)");
+	darkscreen.graphics.drawRect(0, 0, img_width, img_width);
 	
+	if(planets[planetid].explored) {
+		darkscreen.visible = false;
+	}
+};
+
+var initLightScreen = function(planetid) {
+	var lightscreen = new createjs.Shape();
+	lightscreen.name = "lightscreen";
+	tiles[planetid].addChild(lightscreen);
+};
+
+var drawLightScreen = function(planetid, img_width) {
+	var lightscreen = tiles[planetid].getChildByName("lightscreen");
+
+	lightscreen.graphics.beginFill("rgba(255, 255, 255, 0.2)");
+	lightscreen.graphics.drawRect(0, 0, img_width, img_width);
+	lightscreen.visible = false;
+};
+
+var showLightscreen = function( planetid ) {
+	var lightscreen = tiles[planetid].getChildByName("lightscreen");
+	lightscreen.visible = true;
+};
+
+var hideLightscreen = function( planetid ) {
+	var lightscreen = tiles[planetid].getChildByName("lightscreen");
+	lightscreen.visible = false;
 };
 
 /**

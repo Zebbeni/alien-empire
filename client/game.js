@@ -103,6 +103,11 @@ var drawBoard = function() {
 
 		setCanvasSize();
 
+		var asteroids = clientGame.game.board.asteroids;
+		for ( var a = 0; a < asteroids.length; a++ ) {
+			drawAsteroid( asteroids[a] );
+		}
+
 		for ( var p = 0; p < planets.length; p++ ) {	
 
 			initTile(p);
