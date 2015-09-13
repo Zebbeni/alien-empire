@@ -127,7 +127,7 @@ var start_planets = {
 
 		for ( var i = 0; i < num_resources; i++ ) {
 			var new_res = { 
-				type: Math.floor( Math.random() * 4 ),
+				kind: Math.floor( Math.random() * 4 ),
 		 		num: 1 
 			};
 			resources.push( new_res )

@@ -114,7 +114,5 @@ var drawBoard = function() {
 		
 		zoomBoard(1); 
 	}
-
-	// moveToGame(); // only when game board is done being loaded and drawn, move to game
 };
 

@@ -6,6 +6,7 @@
  */
 
 var sectors = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var resourceIndex = ["metal", "water", "fuel", "food"];
 
 /**
  * Create a tile, add it to the list of tiles, and initialize its children
@@ -21,6 +22,8 @@ var initTile = function( planetid ) {
 	initStars(planetid);
 	initPlanet(planetid);
 	initNametext(planetid);
+	initResources(planetid);
+	initDarkScreen(planetid);
 	initBorder(planetid);
 
 	board.addChild( tiles[planetid] );
@@ -32,9 +35,11 @@ var initTile = function( planetid ) {
 var drawTile = function(planetid) {
 	var img_width = planets[planetid].w * sWid;
 
-	drawStars( planetid, img_width );
-	drawPlanet( planetid );
-	drawNametext( planetid );
+	drawStars(planetid, img_width);
+	drawPlanet(planetid);
+	drawNametext(planetid);
+	drawResources(planetid);
+	drawDarkScreen(planetid);
 	drawBorder( planetid, img_width );
 };
 
@@ -105,11 +110,14 @@ var drawPlanet = function( planetid ) {
  * Initialize name text, add to tile container
  */
 var initNametext = function( planetid ) {
-	var nametext = new createjs.Text("Sector " + sectors.charAt(planetid), "25px Arial", "white");
+	var nametext = new createjs.Text("", "25px Arial", "white");
 	nametext.name = "nametext";
 	tiles[planetid].addChild( nametext );
 };
 
+/**
+ * Draw name of planet (or 'Sector X') if planet unexplored
+ */
 var drawNametext = function( planetid ) {
 	var nametext = tiles[planetid].getChildByName("nametext");
 
@@ -118,11 +126,12 @@ var drawNametext = function( planetid ) {
 
 	if ( planets[planetid].explored ){
 
+		nametext.alpha = 1;
 		nametext.text = planets[planetid].name;
 
 		switch ( planets[planetid].w ) {
 			case 1:
-				nametext.y = 126;
+				nametext.y = 123;
 				break;
 			case 2:
 				nametext.y = 315;
@@ -131,7 +140,8 @@ var drawNametext = function( planetid ) {
 	}
 	else {
 
-		nametext.alpha = 0.5;
+		nametext.alpha = 0.7;
+		nametext.text = "Sector " + sectors.charAt(planetid);
 
 		switch ( planets[planetid].w ) {
 			case 1:
@@ -142,6 +152,73 @@ var drawNametext = function( planetid ) {
 				break;
 		}
 	}
+};
+
+var initResources = function( planetid ) {
+	for (var i = 0; i < planets[planetid].resources.length; i++) {
+		initResource( planetid, i );
+	}
+};
+
+var initResource = function( planetid, index ) {
+	var resource = new createjs.Container();
+	resource.name = "resource" + index;
+
+	var icon = new createjs.Shape();
+	icon.name = "icon";
+	resource.addChild(icon);
+
+	var structure = new createjs.Shape();
+	structure.name = "structure";
+	resource.addChild(structure);
+
+	tiles[planetid].addChild( resource );
+};
+
+var drawResources = function( planetid ) {
+	if (planets[planetid].explored) {
+		var num_resources = planets[planetid].resources.length;
+		for (var i = 0; i < num_resources; i++) {
+			drawResource( planetid, i, num_resources );
+		}
+	}
+};
+
+var drawResource = function( planetid, index, num_resources ) {
+	var resource = tiles[planetid].getChildByName("resource" + index);
+	var icon = resource.getChildByName("icon");
+
+	var kind = planets[planetid].resources[index].kind;
+	var iconImg = loader.getResult(resourceIndex[kind]);
+
+	var iconW = iconImg.width;
+	var iconH = iconImg.height;
+
+	icon.graphics.beginBitmapFill(iconImg).drawRect(0, 0, iconW, iconH);
+	
+	var midX = (planets[planetid].w * sWid) / 2.0;
+	var allW = (num_resources * iconW) + (2 * (num_resources -1));
+
+	icon.x = index * (2 + iconW);
+
+	resource.x = midX - (allW / 2.0);
+
+	switch( planets[planetid].w ) {
+		case 1:
+			resource.y = 152; 
+			break;
+		case 2:
+			resource.y = 349;
+			break;
+	}
+};
+
+var initDarkScreen = function(planetid) {
+	
+};
+
+var drawDarkScreen = function(planetid) {
+	
 };
 
 /**
