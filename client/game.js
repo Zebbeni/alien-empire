@@ -75,7 +75,9 @@ var displayYourTurnMenu = function() {
 var game_init = function() {
 	set_globals();
 	planets = clientGame.game.board.planets;
-	load_assets();
+	addProgressBar();
+	moveToGame();
+	// load_assets();
 };
 
 /**
@@ -84,7 +86,7 @@ var game_init = function() {
  * TODO: this is a mess. We should split this into a few functions
  */
 var set_globals = function() {
-	stage.removeAllChildren();
+	stage.removeChild(board);
 	planets = null;
 	board = new createjs.Container();
 	tiles = [];
@@ -113,6 +115,6 @@ var drawBoard = function() {
 		zoomBoard(1); 
 	}
 
-	moveToGame(); // only when game board is done being loaded and drawn, move to game
+	// moveToGame(); // only when game board is done being loaded and drawn, move to game
 };
 
