@@ -6,10 +6,6 @@ socket.on('room game starting', function(gameInfo) {
                         // the sferver initializes and sends the game info
     
     game_init();
-    // THIS IS WHERE WE TRIGGER THE CLIENT TO START THE GAME UX
-    // moveToGame();
-
-    toggleTurnMenu();
 });
 
 socket.on('turn end', function(action, update) {

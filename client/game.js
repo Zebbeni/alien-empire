@@ -65,19 +65,49 @@ var toggleIllegalActionMenu = function() {
 };
 
 var hideYourTurnMenu = function() {
-	document.getElementById('your-turn-div').style.visibility = "hidden";
-}
+	document.getElementById('turn-done-button').style.visibility = "hidden";
+	$("#your-turn-div").animate({ opacity: 0.00, top: "38%"}, 500, function(){
+		document.getElementById('your-turn-div').style.visibility = "hidden";
+	});
+};
 
+/**
+ * Display your turn menu (and fade back out after a few seconds)
+ */
 var displayYourTurnMenu = function() {
+	displayTurnHelpMessage();
 	document.getElementById('your-turn-div').style.visibility = "visible";
+	document.getElementById('turn-done-button').style.visibility = "visible";
+	$("#your-turn-div").animate({ opacity: 1.00, top: "40%"}, 500, function() {
+		$("#your-turn-div").delay(5000).animate({ opacity: 0.00, top: "38%"}, 500, function(){
+			document.getElementById('your-turn-div').style.visibility = "hidden";
+		});
+	});
+};
+
+/**
+ * Displays an extra message beneath the 'your turn' div telling the player
+ * what to do, based on the round #
+ */
+var displayTurnHelpMessage = function() {
+	var message;
+	switch(clientGame.game.round) {
+		case 0:
+			message = "Place a starting mine on any available resource";
+			break;
+		default:
+			message = "";
+			break;
+	}
+	document.getElementById('your-turn-help-div').innerHTML = message;
 };
 
 var game_init = function() {
 	set_globals();
 	planets = clientGame.game.board.planets;
+	clientColor = clientGame.game.players.indexOf( clientId );
 	addProgressBar();
 	moveToGame();
-	// load_assets();
 };
 
 /**

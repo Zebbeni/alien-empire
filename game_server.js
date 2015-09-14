@@ -52,6 +52,12 @@ var start_planets = {
 		return players;
 	};
 
+	// var createPlayerColors( user_ids ) {
+	// 	var colors = [];
+
+	// 	for
+	// };
+
 	var initializeBoard = function( num_players ) {
 		var board = {
 			// TODO: add explored attributes

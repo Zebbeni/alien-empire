@@ -14,7 +14,12 @@ var load_assets = function() {
 			{src: "images/game/fuel.png", id: "fuel"},
 			{src: "images/game/food.png", id: "food"},
 			{src: "images/game/stars.png", id: "stars"},
-			{src: "images/game/asteroids.png", id: "asteroids"}
+			{src: "images/game/asteroids.png", id: "asteroids"},
+
+			{src: "images/game/arrow_red.png", id: "arrow_color0"},
+			{src: "images/game/arrow_blue.png", id: "arrow_color1"},
+			{src: "images/game/arrow_green.png", id: "arrow_color2"},
+			{src: "images/game/arrow_yellow.png", id: "arrow_color3"}
 		];
 
 		for ( var p = 1; p <= 29; p++ ) {
@@ -84,4 +89,5 @@ var handleProgress = function() {
 var handleComplete = function() {
 	stage.removeChild(loadProgress);
 	drawBoard();
+	toggleTurnMenu();
 };

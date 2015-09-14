@@ -7,6 +7,7 @@
 
 var sectors = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var resourceIndex = ["metal", "water", "fuel", "food"];
+var color = ["#fb4944","#3a69fd", "#76f339", "#f8ef42"];
 
 /**
  * Create a tile, add it to the list of tiles, and initialize its children
@@ -20,26 +21,31 @@ var initTile = function( planetid ) {
 	tiles[planetid].y = planets[planetid].y * sWid;
 
 	initStars(planetid);
+	initLightScreen(planetid);
 	initPlanet(planetid);
 	initNametext(planetid);
 	initResources(planetid);
 	initDarkScreen(planetid);
-	initLightScreen(planetid);
 	initBorder(planetid);
 
 	tiles[planetid].mouseChildren = false;
 
 	tiles[planetid].on("mouseover", function() {
 		if (planets[planetid].explored) {
+			
+			tiles[planetid].mouseChildren = true;
 			showLightscreen( planetid );
-			console.log("moused over planet");
+
 		}
 		stage.update();
 	});
 
 	tiles[planetid].on("mouseout", function() {
+
+		tiles[planetid].mouseChildren = false;
 		hideLightscreen( planetid );
 		stage.update();
+
 	});
 
 	board.addChild( tiles[planetid] );
@@ -52,11 +58,11 @@ var drawTile = function(planetid) {
 	var img_width = planets[planetid].w * sWid;
 
 	drawStars(planetid, img_width);
+	drawLightScreen(planetid, img_width);
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
 	drawDarkScreen(planetid, img_width);
-	drawLightScreen(planetid, img_width);
 	drawBorder( planetid, img_width );
 };
 
@@ -140,6 +146,7 @@ var drawNametext = function( planetid ) {
 	var nametext = tiles[planetid].getChildByName("nametext");
 
 	nametext.textAlign = "center";
+	nametext.shadow = new createjs.Shadow("rgba(0,0,0,0.3)", 1, 1, 1);
 	nametext.x = ( sWid * planets[planetid].w ) / 2.0;
 
 	if ( planets[planetid].explored ){
@@ -190,6 +197,27 @@ var initResource = function( planetid, index ) {
 	structure.name = "structure";
 	resource.addChild(structure);
 
+	var arrow = new createjs.Shape();
+	arrow.name = "arrow";
+	resource.addChild(arrow);
+
+	resource.mouseChildren = false;
+	resource.mouseEnabled = true;
+
+	resource.on("mouseover", function() {
+		resource.getChildByName("arrow").visible = true;
+		// resource.y -= 1;
+		resource.shadow = new createjs.Shadow( "rgba(0,0,0,0.5)", 2, 2, 1);
+		stage.update();
+	});
+
+	resource.on("mouseout", function() {
+		resource.getChildByName("arrow").visible = false;
+		// resource.y += 1;
+		resource.shadow = null;
+		stage.update();
+	});
+
 	tiles[planetid].addChild( resource );
 };
 
@@ -204,6 +232,7 @@ var drawResources = function( planetid ) {
 
 var drawResource = function( planetid, index, num_resources ) {
 	var resource = tiles[planetid].getChildByName("resource" + index);
+
 	var icon = resource.getChildByName("icon");
 
 	var kind = planets[planetid].resources[index].kind;
@@ -213,11 +242,18 @@ var drawResource = function( planetid, index, num_resources ) {
 	var iconH = iconImg.height;
 
 	icon.graphics.beginBitmapFill(iconImg).drawRect(0, 0, iconW, iconH);
-	
+
 	var midX = (planets[planetid].w * sWid) / 2.0;
 	var allW = (num_resources * iconW) + (2 * (num_resources -1));
 
 	icon.x = index * (2 + iconW);
+
+	var arrow = resource.getChildByName("arrow");
+	var arrowImg = loader.getResult("arrow_color" + clientColor);
+	arrow.graphics.beginBitmapFill(arrowImg).drawRect(0, 0, arrowImg.width, arrowImg.height);
+	arrow.x = icon.x + 24;
+	arrow.y = icon.y - 32;
+	arrow.visible = false;
 
 	resource.x = midX - (allW / 2.0);
 
@@ -257,7 +293,7 @@ var initLightScreen = function(planetid) {
 var drawLightScreen = function(planetid, img_width) {
 	var lightscreen = tiles[planetid].getChildByName("lightscreen");
 
-	lightscreen.graphics.beginFill("rgba(255, 255, 255, 0.2)");
+	lightscreen.graphics.beginFill("rgba(255, 255, 255, 0.05)");
 	lightscreen.graphics.drawRect(0, 0, img_width, img_width);
 	lightscreen.visible = false;
 };

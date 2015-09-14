@@ -12,11 +12,6 @@ var status = 0; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
 //ADDED FOR EASEL STUFF
 var stage = null;
 
-//TODO: Create game stages, set their visibilities to hidden
-// var init = function() {
-//     document.getElementById('lobby-div').style.visibility = "hidden";
-// };
-
 var displayUsers = function() {
     var usersScrollItems = '';
 
@@ -127,6 +122,7 @@ var updateMessagesHtml = function( messages, div_id ) {
 var moveToLobby = function() {
     document.getElementById('login-div').style.visibility = "hidden";
     document.getElementById('your-turn-div').style.visibility = "hidden";
+    document.getElementById('turn-done-button').style.visibility = "hidden";
     document.getElementById('lobby-div').style.visibility = "visible";
     document.getElementById('logout-button').style.visibility = "visible";
     $("#lobby-div").animate({top: '450px'}, 500);
