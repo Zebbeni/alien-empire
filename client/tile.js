@@ -7,7 +7,7 @@
 
 var sectors = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var resourceIndex = ["metal", "water", "fuel", "food"];
-var color = ["#fb4944","#6793ff", "#76f339", "#f8ef42"];
+var color = ["#fb4944","#4a2cff", "#76f339", "#f8ef42"];
 
 /**
  * Create a tile, add it to the list of tiles, and initialize its children
@@ -33,7 +33,11 @@ var initTile = function( planetid ) {
 	tiles[planetid].on("mouseover", function() {
 		if (planets[planetid].explored) {
 			
-			tiles[planetid].mouseChildren = true;
+			// For efficiency, we should find a way to re-include this logic
+			// Currently it conflicts with updateTile logic
+
+			// tiles[planetid].mouseChildren = true;
+
 			showLightscreen( planetid );
 
 		}
@@ -42,7 +46,11 @@ var initTile = function( planetid ) {
 
 	tiles[planetid].on("mouseout", function() {
 
-		tiles[planetid].mouseChildren = false;
+		// For efficiency, we should find a way to re-include this logic
+		// Currently it conflicts with updateTile logic
+		
+		// tiles[planetid].mouseChildren = false;
+		
 		hideLightscreen( planetid );
 		stage.update();
 
@@ -64,6 +72,27 @@ var drawTile = function(planetid) {
 	drawResources(planetid);
 	drawDarkScreen(planetid, img_width);
 	drawBorder( planetid, img_width );
+};
+
+/**
+ * Update tile's interactivity and appearance based on the pending
+ * action of the client or the state of the game
+ */
+var updateTile = function(planetid) {
+	if ( pendingAction.actiontype ) {
+		switch( pendingAction.actiontype ) {
+
+			case ACT_PLACE:
+				tiles[planetid].mouseChildren = true;
+				break;
+
+			default:
+				tiles[planetid].mouseChildren = true;
+				break;
+		}
+	} else {
+		tiles[planetid].mouseChildren = false;
+	}
 };
 
 /**

@@ -52,12 +52,14 @@ var toggleTurnMenu = function() {
     	
     	setPendingAction( ACT_PLACE );
     	displayYourTurnMenu();
-    	// updateTiles();
+    	updateBoard();
 
     } else {
 
     	clearPendingAction();
     	hideYourTurnMenu();
+    	updateBoard();
+
     }
 };
 
@@ -158,3 +160,17 @@ var drawBoard = function() {
 	}
 };
 
+/**
+ * Calls update functions on each tile to update appearance, interactivity
+ * based on current pending action or game event
+ */
+var updateBoard = function() {
+
+	for ( var p = 0; p < planets.length; p++ ) {	
+
+			updateTile(p);
+
+		}
+
+	stage.update();
+};
