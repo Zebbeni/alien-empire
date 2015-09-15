@@ -52,14 +52,12 @@ var toggleTurnMenu = function() {
     	
     	setPendingAction( ACT_PLACE );
     	displayYourTurnMenu();
-    	console.log("pendingAction:", pendingAction);
     	// updateTiles();
 
     } else {
 
     	clearPendingAction();
     	hideYourTurnMenu();
-    	console.log("pendingAction:", pendingAction);
     }
 };
 

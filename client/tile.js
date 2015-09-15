@@ -7,7 +7,7 @@
 
 var sectors = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var resourceIndex = ["metal", "water", "fuel", "food"];
-var color = ["#fb4944","#3a69fd", "#76f339", "#f8ef42"];
+var color = ["#fb4944","#6793ff", "#76f339", "#f8ef42"];
 
 /**
  * Create a tile, add it to the list of tiles, and initialize its children
@@ -206,15 +206,13 @@ var initResource = function( planetid, index ) {
 
 	resource.on("mouseover", function() {
 		resource.getChildByName("arrow").visible = true;
-		// resource.y -= 1;
-		resource.shadow = new createjs.Shadow( "rgba(0,0,0,0.5)", 2, 2, 1);
+		resource.getChildByName("icon").shadow = new createjs.Shadow( color[clientColor], 0, 3, 0);
 		stage.update();
 	});
 
 	resource.on("mouseout", function() {
 		resource.getChildByName("arrow").visible = false;
-		// resource.y += 1;
-		resource.shadow = null;
+		resource.getChildByName("icon").shadow = null;
 		stage.update();
 	});
 
