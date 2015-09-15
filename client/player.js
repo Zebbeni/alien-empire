@@ -1,8 +1,26 @@
 // values used to build 
 var clientColor = null;
-var pendingActionType = null;
-var pendingActionDetails = null;
+var clientTurn = null; // number in turn sequece for this client
+
+var pendingAction = {};
+
+var clearPendingAction = function() {
+	pendingAction = {};
+};
 
 var setPendingAction = function( actiontype ) {
-	pendingAction = actiontype;
+	pendingAction.userid = clientId;
+	pendingAction.actiontype = actiontype;
+};
+
+var setPendingPlanet = function( planetid ) {
+	pendingAction.planetid = planetid;
+};
+
+var setPendingResource = function( index ) {
+	pendingAction.resourceid = id;
+};
+
+var setPendingObject = function( objecttype ) {
+	pendingAction.objecttype = objecttype;
 };

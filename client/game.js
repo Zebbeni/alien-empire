@@ -47,10 +47,19 @@ var submitTurnDone = function(name) {
 };
 
 var toggleTurnMenu = function() {
-	if( clientGame.game.players[clientGame.game.turn] == clientId) {
+
+	if( clientGame.game.turn == clientTurn ) {
+    	
+    	setPendingAction( ACT_PLACE );
     	displayYourTurnMenu();
+    	console.log("pendingAction:", pendingAction);
+    	// updateTiles();
+
     } else {
+
+    	clearPendingAction();
     	hideYourTurnMenu();
+    	console.log("pendingAction:", pendingAction);
     }
 };
 
@@ -78,7 +87,7 @@ var displayYourTurnMenu = function() {
 	document.getElementById('your-turn-div').style.visibility = "visible";
 	document.getElementById('turn-done-button').style.visibility = "visible";
 	$("#your-turn-div").animate({ opacity: 1.00, top: "40%"}, 500, function() {
-		$("#your-turn-div").delay(5000).animate({ opacity: 0.00, top: "38%"}, 500, function(){
+		$("#your-turn-div").delay(3000).animate({ opacity: 0.00, top: "38%"}, 500, function(){
 			document.getElementById('your-turn-div').style.visibility = "hidden";
 		});
 	});
@@ -105,6 +114,7 @@ var game_init = function() {
 	set_globals();
 	planets = clientGame.game.board.planets;
 	clientColor = clientGame.game.players.indexOf( clientId );
+	clientTurn = clientGame.game.players.indexOf( clientId );
 	addProgressBar();
 	moveToGame();
 };
