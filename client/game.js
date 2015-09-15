@@ -1,7 +1,6 @@
 var stage, board, planets, tiles, scale, move_distance, sWid, is_dragging;
 var resizeTimer;
 var lastMouse = { x:0, y:0 };
-var move_distance = 5;
 var is_dragging = false;
 
 $(document).ready(function() {
@@ -42,12 +41,24 @@ var handleKeyDown = function( e ) {
 	}
 };
 
+var handleClickResource = function( planetid, index ) {
+
+	console.log("clicked resource #", index, "on", planets[planetid].name, ":", planets[planetid].resources[index].kind);
+	
+	if ( pendingAction.actiontype ) {
+		setPendingPlanet(planetid);
+		setPendingResource(index);
+		displayConfirmMenu();
+	}
+};
+
 var submitTurnDone = function(name) {
     socket_submitTurnDone();
 };
 
 var toggleTurnMenu = function() {
 
+	// Stand in. Current logic only works if we assume we're on round 0
 	if( clientGame.game.turn == clientTurn ) {
     	
     	setPendingAction( ACT_PLACE );
@@ -70,6 +81,37 @@ var toggleTurnMenu = function() {
  */
 var toggleIllegalActionMenu = function() {
 	alert("That action is not possible right now");
+};
+
+var displayConfirmMenu = function() {
+	displayConfirmMessage();
+	document.getElementById('confirm-action-div').style.visibility = "visible";
+	$("#confirm-action-div").animate({ opacity: 1.00, top: "40%"}, 500 );
+};
+
+var hideConfirmMenu = function() {
+	$("#confirm-action-div").animate({ opacity: 0.00, top: "38%"}, 500, function(){
+		document.getElementById('confirm-action-div').style.visibility = "hidden";
+	});
+};
+
+var confirmPendingAction = function() {
+	console.log("on yeah, this is happening right now");
+	hideConfirmMenu();
+};
+
+var cancelPendingAction = function() {
+	hideConfirmMenu();
+};
+
+var displayConfirmMessage = function() {
+	var message;
+	var planet = planets[ pendingAction.planetid ];
+	var planetname = planet.name
+	var index = pendingAction.resourceid;
+	var resourcekind = planet.resources[index].kind;
+	message = "Place a " + english_resource[resourcekind] + " mine on " + planetname + "?";
+	document.getElementById('your-action-message-div').innerHTML = message;
 };
 
 var hideYourTurnMenu = function() {

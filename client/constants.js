@@ -1,5 +1,11 @@
 // width in pixels of a small planet tile
 var sWid = 212;
+var move_distance = 5;
+
+var RES_METAL = 0;
+var RES_WATER = 1;
+var RES_FUEL = 2;
+var RES_FOOD = 3;
 
 var ACT_TURN_DONE = 1;
 var ACT_PLACE = 2; // build anywhere, no payment
@@ -17,3 +23,7 @@ var OBJ_MINE = 1;
 // var OBJ_BASE = 4;
 // var OBJ_FLEET = 5;
 
+var english_resource = {0: "metal", 
+						1: "water", 
+						2: "fuel", 
+						3: "food" };

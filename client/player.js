@@ -18,7 +18,7 @@ var setPendingPlanet = function( planetid ) {
 };
 
 var setPendingResource = function( index ) {
-	pendingAction.resourceid = id;
+	pendingAction.resourceid = index;
 };
 
 var setPendingObject = function( objecttype ) {

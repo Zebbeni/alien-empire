@@ -245,6 +245,10 @@ var initResource = function( planetid, index ) {
 		stage.update();
 	});
 
+	resource.on("click", function() {
+		handleClickResource( planetid, index );
+	});
+
 	tiles[planetid].addChild( resource );
 };
 

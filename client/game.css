@@ -13,7 +13,7 @@
 	left:0;
 }
 
-#your-turn-div {
+#your-turn-div, #confirm-action-div {
 	opacity: 0;
 	position: fixed;
 	top: 38%;
@@ -22,7 +22,7 @@
 	margin-left: -250px;
 }
 
-#your-turn-help-div, #your-turn-message-div {
+#your-turn-help-div, #your-turn-message-div, #your-action-message-div {
 	display: table;
 	position: relative;
 	margin: 0 auto;
@@ -41,6 +41,10 @@
 	font-size: 20px;
 }
 
+#your-action-message-div {
+	font-size: 30px;
+}
+
 #turn-done-button {
 	position: fixed;
 	width: 150px;
@@ -50,6 +54,19 @@
 	margin: 10px;
 	padding: 5px;
 	background: rgba(131, 203, 180, .8);
+	font-weight: bold;
+	color: black;
+}
+
+#action-confirm-button, #action-cancel-button {
+	position: relative;
+	display: table;
+	height: 50px;
+	width: 50px;
+	top: 10px;
+	margin: 0 auto;
+	background: rgba(131, 203, 180, .8);
+	font-size: 30px;
 	font-weight: bold;
 	color: black;
 }
