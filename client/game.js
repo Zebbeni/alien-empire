@@ -2,7 +2,6 @@ var stage, board, planets, tiles, scale, move_distance, sWid, is_dragging;
 var resizeTimer;
 var lastMouse = { x:0, y:0 };
 var move_distance = 5;
-var sWid = 212;
 var is_dragging = false;
 
 $(document).ready(function() {

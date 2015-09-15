@@ -1,5 +1,3 @@
-var ACT_TURN_DONE = 1;
-
 var socket_submitTurnDone = function() {
 
 	var action = { 
