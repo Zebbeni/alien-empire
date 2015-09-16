@@ -14,6 +14,8 @@ var color = ["#fb4944","#4a2cff", "#76f339", "#f8ef42"];
  */
 var initTile = function( planetid ) {
 	
+	var planets = clientGame.game.board.planets;
+
 	tiles.push(new createjs.Container());
 
 	tiles[planetid].name = "tile" + planetid;
@@ -63,6 +65,8 @@ var initTile = function( planetid ) {
  * Set img_width of tile, call draw functions for each child
  */
 var drawTile = function(planetid) {
+
+	var planets = clientGame.game.board.planets;
 	var img_width = planets[planetid].w * sWid;
 
 	drawStars(planetid, img_width);
@@ -135,6 +139,8 @@ var initPlanet = function ( planetid ) {
  * Draws a planet if it has been explored
  */
 var drawPlanet = function( planetid ) {
+	
+	var planets = clientGame.game.board.planets;
 
 	if (planets[planetid].explored) {
 
@@ -172,6 +178,8 @@ var initNametext = function( planetid ) {
  * Draw name of planet (or 'Sector X') if planet unexplored
  */
 var drawNametext = function( planetid ) {
+
+	var planets = clientGame.game.board.planets;
 	var nametext = tiles[planetid].getChildByName("nametext");
 
 	nametext.textAlign = "center";
@@ -209,6 +217,9 @@ var drawNametext = function( planetid ) {
 };
 
 var initResources = function( planetid ) {
+
+	var planets = clientGame.game.board.planets;
+
 	for (var i = 0; i < planets[planetid].resources.length; i++) {
 		initResource( planetid, i );
 	}
@@ -253,6 +264,8 @@ var initResource = function( planetid, index ) {
 };
 
 var drawResources = function( planetid ) {
+	var planets = clientGame.game.board.planets;
+
 	if (planets[planetid].explored) {
 		var num_resources = planets[planetid].resources.length;
 		for (var i = 0; i < num_resources; i++) {
@@ -262,6 +275,8 @@ var drawResources = function( planetid ) {
 };
 
 var drawResource = function( planetid, index, num_resources ) {
+
+	var planets = clientGame.game.board.planets;
 	var resource = tiles[planetid].getChildByName("resource" + index);
 
 	var icon = resource.getChildByName("icon");
@@ -305,6 +320,8 @@ var initDarkScreen = function(planetid) {
 };
 
 var drawDarkScreen = function(planetid, img_width) {
+	
+	var planets = clientGame.game.board.planets;
 	var darkscreen = tiles[planetid].getChildByName("darkscreen");
 
 	darkscreen.graphics.beginFill("rgba(0, 0, 0, 0.4)");

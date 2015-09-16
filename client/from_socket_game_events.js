@@ -1,11 +1,10 @@
 socket.on('room game starting', function(gameInfo) {
 
-
-    $.extend(true, clientGame, gameInfo); // should actually receive the starting state of the game
-                        // OR we could trigger the game interface to come up while
-                        // the server initializes and sends the game info
-    
+    updateClientGame(gameInfo);
     game_init();
+    addProgressBar();
+    moveToGame();
+
 });
 
 socket.on('turn end', function(action, update) {

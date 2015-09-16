@@ -23,7 +23,13 @@ var OBJ_MINE = 1;
 // var OBJ_BASE = 4;
 // var OBJ_FLEET = 5;
 
-var english_resource = {0: "metal", 
-						1: "water", 
-						2: "fuel", 
-						3: "food" };
+var RES_ENGLISH = { 0: "metal", 
+					1: "water", 
+					2: "fuel", 
+					3: "food" };
+
+// lists of required parameters to be met for each action type
+var ACTION_REQUIREMENTS = {
+	1: [],
+	2: ['actiontype','objecttype','planetid','resourceid']
+};
