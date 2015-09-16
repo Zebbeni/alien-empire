@@ -1,6 +1,6 @@
 // width in pixels of a small planet tile
 var sWid = 212;
-var move_distance = 5;
+var MOVE_DISTANCE = 5;
 
 var RES_METAL = 0;
 var RES_WATER = 1;

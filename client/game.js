@@ -1,4 +1,4 @@
-var stage, board, tiles, scale, move_distance, sWid, is_dragging;
+var stage, board, tiles, scale, sWid, is_dragging;
 var resizeTimer;
 var lastMouse = { x:0, y:0 };
 var is_dragging = false;
@@ -27,16 +27,16 @@ var handleKeyUp = function( e ) {
 var handleKeyDown = function( e ) {
 	switch (e.keyCode) {
 		case 37: // left arrow
-			moveBoard(-1, 0, move_distance);
+			moveBoard(-1, 0, MOVE_DISTANCE);
 			break;
 		case 38: // up arrow
-			moveBoard(0, -1, move_distance);
+			moveBoard(0, -1, MOVE_DISTANCE);
 			break;
 		case 39:
-			moveBoard(1, 0, move_distance);
+			moveBoard(1, 0, MOVE_DISTANCE);
 			break;
 		case 40:
-			moveBoard(0, 1, move_distance);
+			moveBoard(0, 1, MOVE_DISTANCE);
 			break;
 	}
 };
@@ -246,7 +246,7 @@ var drawBoard = function() {
  * based on current pending action or game event
  */
 var updateBoard = function() {
-	
+
 	var planets = clientGame.game.board.planets;
 
 	for ( var p = 0; p < planets.length; p++ ) {	
