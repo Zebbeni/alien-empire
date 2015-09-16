@@ -58,13 +58,19 @@
 	color: black;
 }
 
+#action-confirm-button-wrapper {
+	height: 70px;
+	width: 120px;
+    margin: 0 auto;
+}
+
 #action-confirm-button, #action-cancel-button {
 	position: relative;
-	display: table;
+	float: left;
 	height: 50px;
 	width: 50px;
 	top: 10px;
-	margin: 0 auto;
+	margin: 3px;
 	background: rgba(131, 203, 180, .8);
 	font-size: 30px;
 	font-weight: bold;

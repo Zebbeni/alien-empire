@@ -85,8 +85,10 @@
         </div>
         <div id="confirm-action-div" style="visibility: hidden">
             <div id="your-action-message-div"></div>
-            <input type="button" id="action-confirm-button" value="✓" onclick="javascript:confirmPendingAction();"></input>
-            <input type="button" id="action-cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
+            <div id="action-confirm-button-wrapper">
+                <input type="button" id="action-confirm-button" value="✓" onclick="javascript:confirmPendingAction();"></input>
+                <input type="button" id="action-cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
+            </div>
         </div>
     </body>
 </html>
