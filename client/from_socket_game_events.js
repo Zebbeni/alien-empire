@@ -1,24 +1,22 @@
 socket.on('room game starting', function(gameInfo) {
 
-    updateClientGame(gameInfo);
-    game_init();
+    game_init(gameInfo);
     addProgressBar();
-    moveToGame();
+    moveToGame( load_assets );
 
 });
 
-socket.on('turn end', function(action, update) {
-    $.extend(true, clientGame.game, update);
+socket.on('turn update', function(content) {
+    $.extend(true, clientGame.game, content.game);
     toggleTurnMenu();
 });
 
-socket.on('game end', function(action, update) {
+socket.on('game end', function(content) {
     clientGame = null;
     set_globals();
     moveToLobby();
 });
 
-socket.on('illegal action', function(action, update) {
-    $.extend(true, clientGame.game, update);
+socket.on('illegal action', function(content) {
     toggleIllegalActionMenu();
-})
+});

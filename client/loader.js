@@ -89,5 +89,5 @@ var handleProgress = function() {
 var handleComplete = function() {
 	stage.removeChild(loadProgress);
 	drawBoard();
-	toggleTurnMenu();
+	socket_loadingDone();
 };

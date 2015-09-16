@@ -1,4 +1,6 @@
+var ACT_LOADED_ASSETS = 0;
 var ACT_TURN_DONE = 1;
+var ACT_PLACE = 2; // build anywhere, no payment
 // These constants are duplicated in app.js, let's centralize them
 var EVENT_ONE = 1;
 var EVENT_ALL = 2;
@@ -27,10 +29,13 @@ var start_planets = {
 
 	module.exports.resolveAction = function( action, gameInfo ) {
 		// This will be a switch for all different action types.
-		if ( action.actiontype == ACT_TURN_DONE ){
+		if (action.actiontype == ACT_LOADED_ASSETS) {
+			return resolveLoadingDone( action, gameInfo.game );
+		}
+		else if ( action.actiontype == ACT_TURN_DONE ){
 			return resolveTurnDone( action, gameInfo.game );
-		} else {
-			console.log('not ACT_TURN_DONE?');
+		} 
+		else {
 			return false; // do nothing, return false if illegal action
 		}
 	};
@@ -160,18 +165,52 @@ var start_planets = {
 	var resolveTurnDone = function( action, game ) {
 		// This is stand in logic. End game condition should be checked during the upkeep phase
 		if ( isEndCondition( game ) ){
-			return [EVENT_ALL, 'game end', action, {}];
+			return {
+					to: EVENT_ALL,
+					evnt: 'game end',
+					content: {}
+				};
 		}
 		else if ( game.players[ game.turn ] != action.userid ){
-			return [EVENT_ONE, 'illegal action', action, {}];
+			return {
+					to: EVENT_ONE,
+					evnt: 'illegal action',
+					content: {}
+				};
 		}
 		else { // increment round round
-			game.turn += 1;
-			if ( game.turn >= game.players.length) {
-				game.round += 1;
-				game.turn = 0;
-			}
-			return [EVENT_ALL, 'turn end', action, game];
+			updateTurn( game );
+			return {
+					to: EVENT_ALL,
+					evnt: 'turn update',
+					content: {
+						game: game
+					}
+				};
+		}
+	};
+
+	/**
+	 * Send players a turn update to give them the current status of the board
+	 * when they've loaded their art assets. 
+	 * (reasoning: it is possible some clients will load slowly and it should be 
+	 * legal for other players to begin placing mines during this time)
+	 */
+	var resolveLoadingDone = function( action, game ) {
+		return {
+				to: EVENT_ONE,
+				evnt: 'turn update',
+				content: {
+					game: game
+				}
+			};
+	};
+
+	var updateTurn = function( game ){
+		game.turn += 1;
+		if ( game.turn >= game.players.length) {
+			game.round += 1;
+			game.turn = 0;
 		}
 	};
 

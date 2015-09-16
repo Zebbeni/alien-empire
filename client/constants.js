@@ -7,6 +7,7 @@ var RES_WATER = 1;
 var RES_FUEL = 2;
 var RES_FOOD = 3;
 
+var ACT_LOADED_ASSETS = 0;
 var ACT_TURN_DONE = 1;
 var ACT_PLACE = 2; // build anywhere, no payment
 // var ACT_BUILD = 3;

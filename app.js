@@ -244,22 +244,26 @@ io.sockets.on('connection', function(socket) {
         io.in('lobby').emit('user left game', gameInfo);
     });
 
-    socket.on('do game action', function(action) {
-        var gameid = action.gameid;
+    /**
+     * This function serves as the channel through which all user actions
+     * and gameInfo references are passed to the game_server module and 
+     * applied to the game objects
+     */
+    socket.on('do game action', function(gameid, action) {
         var gameInfo = gamesInfo[gameid];
         var response = game_server.resolveAction( action, gameInfo );
 
-        if ( response[0] == EVENT_ONE ) {
-            socket.emit(response[1], response[2], response[3]);
+        if ( response.to == EVENT_ONE ) {
+            socket.emit(response.evnt, response.content);
         }
-        else if ( response[0] == EVENT_ALL ) {
-            io.in(gameInfo.room).emit(response[1], response[2], response[3]);
+        else if ( response.to == EVENT_ALL ) {
+            io.in(gameInfo.room).emit(response.evnt, response.content);
         }
     });
 
     socket.on('disconnect', function(){
         // if user hasn't already logged out
-        if (socket.userid && users[socket.userid].status != 0){
+        if (socket.userid != undefined && users[socket.userid].status != 0){
 
             var username = socket.name;
             users[socket.userid].status = 0; // 0: OFFLINE

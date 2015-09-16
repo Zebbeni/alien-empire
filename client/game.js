@@ -192,10 +192,12 @@ var updateClientGame = function( gameInfo ) {
 	$.extend(true, clientGame, gameInfo);
 };
 
-var game_init = function() {
+var game_init = function( gameInfo ) {
 	set_globals();
+	updateClientGame(gameInfo);
 	clientColor = clientGame.game.players.indexOf( clientId );
 	clientTurn = clientGame.game.players.indexOf( clientId );
+	console.log("client turn:", clientTurn);
 };
 
 /**
