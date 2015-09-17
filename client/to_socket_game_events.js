@@ -1,14 +1,33 @@
-var ACT_TURN_DONE = 1;
+var socket_loadingDone = function() {
+
+	var action = {
+					userid: clientId,
+					actiontype: ACT_LOADED_ASSETS
+				};
+
+	socket.emit('do game action', clientGame.gameid, action, function(data){
+		console.log('finished loading assets: ', data);
+	});
+};
+
+var socket_submitAction = function() {
+
+	var action = pendingAction;
+
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('server received game action:', data);
+	});
+
+};
 
 var socket_submitTurnDone = function() {
 
 	var action = { 
 					userid: clientId,
-					actiontype: ACT_TURN_DONE,
-					gameid: clientGame.gameid
+					actiontype: ACT_TURN_DONE
 				 };
 
-    socket.emit('do game action', action, function(data){
+    socket.emit('do game action', clientGame.gameid, action, function(data){
         console.log('finished turn: ', data);
     });
 };

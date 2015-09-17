@@ -12,11 +12,6 @@ var status = 0; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
 //ADDED FOR EASEL STUFF
 var stage = null;
 
-//TODO: Create game stages, set their visibilities to hidden
-// var init = function() {
-//     document.getElementById('lobby-div').style.visibility = "hidden";
-// };
-
 var displayUsers = function() {
     var usersScrollItems = '';
 
@@ -127,6 +122,7 @@ var updateMessagesHtml = function( messages, div_id ) {
 var moveToLobby = function() {
     document.getElementById('login-div').style.visibility = "hidden";
     document.getElementById('your-turn-div').style.visibility = "hidden";
+    document.getElementById('turn-done-button').style.visibility = "hidden";
     document.getElementById('lobby-div').style.visibility = "visible";
     document.getElementById('logout-button').style.visibility = "visible";
     $("#lobby-div").animate({top: '450px'}, 500);
@@ -134,12 +130,15 @@ var moveToLobby = function() {
     $("#main-div").animate({top: '450px'}, 500);
 };
 
-var moveToGame = function() {
+/**
+ * Hide the lobby and perform some function after the last animation is complete.
+ */
+var moveToGame = function( fn ) {
     document.getElementById('screen-div').style.visibility = "hidden";
     $("#logout-button").animate({top: '-880px'}, 500);
     $("#staging-div").animate({top: '-800px'}, 500);
     $("#main-div").animate({top: '-1000px'}, 500);
-    $("#lobby-div").animate({top: '-850px'}, 1000, load_assets);
+    $("#lobby-div").animate({top: '-850px'}, 1000, fn );
 };
 
 var initializeLobby = function(users, newMsg, games) {

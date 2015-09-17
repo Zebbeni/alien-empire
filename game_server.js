@@ -1,7 +1,11 @@
+var ACT_LOADED_ASSETS = 0;
 var ACT_TURN_DONE = 1;
+var ACT_PLACE = 2; // build anywhere, no payment
 // These constants are duplicated in app.js, let's centralize them
 var EVENT_ONE = 1;
 var EVENT_ALL = 2;
+
+var OBJ_MINE = 1;
 
 var start_planets = {
 						2: [0, 3, 7],
@@ -18,6 +22,7 @@ var start_planets = {
 			num_players: num_users,
 			players: createPlayerOrder( user_ids ),
 			round: 0,
+			secondmines: false,
 			turn: 0,
 			board: initializeBoard( num_users )
 		};
@@ -27,10 +32,16 @@ var start_planets = {
 
 	module.exports.resolveAction = function( action, gameInfo ) {
 		// This will be a switch for all different action types.
-		if ( action.actiontype == ACT_TURN_DONE ){
+		if (action.actiontype == ACT_LOADED_ASSETS) {
+			return resolveLoadingDone( action, gameInfo.game );
+		}
+		else if ( action.actiontype == ACT_TURN_DONE ){
 			return resolveTurnDone( action, gameInfo.game );
-		} else {
-			console.log('not ACT_TURN_DONE?');
+		} 
+		else if ( action.actiontype == ACT_PLACE ) {
+			return resolvePlace( action, gameInfo.game );
+		}
+		else {
 			return false; // do nothing, return false if illegal action
 		}
 	};
@@ -51,6 +62,12 @@ var start_planets = {
 		}
 		return players;
 	};
+
+	// var createPlayerColors( user_ids ) {
+	// 	var colors = [];
+
+	// 	for
+	// };
 
 	var initializeBoard = function( num_players ) {
 		var board = {
@@ -95,7 +112,13 @@ var start_planets = {
 						"Brund", "Guskulk", "Khey", "Ottaigode",
 						"Maxi", "Rhotode", "Kreek", "Heye",
 						"Flel", "Frunif", "Tain", "Roonoma",
-						"Tafea", "Sler", "Olugong", "Uthejon"];
+						"Tafea", "Sler", "Olugong", "Uthejon",
+						"Zah", "Emalel", "Katox", "Adorsea",
+						"Skia", "Shishian", "Attega", "Paria",
+						"Yia", "Thria", "Alongon", "Pomink",
+						"Blave", "Aventea", "Rhotin", "Shral",
+						"Thandoo", "Sponia", "Katyr", "Marjon",
+						"Sombrea", "Godu", "Telbar", "Solian"];
 
 		for ( var i = 0; i < board.planets.length; i++) {
 			// pick random planet art index
@@ -134,7 +157,8 @@ var start_planets = {
 		for ( var i = 0; i < num_resources; i++ ) {
 			var new_res = { 
 				kind: Math.floor( Math.random() * 4 ),
-		 		num: 1 
+		 		num: 1,
+		 		structure: undefined
 			};
 			resources.push( new_res )
 		}
@@ -154,18 +178,129 @@ var start_planets = {
 	var resolveTurnDone = function( action, game ) {
 		// This is stand in logic. End game condition should be checked during the upkeep phase
 		if ( isEndCondition( game ) ){
-			return [EVENT_ALL, 'game end', action, {}];
+			return {
+					to: EVENT_ALL,
+					evnt: 'game end',
+					content: {}
+				};
 		}
-		else if ( game.players[ game.turn ] != action.userid ){
-			return [EVENT_ONE, 'illegal action', action, {}];
+		else if ( game.players[ game.turn ] != action.player ){
+			return {
+					to: EVENT_ONE,
+					evnt: 'illegal action',
+					content: {}
+				};
 		}
 		else { // increment round round
+			updateTurn( game );
+			return {
+					to: EVENT_ALL,
+					evnt: 'turn update',
+					content: {
+						game: game
+					}
+				};
+		}
+	};
+
+	/**
+	 * Send players a turn update to give them the current status of the board
+	 * when they've loaded their art assets. 
+	 * (reasoning: it is possible some clients will load slowly and it should be 
+	 * legal for other players to begin placing mines during this time)
+	 */
+	var resolveLoadingDone = function( action, game ) {
+		return {
+				to: EVENT_ONE,
+				evnt: 'turn update',
+				content: {
+					game: game
+				}
+			};
+	};
+
+	/** 
+	 * Resolves a placement action. Calls functions to update the game state 
+	 * and returns true. Returns false if illegal
+	 */
+	var resolvePlace = function( action, game ) {
+		var isLegal = applyAction( action, game );
+
+		if( !isLegal ) {
+			return {
+					to: EVENT_ONE,
+					evnt: 'illegal action',
+					content: {}
+				};
+		} 
+		else {
+
+			updateTurn( game );
+
+			return {
+					to: EVENT_ALL,
+					evnt: 'place',
+					content: {
+							game: game,
+							action: action
+						}
+					};
+		}
+	};
+
+	var applyAction = function( action, game ){
+		switch ( action.actiontype ) {
+			case ACT_PLACE:
+				return applyPlaceAction( action, game );
+				break;
+			default:
+				return false;
+		}
+	};
+
+	/**
+	 * Determines if placement is legal. If so, modifies the game and 
+	 * returns true. Returns false if illegal.
+	 */
+	var applyPlaceAction = function( action, game ){ 
+		var planetid = action.planetid;
+		var index = action.resourceid;
+
+		// Checks to see if structure on resource is null. If so, add it
+		if( game.board.planets[planetid].resources[index].structure ) {
+			return false;
+		}
+		else {
+			// console.log('adding structure');
+			game.board.planets[planetid].resources[index].structure = {
+													player: action.player,
+													kind: action.objecttype
+			};
+			return true;
+		}
+	};
+
+	var updateTurn = function( game ){
+		if(game.round == 0){
+			if(game.secondmines) {
+				game.turn -= 1;
+				if (game.turn < 0) {
+					game.turn = 0;
+					game.round = 1;
+				}
+			} else {
+				game.turn += 1;
+				if (game.turn >= game.players.length) {
+					game.turn = game.players.length - 1;
+					game.secondmines = true;
+				}
+			}
+		} else {
 			game.turn += 1;
 			if ( game.turn >= game.players.length) {
 				game.round += 1;
 				game.turn = 0;
 			}
-			return [EVENT_ALL, 'turn end', action, game];
 		}
 	};
 

@@ -1,8 +1,6 @@
-var stage, board, planets, tiles, scale, move_distance, sWid, is_dragging;
+var stage, board, tiles, scale, sWid, is_dragging;
 var resizeTimer;
 var lastMouse = { x:0, y:0 };
-var move_distance = 5;
-var sWid = 212;
 var is_dragging = false;
 
 $(document).ready(function() {
@@ -29,18 +27,58 @@ var handleKeyUp = function( e ) {
 var handleKeyDown = function( e ) {
 	switch (e.keyCode) {
 		case 37: // left arrow
-			moveBoard(-1, 0, move_distance);
+			moveBoard(-1, 0, MOVE_DISTANCE);
 			break;
 		case 38: // up arrow
-			moveBoard(0, -1, move_distance);
+			moveBoard(0, -1, MOVE_DISTANCE);
 			break;
 		case 39:
-			moveBoard(1, 0, move_distance);
+			moveBoard(1, 0, MOVE_DISTANCE);
 			break;
 		case 40:
-			moveBoard(0, 1, move_distance);
+			moveBoard(0, 1, MOVE_DISTANCE);
 			break;
 	}
+};
+
+var handleClickResource = function( planetid, index ) {
+
+	setPendingPlanet(planetid);
+	setPendingResource(index);
+	if ( isPendingActionReady() ) {
+		displayConfirmMenu();
+	}
+	else {
+		console.log("not enough info yet to create an action");
+	}
+};
+
+/**
+ * Returns true if all required fields of the pending action
+ * have been filled.
+ */
+var isPendingActionReady = function() {
+
+	var actiontype = pendingAction.actiontype;
+
+	if ( actiontype ) {
+
+		var requirements = ACTION_REQUIREMENTS[ actiontype ];
+
+		// make sure pendingAction has all required attributes
+		for (var i = 0; i < requirements.length; i++) {
+
+			if ( pendingAction[ requirements[i] ] == undefined){
+
+				return false;
+			}
+		}
+	} 
+	else {
+		return false;
+	}
+
+	return true;
 };
 
 var submitTurnDone = function(name) {
@@ -48,10 +86,22 @@ var submitTurnDone = function(name) {
 };
 
 var toggleTurnMenu = function() {
-	if( clientGame.game.players[clientGame.game.turn] == clientId) {
+
+	// Stand in. Current logic only works if we assume we're on round 0
+	if( clientGame.game.turn == clientTurn ) {
+		if( clientGame.game.round == 0){
+			setPendingObject( OBJ_MINE );
+    		setPendingAction( ACT_PLACE );
+		}
     	displayYourTurnMenu();
+    	updateBoard();
+
     } else {
+
+    	clearPendingAction();
     	hideYourTurnMenu();
+    	updateBoard();
+
     }
 };
 
@@ -64,20 +114,95 @@ var toggleIllegalActionMenu = function() {
 	alert("That action is not possible right now");
 };
 
-var hideYourTurnMenu = function() {
-	document.getElementById('your-turn-div').style.visibility = "hidden";
-}
-
-var displayYourTurnMenu = function() {
-	document.getElementById('your-turn-div').style.visibility = "visible";
+var displayConfirmMenu = function() {
+	displayConfirmMessage();
+	document.getElementById('confirm-action-div').style.visibility = "visible";
+	$("#confirm-action-div").animate({ opacity: 1.00, top: "40%"}, 500 );
 };
 
-var game_init = function() {
+var hideConfirmMenu = function() {
+	$("#confirm-action-div").animate({ opacity: 0.00, top: "38%"}, 500, function(){
+		document.getElementById('confirm-action-div').style.visibility = "hidden";
+	});
+};
+
+var confirmPendingAction = function() {
+	hideConfirmMenu();
+	doAction();
+};
+
+var cancelPendingAction = function() {
+	hideConfirmMenu();
+};
+
+var doAction = function() {
+	socket_submitAction();
+};
+
+var displayConfirmMessage = function() {
+
+	var message;
+
+	var planets = clientGame.game.board.planets;
+	var planet = planets[ pendingAction.planetid ];
+	var planetname = planet.name;
+
+	var index = pendingAction.resourceid;
+	var resourcekind = planet.resources[index].kind;
+
+	message = "Place a " + RES_ENGLISH[resourcekind] + " mine on " + planetname + "?";
+	document.getElementById('your-action-message-div').innerHTML = message;
+};
+
+var hideYourTurnMenu = function() {
+	document.getElementById('turn-done-button').style.visibility = "hidden";
+	$("#your-turn-div").animate({ opacity: 0.00, top: "38%"}, 500, function(){
+		document.getElementById('your-turn-div').style.visibility = "hidden";
+	});
+};
+
+/**
+ * Display your turn menu (and fade back out after a few seconds)
+ */
+var displayYourTurnMenu = function() {
+	displayTurnHelpMessage();
+	document.getElementById('your-turn-div').style.visibility = "visible";
+	document.getElementById('turn-done-button').style.visibility = "visible";
+	$("#your-turn-div").animate({ opacity: 1.00, top: "40%"}, 500, function() {
+		$("#your-turn-div").delay(3000).animate({ opacity: 0.00, top: "38%"}, 500, function(){
+			document.getElementById('your-turn-div').style.visibility = "hidden";
+		});
+	});
+};
+
+/**
+ * Displays an extra message beneath the 'your turn' div telling the player
+ * what to do, based on the round #
+ */
+var displayTurnHelpMessage = function() {
+	var message;
+	switch(clientGame.game.round) {
+		case 0:
+			message = "Place a starting mine on any available resource";
+			break;
+		default:
+			message = "";
+			break;
+	}
+	document.getElementById('your-turn-help-div').innerHTML = message;
+};
+
+// Updates local copy of game with server's version
+var updateClientGame = function( gameInfo ) {
+	$.extend(true, clientGame, gameInfo);
+};
+
+var game_init = function( gameInfo ) {
 	set_globals();
-	planets = clientGame.game.board.planets;
-	addProgressBar();
-	moveToGame();
-	// load_assets();
+	updateClientGame(gameInfo);
+	clientColor = clientGame.game.players.indexOf( clientId );
+	clientTurn = clientGame.game.players.indexOf( clientId );
+	console.log("client turn:", clientTurn);
 };
 
 /**
@@ -87,7 +212,6 @@ var game_init = function() {
  */
 var set_globals = function() {
 	stage.removeChild(board);
-	planets = null;
 	board = new createjs.Container();
 	tiles = [];
 	scale = 0.8;
@@ -104,9 +228,12 @@ var drawBoard = function() {
 		setCanvasSize();
 
 		var asteroids = clientGame.game.board.asteroids;
+
 		for ( var a = 0; a < asteroids.length; a++ ) {
 			drawAsteroid( asteroids[a] );
 		}
+
+		var planets = clientGame.game.board.planets;
 
 		for ( var p = 0; p < planets.length; p++ ) {	
 
@@ -121,3 +248,19 @@ var drawBoard = function() {
 	}
 };
 
+/**
+ * Calls update functions on each tile to update appearance, interactivity
+ * based on current pending action or game event
+ */
+var updateBoard = function() {
+
+	var planets = clientGame.game.board.planets;
+
+	for ( var p = 0; p < planets.length; p++ ) {	
+
+			updateTile(p);
+
+		}
+
+	stage.update();
+};

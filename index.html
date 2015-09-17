@@ -7,12 +7,14 @@
         <script src="https://code.createjs.com/preloadjs-0.6.1.min.js"></script>
         <!-- <script src="easeljs-0.8.1.min.js"></script> -->
         <!-- <script src="preloadjs-0.6.1.min.js"></script> -->
+        <script src="constants.js"></script>
         <script src="script.js"></script>
         <script src="from_socket_events.js"></script>
         <script src="to_socket_events.js"></script>
         <script src="from_socket_game_events.js"></script>
         <script src="to_socket_game_events.js"></script>
         <script src="client_actions.js"></script>
+        <script src="player.js"></script>
         <script src="loader.js"></script>
         <script src="stage.js"></script>
         <script src="board.js"></script>
@@ -75,7 +77,18 @@
             </div>
         </div>
         <div id="your-turn-div" style="visibility: hidden">
-            <input type="button" id="turn-done-button" value="Done" onclick="javascript:submitTurnDone();"></input>
+            <div id="your-turn-message-div">Your turn!</div>
+            <div id="your-turn-help-div"></div>
+        </div>
+        <div>
+            <input type="button" id="turn-done-button" style="visibility: hidden" value="End Turn" onclick="javascript:submitTurnDone();"></input>
+        </div>
+        <div id="confirm-action-div" style="visibility: hidden">
+            <div id="your-action-message-div"></div>
+            <div id="action-confirm-button-wrapper">
+                <input type="button" id="action-confirm-button" value="✓" onclick="javascript:confirmPendingAction();"></input>
+                <input type="button" id="action-cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
+            </div>
         </div>
     </body>
 </html>
