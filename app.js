@@ -209,8 +209,6 @@ io.sockets.on('connection', function(socket) {
 
             gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
 
-            console.log('app.js, game.players:', gamesInfo[gameid].game.players);
-
             io.in('lobby').emit('game starting', gamesInfo[gameid]);
             io.in(gamesInfo[gameid].room).emit('room game starting', 
                                                 gamesInfo[gameid]);
