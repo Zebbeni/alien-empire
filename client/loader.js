@@ -19,7 +19,11 @@ var load_assets = function() {
 			{src: "images/game/arrow_red.png", id: "arrow_color0"},
 			{src: "images/game/arrow_blue.png", id: "arrow_color1"},
 			{src: "images/game/arrow_green.png", id: "arrow_color2"},
-			{src: "images/game/arrow_yellow.png", id: "arrow_color3"}
+			{src: "images/game/arrow_yellow.png", id: "arrow_color3"},
+			{src: "images/game/mine_red.png", id: "mine0"},
+			{src: "images/game/mine_blue.png", id: "mine1"},
+			{src: "images/game/mine_green.png", id: "mine2"},
+			{src: "images/game/mine_yellow.png", id: "mine3"},
 		];
 
 		for ( var p = 1; p <= 29; p++ ) {

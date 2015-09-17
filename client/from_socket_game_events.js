@@ -12,6 +12,8 @@ socket.on('turn update', function(content) {
 });
 
 socket.on('place', function(content) {
+
+
 	$.extend(true, clientGame.game, content.game);
 	
 	//Following is for testing purposes only:
@@ -25,7 +27,7 @@ socket.on('place', function(content) {
 				STRUCT_ENGLISH[objecttype] + " on resource " + 
 				resourceid + " on " +
 				clientGame.game.board.planets[planetid].name);
-
+	updateBoard();
 	toggleTurnMenu();
 });
 

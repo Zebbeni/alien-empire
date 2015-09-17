@@ -22,6 +22,7 @@ var start_planets = {
 			num_players: num_users,
 			players: createPlayerOrder( user_ids ),
 			round: 0,
+			secondmines: false,
 			turn: 0,
 			board: initializeBoard( num_users )
 		};
@@ -111,7 +112,13 @@ var start_planets = {
 						"Brund", "Guskulk", "Khey", "Ottaigode",
 						"Maxi", "Rhotode", "Kreek", "Heye",
 						"Flel", "Frunif", "Tain", "Roonoma",
-						"Tafea", "Sler", "Olugong", "Uthejon"];
+						"Tafea", "Sler", "Olugong", "Uthejon",
+						"Zah", "Emalel", "Katox", "Adorsea",
+						"Skia", "Shishian", "Attega", "Paria",
+						"Yia", "Thria", "Alongon", "Pomink",
+						"Blave", "Aventea", "Rhotin", "Shral",
+						"Thandoo", "Sponia", "Katyr", "Marjon",
+						"Sombrea", "Godu", "Telbar", "Solian"];
 
 		for ( var i = 0; i < board.planets.length; i++) {
 			// pick random planet art index
@@ -261,11 +268,10 @@ var start_planets = {
 
 		// Checks to see if structure on resource is null. If so, add it
 		if( game.board.planets[planetid].resources[index].structure ) {
-			console.log("already a structure here");
 			return false;
 		}
 		else {
-
+			// console.log('adding structure');
 			game.board.planets[planetid].resources[index].structure = {
 													player: action.player,
 													kind: action.objecttype
@@ -275,10 +281,26 @@ var start_planets = {
 	};
 
 	var updateTurn = function( game ){
-		game.turn += 1;
-		if ( game.turn >= game.players.length) {
-			game.round += 1;
-			game.turn = 0;
+		if(game.round == 0){
+			if(game.secondmines) {
+				game.turn -= 1;
+				if (game.turn < 0) {
+					game.turn = 0;
+					game.round = 1;
+				}
+			} else {
+				game.turn += 1;
+				if (game.turn >= game.players.length) {
+					game.turn = game.players.length - 1;
+					game.secondmines = true;
+				}
+			}
+		} else {
+			game.turn += 1;
+			if ( game.turn >= game.players.length) {
+				game.round += 1;
+				game.turn = 0;
+			}
 		}
 	};
 

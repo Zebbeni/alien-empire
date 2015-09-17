@@ -78,6 +78,10 @@ var drawTile = function(planetid) {
 	drawBorder( planetid, img_width );
 };
 
+var updateTileImage = function(planetid) {
+	drawResources(planetid);
+};
+
 /**
  * Update tile's interactivity and appearance based on the pending
  * action of the client or the state of the game
@@ -97,6 +101,8 @@ var updateTile = function(planetid) {
 	} else {
 		tiles[planetid].mouseChildren = false;
 	}
+	// This is hack. Not sure why drawTile completely ruins everything the second time
+	updateTileImage( planetid );
 };
 
 /**
@@ -292,7 +298,7 @@ var drawResource = function( planetid, index, num_resources ) {
 	var midX = (planets[planetid].w * sWid) / 2.0;
 	var allW = (num_resources * iconW) + (2 * (num_resources -1));
 
-	icon.x = index * (2 + iconW);
+	icon.x = index * (4 + iconW);
 
 	var arrow = resource.getChildByName("arrow");
 	var arrowImg = loader.getResult("arrow_color" + clientColor);
@@ -300,6 +306,18 @@ var drawResource = function( planetid, index, num_resources ) {
 	arrow.x = icon.x + 24;
 	arrow.y = icon.y - 32;
 	arrow.visible = false;
+
+	var struct = planets[planetid].resources[index].structure;
+	if ( struct ) {
+		console.log("actually in here");
+		var player = struct.player;
+		var kind = struct.kind;
+		var structure = resource.getChildByName("structure");
+		var structureImg = loader.getResult( STRUCT_ENGLISH[ kind ] + player );
+		structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(0, 0, structureImg.width, structureImg.height);
+		structure.x = icon.x + 38;
+		structure.y = icon.y - 48;
+	}
 
 	resource.x = midX - (allW / 2.0);
 
