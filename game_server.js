@@ -5,6 +5,8 @@ var ACT_PLACE = 2; // build anywhere, no payment
 var EVENT_ONE = 1;
 var EVENT_ALL = 2;
 
+var OBJ_MINE = 1;
+
 var start_planets = {
 						2: [0, 3, 7],
 						3: [0, 3, 7, 8, 4],
@@ -35,6 +37,9 @@ var start_planets = {
 		else if ( action.actiontype == ACT_TURN_DONE ){
 			return resolveTurnDone( action, gameInfo.game );
 		} 
+		else if ( action.actiontype == ACT_PLACE ) {
+			return resolvePlace( action, gameInfo.game );
+		}
 		else {
 			return false; // do nothing, return false if illegal action
 		}
@@ -145,7 +150,8 @@ var start_planets = {
 		for ( var i = 0; i < num_resources; i++ ) {
 			var new_res = { 
 				kind: Math.floor( Math.random() * 4 ),
-		 		num: 1 
+		 		num: 1,
+		 		structure: undefined
 			};
 			resources.push( new_res )
 		}
@@ -171,7 +177,7 @@ var start_planets = {
 					content: {}
 				};
 		}
-		else if ( game.players[ game.turn ] != action.userid ){
+		else if ( game.players[ game.turn ] != action.player ){
 			return {
 					to: EVENT_ONE,
 					evnt: 'illegal action',
@@ -204,6 +210,68 @@ var start_planets = {
 					game: game
 				}
 			};
+	};
+
+	/** 
+	 * Resolves a placement action. Calls functions to update the game state 
+	 * and returns true. Returns false if illegal
+	 */
+	var resolvePlace = function( action, game ) {
+		var isLegal = applyAction( action, game );
+
+		if( !isLegal ) {
+			return {
+					to: EVENT_ONE,
+					evnt: 'illegal action',
+					content: {}
+				};
+		} 
+		else {
+
+			updateTurn( game );
+
+			return {
+					to: EVENT_ALL,
+					evnt: 'place',
+					content: {
+							game: game,
+							action: action
+						}
+					};
+		}
+	};
+
+	var applyAction = function( action, game ){
+		switch ( action.actiontype ) {
+			case ACT_PLACE:
+				return applyPlaceAction( action, game );
+				break;
+			default:
+				return false;
+		}
+	};
+
+	/**
+	 * Determines if placement is legal. If so, modifies the game and 
+	 * returns true. Returns false if illegal.
+	 */
+	var applyPlaceAction = function( action, game ){ 
+		var planetid = action.planetid;
+		var index = action.resourceid;
+
+		// Checks to see if structure on resource is null. If so, add it
+		if( game.board.planets[planetid].resources[index].structure ) {
+			console.log("already a structure here");
+			return false;
+		}
+		else {
+
+			game.board.planets[planetid].resources[index].structure = {
+													player: action.player,
+													kind: action.objecttype
+			};
+			return true;
+		}
 	};
 
 	var updateTurn = function( game ){

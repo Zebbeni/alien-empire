@@ -10,6 +10,16 @@ var socket_loadingDone = function() {
 	});
 };
 
+var socket_submitAction = function() {
+
+	var action = pendingAction;
+
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('server received game action:', data);
+	});
+
+};
+
 var socket_submitTurnDone = function() {
 
 	var action = { 

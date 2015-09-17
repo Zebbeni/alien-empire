@@ -9,7 +9,7 @@ var clearPendingAction = function() {
 };
 
 var setPendingAction = function( actiontype ) {
-	pendingAction.userid = clientId;
+	pendingAction.player = clientTurn;
 	pendingAction.actiontype = actiontype;
 };
 

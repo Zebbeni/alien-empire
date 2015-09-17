@@ -29,6 +29,14 @@ var RES_ENGLISH = { 0: "metal",
 					2: "fuel", 
 					3: "food" };
 
+var STRUCT_ENGLISH = {
+						1: "mine",
+						2: "factory",
+						3: "embassy",
+						4: "base",
+						5: "fleet"
+					};
+
 // lists of required parameters to be met for each action type
 var ACTION_REQUIREMENTS = {
 	1: [],

@@ -89,8 +89,10 @@ var toggleTurnMenu = function() {
 
 	// Stand in. Current logic only works if we assume we're on round 0
 	if( clientGame.game.turn == clientTurn ) {
-    	setPendingObject( OBJ_MINE );
-    	setPendingAction( ACT_PLACE );
+		if( clientGame.game.round == 0){
+			setPendingObject( OBJ_MINE );
+    		setPendingAction( ACT_PLACE );
+		}
     	displayYourTurnMenu();
     	updateBoard();
 
@@ -125,13 +127,16 @@ var hideConfirmMenu = function() {
 };
 
 var confirmPendingAction = function() {
-	console.log("on yeah, this is happening right now");
 	hideConfirmMenu();
+	doAction();
 };
 
 var cancelPendingAction = function() {
-	console.log("nope, don't do that");
 	hideConfirmMenu();
+};
+
+var doAction = function() {
+	socket_submitAction();
 };
 
 var displayConfirmMessage = function() {

@@ -221,7 +221,6 @@ io.sockets.on('connection', function(socket) {
         var gameInfo = gamesInfo[gameid];
 
         removeUserFromStaging(gameInfo, socket.userid);
-
         removePlayerFromReady(gameid, socket.userid);
 
         socket.leave(gameInfo.room);
