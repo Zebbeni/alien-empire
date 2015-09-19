@@ -115,6 +115,9 @@ var toggleTurnMenu = function() {
     		setPendingAction( ACT_PLACE );
     		showPendingActionDiv();
 		}
+		else {
+			clearPendingAction();
+		}
     	displayYourTurnMenu();
     	updateBoard();
 
