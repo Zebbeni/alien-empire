@@ -24,11 +24,11 @@ var initTile = function( planetid ) {
 
 	initStars(planetid);
 	initLightScreen(planetid);
+	initBorder(planetid);
 	initPlanet(planetid);
 	initNametext(planetid);
 	initResources(planetid);
 	initDarkScreen(planetid);
-	initBorder(planetid);
 
 	tiles[planetid].on("mouseover", function() {
 		if (planets[planetid].explored) {
@@ -60,11 +60,11 @@ var drawTile = function(planetid) {
 
 	drawStars(planetid, img_width);
 	drawLightScreen(planetid, img_width);
+	drawBorder( planetid, img_width );
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
 	drawDarkScreen(planetid, img_width);
-	drawBorder( planetid, img_width );
 };
 
 // This is hack. Eventually drawTile should work for this, but it
@@ -82,8 +82,6 @@ var updateTileInteractivity = function(planetid) {
 	var planets = clientGame.game.board.planets;
 	var actiontype = pendingAction.actiontype;
 	var objecttype = pendingAction.objecttype;
-
-	console.log("updating tile interactivity: actiontype", actiontype);
 
 	if ( actiontype && clientTurn == clientGame.game.turn) {
 
@@ -169,12 +167,37 @@ var drawStars = function( planetid, img_width ) {
  * Initialize planet shape, add to tile container
  */
 var initPlanet = function ( planetid ) {
-	var planet = new createjs.Shape();
+	var planet = new createjs.Container();
 	planet.name = "planet";
+
+	var picture = new createjs.Shape();
+	picture.name = "picture";
+	planet.addChild(picture);
+
+	var arrow = new createjs.Shape();
+	arrow.name = "arrow";
+	planet.addChild(arrow);
+
+	planet.hitArea = tiles[planetid].getChildByName("stars");
+	planet.mouseChildren = false;
+	planet.mouseEnabled = true;
+
+	planet.on("mouseover", function() {
+		planet.getChildByName("arrow").visible = true;
+		stage.update();
+	});
+
+	planet.on("mouseout", function() {
+		planet.getChildByName("arrow").visible = false;
+		stage.update();
+	});
 
 	planet.on("click", function() {
 		handleClickPlanet( planetid );
 	});
+
+	planet.x = 0;
+	planet.y = 0;
 
 	tiles[planetid].addChild( planet );
 };
@@ -186,24 +209,37 @@ var drawPlanet = function( planetid ) {
 	
 	var planets = clientGame.game.board.planets;
 
+
 	if (planets[planetid].explored) {
 
 		var planet = tiles[planetid].getChildByName("planet");
+		var picture = planet.getChildByName("picture");
 		var img_id = planets[planetid].art;
 		var planetImg = loader.getResult("planet_" + img_id);
 		
-		planet.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
+		picture.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
 		
+		var arrow = planet.getChildByName("arrow");
+		var arrowImg = loader.getResult("arrow_color" + clientColor);
+		arrow.graphics.beginBitmapFill(arrowImg).drawRect(0, 0, arrowImg.width, arrowImg.height);
+		arrow.visible = false;
+
 		switch ( planets[planetid].w ) {
+
 			case 1:
-				planet.scaleX = 0.45;
-				planet.scaleY = 0.45;
-				planet.x = 12;
-				planet.y = -28;
+				picture.scaleX = 0.45;
+				picture.scaleY = 0.45;
+				picture.x = 12;
+				picture.y = -28;
+				arrow.x = 80;
+				arrow.y = -24;
 				break;
+
 			case 2:
-				planet.x = 0;
-				planet.y = -25;
+				picture.x = 0;
+				picture.y = -25;
+				arrow.x = 185;
+				arrow.y = 28;
 				break;
 		}
 	}
