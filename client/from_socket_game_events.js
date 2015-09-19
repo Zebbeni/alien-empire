@@ -13,7 +13,6 @@ socket.on('turn update', function(content) {
 
 socket.on('place', function(content) {
 
-
 	$.extend(true, clientGame.game, content.game);
 	
 	//Following is for testing purposes only:
@@ -24,7 +23,7 @@ socket.on('place', function(content) {
 	var userid = clientGame.game.players[ action.player ];
 	var name = all_users[userid].name;
 	console.log( name + " placed a " + 
-				STRUCT_ENGLISH[objecttype] + " on resource " + 
+				OBJ_ENGLISH[objecttype] + " on resource " + 
 				resourceid + " on " +
 				clientGame.game.board.planets[planetid].name);
 	updateBoard();

@@ -1,9 +1,16 @@
 var ACT_LOADED_ASSETS = 0;
 var ACT_TURN_DONE = 1;
 var ACT_PLACE = 2; // build anywhere, no payment
+var ACT_BUILD = 3;
 // These constants are duplicated in app.js, let's centralize them
 var EVENT_ONE = 1;
 var EVENT_ALL = 2;
+
+var RES_METAL = 0;
+var RES_WATER = 1;
+var RES_FUEL = 2;
+var RES_FOOD = 3;
+var RES_NONE = 4;
 
 var OBJ_MINE = 1;
 
@@ -266,16 +273,17 @@ var start_planets = {
 		var planetid = action.planetid;
 		var index = action.resourceid;
 
-		// Checks to see if structure on resource is null. If so, add it
-		if( game.board.planets[planetid].resources[index].structure ) {
+		if(index == RES_NONE) {
+			return false; // stand in for better logic
+		}
+		else if( game.board.planets[planetid].resources[index].structure ) {
 			return false;
 		}
 		else {
-			// console.log('adding structure');
 			game.board.planets[planetid].resources[index].structure = {
 													player: action.player,
 													kind: action.objecttype
-			};
+												};
 			return true;
 		}
 	};

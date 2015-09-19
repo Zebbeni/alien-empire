@@ -30,15 +30,8 @@ var initTile = function( planetid ) {
 	initDarkScreen(planetid);
 	initBorder(planetid);
 
-	tiles[planetid].mouseChildren = false;
-
 	tiles[planetid].on("mouseover", function() {
 		if (planets[planetid].explored) {
-			
-			// For efficiency, we should find a way to re-include this logic
-			// Currently it conflicts with updateTile logic
-
-			// tiles[planetid].mouseChildren = true;
 
 			showLightscreen( planetid );
 
@@ -48,12 +41,8 @@ var initTile = function( planetid ) {
 
 	tiles[planetid].on("mouseout", function() {
 
-		// For efficiency, we should find a way to re-include this logic
-		// Currently it conflicts with updateTile logic
-		
-		// tiles[planetid].mouseChildren = false;
-		
 		hideLightscreen( planetid );
+
 		stage.update();
 
 	});
@@ -78,31 +67,76 @@ var drawTile = function(planetid) {
 	drawBorder( planetid, img_width );
 };
 
+// This is hack. Eventually drawTile should work for this, but it
+// Currently screws everything up.
 var updateTileImage = function(planetid) {
 	drawResources(planetid);
 };
 
 /**
- * Update tile's interactivity and appearance based on the pending
- * action of the client or the state of the game
+ * Update tile and tile's children's interactivity
+ * based on the pendingAction of the client and the game state
  */
-var updateTile = function(planetid) {
-	if ( pendingAction.actiontype ) {
-		switch( pendingAction.actiontype ) {
+var updateTileInteractivity = function(planetid) {
 
-			case ACT_PLACE:
-				tiles[planetid].mouseChildren = true;
-				break;
+	var planets = clientGame.game.board.planets;
+	var actiontype = pendingAction.actiontype;
+	var objecttype = pendingAction.objecttype;
 
-			default:
-				tiles[planetid].mouseChildren = true;
-				break;
-		}
+	console.log("updating tile interactivity: actiontype", actiontype);
+
+	if ( actiontype && clientTurn == clientGame.game.turn) {
+
+		tiles[planetid].mouseChildren = true;
+
+		updateResourcesInteractivity(planetid, planets, actiontype, objecttype);
+		updatePlanetInteractivity(planetid, planets, actiontype, objecttype);
+
 	} else {
+
 		tiles[planetid].mouseChildren = false;
 	}
-	// This is hack. Not sure why drawTile completely ruins everything the second time
-	updateTileImage( planetid );
+};
+
+var updateResourcesInteractivity = function(planetid, planets, acttype, objtype) {
+
+	for (var i = 0; i < planets[planetid].resources.length; i++) {
+		updateResourceInteractivity( planetid, i, planets, acttype, objtype );
+	}
+};
+
+var updateResourceInteractivity = function(planetid, index, planets, acttype, objtype) {
+
+	var resource = tiles[planetid].getChildByName("resource" + index);
+	var structure = planets[planetid].resources[index].structure;
+
+	// Assume false to begin with...
+	resource.mouseEnabled = false;
+
+	if( !isSpaceObject(objtype) && isBuildTypeAction(acttype)) {
+		// if no structure here and user is adding a mine, turn mouse on
+		if ( !structure && objtype == OBJ_MINE) {
+			resource.mouseEnabled = true;
+		}
+		// if user is adding a factory or embassy, turn mouse on for their mines
+		else if ( structure && structure.kind == OBJ_MINE ) {
+			if (structure.player == clientTurn && isUpgradeObject(objtype) ) {
+				resource.mouseEnabled = true;
+			}
+		}
+	}
+};
+
+var updatePlanetInteractivity = function(planetid, planets, acttype, objtype){
+
+	var planet = tiles[planetid].getChildByName("planet");
+
+	planet.mouseEnabled = false;
+
+	if ( isSpaceObject(objtype)) {
+		planet.mouseEnabled = true;
+	}
+
 };
 
 /**
@@ -137,6 +171,10 @@ var drawStars = function( planetid, img_width ) {
 var initPlanet = function ( planetid ) {
 	var planet = new createjs.Shape();
 	planet.name = "planet";
+
+	planet.on("click", function() {
+		handleClickPlanet( planetid );
+	});
 
 	tiles[planetid].addChild( planet );
 };
@@ -309,11 +347,10 @@ var drawResource = function( planetid, index, num_resources ) {
 
 	var struct = planets[planetid].resources[index].structure;
 	if ( struct ) {
-		console.log("actually in here");
 		var player = struct.player;
 		var kind = struct.kind;
 		var structure = resource.getChildByName("structure");
-		var structureImg = loader.getResult( STRUCT_ENGLISH[ kind ] + player );
+		var structureImg = loader.getResult( OBJ_ENGLISH[ kind ] + player );
 		structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(0, 0, structureImg.width, structureImg.height);
 		structure.x = icon.x + 38;
 		structure.y = icon.y - 48;

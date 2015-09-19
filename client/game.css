@@ -18,11 +18,11 @@
 	position: fixed;
 	top: 38%;
 	left: 50%;
-	width: 500px;
-	margin-left: -250px;
+	width: 800px;
+	margin-left: -400px;
 }
 
-#your-turn-help-div, #your-turn-message-div, #your-action-message-div {
+#pending-action-div, #your-turn-message-div, #your-action-message-div {
 	display: table;
 	position: relative;
 	margin: 0 auto;
@@ -36,7 +36,7 @@
 	font-size: 40px;
 }
 
-#your-turn-help-div {
+#pending-action-div {
 	top: 10px;
 	font-size: 20px;
 }
@@ -73,6 +73,32 @@
 	margin: 3px;
 	background: rgba(131, 203, 180, .8);
 	font-size: 30px;
+	font-weight: bold;
+	color: black;
+}
+
+#build-button {
+	position: relative;
+	float: left;
+	height: 25px;
+	width: 200px;
+	top: 0px;
+	margin: 3px;
+	background: rgba(131, 203, 180, .8);
+	font-size: 15px;
+	font-weight: bold;
+	color: black;
+}
+
+.build-structure-button {
+	position: relative;
+	float: left;
+	height: 25px;
+	width: 200px;
+	top: 0px;
+	margin: 3px;
+	background: rgba(131, 203, 180, .8);
+	font-size: 15px;
 	font-weight: bold;
 	color: black;
 }

@@ -24,6 +24,10 @@ var handleKeyUp = function( e ) {
 
 };
 
+var showInterface = function() {
+	document.getElementById('button-bar-div').style.visibility = "visible";
+};
+
 var handleKeyDown = function( e ) {
 	switch (e.keyCode) {
 		case 37: // left arrow
@@ -53,6 +57,20 @@ var handleClickResource = function( planetid, index ) {
 	}
 };
 
+var handleClickPlanet = function( planetid ) {
+
+	setPendingPlanet(planetid);
+	setPendingResource( RES_NONE );
+	console.log("clicked Tile. pendingAction:", pendingAction);
+	if ( isPendingActionReady() ) {
+		console.log("yep! enough to make an action!");
+		displayConfirmMenu();
+	}
+	else {
+		console.log("not enough info yet to create an action");
+	}
+};
+
 /**
  * Returns true if all required fields of the pending action
  * have been filled.
@@ -62,28 +80,31 @@ var isPendingActionReady = function() {
 	var actiontype = pendingAction.actiontype;
 
 	if ( actiontype ) {
-
+		console.log('pendingAction:', pendingAction);
 		var requirements = ACTION_REQUIREMENTS[ actiontype ];
 
 		// make sure pendingAction has all required attributes
 		for (var i = 0; i < requirements.length; i++) {
 
 			if ( pendingAction[ requirements[i] ] == undefined){
-
+				console.log('pending action not ready');
 				return false;
 			}
 		}
 	} 
 	else {
+		console.log('pending action not ready');
 		return false;
 	}
-
+	console.log('pending action good to go!');
 	return true;
 };
 
 var submitTurnDone = function(name) {
     socket_submitTurnDone();
 };
+
+
 
 var toggleTurnMenu = function() {
 
@@ -92,6 +113,7 @@ var toggleTurnMenu = function() {
 		if( clientGame.game.round == 0){
 			setPendingObject( OBJ_MINE );
     		setPendingAction( ACT_PLACE );
+    		showPendingActionDiv();
 		}
     	displayYourTurnMenu();
     	updateBoard();
@@ -99,10 +121,43 @@ var toggleTurnMenu = function() {
     } else {
 
     	clearPendingAction();
+    	hidePendingActionDiv();
     	hideYourTurnMenu();
     	updateBoard();
 
     }
+    updateBoardInteractivity();
+};
+
+var clickBuildButton = function() {
+	if(clientGame.game.round != 0 && document.getElementById('build-buttons-div').style.visibility == "hidden") {
+		document.getElementById('build-buttons-div').style.visibility = "visible";
+		setPendingAction( ACT_BUILD );
+	}
+	else {
+		document.getElementById('build-buttons-div').style.visibility = "hidden";
+		if ( clientGame.game.round != 0 ){
+			clearPendingAction();
+		}
+	}
+};
+
+var clickStructureButton = function( objecttype ){
+	setPendingObject(objecttype);
+	updateBoardInteractivity();
+	console.log('set pending object to ' + OBJ_ENGLISH[objecttype]);
+};
+
+var toggleRecruitMenu = function() {
+	console.log("this is where we would show agents to recruit");
+};
+
+var showPendingActionDiv = function() {
+	document.getElementById('pending-action-div').style.visibility = "visible";
+};
+
+var hidePendingActionDiv = function() {
+	document.getElementById('pending-action-div').style.visibility = "hidden";
 };
 
 /**
@@ -147,10 +202,13 @@ var displayConfirmMessage = function() {
 	var planet = planets[ pendingAction.planetid ];
 	var planetname = planet.name;
 
+	var actiontype = pendingAction.actiontype;
+	var objecttype = pendingAction.objecttype;
 	var index = pendingAction.resourceid;
-	var resourcekind = planet.resources[index].kind;
+	// set resource kind to  if index = 4
+	var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
 
-	message = "Place a " + RES_ENGLISH[resourcekind] + " mine on " + planetname + "?";
+	message = ACT_ENGLISH[actiontype] + " a " + RES_ENGLISH[resourcekind] + " " + OBJ_ENGLISH[objecttype] + " on " + planetname + "?";
 	document.getElementById('your-action-message-div').innerHTML = message;
 };
 
@@ -176,20 +234,35 @@ var displayYourTurnMenu = function() {
 };
 
 /**
- * Displays an extra message beneath the 'your turn' div telling the player
+ * Returns true if object type is 
+ */
+var isSpaceObject = function(objecttype) {
+	return (objecttype == OBJ_BASE || objecttype == OBJ_FLEET);
+};
+
+var isBuildTypeAction = function(actiontype) {
+	return (actiontype == ACT_PLACE || actiontype == ACT_BUILD);
+};
+
+var isUpgradeObject = function(objecttype) {
+	return (objecttype == OBJ_FACTORY || objecttype == OBJ_EMBASSY);
+};
+
+/**
+ * Displays a message in the 'pending-action-div' div telling the player
  * what to do, based on the round #
  */
 var displayTurnHelpMessage = function() {
 	var message;
 	switch(clientGame.game.round) {
 		case 0:
-			message = "Place a starting mine on any available resource";
+			message = "Choose a location to place your mine";
 			break;
 		default:
 			message = "";
 			break;
 	}
-	document.getElementById('your-turn-help-div').innerHTML = message;
+	document.getElementById('pending-action-div').innerHTML = message;
 };
 
 // Updates local copy of game with server's version
@@ -249,6 +322,19 @@ var drawBoard = function() {
 };
 
 /**
+ * Calls 
+ */
+var updateBoardInteractivity = function() {
+	var planets = clientGame.game.board.planets;
+
+	for ( var p = 0; p < planets.length; p++ ) {	
+
+			updateTileInteractivity(p);
+
+		}
+};
+
+/**
  * Calls update functions on each tile to update appearance, interactivity
  * based on current pending action or game event
  */
@@ -258,8 +344,8 @@ var updateBoard = function() {
 
 	for ( var p = 0; p < planets.length; p++ ) {	
 
-			updateTile(p);
-
+			updateTileInteractivity(p);
+			updateTileImage(p);
 		}
 
 	stage.update();
