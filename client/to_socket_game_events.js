@@ -1,7 +1,7 @@
 var socket_loadingDone = function() {
 
 	var action = {
-					userid: clientId,
+					player: clientTurn,
 					actiontype: ACT_LOADED_ASSETS
 				};
 
@@ -23,9 +23,10 @@ var socket_submitAction = function() {
 var socket_submitTurnDone = function() {
 
 	var action = { 
-					userid: clientId,
+					player: clientTurn,
 					actiontype: ACT_TURN_DONE
 				 };
+	console.log("turn done:", action);
 
     socket.emit('do game action', clientGame.gameid, action, function(data){
         console.log('finished turn: ', data);

@@ -80,23 +80,19 @@ var isPendingActionReady = function() {
 	var actiontype = pendingAction.actiontype;
 
 	if ( actiontype ) {
-		console.log('pendingAction:', pendingAction);
 		var requirements = ACTION_REQUIREMENTS[ actiontype ];
 
 		// make sure pendingAction has all required attributes
 		for (var i = 0; i < requirements.length; i++) {
 
 			if ( pendingAction[ requirements[i] ] == undefined){
-				console.log('pending action not ready');
 				return false;
 			}
 		}
 	} 
 	else {
-		console.log('pending action not ready');
 		return false;
 	}
-	console.log('pending action good to go!');
 	return true;
 };
 
@@ -168,8 +164,8 @@ var hidePendingActionDiv = function() {
  * ex. Not enough resources to complete that action
  *	   That agent cannot be sent on a mission right now, etc.
  */
-var toggleIllegalActionMenu = function() {
-	alert("That action is not possible right now");
+var toggleIllegalActionMenu = function(response) {
+	alert( response );
 };
 
 var displayConfirmMenu = function() {

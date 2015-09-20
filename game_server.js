@@ -1,18 +1,5 @@
-var ACT_LOADED_ASSETS = 0;
-var ACT_TURN_DONE = 1;
-var ACT_PLACE = 2; // build anywhere, no payment
-var ACT_BUILD = 3;
-// These constants are duplicated in app.js, let's centralize them
-var EVENT_ONE = 1;
-var EVENT_ALL = 2;
 
-var RES_METAL = 0;
-var RES_WATER = 1;
-var RES_FUEL = 2;
-var RES_FOOD = 3;
-var RES_NONE = 4;
-
-var OBJ_MINE = 1;
+var constants = require('./server_constants');
 
 var start_planets = {
 						2: [8, 3, 1],
@@ -39,17 +26,19 @@ var start_planets = {
 
 	module.exports.resolveAction = function( action, gameInfo ) {
 		// This will be a switch for all different action types.
-		if (action.actiontype == ACT_LOADED_ASSETS) {
-			return resolveLoadingDone( action, gameInfo.game );
-		}
-		else if ( action.actiontype == ACT_TURN_DONE ){
-			return resolveTurnDone( action, gameInfo.game );
-		} 
-		else if ( action.actiontype == ACT_PLACE ) {
-			return resolvePlace( action, gameInfo.game );
-		}
-		else {
-			return false; // do nothing, return false if illegal action
+		switch (action.actiontype) {
+			case constants.ACT_LOADED_ASSETS:
+				return resolveLoadingDone( action, gameInfo.game );
+				break;
+			case constants.ACT_TURN_DONE:
+				return resolveTurnDone( action, gameInfo.game );
+				break;
+			case constants.ACT_PLACE:
+			case constants.ACT_BUILD:
+				return resolveGameAction( action, gameInfo.game );
+				break;
+			default:
+				return false;
 		}
 	};
 
@@ -125,7 +114,9 @@ var start_planets = {
 						"Yia", "Thria", "Alongon", "Pomink",
 						"Blave", "Aventea", "Rhotin", "Shral",
 						"Thandoo", "Sponia", "Katyr", "Marjon",
-						"Sombrea", "Godu", "Telbar", "Solian"];
+						"Sombrea", "Godu", "Telbar", "Solian",
+						"Lercia", "Kram", "Enterriune", "Alna",
+						"Emesekel", "Mah", "Tassian", "Zolea"];
 
 		for ( var i = 0; i < board.planets.length; i++) {
 			// pick random planet art index
@@ -186,22 +177,24 @@ var start_planets = {
 		// This is stand in logic. End game condition should be checked during the upkeep phase
 		if ( isEndCondition( game ) ){
 			return {
-					to: EVENT_ALL,
+					to: constants.EVENT_ALL,
 					evnt: 'game end',
 					content: {}
 				};
 		}
-		else if ( game.players[ game.turn ] != action.player ){
+		else if ( game.turn != action.player ){
+			console.log("game.turn:", game.turn);
+			console.log("action.player:", action.player);
 			return {
-					to: EVENT_ONE,
+					to: constants.EVENT_ONE,
 					evnt: 'illegal action',
-					content: {}
+					content: "it is not your turn"
 				};
 		}
 		else { // increment round round
 			updateTurn( game );
 			return {
-					to: EVENT_ALL,
+					to: constants.EVENT_ALL,
 					evnt: 'turn update',
 					content: {
 						game: game
@@ -218,7 +211,7 @@ var start_planets = {
 	 */
 	var resolveLoadingDone = function( action, game ) {
 		return {
-				to: EVENT_ONE,
+				to: constants.EVENT_ONE,
 				evnt: 'turn update',
 				content: {
 					game: game
@@ -230,23 +223,22 @@ var start_planets = {
 	 * Resolves a placement action. Calls functions to update the game state 
 	 * and returns true. Returns false if illegal
 	 */
-	var resolvePlace = function( action, game ) {
-		var isLegal = applyAction( action, game );
+	var resolveGameAction = function( action, game ) {
 
-		if( !isLegal ) {
+		var applyResult = applyAction( action, game );
+
+		if( applyResult.isIllegal ) {
 			return {
-					to: EVENT_ONE,
+					to: constants.EVENT_ONE,
 					evnt: 'illegal action',
-					content: {}
+					content: applyResult.response
 				};
 		} 
 		else {
 
-			updateTurn( game );
-
 			return {
-					to: EVENT_ALL,
-					evnt: 'place',
+					to: constants.EVENT_ALL,
+					evnt: constants.ACT_ENGLISH[ action.actiontype ],
 					content: {
 							game: game,
 							action: action
@@ -257,11 +249,15 @@ var start_planets = {
 
 	var applyAction = function( action, game ){
 		switch ( action.actiontype ) {
-			case ACT_PLACE:
+			case constants.ACT_PLACE:
 				return applyPlaceAction( action, game );
-				break;
+			case constants.ACT_BUILD:
+				return applyBuildAction( action, game );
 			default:
-				return false;
+				return { 
+						isIllegal: true,
+						response: "That is an unknown action"			
+					};
 		}
 	};
 
@@ -273,19 +269,72 @@ var start_planets = {
 		var planetid = action.planetid;
 		var index = action.resourceid;
 
-		if(index == RES_NONE) {
-			return false; // stand in for better logic
+		if(index == constants.RES_NONE) {
+			return { 
+					isIllegal: true,
+					response: "Must be placed on a resource"
+				};
 		}
 		else if( game.board.planets[planetid].resources[index].structure ) {
-			return false;
+			return { 
+					isIllegal: true,
+					response: "Cannot place on another structure"
+				};
 		}
 		else {
 			game.board.planets[planetid].resources[index].structure = {
 													player: action.player,
 													kind: action.objecttype
 												};
-			return true;
+
+			updateTurn( game ); // placing should increment the turn
+			
+			return { isIllegal: false };
 		}
+	};
+
+	var applyBuildAction = function( action, game ) {
+		var planetid = action.planetid;
+		var objecttype = action.objecttype;
+		var index = action.resourceid;
+		var player = action.player;
+
+		// currently, allow building if it's gotten this far. We will eventually
+		// need to improve this logic to consider resources, structures available, etc.
+		switch( objecttype ){
+			case constants.OBJ_BASE:
+				break;
+
+			case constants.OBJ_FLEET:
+				break;
+
+			case constants.OBJ_FACTORY:
+				game.board.planets[planetid].resources[index].structure = {
+													player: action.player,
+													kind: action.objecttype
+												};
+				break;
+
+			case constants.OBJ_EMBASSY:
+				game.board.planets[planetid].resources[index].structure = {
+													player: action.player,
+													kind: action.objecttype
+												};
+				break;
+
+			case constants.OBJ_MINE:
+				game.board.planets[planetid].resources[index].structure = {
+													player: action.player,
+													kind: action.objecttype
+												};
+				break;
+
+			default:
+				return { isIllegal: true,
+						 response: "Unknown building type"
+						};
+		}
+		return { isIllegal: false };
 	};
 
 	var updateTurn = function( game ){
@@ -318,7 +367,7 @@ var start_planets = {
 	 * @return true or false
 	 */ 
 	var isEndCondition = function( game ) {
-		return ( game.round >= 1 );
+		return ( game.round >= 3 );
 	};
 
 }());

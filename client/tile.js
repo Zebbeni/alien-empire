@@ -432,7 +432,7 @@ var initLightScreen = function(planetid) {
 var drawLightScreen = function(planetid, img_width) {
 	var lightscreen = tiles[planetid].getChildByName("lightscreen");
 
-	lightscreen.graphics.beginFill("rgba(255, 255, 255, 0.05)");
+	lightscreen.graphics.beginFill("rgba(255, 255, 255, 0.1)");
 	lightscreen.graphics.drawRect(0, 0, img_width, img_width);
 	lightscreen.visible = false;
 };
