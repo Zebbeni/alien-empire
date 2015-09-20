@@ -35,6 +35,16 @@ var load_assets = function() {
 			{src: "images/game/embassy_blue.png", id: "embassy1"},
 			{src: "images/game/embassy_green.png", id: "embassy2"},
 			{src: "images/game/embassy_yellow.png", id: "embassy3"},
+
+			{src: "images/game/base_red.png", id: "base0"},
+			{src: "images/game/base_blue.png", id: "base1"},
+			{src: "images/game/base_green.png", id: "base2"},
+			{src: "images/game/base_yellow.png", id: "base3"},
+
+			{src: "images/game/fleet_red.png", id: "fleet0"},
+			{src: "images/game/fleet_blue.png", id: "fleet1"},
+			{src: "images/game/fleet_green.png", id: "fleet2"},
+			{src: "images/game/fleet_yellow.png", id: "fleet3"}
 		];
 
 		for ( var p = 1; p <= 29; p++ ) {

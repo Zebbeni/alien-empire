@@ -132,6 +132,8 @@ var start_planets = {
 			// generate random resources
 			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].explored = setExploredStatus(i, num_players);
+			board.planets[i].base = undefined;
+			// board.planets[i].fleets = [];
 		}
 
 		return board;
@@ -272,13 +274,13 @@ var start_planets = {
 		if(index == constants.RES_NONE) {
 			return { 
 					isIllegal: true,
-					response: "Must be placed on a resource"
+					response: "You must place this on a resource"
 				};
 		}
 		else if( game.board.planets[planetid].resources[index].structure ) {
 			return { 
 					isIllegal: true,
-					response: "Cannot place on another structure"
+					response: "You cannot place this on another structure"
 				};
 		}
 		else {
@@ -298,11 +300,19 @@ var start_planets = {
 		var objecttype = action.objecttype;
 		var index = action.resourceid;
 		var player = action.player;
+		var planet = game.board.planets[planetid];
 
 		// currently, allow building if it's gotten this far. We will eventually
 		// need to improve this logic to consider resources, structures available, etc.
 		switch( objecttype ){
+
 			case constants.OBJ_BASE:
+				if ( !planet.base ) {
+					game.board.planets[planetid].base = {
+														player: action.player,
+														used: false
+													};
+				}
 				break;
 
 			case constants.OBJ_FLEET:
