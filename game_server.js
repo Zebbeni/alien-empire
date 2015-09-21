@@ -344,7 +344,7 @@ var start_planets = {
 					var fleet = game.board.fleets[ id ];
 
 					// upate fleet object and push fleet's id to planet.fleets
-					if ( !fleet.planetid ) {
+					if ( fleet.planetid == undefined) {
 						fleet.planetid = planetid;
 						fleet.used = false;
 						planet.fleets.push( id );

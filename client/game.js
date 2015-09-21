@@ -1,4 +1,4 @@
-var stage, board, tiles, scale, sWid, is_dragging;
+var stage, board, tiles, fleets, scale, sWid, is_dragging;
 var resizeTimer;
 var lastMouse = { x:0, y:0 };
 var is_dragging = false;
@@ -286,6 +286,7 @@ var set_globals = function() {
 	stage.removeChild(board);
 	board = new createjs.Container();
 	tiles = [];
+	fleetshapes = {};
 	scale = 0.8;
 	stage.update();
 };
@@ -311,7 +312,12 @@ var drawBoard = function() {
 
 			initTile(p);
 			drawTile(p);
+		}
 
+		initFleets();
+		for ( var p = 0; p < planets.length; p++ ) {	
+
+			updateFleets(p);
 		}
 
 		stage.addChild( board );
@@ -328,9 +334,9 @@ var updateBoardInteractivity = function() {
 
 	for ( var p = 0; p < planets.length; p++ ) {	
 
-			updateTileInteractivity(p);
+		updateTileInteractivity(p);
 
-		}
+	}
 };
 
 /**
@@ -345,6 +351,7 @@ var updateBoard = function() {
 
 			updateTileInteractivity(p);
 			updateTileImage(p);
+			updateFleets(p);
 		}
 
 	stage.update();

@@ -1,8 +1,13 @@
 /** Tile.js contains all methods for initializing and drawing tile assets
  * Each tile has the following children, in this order:
  * 		stars
- *		planet
+ *		lightscreen
  *		border
+ *		planet
+ *		nametext
+ *		resources
+ *		orbitstructures
+ *		darkscreen
  */
 
 var sectors = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
