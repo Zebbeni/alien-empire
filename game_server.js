@@ -92,7 +92,8 @@ var start_planets = {
 				{ x: 6, y: 3, r: 1},
 				{ x: 2, y: 6, r: 0},
 				{ x: 0, y: 2, r: 1}
-			]
+			],
+			fleets: initializeFleets( num_players )
 			// TODO: add borders array
 		};
 
@@ -133,7 +134,7 @@ var start_planets = {
 			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].explored = setExploredStatus(i, num_players);
 			board.planets[i].base = undefined;
-			// board.planets[i].fleets = [];
+			board.planets[i].fleets = [];
 		}
 
 		return board;
@@ -163,6 +164,25 @@ var start_planets = {
 			resources.push( new_res )
 		}
 		return resources;
+	};
+
+	/**
+	 * Initializes fleets object which will contain all fleet objects
+	 * Each fleet is identifiable by an attribute name defined by the 
+	 * player it belongs to and a number between 0 and NUM_FLEETS
+	 */
+	var initializeFleets = function(num_players) {
+		var fleets = {};
+		for (var p = 0; p < num_players; p++) {
+			for (var f = 0; f < constants.NUM_FLEETS; f++) {
+				fleets[ String(p) + String(f) ] = {
+						player: p,
+						planetid: undefined,
+						used: false
+				};
+			}
+		}
+		return fleets;
 	};
 
 	/**
@@ -316,7 +336,26 @@ var start_planets = {
 				break;
 
 			case constants.OBJ_FLEET:
-				break;
+
+				// Go through all fleets, set planetid of first fleet with planetid set to null
+				// If none found, return illegal action message
+				for ( var i = 0; i < constants.NUM_FLEETS; i++ ) {
+					var id = String(player) + String(i);
+					var fleet = game.board.fleets[ id ];
+
+					// upate fleet object and push fleet's id to planet.fleets
+					if ( !fleet.planetid ) {
+						fleet.planetid = planetid;
+						fleet.used = false;
+						planet.fleets.push( id );
+
+						return { isIllegal: false };
+					}
+
+				}
+				return { isIllegal: true,
+						 response: "You have the maximum number of fleets on the board"
+						};
 
 			case constants.OBJ_FACTORY:
 				game.board.planets[planetid].resources[index].structure = {

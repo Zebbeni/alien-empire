@@ -2,6 +2,8 @@
 var sWid = 212;
 var MOVE_DISTANCE = 5;
 
+var NUM_FLEETS = 3;
+
 var RES_METAL = 0;
 var RES_WATER = 1;
 var RES_FUEL = 2;

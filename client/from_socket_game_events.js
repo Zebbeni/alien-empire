@@ -49,6 +49,8 @@ socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
 				resourceid + " on " +
 				clientGame.game.board.planets[planetid].name);
 
+	console.log(clientGame.game.board.planets[planetid]);
+
 	updateBoard();
 });
 
