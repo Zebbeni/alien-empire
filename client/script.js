@@ -126,6 +126,7 @@ var moveToLobby = function() {
     document.getElementById('turn-done-button').style.visibility = "hidden";
     document.getElementById('button-bar-div').style.visibility = "hidden";
     document.getElementById('build-buttons-div').style.visibility = "hidden";
+    document.getElementById('players-wrapper-div').style.visibility = "hidden";
     document.getElementById('lobby-div').style.visibility = "visible";
     document.getElementById('logout-button').style.visibility = "visible";
     $("#lobby-div").animate({top: '450px'}, 500);

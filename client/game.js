@@ -2,6 +2,7 @@ var stage, board, tiles, fleets, scale, sWid, is_dragging;
 var resizeTimer;
 var lastMouse = { x:0, y:0 };
 var is_dragging = false;
+var playerMenuOn = [false, false, false, false];
 
 $(document).ready(function() {
 
@@ -26,6 +27,7 @@ var handleKeyUp = function( e ) {
 
 var showInterface = function() {
 	document.getElementById('button-bar-div').style.visibility = "visible";
+	displayPlayersMenu();
 };
 
 var handleKeyDown = function( e ) {
@@ -166,6 +168,36 @@ var hidePendingActionDiv = function() {
  */
 var toggleIllegalActionMenu = function(response) {
 	alert( response );
+};
+
+var togglePlayersMenu = function( i ) {
+	if ( playerMenuOn[i] ){
+		$("#player-stats-div" + i ).animate({bottom: '50px'}, 500);
+		playerMenuOn[i] = false;
+	} else {
+		$("#player-stats-div" + i ).animate({bottom: '400px'}, 500);
+		playerMenuOn[i] = true;
+	}
+};
+
+var displayPlayersMenu = function() {
+	var innerHtml = "";
+	var wrapperWidth = (210 * clientGame.players.length);
+	document.getElementById('players-wrapper-div').style.width = wrapperWidth + "px";
+	var marginleft = Math.round(wrapperWidth / -2) + "px";
+	document.getElementById('players-wrapper-div').style.marginLeft = marginleft;
+	for (var i = 0; i < clientGame.players.length; i++ ){
+
+		var username = all_users[clientGame.players[i]].name;
+		var inner = '<div id="player-stats-div' + i +'" ' + 'onclick="javascript:togglePlayersMenu(' + i + ')"></div>'
+		document.getElementById('players-wrapper-div').innerHTML += inner;
+
+		var statsDiv = document.getElementById('player-stats-div' + i );
+		statsDiv.className += 'player-stats-div';
+		statsDiv.innerHTML = username;
+		statsDiv.style.bottom = "50px";
+	}
+	document.getElementById('players-wrapper-div').style.visibility = "visible";
 };
 
 var displayConfirmMenu = function() {
