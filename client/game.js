@@ -188,13 +188,18 @@ var displayPlayersMenu = function() {
 	document.getElementById('players-wrapper-div').style.marginLeft = marginleft;
 	for (var i = 0; i < clientGame.players.length; i++ ){
 
-		var username = all_users[clientGame.players[i]].name;
-		var inner = '<div id="player-stats-div' + i +'" ' + 'onclick="javascript:togglePlayersMenu(' + i + ')"></div>'
-		document.getElementById('players-wrapper-div').innerHTML += inner;
+		var innerHTML = '<div id="player-stats-div' + i +'" ' 
+					+ 'onclick="javascript:togglePlayersMenu(' + i 
+					+ ')"></div>'
+
+		document.getElementById('players-wrapper-div').innerHTML += innerHTML;
 
 		var statsDiv = document.getElementById('player-stats-div' + i );
-		statsDiv.className += 'player-stats-div';
+
+		var username = all_users[clientGame.players[i]].name;
+
 		statsDiv.innerHTML = username;
+		statsDiv.className += 'player-stats-div';
 		statsDiv.style.bottom = "50px";
 	}
 	document.getElementById('players-wrapper-div').style.visibility = "visible";

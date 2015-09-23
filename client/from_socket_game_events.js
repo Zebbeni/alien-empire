@@ -7,8 +7,8 @@ socket.on('room game starting', function(gameInfo) {
 });
 
 socket.on('turn update', function(content) {
-	console.log("updating turn");
     $.extend(true, clientGame.game, content.game);
+    console.log("clientGame", clientGame);
     toggleTurnMenu();
 });
 

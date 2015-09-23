@@ -14,6 +14,8 @@ var start_planets = {
 		var newGame = {
 			gameid: gameid,
 			num_players: num_users,
+			resources: initializePlayerResources( num_users ),
+			points: initializePlayerPoints( num_users ),
 			players: createPlayerOrder( user_ids ),
 			round: 0,
 			secondmines: false,
@@ -64,6 +66,38 @@ var start_planets = {
 
 	// 	for
 	// };
+
+	var initializePlayerResources = function( num_users ) {
+		var resources = [];
+
+		for ( var i = 0; i < num_users; i++ ){
+
+			resources.push( {} );
+
+			resources[i][constants.RES_METAL] = 2;
+			resources[i][constants.RES_WATER] = 2;
+			resources[i][constants.RES_FUEL] = 2;
+			resources[i][constants.RES_FOOD] = 2;
+		}
+		
+		return resources;
+	};
+
+	var initializePlayerPoints = function( num_users ) {
+		var points = [];
+
+		for ( var i = 0; i < num_users; i++ ) {
+		
+			points.push( {} );
+
+			points[i][constants.PNT_STRUCTURES] = 0;
+			points[i][constants.PNT_EXPLORE] = 0;
+			points[i][constants.PNT_ENVOY] = 0;
+			points[i][constants.PNT_DESTROY] = 0;
+		}
+
+		return points;
+	};
 
 	var initializeBoard = function( num_players ) {
 		var board = {

@@ -83,6 +83,7 @@
 .player-stats-div {
 	position: relative;
 	float: left;
+	padding: 5px;
 	height: 400px;
 	width: 200px;
 	margin: 5px;
