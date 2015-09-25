@@ -11,6 +11,13 @@ socket.on('turn update', function(content) {
     toggleTurnMenu();
 });
 
+socket.on('loading done', function(content) {
+	updateClientGame(content);
+	drawBoard();
+	showInterface();
+	toggleTurnMenu();
+});
+
 socket.on( ACT_ENGLISH[ ACT_PLACE ], function(content) {
 
 	updateClientGame(content);

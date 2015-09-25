@@ -72,18 +72,52 @@
 	margin: 0 auto;
 }
 
-.player-stats-div {
+.player-div {
 	position: relative;
+	overflow-y: hidden;
 	float: left;
-	padding: 5px;
-	height: 400px;
 	width: 200px;
-	margin: 5px;
-	background: rgba(131, 203, 180, .8);
-	font-size: 15px;
-	font-weight: bold;
-	text-align: center;
+	height: 100px;
 	color: black;
+}
+
+.player-stats-div, .player-turn-div {
+	display: table;
+	padding: 5px;
+	margin: 5px;
+	width: 200px;
+	text-align: center;
+	position: relative;
+	width: 190px;
+}
+
+.player-stats-div {
+	color: black;
+	font-weight: bold;
+	background: rgba(131, 203, 180, .8);
+}
+
+.player-turn-div {
+	height: 30px;
+	overflow-y: hidden;
+	font-size: 20px;
+	color: white;
+}
+
+#player-turn-div0 {
+	background: rgba(255, 84, 84, .8);
+}
+
+#player-turn-div1 {
+	background: rgba(84, 120, 255, .8);
+}
+
+#player-turn-div2 {
+	background: rgba(90, 228, 97, .8);
+}
+
+#player-turn-div3 {
+	background: rgba(253, 255, 58, .0)
 }
 
 #action-confirm-button, #action-cancel-button {

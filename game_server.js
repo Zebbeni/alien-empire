@@ -286,7 +286,7 @@ var start_planets = {
 	var resolveLoadingDone = function( action, game ) {
 		return {
 				to: constants.EVENT_ONE,
-				evnt: 'turn update',
+				evnt: 'loading done',
 				content: {
 					game: game
 				}

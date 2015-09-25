@@ -127,6 +127,15 @@ var toggleTurnMenu = function() {
     	updateBoard();
 
     }
+
+    for ( var i = 0; i < clientGame.game.players.length; i++) {
+    	if (i == clientGame.game.turn ){
+    		$('#player-turn-div' + i).animate({opacity: 1.0});
+    	}
+    	else {
+	    	$('#player-turn-div' + i).animate({opacity: 0.0});
+	    }
+    }
     // updatePlayersMenu();
     updateBoardInteractivity();
 };
@@ -172,10 +181,10 @@ var toggleIllegalActionMenu = function(response) {
 
 var togglePlayersMenu = function( i ) {
 	if ( playerMenuOn[i] ){
-		$("#player-stats-div" + i ).animate({bottom: '50px'}, 500);
+		$("#player-div" + i ).animate({height: '100px', bottom: '100px'}, 500);
 		playerMenuOn[i] = false;
 	} else {
-		$("#player-stats-div" + i ).animate({bottom: '400px'}, 500);
+		$("#player-div" + i ).animate({height: '415px', bottom: '415px'}, 500);
 		playerMenuOn[i] = true;
 	}
 };
@@ -190,14 +199,30 @@ var createPlayersMenu = function() {
 	var marginleft = Math.round(wrapperWidth / -2) + "px";
 	$('#players-wrapper-div')[0].style.marginLeft = marginleft;
 
+	var innerHTML = "";
+
 	for (var i = 0; i < clientGame.players.length; i++ ){
 
-		var innerHTML = '<div id="player-stats-div' + i +'" ' 
-					+ 'onclick="javascript:togglePlayersMenu(' + i 
-					+ ')"></div>'
+		innerHTML += '<div id="player-div' + i 
+					 + '" class="player-div" style="bottom: 100px" '
+					 + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
 
-		$('#players-wrapper-div')[0].innerHTML += innerHTML;
+		innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div">';
+
+		if (i == clientTurn) {
+			innerHTML += "Your turn!";
+		}
+		else {
+			innerHTML += all_users[clientGame.game.players[i]].name + "'s turn";
+		}
+
+		innerHTML += '</div>';
+		innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
+		innerHTML += '</div>';
+
 	}
+
+	$('#players-wrapper-div')[0].innerHTML = innerHTML;
 
 	updatePlayersMenu();
 
@@ -206,6 +231,12 @@ var createPlayersMenu = function() {
 
 var updatePlayersMenu = function() {
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
+
+		var playersDiv = $('#player-div' + i)[0];
+
+		// if (!playerMenuOn[i]) {
+		// 	playersDiv.style.bottom = "100px";
+		// }
 
 		var statsDiv = $('#player-stats-div' + i )[0];
 
@@ -237,11 +268,6 @@ var updatePlayersMenu = function() {
 		statsDivHTML += '</p>';
 
 		statsDiv.innerHTML = statsDivHTML;
-		statsDiv.className = 'player-stats-div';
-		
-		if ( !playerMenuOn[i] ) {
-			statsDiv.style.bottom = "50px";
-		}
 	}
 };
 

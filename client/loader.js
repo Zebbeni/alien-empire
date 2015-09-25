@@ -113,7 +113,5 @@ var handleProgress = function() {
 
 var handleComplete = function() {
 	stage.removeChild(loadProgress);
-	drawBoard();
-	showInterface();
 	socket_loadingDone();
 };
