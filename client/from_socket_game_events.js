@@ -7,14 +7,13 @@ socket.on('room game starting', function(gameInfo) {
 });
 
 socket.on('turn update', function(content) {
-    $.extend(true, clientGame.game, content.game);
-    console.log("clientGame", clientGame);
+    updateClientGame(content);
     toggleTurnMenu();
 });
 
 socket.on( ACT_ENGLISH[ ACT_PLACE ], function(content) {
 
-	$.extend(true, clientGame.game, content.game);
+	updateClientGame(content);
 	
 	//Following is for testing purposes only:
 	var action = content.action;
@@ -30,11 +29,12 @@ socket.on( ACT_ENGLISH[ ACT_PLACE ], function(content) {
 
 	updateBoard();
 	toggleTurnMenu();
+	updatePlayersMenu();
 });
 
 socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
 
-	$.extend(true, clientGame.game, content.game);
+	updateClientGame(content);
 	
 	//Following is for testing purposes only:
 	var action = content.action;
@@ -52,6 +52,7 @@ socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
 	console.log(clientGame.game.board.planets[planetid]);
 
 	updateBoard();
+	updatePlayersMenu();
 });
 
 socket.on('game end', function(content) {

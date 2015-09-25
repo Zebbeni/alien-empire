@@ -4,7 +4,7 @@ var background, backLoader, backgroundScale, backgroundW, backgroundH;
  * Periodically checks to see if window has been resized. 
  * Calls setCanvasSize again if so.
  */ 
-$(window).resize(function () { 
+$(window).resize(function () {
 	clearTimeout(resizeTimer);
 	resizeTimer = setTimeout(setCanvasSize, 50);
  });
@@ -71,7 +71,7 @@ var drawBackground = function() {
  */
 var setCanvasSize = function() {
 	if(stage) { // make sure stage exists before trying this
-		var gameCanvas = document.getElementById('gameCanvas');
+		var gameCanvas = $('#gameCanvas')[0];
 		var ctx = gameCanvas.getContext("2d");
 		ctx.canvas.width  = window.innerWidth;
 		ctx.canvas.height = window.innerHeight;

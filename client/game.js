@@ -26,8 +26,8 @@ var handleKeyUp = function( e ) {
 };
 
 var showInterface = function() {
-	document.getElementById('button-bar-div').style.visibility = "visible";
-	displayPlayersMenu();
+	$('#button-bar-div')[0].style.visibility = "visible";
+	createPlayersMenu();
 };
 
 var handleKeyDown = function( e ) {
@@ -63,9 +63,7 @@ var handleClickPlanet = function( planetid ) {
 
 	setPendingPlanet(planetid);
 	setPendingResource( RES_NONE );
-	console.log("clicked Tile. pendingAction:", pendingAction);
 	if ( isPendingActionReady() ) {
-		console.log("yep! enough to make an action!");
 		displayConfirmMenu();
 	}
 	else {
@@ -102,8 +100,10 @@ var submitTurnDone = function(name) {
     socket_submitTurnDone();
 };
 
-
-
+/**
+ * Updates menus and board interactivity when a game action occurs.
+ * TODO: Break this up and/or rename it. It's grown in its function
+ */
 var toggleTurnMenu = function() {
 
 	// Stand in. Current logic only works if we assume we're on round 0
@@ -127,16 +127,17 @@ var toggleTurnMenu = function() {
     	updateBoard();
 
     }
+    // updatePlayersMenu();
     updateBoardInteractivity();
 };
 
 var clickBuildButton = function() {
-	if(clientGame.game.round != 0 && document.getElementById('build-buttons-div').style.visibility == "hidden") {
-		document.getElementById('build-buttons-div').style.visibility = "visible";
+	if(clientGame.game.round != 0 && $('#build-buttons-div')[0].style.visibility == "hidden") {
+		$('#build-buttons-div')[0].style.visibility = "visible";
 		setPendingAction( ACT_BUILD );
 	}
 	else {
-		document.getElementById('build-buttons-div').style.visibility = "hidden";
+		$('#build-buttons-div')[0].style.visibility = "hidden";
 		if ( clientGame.game.round != 0 ){
 			clearPendingAction();
 		}
@@ -146,7 +147,6 @@ var clickBuildButton = function() {
 var clickStructureButton = function( objecttype ){
 	setPendingObject(objecttype);
 	updateBoardInteractivity();
-	console.log('set pending object to ' + OBJ_ENGLISH[objecttype]);
 };
 
 var toggleRecruitMenu = function() {
@@ -154,11 +154,11 @@ var toggleRecruitMenu = function() {
 };
 
 var showPendingActionDiv = function() {
-	document.getElementById('pending-action-div').style.visibility = "visible";
+	$('#pending-action-div')[0].style.visibility = "visible";
 };
 
 var hidePendingActionDiv = function() {
-	document.getElementById('pending-action-div').style.visibility = "hidden";
+	$('#pending-action-div')[0].style.visibility = "hidden";
 };
 
 /**
@@ -180,41 +180,82 @@ var togglePlayersMenu = function( i ) {
 	}
 };
 
-var displayPlayersMenu = function() {
+var createPlayersMenu = function() {
+
 	var innerHtml = "";
+
 	var wrapperWidth = (210 * clientGame.players.length);
-	document.getElementById('players-wrapper-div').style.width = wrapperWidth + "px";
+	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
+
 	var marginleft = Math.round(wrapperWidth / -2) + "px";
-	document.getElementById('players-wrapper-div').style.marginLeft = marginleft;
+	$('#players-wrapper-div')[0].style.marginLeft = marginleft;
+
 	for (var i = 0; i < clientGame.players.length; i++ ){
 
 		var innerHTML = '<div id="player-stats-div' + i +'" ' 
 					+ 'onclick="javascript:togglePlayersMenu(' + i 
 					+ ')"></div>'
 
-		document.getElementById('players-wrapper-div').innerHTML += innerHTML;
+		$('#players-wrapper-div')[0].innerHTML += innerHTML;
+	}
 
-		var statsDiv = document.getElementById('player-stats-div' + i );
+	updatePlayersMenu();
+
+	$('#players-wrapper-div')[0].style.visibility = "visible";
+};
+
+var updatePlayersMenu = function() {
+	for ( var i = 0; i < clientGame.players.length; i++ ) {
+
+		var statsDiv = $('#player-stats-div' + i )[0];
 
 		var username = all_users[clientGame.players[i]].name;
 
-		statsDiv.innerHTML = username;
-		statsDiv.className += 'player-stats-div';
-		statsDiv.style.bottom = "50px";
+		var points = clientGame.game.points[i];
+		var structures = clientGame.game.structures[i];
+		var resources = clientGame.game.resources[i];
+
+		statsDivHTML = username;
+		statsDivHTML += '<br>' + points[PNT_TOTAL];
+
+		statsDivHTML += '<p style="text-align:left">';
+		statsDivHTML += 'Metal: ' + resources[RES_METAL];
+		statsDivHTML += '<br>Water: ' + resources[RES_WATER];
+		statsDivHTML += '<br>Fuel: ' + resources[RES_FUEL];
+		statsDivHTML += '<br>Food: ' + resources[RES_FOOD];
+
+		statsDivHTML += '<br><br>Structure Points: ' + points[PNT_STRUCTURES];
+		statsDivHTML += '<br>Exploration Points:  ' + points[PNT_EXPLORE];
+		statsDivHTML += '<br>Envoy Points:        ' + points[PNT_ENVOY];
+		statsDivHTML += '<br>Destruction Points:  ' + points[PNT_DESTROY];
+
+		statsDivHTML += '<br><br>Mines: ' + structures[OBJ_MINE];
+		statsDivHTML += '<br>Factories:  ' + structures[OBJ_FACTORY];
+		statsDivHTML += '<br>Embassies:        ' + structures[OBJ_EMBASSY];
+		statsDivHTML += '<br>Bases:  ' + structures[OBJ_BASE];
+		statsDivHTML += '<br>Fleets:  ' + structures[OBJ_FLEET];
+		statsDivHTML += '</p>';
+
+		statsDiv.innerHTML = statsDivHTML;
+		statsDiv.className = 'player-stats-div';
+		
+		if ( !playerMenuOn[i] ) {
+			statsDiv.style.bottom = "50px";
+		}
 	}
-	document.getElementById('players-wrapper-div').style.visibility = "visible";
 };
 
 var displayConfirmMenu = function() {
 	displayConfirmMessage();
-	document.getElementById('confirm-action-div').style.visibility = "visible";
+	$('#confirm-action-div')[0].style.visibility = "visible";
 	$("#confirm-action-div").animate({ opacity: 1.00, top: "40%"}, 500 );
 };
 
 var hideConfirmMenu = function() {
-	$("#confirm-action-div").animate({ opacity: 0.00, top: "38%"}, 500, function(){
-		document.getElementById('confirm-action-div').style.visibility = "hidden";
-	});
+	$("#confirm-action-div").animate({ opacity: 0.00, top: "38%"}, 500, 
+		function(){
+			$('#confirm-action-div')[0].style.visibility = "hidden";
+		});
 };
 
 var confirmPendingAction = function() {
@@ -245,13 +286,13 @@ var displayConfirmMessage = function() {
 	var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
 
 	message = ACT_ENGLISH[actiontype] + " a " + RES_ENGLISH[resourcekind] + " " + OBJ_ENGLISH[objecttype] + " on " + planetname + "?";
-	document.getElementById('your-action-message-div').innerHTML = message;
+	$('#your-action-message-div')[0].innerHTML = message;
 };
 
 var hideYourTurnMenu = function() {
-	document.getElementById('turn-done-button').style.visibility = "hidden";
+	$('#turn-done-button')[0].style.visibility = "hidden";
 	$("#your-turn-div").animate({ opacity: 0.00, top: "38%"}, 500, function(){
-		document.getElementById('your-turn-div').style.visibility = "hidden";
+		$('#your-turn-div')[0].style.visibility = "hidden";
 	});
 };
 
@@ -260,11 +301,11 @@ var hideYourTurnMenu = function() {
  */
 var displayYourTurnMenu = function() {
 	displayTurnHelpMessage();
-	document.getElementById('your-turn-div').style.visibility = "visible";
-	document.getElementById('turn-done-button').style.visibility = "visible";
+	$('#your-turn-div')[0].style.visibility = "visible";
+	$('#turn-done-button')[0].style.visibility = "visible";
 	$("#your-turn-div").animate({ opacity: 1.00, top: "40%"}, 500, function() {
 		$("#your-turn-div").delay(3000).animate({ opacity: 0.00, top: "38%"}, 500, function(){
-			document.getElementById('your-turn-div').style.visibility = "hidden";
+			$('#your-turn-div')[0].style.visibility = "hidden";
 		});
 	});
 };
@@ -298,7 +339,7 @@ var displayTurnHelpMessage = function() {
 			message = "";
 			break;
 	}
-	document.getElementById('pending-action-div').innerHTML = message;
+	$('#pending-action-div')[0].innerHTML = message;
 };
 
 // Updates local copy of game with server's version

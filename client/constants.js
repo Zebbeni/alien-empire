@@ -23,10 +23,11 @@ var ACT_BUILD = 3;
 // var ACT_MOVE = 8;
 // var ACT_LAUNCHMISSION = 9;
 
-PNT_STRUCTURES = 0;
-PNT_EXPLORE = 1;
-PNT_ENVOY = 2;
-PNT_DESTROY = 3;
+var PNT_STRUCTURES = 0;
+var PNT_EXPLORE = 1;
+var PNT_ENVOY = 2;
+var PNT_DESTROY = 3;
+var PNT_TOTAL = 4;
 
 var OBJ_MINE = 1;
 var OBJ_FACTORY = 2;
@@ -61,4 +62,59 @@ var ACTION_REQUIREMENTS = {
 	1: [],
 	2: ['actiontype','objecttype','planetid','resourceid'],
 	3: ['actiontype','objecttype','planetid','resourceid']
+};
+
+var STRUCT_REQS = {
+
+	OBJ_MINE: {
+
+		build: {
+			RES_METAL: 1,
+			RES_FUEL: 1,
+			RES_FOOD: 1 
+		},
+		upkeep: {}
+	}, 
+	OBJ_FACTORY: {
+
+		build: {
+			RES_METAL: 1,
+			RES_FUEL: 2,
+			RES_WATER: 1
+		},
+		upkeep: {
+			RES_METAL: 1
+		}
+	},
+	OBJ_EMBASSY: {
+		build: {
+			RES_METAL: 2,
+			RES_WATER: 2,
+			RES_FOOD: 1
+		},
+		upkeep: {
+			RES_WATER: 1
+		}
+	},
+	OBJ_BASE: {
+		build: {
+			RES_METAL: 3,
+			RES_FUEL: 1,
+			RES_WATER: 1,
+			RES_FOOD: 1
+		},
+		upkeep: {
+			RES_FUEL: 1
+		}
+	},
+	OBJ_FLEET: {
+		build: {
+			RES_METAL: 1,
+			RES_FUEL: 1,
+			RES_WATER: 1
+		},
+		upkeep: {
+			RES_FUEL: 1
+		}
+	}
 };

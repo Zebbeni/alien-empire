@@ -26,7 +26,7 @@ var displayUsers = function() {
             }
         }
     }
-    document.getElementById('users-scroll').innerHTML = usersScrollItems;
+    $('#users-scroll')[0].innerHTML = usersScrollItems;
 };
 
 var displayGames = function() {
@@ -44,7 +44,7 @@ var displayGames = function() {
             gamesHtml += ' onclick="javascript:submitJoinGame(' + g + ')"></input>';
         }
     }
-    document.getElementById('games-list-div').innerHTML = gamesHtml;
+    $('#games-list-div')[0].innerHTML = gamesHtml;
 };
 
 var displayStagingPlayers = function() {
@@ -67,7 +67,7 @@ var displayStagingPlayers = function() {
         stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
 
     }
-    document.getElementById('staging-users-div').innerHTML = stagingPlayersHtml;
+    $('#staging-users-div')[0].innerHTML = stagingPlayersHtml;
 };
 
 var displayMessages = function() {
@@ -120,15 +120,15 @@ var updateMessagesHtml = function( messages, div_id ) {
 
 //update lobby stage, make it visible, and hide login stage
 var moveToLobby = function() {
-    document.getElementById('login-div').style.visibility = "hidden";
-    document.getElementById('your-turn-div').style.visibility = "hidden";
-    document.getElementById('pending-action-div').style.visibility = "hidden";
-    document.getElementById('turn-done-button').style.visibility = "hidden";
-    document.getElementById('button-bar-div').style.visibility = "hidden";
-    document.getElementById('build-buttons-div').style.visibility = "hidden";
-    document.getElementById('players-wrapper-div').style.visibility = "hidden";
-    document.getElementById('lobby-div').style.visibility = "visible";
-    document.getElementById('logout-button').style.visibility = "visible";
+    $('#login-div')[0].style.visibility = "hidden";
+    $('#your-turn-div')[0].style.visibility = "hidden";
+    $('#pending-action-div')[0].style.visibility = "hidden";
+    $('#turn-done-button')[0].style.visibility = "hidden";
+    $('#button-bar-div')[0].style.visibility = "hidden";
+    $('#build-buttons-div')[0].style.visibility = "hidden";
+    $('#players-wrapper-div')[0].style.visibility = "hidden";
+    $('#lobby-div')[0].style.visibility = "visible";
+    $('#logout-button')[0].style.visibility = "visible";
     $("#lobby-div").animate({top: '450px'}, 500);
     $("#logout-button").animate({top: '-30px'}, 500);
     $("#main-div").animate({top: '450px'}, 500);
@@ -138,7 +138,7 @@ var moveToLobby = function() {
  * Hide the lobby and perform some function after the last animation is complete.
  */
 var moveToGame = function( fn ) {
-    document.getElementById('screen-div').style.visibility = "hidden";
+    $('#screen-div')[0].style.visibility = "hidden";
     $("#logout-button").animate({top: '-880px'}, 500);
     $("#staging-div").animate({top: '-800px'}, 500);
     $("#main-div").animate({top: '-1000px'}, 500);
@@ -201,12 +201,12 @@ var displayGameStage = function() {
 };
 
 var moveToGameStage = function() {
-    document.getElementById('screen-div').style.visibility = "visible";
-    document.getElementById('staging-div').style.visibility = "visible";
+    $('#screen-div')[0].style.visibility = "visible";
+    $('#staging-div')[0].style.visibility = "visible";
     $("#staging-div").animate({top: '400px'}, 500);
 };
 
 var hideGameStage = function() {
-    document.getElementById('screen-div').style.visibility = "hidden";
-    document.getElementById('staging-div').style.visibility = "hidden";
+    $('#screen-div')[0].style.visibility = "hidden";
+    $('#staging-div')[0].style.visibility = "hidden";
 }
