@@ -191,7 +191,43 @@ var togglePlayersMenu = function( i ) {
 
 var createPlayersMenu = function() {
 
-	var innerHtml = "";
+	// var wrapperWidth = (210 * clientGame.players.length);
+	// $('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
+
+	// var marginleft = Math.round(wrapperWidth / -2) + "px";
+	// $('#players-wrapper-div')[0].style.marginLeft = marginleft;
+
+	// var innerHTML = "";
+
+	// for (var i = 0; i < clientGame.players.length; i++ ){
+
+	// 	innerHTML += '<div id="player-div' + i 
+	// 				 + '" class="player-div" style="bottom: 100px" '
+	// 				 + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
+
+	// 	innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div">';
+
+	// 	if (i == clientTurn) {
+	// 		innerHTML += "Your turn!";
+	// 	}
+	// 	else {
+	// 		innerHTML += all_users[clientGame.game.players[i]].name + "'s turn";
+	// 	}
+
+	// 	innerHTML += '</div>';
+	// 	innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
+	// 	innerHTML += '</div>';
+
+	// }
+
+	// $('#players-wrapper-div')[0].innerHTML = innerHTML;
+
+	updatePlayersMenu();
+
+	$('#players-wrapper-div')[0].style.visibility = "visible";
+};
+
+var updatePlayersMenu = function() {
 
 	var wrapperWidth = (210 * clientGame.players.length);
 	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
@@ -199,9 +235,11 @@ var createPlayersMenu = function() {
 	var marginleft = Math.round(wrapperWidth / -2) + "px";
 	$('#players-wrapper-div')[0].style.marginLeft = marginleft;
 
-	var innerHTML = "";
+	$('#players-wrapper-div')[0].innerHTML = "";
 
-	for (var i = 0; i < clientGame.players.length; i++ ){
+	for ( var i = 0; i < clientGame.players.length; i++ ) {
+
+		var innerHTML = "";
 
 		innerHTML += '<div id="player-div' + i 
 					 + '" class="player-div" style="bottom: 100px" '
@@ -220,23 +258,9 @@ var createPlayersMenu = function() {
 		innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
 		innerHTML += '</div>';
 
-	}
-
-	$('#players-wrapper-div')[0].innerHTML = innerHTML;
-
-	updatePlayersMenu();
-
-	$('#players-wrapper-div')[0].style.visibility = "visible";
-};
-
-var updatePlayersMenu = function() {
-	for ( var i = 0; i < clientGame.players.length; i++ ) {
+		$('#players-wrapper-div')[0].innerHTML += innerHTML;
 
 		var playersDiv = $('#player-div' + i)[0];
-
-		// if (!playerMenuOn[i]) {
-		// 	playersDiv.style.bottom = "100px";
-		// }
 
 		var statsDiv = $('#player-stats-div' + i )[0];
 
