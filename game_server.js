@@ -14,6 +14,9 @@ var start_planets = {
 		var newGame = {
 			gameid: gameid,
 			num_players: num_users,
+			structures: initializePlayerStructures( num_users ),
+			resources: initializePlayerResources( num_users ),
+			points: initializePlayerPoints( num_users ),
 			players: createPlayerOrder( user_ids ),
 			round: 0,
 			secondmines: false,
@@ -64,6 +67,55 @@ var start_planets = {
 
 	// 	for
 	// };
+
+	var initializePlayerResources = function( num_users ) {
+		var resources = [];
+
+		for ( var i = 0; i < num_users; i++ ){
+
+			resources.push( {} );
+
+			resources[i][constants.RES_METAL] = 2;
+			resources[i][constants.RES_WATER] = 2;
+			resources[i][constants.RES_FUEL] = 2;
+			resources[i][constants.RES_FOOD] = 2;
+		}
+		
+		return resources;
+	};
+
+	var initializePlayerPoints = function( num_users ) {
+		var points = [];
+
+		for ( var i = 0; i < num_users; i++ ) {
+		
+			points.push( {} );
+
+			points[i][constants.PNT_STRUCTURES] = 0;
+			points[i][constants.PNT_EXPLORE] = 0;
+			points[i][constants.PNT_ENVOY] = 0;
+			points[i][constants.PNT_DESTROY] = 0;
+			points[i][constants.PNT_TOTAL] = 0;
+		}
+
+		return points;
+	};
+
+	var initializePlayerStructures = function( num_users ) {
+		var structures = [];
+
+		for ( var i = 0; i < num_users; i++) {
+			structures.push( {} );
+
+			structures[i][constants.OBJ_MINE] = 4;
+			structures[i][constants.OBJ_FACTORY] = 3;
+			structures[i][constants.OBJ_EMBASSY] = 5;
+			structures[i][constants.OBJ_BASE] = 1;
+			structures[i][constants.OBJ_FLEET] = 3;
+		}
+
+		return structures;
+	};
 
 	var initializeBoard = function( num_players ) {
 		var board = {
@@ -234,7 +286,7 @@ var start_planets = {
 	var resolveLoadingDone = function( action, game ) {
 		return {
 				to: constants.EVENT_ONE,
-				evnt: 'turn update',
+				evnt: 'loading done',
 				content: {
 					game: game
 				}
@@ -308,6 +360,7 @@ var start_planets = {
 													player: action.player,
 													kind: action.objecttype
 												};
+			game.structures[action.player][action.objecttype] -= 1;
 
 			updateTurn( game ); // placing should increment the turn
 			
@@ -322,16 +375,43 @@ var start_planets = {
 		var player = action.player;
 		var planet = game.board.planets[planetid];
 
-		// currently, allow building if it's gotten this far. We will eventually
-		// need to improve this logic to consider resources, structures available, etc.
+		// first check to make sure player has an available structure
+		if ( game.structures[ player ][ objecttype ] <= 0 ){
+
+			return { isIllegal: true,
+					 response: "You cannot build another " + constants.OBJ_ENGLISH[objecttype]
+					};
+
+		}
+
+		if ( !hasEnoughToBuild( player, objecttype, game ) ) {
+			return { isIllegal: true,
+					 response: "You do not have enough resources to build a new " + constants.OBJ_ENGLISH[objecttype]
+					};
+		}
+
+		// Currently we're doing all the build logic in this switch statement.
+		// We should break this into functions.
 		switch( objecttype ){
 
 			case constants.OBJ_BASE:
 				if ( !planet.base ) {
+
+					// TODO: This block of ~3 lines is very similar for all
+					// Structures. We should generalize this.
 					game.board.planets[planetid].base = {
 														player: action.player,
 														used: false
 													};
+					payToBuild( player, objecttype, game);
+					game.structures[player][constants.OBJ_BASE] -= 1;
+					addPointsForStructure( player, objecttype, planetid, game);
+				}
+				else {
+					return { 
+						isIllegal: true,
+					 	response: "Only one base can be built on a single planet"
+					};
 				}
 				break;
 
@@ -340,42 +420,57 @@ var start_planets = {
 				// Go through all fleets, set planetid of first fleet with planetid set to null
 				// If none found, return illegal action message
 				for ( var i = 0; i < constants.NUM_FLEETS; i++ ) {
+
 					var id = String(player) + String(i);
 					var fleet = game.board.fleets[ id ];
+					var base = game.board.planets[planetid].base;
 
-					// upate fleet object and push fleet's id to planet.fleets
-					if ( fleet.planetid == undefined) {
-						fleet.planetid = planetid;
-						fleet.used = false;
-						planet.fleets.push( id );
+					if ( base && base.player == player ) {
 
-						return { isIllegal: false };
+						// update fleet and planet.fleets
+						if ( fleet.planetid == undefined ) {
+
+							fleet.planetid = planetid;
+							fleet.used = false;
+							planet.fleets.push( id );
+
+							payToBuild( player, objecttype, game);
+							game.structures[player][constants.OBJ_FLEET] -= 1;
+							addPointsForStructure( player, objecttype, planetid, game);
+							
+							break;
+						}
 					}
-
-				}
-				return { isIllegal: true,
-						 response: "You have the maximum number of fleets on the board"
+					else {
+							
+						return { 
+							isIllegal: true,
+					 		response: "You must build fleets where you have a base"
 						};
-
-			case constants.OBJ_FACTORY:
-				game.board.planets[planetid].resources[index].structure = {
-													player: action.player,
-													kind: action.objecttype
-												};
+					}
+				}
 				break;
 
+			case constants.OBJ_FACTORY:
 			case constants.OBJ_EMBASSY:
 				game.board.planets[planetid].resources[index].structure = {
-													player: action.player,
-													kind: action.objecttype
+													player: player,
+													kind: objecttype
 												};
+				payToBuild( player, objecttype, game);
+				game.structures[player][objecttype] -= 1;
+				game.structures[player][constants.OBJ_MINE] += 1;
+				addPointsForStructure( player, objecttype, planetid, game);
 				break;
 
 			case constants.OBJ_MINE:
 				game.board.planets[planetid].resources[index].structure = {
-													player: action.player,
-													kind: action.objecttype
+													player: player,
+													kind: objecttype
 												};
+				payToBuild( player, objecttype, game);
+				game.structures[player][constants.OBJ_MINE] -= 1;
+				addPointsForStructure( player, objecttype, planetid, game);
 				break;
 
 			default:
@@ -408,6 +503,39 @@ var start_planets = {
 				game.turn = 0;
 			}
 		}
+	};
+
+	var hasEnoughToBuild = function( player, objecttype, game ) {
+		var requirements = constants.STRUCT_REQS[objecttype].build;
+
+		for (var res in requirements) {
+			if ( game.resources[player][res] < requirements[res] ) {
+
+				return false;
+
+			}
+		}
+
+		return true;
+	};
+
+	payToBuild = function( player, objecttype, game) {
+		var requirements = constants.STRUCT_REQS[objecttype].build;
+
+		for (var res in requirements) {
+			game.resources[player][res] -= requirements[res];
+		}
+	};
+
+	/**
+	 * This function currently just adds the number of points a structure
+	 * is worth when it is built. In the long-term, this is not very smart.
+	 * We should at least be considering the structure's location, whether
+	 * it has all borders blocked, etc.
+	 */
+	addPointsForStructure = function( player, objecttype, planetid, game) {
+		var value = constants.OBJ_VALUE[objecttype];
+		game.points[player][constants.PNT_STRUCTURES] += value;
 	};
 
 	/**

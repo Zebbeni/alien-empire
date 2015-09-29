@@ -1,13 +1,13 @@
 // javascript functions called from UX
 
 var leaveLobby = function() {
-    document.getElementById('login-div').style.visibility = "visible";
-    document.getElementById('lobby-div').style.visibility = "hidden";
-    document.getElementById('logout-button').style.visibility = "hidden";
+    $('#login-div')[0].style.visibility = "visible";
+    $('#lobby-div')[0].style.visibility = "hidden";
+    $('#logout-button')[0].style.visibility = "hidden";
 };
 
 var submitLogin = function() {
-    var name = document.getElementById('input-username').value;
+    var name = $('#input-username')[0].value;
     socket_login(name);
 };
 
@@ -18,14 +18,14 @@ var submitLogout = function() {
 };
 
 var submitMessage = function() {
-    var msg = document.getElementById('chat-input').value;
-    document.getElementById('chat-input').value = '';
+    var msg = $('#chat-input')[0].value;
+    $('#chat-input')[0].value = '';
     socket_sendMessage( msg );
 };
 
 var submitStagingMessage = function() {
-    var msg = document.getElementById('staging-chat-input').value;
-    document.getElementById('staging-chat-input').value = '';
+    var msg = $('#staging-chat-input')[0].value;
+    $('#staging-chat-input')[0].value = '';
     socket_sendStagingMessage( msg );
 };
 
@@ -46,8 +46,8 @@ var submitStagingLeave = function(){
 };
 
 var submitStagingMessage = function() {
-    var msg = document.getElementById('staging-chat-input').value;
-    document.getElementById('staging-chat-input').value = '';
+    var msg = $('#staging-chat-input')[0].value;
+    $('#staging-chat-input')[0].value = '';
     socket_sendStagingMessage(msg);
 };
 
