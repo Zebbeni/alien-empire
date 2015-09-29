@@ -6,7 +6,7 @@ var socket_loadingDone = function() {
 				};
 
 	socket.emit('do game action', clientGame.gameid, action, function(data){
-		console.log('finished loading assets: ', data);
+		console.log('loaded assets: ', data);
 	});
 };
 
@@ -26,7 +26,6 @@ var socket_submitTurnDone = function() {
 					player: clientTurn,
 					actiontype: ACT_TURN_DONE
 				 };
-	console.log("turn done:", action);
 
     socket.emit('do game action', clientGame.gameid, action, function(data){
         console.log('finished turn: ', data);

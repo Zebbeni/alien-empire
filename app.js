@@ -367,7 +367,10 @@ var allPlayersReady = function(gameid) {
     var gameInfo = gamesInfo[gameid];
     var players = gameInfo.players;
     var ready = gameInfo.ready;
-    return (players.length >= 2 && players.length == ready.length);
+    // TODO: add a num_players option that the host
+    // of the game can set. Only return true if
+    // all players ready and all slots are filled
+    return (players.length == ready.length);
 };
 
 // [START hello_world]

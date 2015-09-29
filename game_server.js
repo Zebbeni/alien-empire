@@ -2,6 +2,7 @@
 var constants = require('./server_constants');
 
 var start_planets = {
+						1: [8, 3, 1],
 						2: [8, 3, 1],
 						3: [8, 3, 1, 12, 10],
 						4: [8, 3, 1, 0, 2]
