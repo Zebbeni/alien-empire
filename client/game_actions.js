@@ -5,3 +5,7 @@ var submitAction = function() {
 var submitTurnDone = function(name) {
     socket_submitTurnDone();
 };
+
+var submitLoadingDone = function() {
+	socket_loadingDone();
+};

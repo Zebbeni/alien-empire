@@ -113,5 +113,5 @@ var handleProgress = function() {
 
 var handleComplete = function() {
 	stage.removeChild(loadProgress);
-	socket_loadingDone();
+	submitLoadingDone();
 };

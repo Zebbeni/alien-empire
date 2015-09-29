@@ -1,14 +1,16 @@
 socket.on('room game starting', function(gameInfo) {
 
-    game_init(gameInfo);
+    updateClientGame( gameInfo );
     addProgressBar();
     moveToGame( load_assets );
 
 });
 
 socket.on('turn update', function(content) {
+
     updateClientGame(content);
     toggleTurnMenu();
+
 });
 
 socket.on('loading done', function(content) {
@@ -30,8 +32,9 @@ socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
 });
 
 socket.on('game end', function(content) {
-    clientGame = null;
-    set_globals();
+
+	clientGame = null;
+    setGlobals();
     moveToLobby();
 });
 

@@ -12,19 +12,11 @@ $(document).ready(function() {
 
 });
 
-var game_init = function( gameInfo ) {
-	set_globals();
-	updateClientGame(gameInfo);
-	clientColor = clientGame.game.players.indexOf( clientId );
-	clientTurn = clientGame.game.players.indexOf( clientId );
-};
-
 /**
- * Called on game_init. Clears old game globals, re-sets defaults.
- *
- * TODO: this is a mess. We should split this into a few functions
+ * Called from createAll in game.js after all assets are loaded. 
+ * Clears old game globals, re-sets defaults.
  */
-var set_globals = function() {
+var setGlobals = function() {
 	stage.removeChild(board);
 	board = new createjs.Container();
 	tiles = [];

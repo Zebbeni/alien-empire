@@ -13,6 +13,8 @@ var showInterface = function() {
 var createAll = function( content ) {
 
 	updateClientGame(content);
+	initializePlayerAttributes();
+	setGlobals();
 	drawBoard();
 	showInterface();
 	toggleTurnMenu();
@@ -74,7 +76,12 @@ var isPendingActionReady = function() {
 	return true;
 };
 
+var initializePlayerAttributes = function() {
+	clientColor = clientGame.game.players.indexOf( clientId );
+	clientTurn = clientGame.game.players.indexOf( clientId );
+};
+
 // Updates local copy of game with server's version
-var updateClientGame = function( gameInfo ) {
-	$.extend(true, clientGame, gameInfo);
+var updateClientGame = function( content ) {
+	$.extend(true, clientGame, content );
 };

@@ -6,9 +6,8 @@ var toggleRecruitMenu = function() {
 };
 
 /**
- * This should eventually be capable of showing specific messages
- * ex. Not enough resources to complete that action
- *	   That agent cannot be sent on a mission right now, etc.
+ * Displays an 'illegal action' message returned from the server.
+ * TODO: Animate this in a nice div instead of an ugly alert
  */
 var toggleIllegalActionMenu = function(response) {
 	alert( response );
@@ -34,38 +33,46 @@ var togglePlayersMenu = function( i ) {
  */
 var toggleTurnMenu = function() {
 
-	// Stand in. Current logic only works if we assume we're on round 0
 	if( clientGame.game.turn == clientTurn ) {
+
 		if( clientGame.game.round == 0){
 			setPendingObject( OBJ_MINE );
-    		setPendingAction( ACT_PLACE );
-    		showPendingActionDiv();
+			setPendingAction( ACT_PLACE );
+			showPendingActionDiv();
 		}
+
 		else {
 			clearPendingAction();
 		}
-    	displayYourTurnMenu();
-    	updateBoard();
 
-    } else {
+		displayYourTurnMenu();
+		updateBoard();
 
-    	clearPendingAction();
-    	hidePendingActionDiv();
-    	hideYourTurnMenu();
-    	updateBoard();
+	} else {
 
-    }
+		clearPendingAction();
+		hidePendingActionDiv();
+		hideYourTurnMenu();
+		updateBoard();
 
-    for ( var i = 0; i < clientGame.game.players.length; i++) {
-    	if (i == clientGame.game.turn ){
-    		$('#player-turn-div' + i).animate({opacity: 1.0});
-    	}
-    	else {
-    		console.log("hiding turn menu "+ i);
-	    	$('#player-turn-div' + i).animate({opacity: 0.0});
-	    }
-    }
+	}
+
+	togglePlayerTurnMenus();
 };
+
+/**
+ * Fades in or fades out player-turn-divs based on whose turn it is
+ */
+var togglePlayerTurnMenus = function() {
+	for ( var i = 0; i < clientGame.game.players.length; i++) {
+		if (i == clientGame.game.turn ){
+			$('#player-turn-div' + i).animate({opacity: 1.0});
+		}
+		else {
+			$('#player-turn-div' + i).animate({opacity: 0.0});
+		}
+	}
+}
 
 var clickBuildButton = function() {
 	if(clientGame.game.round != 0 && $('#build-buttons-div')[0].style.visibility == "hidden") {
