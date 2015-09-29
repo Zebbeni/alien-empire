@@ -133,6 +133,7 @@ var toggleTurnMenu = function() {
     		$('#player-turn-div' + i).animate({opacity: 1.0});
     	}
     	else {
+    		console.log("hiding turn menu "+ i);
 	    	$('#player-turn-div' + i).animate({opacity: 0.0});
 	    }
     }
@@ -189,45 +190,12 @@ var togglePlayersMenu = function( i ) {
 	}
 };
 
+/**
+ * Initializes player-div and its inner divs, player-turn-div and player-stats-div
+ * Creates basic structure first and then calls reusable updatePlayersTurnMenus and 
+ * updatePlayersStatsMenus functions to fill contents 
+ */
 var createPlayersMenu = function() {
-
-	// var wrapperWidth = (210 * clientGame.players.length);
-	// $('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
-
-	// var marginleft = Math.round(wrapperWidth / -2) + "px";
-	// $('#players-wrapper-div')[0].style.marginLeft = marginleft;
-
-	// var innerHTML = "";
-
-	// for (var i = 0; i < clientGame.players.length; i++ ){
-
-	// 	innerHTML += '<div id="player-div' + i 
-	// 				 + '" class="player-div" style="bottom: 100px" '
-	// 				 + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
-
-	// 	innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div">';
-
-	// 	if (i == clientTurn) {
-	// 		innerHTML += "Your turn!";
-	// 	}
-	// 	else {
-	// 		innerHTML += all_users[clientGame.game.players[i]].name + "'s turn";
-	// 	}
-
-	// 	innerHTML += '</div>';
-	// 	innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
-	// 	innerHTML += '</div>';
-
-	// }
-
-	// $('#players-wrapper-div')[0].innerHTML = innerHTML;
-
-	updatePlayersMenu();
-
-	$('#players-wrapper-div')[0].style.visibility = "visible";
-};
-
-var updatePlayersMenu = function() {
 
 	var wrapperWidth = (210 * clientGame.players.length);
 	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
@@ -235,32 +203,48 @@ var updatePlayersMenu = function() {
 	var marginleft = Math.round(wrapperWidth / -2) + "px";
 	$('#players-wrapper-div')[0].style.marginLeft = marginleft;
 
-	$('#players-wrapper-div')[0].innerHTML = "";
+	var innerHTML = "";
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
-
-		var innerHTML = "";
 
 		innerHTML += '<div id="player-div' + i 
 					 + '" class="player-div" style="bottom: 100px" '
 					 + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
 
-		innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div">';
+		innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div"></div>';
+		innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
+
+		innerHTML += '</div>';
+	}
+
+	$('#players-wrapper-div')[0].innerHTML = innerHTML;
+
+	createPlayerTurnMenus();
+	updatePlayerStatsMenus();
+
+	$('#players-wrapper-div')[0].style.visibility = "visible";
+};
+
+var createPlayerTurnMenus = function() {
+
+	for ( var i = 0; i < clientGame.players.length; i++ ) {
+		var innerHTML = "";
 
 		if (i == clientTurn) {
 			innerHTML += "Your turn!";
 		}
 		else {
-			innerHTML += all_users[clientGame.game.players[i]].name + "'s turn";
+			innerHTML += COL_ENGLISH[i] + "'s turn!";
 		}
 
-		innerHTML += '</div>';
-		innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
-		innerHTML += '</div>';
+		$('#player-turn-div' + i )[0].innerHTML = innerHTML;
+	}
 
-		$('#players-wrapper-div')[0].innerHTML += innerHTML;
+};
 
-		var playersDiv = $('#player-div' + i)[0];
+var updatePlayerStatsMenus = function() {
+
+	for ( var i = 0; i < clientGame.players.length; i++ ) {
 
 		var statsDiv = $('#player-stats-div' + i )[0];
 

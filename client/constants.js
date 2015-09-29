@@ -57,6 +57,13 @@ var OBJ_ENGLISH = {
 					5: "fleet"
 				};
 
+var COL_ENGLISH = {
+					0: "Red",
+					1: "Blue",
+					2: "Green",
+					3: "Yellow"
+				};
+
 // lists of required parameters to be met for each action type
 var ACTION_REQUIREMENTS = {
 	1: [],

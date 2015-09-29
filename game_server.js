@@ -405,6 +405,7 @@ var start_planets = {
 													};
 					payToBuild( player, objecttype, game);
 					game.structures[player][constants.OBJ_BASE] -= 1;
+					addPointsForStructure( player, objecttype, planetid, game);
 				}
 				else {
 					return { 
@@ -435,6 +436,7 @@ var start_planets = {
 
 							payToBuild( player, objecttype, game);
 							game.structures[player][constants.OBJ_FLEET] -= 1;
+							addPointsForStructure( player, objecttype, planetid, game);
 							
 							break;
 						}
@@ -450,23 +452,15 @@ var start_planets = {
 				break;
 
 			case constants.OBJ_FACTORY:
-				game.board.planets[planetid].resources[index].structure = {
-													player: player,
-													kind: objecttype
-												};
-				payToBuild( player, objecttype, game);
-				game.structures[player][constants.OBJ_FACTORY] -= 1;
-				game.structures[player][constants.OBJ_MINE] += 1;
-				break;
-
 			case constants.OBJ_EMBASSY:
 				game.board.planets[planetid].resources[index].structure = {
 													player: player,
 													kind: objecttype
 												};
 				payToBuild( player, objecttype, game);
-				game.structures[player][constants.OBJ_EMBASSY] -= 1;
+				game.structures[player][objecttype] -= 1;
 				game.structures[player][constants.OBJ_MINE] += 1;
+				addPointsForStructure( player, objecttype, planetid, game);
 				break;
 
 			case constants.OBJ_MINE:
@@ -476,6 +470,7 @@ var start_planets = {
 												};
 				payToBuild( player, objecttype, game);
 				game.structures[player][constants.OBJ_MINE] -= 1;
+				addPointsForStructure( player, objecttype, planetid, game);
 				break;
 
 			default:
@@ -530,6 +525,17 @@ var start_planets = {
 		for (var res in requirements) {
 			game.resources[player][res] -= requirements[res];
 		}
+	};
+
+	/**
+	 * This function currently just adds the number of points a structure
+	 * is worth when it is built. In the long-term, this is not very smart.
+	 * We should at least be considering the structure's location, whether
+	 * it has all borders blocked, etc.
+	 */
+	addPointsForStructure = function( player, objecttype, planetid, game) {
+		var value = constants.OBJ_VALUE[objecttype];
+		game.points[player][constants.PNT_STRUCTURES] += value;
 	};
 
 	/**

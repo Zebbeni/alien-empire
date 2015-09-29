@@ -35,8 +35,8 @@ socket.on( ACT_ENGLISH[ ACT_PLACE ], function(content) {
 				clientGame.game.board.planets[planetid].name);
 
 	updateBoard();
+	updatePlayerStatsMenus();
 	toggleTurnMenu();
-	updatePlayersMenu();
 });
 
 socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
@@ -59,7 +59,8 @@ socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
 	console.log(clientGame.game.board.planets[planetid]);
 
 	updateBoard();
-	updatePlayersMenu();
+	updatePlayerStatsMenus();
+	toggleTurnMenu();
 });
 
 socket.on('game end', function(content) {
