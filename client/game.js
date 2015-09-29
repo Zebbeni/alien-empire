@@ -25,6 +25,9 @@ var handleKeyUp = function( e ) {
 
 };
 
+/**
+ * 
+ */
 var showInterface = function() {
 	$('#button-bar-div')[0].style.visibility = "visible";
 	createPlayersMenu();
@@ -137,8 +140,6 @@ var toggleTurnMenu = function() {
 	    	$('#player-turn-div' + i).animate({opacity: 0.0});
 	    }
     }
-    // updatePlayersMenu();
-    updateBoardInteractivity();
 };
 
 var clickBuildButton = function() {
@@ -188,6 +189,36 @@ var togglePlayersMenu = function( i ) {
 		$("#player-div" + i ).animate({height: '415px', bottom: '415px'}, 500);
 		playerMenuOn[i] = true;
 	}
+};
+
+/**
+ * Called when server receives loading done message.
+ *
+ * Recevies initialized game object from server, assigns to clientGame,
+ * draws the board, draws the UI, and shows the correct turn menus 
+ */
+var createAll = function( content ) {
+
+	updateClientGame(content);
+	drawBoard();
+	showInterface();
+	toggleTurnMenu();
+	updateBoardInteractivity();
+
+};
+
+/**
+ * Receives new game from socket, updates clientGame, redraws the board,
+ * updates player stats menus and animates the correct turn menus in/out 
+ */
+var updateAll = function( content ) {
+
+	updateClientGame( content );
+	updateBoard();
+	updatePlayerStatsMenus();
+	toggleTurnMenu();
+	updateBoardInteractivity();
+
 };
 
 /**
@@ -386,7 +417,6 @@ var game_init = function( gameInfo ) {
 	updateClientGame(gameInfo);
 	clientColor = clientGame.game.players.indexOf( clientId );
 	clientTurn = clientGame.game.players.indexOf( clientId );
-	console.log("client turn:", clientTurn);
 };
 
 /**
@@ -412,25 +442,9 @@ var drawBoard = function() {
 
 		setCanvasSize();
 
-		var asteroids = clientGame.game.board.asteroids;
-
-		for ( var a = 0; a < asteroids.length; a++ ) {
-			drawAsteroid( asteroids[a] );
-		}
-
-		var planets = clientGame.game.board.planets;
-
-		for ( var p = 0; p < planets.length; p++ ) {	
-
-			initTile(p);
-			drawTile(p);
-		}
-
-		initFleets();
-		for ( var p = 0; p < planets.length; p++ ) {	
-
-			updateFleets(p);
-		}
+		drawAsteroids();
+		drawTiles();
+		drawFleets();
 
 		stage.addChild( board );
 		
@@ -438,8 +452,36 @@ var drawBoard = function() {
 	}
 };
 
+var drawAsteroids = function() {
+	var asteroids = clientGame.game.board.asteroids;
+
+	for ( var a = 0; a < asteroids.length; a++ ) {
+		drawAsteroid( asteroids[a] );
+	}
+};
+
+var drawTiles = function() {
+	var planets = clientGame.game.board.planets;
+
+	for ( var p = 0; p < planets.length; p++ ) {	
+		initTile(p);
+		drawTile(p);
+	}
+};
+
+var drawFleets = function() {
+
+	initFleets();
+	var planets = clientGame.game.board.planets;
+
+	for ( var p = 0; p < planets.length; p++ ) {	
+		updateFleets(p);
+	}
+};
+
 /**
- * Calls 
+ * Calls function to turn mouse enablement on/off on different
+ * createJS containers based on what action the user is in.
  */
 var updateBoardInteractivity = function() {
 	var planets = clientGame.game.board.planets;
