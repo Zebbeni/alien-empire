@@ -1,5 +1,5 @@
 
-var constants = require('./server_constants');
+var cons = require('./server_constants');
 
 var start_planets = {
 						1: [8, 3, 1],
@@ -31,14 +31,14 @@ var start_planets = {
 	module.exports.resolveAction = function( action, gameInfo ) {
 		// This will be a switch for all different action types.
 		switch (action.actiontype) {
-			case constants.ACT_LOADED_ASSETS:
+			case cons.ACT_LOADED_ASSETS:
 				return resolveLoadingDone( action, gameInfo.game );
 				break;
-			case constants.ACT_TURN_DONE:
+			case cons.ACT_TURN_DONE:
 				return resolveTurnDone( action, gameInfo.game );
 				break;
-			case constants.ACT_PLACE:
-			case constants.ACT_BUILD:
+			case cons.ACT_PLACE:
+			case cons.ACT_BUILD:
 				return resolveGameAction( action, gameInfo.game );
 				break;
 			default:
@@ -76,10 +76,10 @@ var start_planets = {
 
 			resources.push( {} );
 
-			resources[i][constants.RES_METAL] = 2;
-			resources[i][constants.RES_WATER] = 2;
-			resources[i][constants.RES_FUEL] = 2;
-			resources[i][constants.RES_FOOD] = 2;
+			resources[i][cons.RES_METAL] = 2;
+			resources[i][cons.RES_WATER] = 2;
+			resources[i][cons.RES_FUEL] = 2;
+			resources[i][cons.RES_FOOD] = 2;
 		}
 		
 		return resources;
@@ -92,11 +92,11 @@ var start_planets = {
 		
 			points.push( {} );
 
-			points[i][constants.PNT_STRUCTURES] = 0;
-			points[i][constants.PNT_EXPLORE] = 0;
-			points[i][constants.PNT_ENVOY] = 0;
-			points[i][constants.PNT_DESTROY] = 0;
-			points[i][constants.PNT_TOTAL] = 0;
+			points[i][cons.PNT_STRUCTURES] = 0;
+			points[i][cons.PNT_EXPLORE] = 0;
+			points[i][cons.PNT_ENVOY] = 0;
+			points[i][cons.PNT_DESTROY] = 0;
+			points[i][cons.PNT_TOTAL] = 0;
 		}
 
 		return points;
@@ -108,11 +108,11 @@ var start_planets = {
 		for ( var i = 0; i < num_users; i++) {
 			structures.push( {} );
 
-			structures[i][constants.OBJ_MINE] = 4;
-			structures[i][constants.OBJ_FACTORY] = 3;
-			structures[i][constants.OBJ_EMBASSY] = 5;
-			structures[i][constants.OBJ_BASE] = 1;
-			structures[i][constants.OBJ_FLEET] = 3;
+			structures[i][cons.OBJ_MINE] = 4;
+			structures[i][cons.OBJ_FACTORY] = 3;
+			structures[i][cons.OBJ_EMBASSY] = 5;
+			structures[i][cons.OBJ_BASE] = 1;
+			structures[i][cons.OBJ_FLEET] = 3;
 		}
 
 		return structures;
@@ -197,14 +197,16 @@ var start_planets = {
 	 * Returns true if planetid is in the starting set of planets
 	 */
 	var setExploredStatus = function( planetid, num_players ) {
-		return start_planets[num_players].indexOf( planetid ) == -1 ? false : true;
+		if ( start_planets[num_players].indexOf( planetid ) == -1 ){
+			return false;
+		}
+		return true;
 	};
 
 	/**
 	 * 
 	 */
 	var generateResources = function( size ) {
-		// num_resources = 3, 4 for planets with w = 2, 1 or 2 for planets of w = 1
 		var num_resources = ( size * 2 ) - 1 + Math.floor( Math.random() * 2 );
 		var resources = [];
 
@@ -227,7 +229,7 @@ var start_planets = {
 	var initializeFleets = function(num_players) {
 		var fleets = {};
 		for (var p = 0; p < num_players; p++) {
-			for (var f = 0; f < constants.NUM_FLEETS; f++) {
+			for (var f = 0; f < cons.NUM_FLEETS; f++) {
 				fleets[ String(p) + String(f) ] = {
 						player: p,
 						planetid: undefined,
@@ -249,10 +251,11 @@ var start_planets = {
 	 * @return [sockets to update, event type, game object]
 	 */
 	var resolveTurnDone = function( action, game ) {
-		// This is stand in logic. End game condition should be checked during the upkeep phase
+		// This is stand in logic. End game condition should be checked 
+		// during the upkeep phase
 		if ( isEndCondition( game ) ){
 			return {
-					to: constants.EVENT_ALL,
+					to: cons.EVENT_ALL,
 					evnt: 'game end',
 					content: {}
 				};
@@ -261,7 +264,7 @@ var start_planets = {
 			console.log("game.turn:", game.turn);
 			console.log("action.player:", action.player);
 			return {
-					to: constants.EVENT_ONE,
+					to: cons.EVENT_ONE,
 					evnt: 'illegal action',
 					content: "it is not your turn"
 				};
@@ -269,7 +272,7 @@ var start_planets = {
 		else { // increment round round
 			updateTurn( game );
 			return {
-					to: constants.EVENT_ALL,
+					to: cons.EVENT_ALL,
 					evnt: 'turn update',
 					content: {
 						game: game
@@ -286,7 +289,7 @@ var start_planets = {
 	 */
 	var resolveLoadingDone = function( action, game ) {
 		return {
-				to: constants.EVENT_ONE,
+				to: cons.EVENT_ONE,
 				evnt: 'loading done',
 				content: {
 					game: game
@@ -304,7 +307,7 @@ var start_planets = {
 
 		if( applyResult.isIllegal ) {
 			return {
-					to: constants.EVENT_ONE,
+					to: cons.EVENT_ONE,
 					evnt: 'illegal action',
 					content: applyResult.response
 				};
@@ -312,8 +315,8 @@ var start_planets = {
 		else {
 
 			return {
-					to: constants.EVENT_ALL,
-					evnt: constants.ACT_ENGLISH[ action.actiontype ],
+					to: cons.EVENT_ALL,
+					evnt: cons.ACT_ENGLISH[ action.actiontype ],
 					content: {
 							game: game,
 							action: action
@@ -324,9 +327,9 @@ var start_planets = {
 
 	var applyAction = function( action, game ){
 		switch ( action.actiontype ) {
-			case constants.ACT_PLACE:
+			case cons.ACT_PLACE:
 				return applyPlaceAction( action, game );
-			case constants.ACT_BUILD:
+			case cons.ACT_BUILD:
 				return applyBuildAction( action, game );
 			default:
 				return { 
@@ -344,7 +347,7 @@ var start_planets = {
 		var planetid = action.planetid;
 		var index = action.resourceid;
 
-		if(index == constants.RES_NONE) {
+		if(index == cons.RES_NONE) {
 			return { 
 					isIllegal: true,
 					response: "You must place this on a resource"
@@ -380,14 +383,16 @@ var start_planets = {
 		if ( game.structures[ player ][ objecttype ] <= 0 ){
 
 			return { isIllegal: true,
-					 response: "You cannot build another " + constants.OBJ_ENGLISH[objecttype]
+					 response: "You cannot build another " 
+					 			+ cons.OBJ_ENGLISH[objecttype]
 					};
 
-		}
-
-		if ( !hasEnoughToBuild( player, objecttype, game ) ) {
+		} 
+		else if ( !hasEnoughToBuild( player, objecttype, game ) ) {
+		
 			return { isIllegal: true,
-					 response: "You do not have enough resources to build a new " + constants.OBJ_ENGLISH[objecttype]
+					 response: "You do not have enough resources to build a new " 
+					 			+ cons.OBJ_ENGLISH[objecttype]
 					};
 		}
 
@@ -395,7 +400,7 @@ var start_planets = {
 		// We should break this into functions.
 		switch( objecttype ){
 
-			case constants.OBJ_BASE:
+			case cons.OBJ_BASE:
 				if ( !planet.base ) {
 
 					// TODO: This block of ~3 lines is very similar for all
@@ -405,22 +410,26 @@ var start_planets = {
 														used: false
 													};
 					payToBuild( player, objecttype, game);
-					game.structures[player][constants.OBJ_BASE] -= 1;
-					addPointsForStructure( player, objecttype, planetid, game);
+					game.structures[player][cons.OBJ_BASE] -= 1;
+					addPointsForStructure( player, 
+										   objecttype, 
+										   planetid, 
+										   game);
 				}
 				else {
 					return { 
 						isIllegal: true,
-					 	response: "Only one base can be built on a single planet"
+					 	response: "Only one base can be built on a planet"
 					};
 				}
 				break;
 
-			case constants.OBJ_FLEET:
+			case cons.OBJ_FLEET:
 
-				// Go through all fleets, set planetid of first fleet with planetid set to null
+				// Go through all fleets, set planetid of first fleet 
+				// with planetid set to null
 				// If none found, return illegal action message
-				for ( var i = 0; i < constants.NUM_FLEETS; i++ ) {
+				for ( var i = 0; i < cons.NUM_FLEETS; i++ ) {
 
 					var id = String(player) + String(i);
 					var fleet = game.board.fleets[ id ];
@@ -436,8 +445,11 @@ var start_planets = {
 							planet.fleets.push( id );
 
 							payToBuild( player, objecttype, game);
-							game.structures[player][constants.OBJ_FLEET] -= 1;
-							addPointsForStructure( player, objecttype, planetid, game);
+							game.structures[player][cons.OBJ_FLEET] -= 1;
+							addPointsForStructure( player, 
+												   objecttype, 
+												   planetid, 
+												   game);
 							
 							break;
 						}
@@ -452,25 +464,25 @@ var start_planets = {
 				}
 				break;
 
-			case constants.OBJ_FACTORY:
-			case constants.OBJ_EMBASSY:
+			case cons.OBJ_FACTORY:
+			case cons.OBJ_EMBASSY:
 				game.board.planets[planetid].resources[index].structure = {
 													player: player,
 													kind: objecttype
 												};
 				payToBuild( player, objecttype, game);
 				game.structures[player][objecttype] -= 1;
-				game.structures[player][constants.OBJ_MINE] += 1;
+				game.structures[player][cons.OBJ_MINE] += 1;
 				addPointsForStructure( player, objecttype, planetid, game);
 				break;
 
-			case constants.OBJ_MINE:
+			case cons.OBJ_MINE:
 				game.board.planets[planetid].resources[index].structure = {
 													player: player,
 													kind: objecttype
 												};
 				payToBuild( player, objecttype, game);
-				game.structures[player][constants.OBJ_MINE] -= 1;
+				game.structures[player][cons.OBJ_MINE] -= 1;
 				addPointsForStructure( player, objecttype, planetid, game);
 				break;
 
@@ -507,7 +519,7 @@ var start_planets = {
 	};
 
 	var hasEnoughToBuild = function( player, objecttype, game ) {
-		var requirements = constants.STRUCT_REQS[objecttype].build;
+		var requirements = cons.STRUCT_REQS[objecttype].build;
 
 		for (var res in requirements) {
 			if ( game.resources[player][res] < requirements[res] ) {
@@ -521,7 +533,7 @@ var start_planets = {
 	};
 
 	payToBuild = function( player, objecttype, game) {
-		var requirements = constants.STRUCT_REQS[objecttype].build;
+		var requirements = cons.STRUCT_REQS[objecttype].build;
 
 		for (var res in requirements) {
 			game.resources[player][res] -= requirements[res];
@@ -535,8 +547,8 @@ var start_planets = {
 	 * it has all borders blocked, etc.
 	 */
 	addPointsForStructure = function( player, objecttype, planetid, game) {
-		var value = constants.OBJ_VALUE[objecttype];
-		game.points[player][constants.PNT_STRUCTURES] += value;
+		var value = cons.OBJ_VALUE[objecttype];
+		game.points[player][cons.PNT_STRUCTURES] += value;
 	};
 
 	/**
