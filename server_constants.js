@@ -16,6 +16,11 @@
 		RES_FOOD : 3,
 		RES_NONE : 4,
 
+		// Border status constants
+		BRD_UNEXPLORED: 0,
+		BRD_OPEN: 1,
+		BRD_BLOCKED: 2,
+
 		// Action type values. All normal game actions must be greater than 0,
 		// Or certain logic (like updateTileInteractivity) will fail
 		ACT_LOADED_ASSETS : 0,

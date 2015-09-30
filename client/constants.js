@@ -10,6 +10,11 @@ var RES_FUEL = 2;
 var RES_FOOD = 3;
 var RES_NONE = 4;
 
+// Border status constants
+var BRD_UNEXPLORED = 0;
+var BRD_OPEN = 1;
+var BRD_BLOCKED = 2;
+
 // Action type values. All normal game actions must be greater than 0,
 // Or certain logic (like updateTileInteractivity) will fail
 var ACT_LOADED_ASSETS = 0;

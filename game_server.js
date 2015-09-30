@@ -187,8 +187,12 @@ var start_planets = {
 			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].explored = setExploredStatus(i, num_players);
 			board.planets[i].base = undefined;
+			board.planets[i].borders = {};
 			board.planets[i].fleets = [];
 		}
+
+		// this must be run after all planets have explored value set
+		initializeBorders( board );
 
 		return board;
 	};
@@ -216,7 +220,7 @@ var start_planets = {
 		 		num: 1,
 		 		structure: undefined
 			};
-			resources.push( new_res )
+			resources.push( new_res );
 		}
 		return resources;
 	};
@@ -238,6 +242,28 @@ var start_planets = {
 			}
 		}
 		return fleets;
+	};
+
+	var initializeBorders = function(board) {
+
+		var planets = board.planets;
+
+		for ( var i = 0; i < planets.length; i++) {
+			if ( planets[i].w == 2 ){
+				for ( var j = i; j < planets.length; j++ ) {
+					var distX = Math.abs(planets[j].x - planets[i].x);
+					var distY = Math.abs(planets[j].y - planets[i].y);	
+					if ( distX + distY <= 3) {
+						createBorder(planets, i, j);
+					}
+				}
+			}
+		}
+	};
+
+	var createBorder = function(planets, i, j) {
+		planets[i].borders[j] = planets[j].explored ? cons.BRD_OPEN : cons.BRD_UNEXPLORED;
+		planets[j].borders[i] = planets[i].explored ? cons.BRD_OPEN : cons.BRD_UNEXPLORED;
 	};
 
 	/**
