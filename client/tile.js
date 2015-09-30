@@ -74,7 +74,7 @@ var drawTile = function(planetid) {
 	drawDarkScreen(planetid, img_width);
 };
 
-// This is hack. Eventually drawTile should work for this, but it
+// This is a hack. Eventually drawTile should work for this, but it
 // Currently screws everything up.
 var updateTileImage = function(planetid) {
 	drawResources(planetid);
@@ -395,6 +395,7 @@ var drawResource = function( planetid, index, num_resources ) {
 		var kind = struct.kind;
 		var structure = resource.getChildByName("structure");
 		var structureImg = loader.getResult( OBJ_ENGLISH[ kind ] + player );
+
 		structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(0, 0, structureImg.width, structureImg.height);
 		structure.x = icon.x + 38;
 		structure.y = icon.y - 48;
@@ -468,6 +469,16 @@ var drawDarkScreen = function(planetid, img_width) {
 	if(planets[planetid].explored) {
 		darkscreen.visible = false;
 	}
+};
+
+var showDarkScreen = function( planetid ) {
+	var darkscreen = tiles[planetid].getChildByName("darkscreen");
+	darkscreen.visible = true;
+};
+
+var hideDarkScreen = function( planetid ) {
+	var darkscreen = tiles[planetid].getChildByName("darkscreen");
+	darkscreen.visible = false;
 };
 
 var initLightScreen = function(planetid) {

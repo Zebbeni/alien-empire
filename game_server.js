@@ -120,7 +120,6 @@ var start_planets = {
 
 	var initializeBoard = function( num_players ) {
 		var board = {
-			// TODO: add explored attributes
 			planets: [
 				{ x: 2, y: 1, w: 2 },
 				{ x: 4, y: 2, w: 2 },
@@ -147,7 +146,6 @@ var start_planets = {
 				{ x: 0, y: 2, r: 1}
 			],
 			fleets: initializeFleets( num_players )
-			// TODO: add borders array
 		};
 
 		//randomly assign 
@@ -187,8 +185,11 @@ var start_planets = {
 			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].explored = setExploredStatus(i, num_players);
 			board.planets[i].base = undefined;
-			board.planets[i].borders = {};
 			board.planets[i].fleets = [];
+
+			board.planets[i].borders = {};
+			board.planets[i].settledBy = [false, false, false, false];
+			board.planets[i].buildableBy = [false, false, false, false];
 		}
 
 		// this must be run after all planets have explored value set
@@ -217,8 +218,8 @@ var start_planets = {
 		for ( var i = 0; i < num_resources; i++ ) {
 			var new_res = { 
 				kind: Math.floor( Math.random() * 4 ),
-		 		num: 1,
-		 		structure: undefined
+				num: 1,
+				structure: undefined
 			};
 			resources.push( new_res );
 		}
@@ -370,6 +371,8 @@ var start_planets = {
 	 * returns true. Returns false if illegal.
 	 */
 	var applyPlaceAction = function( action, game ){ 
+		var player = action.player;
+		var objecttype = action.objecttype;
 		var planetid = action.planetid;
 		var index = action.resourceid;
 
@@ -387,10 +390,18 @@ var start_planets = {
 		}
 		else {
 			game.board.planets[planetid].resources[index].structure = {
-													player: action.player,
-													kind: action.objecttype
+													player: player,
+													kind: objecttype
 												};
 			game.structures[action.player][action.objecttype] -= 1;
+
+			updateSettledBy( player, 
+							 planetid, 
+							 game );
+
+			updateBuildableBy( player,
+							   planetid,
+							   game );
 
 			updateTurn( game ); // placing should increment the turn
 			
@@ -410,7 +421,7 @@ var start_planets = {
 
 			return { isIllegal: true,
 					 response: "You cannot build another " 
-					 			+ cons.OBJ_ENGLISH[objecttype]
+								+ cons.OBJ_ENGLISH[objecttype]
 					};
 
 		} 
@@ -418,7 +429,7 @@ var start_planets = {
 		
 			return { isIllegal: true,
 					 response: "You do not have enough resources to build a new " 
-					 			+ cons.OBJ_ENGLISH[objecttype]
+								+ cons.OBJ_ENGLISH[objecttype]
 					};
 		}
 
@@ -437,6 +448,15 @@ var start_planets = {
 													};
 					payToBuild( player, objecttype, game);
 					game.structures[player][cons.OBJ_BASE] -= 1;
+
+					updateSettledBy( player, 
+									 planetid, 
+									 game );
+
+					updateBuildableBy( player,
+									   planetid,
+									   game );
+
 					addPointsForStructure( player, 
 										   objecttype, 
 										   planetid, 
@@ -445,7 +465,7 @@ var start_planets = {
 				else {
 					return { 
 						isIllegal: true,
-					 	response: "Only one base can be built on a planet"
+						response: "Only one base can be built on a planet"
 					};
 				}
 				break;
@@ -472,6 +492,7 @@ var start_planets = {
 
 							payToBuild( player, objecttype, game);
 							game.structures[player][cons.OBJ_FLEET] -= 1;
+
 							addPointsForStructure( player, 
 												   objecttype, 
 												   planetid, 
@@ -484,7 +505,7 @@ var start_planets = {
 							
 						return { 
 							isIllegal: true,
-					 		response: "You must build fleets where you have a base"
+							response: "You must build fleets where you have a base"
 						};
 					}
 				}
@@ -497,9 +518,22 @@ var start_planets = {
 													kind: objecttype
 												};
 				payToBuild( player, objecttype, game);
+
 				game.structures[player][objecttype] -= 1;
 				game.structures[player][cons.OBJ_MINE] += 1;
-				addPointsForStructure( player, objecttype, planetid, game);
+
+				updateSettledBy( player, 
+							   planetid, 
+							   game );
+
+				updateBuildableBy( player,
+								   planetid,
+								   game );
+
+				addPointsForStructure( player, 
+									   objecttype, 
+									   planetid, 
+									   game );
 				break;
 
 			case cons.OBJ_MINE:
@@ -509,6 +543,15 @@ var start_planets = {
 												};
 				payToBuild( player, objecttype, game);
 				game.structures[player][cons.OBJ_MINE] -= 1;
+
+				updateSettledBy( player, 
+								 planetid, 
+								 game );
+
+				updateBuildableBy( player,
+								   planetid,
+								   game );
+
 				addPointsForStructure( player, objecttype, planetid, game);
 				break;
 
@@ -518,6 +561,34 @@ var start_planets = {
 						};
 		}
 		return { isIllegal: false };
+	};
+
+	// Updates planet.settledBy[player] to true or false 
+	// 
+	// Currently assumes we added a bulding. We will need to add logic
+	// To remove from planet.settledBy if the last structure a player
+	// has on planetid is removed
+	var updateSettledBy = function( player, planetid, game ) {
+		game.board.planets[planetid].settledBy[player] = true;
+	};
+
+	// Updates planet.buildableBy[player] to true or false for this planet
+	// and all planets adjacent to it
+	//
+	// Currently assumes we added a bulding. We will need to add logic
+	// To remove from planet.settledBy if the last structure a player
+	// has on planetid is removed
+	var updateBuildableBy = function( player, planetid, game ) {
+
+		var planets = game.board.planets;
+		// for each planet id bordering this planet (including itself)
+		for ( var pid in planets[planetid].borders ){
+			// if border is open with this planet (not unexplored or blocked)
+			if ( planets[planetid].borders[pid] == cons.BRD_OPEN ){
+				// set buildableBy to true for this player
+				planets[pid].buildableBy[player] = true;
+			}
+		}
 	};
 
 	var updateTurn = function( game ){
