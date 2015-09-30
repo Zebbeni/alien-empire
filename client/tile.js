@@ -75,7 +75,7 @@ var drawTile = function(planetid) {
 };
 
 // This is a hack. Eventually drawTile should work for this, but it
-// Currently screws everything up.
+// currently screws everything up.
 var updateTileImage = function(planetid) {
 	drawResources(planetid);
 	drawOrbitStructures(planetid);
@@ -84,6 +84,10 @@ var updateTileImage = function(planetid) {
 /**
  * Update tile and tile's children's interactivity
  * based on the pendingAction of the client and the game state
+ *
+ * TODO: This is currently updating both mouse interactivity and
+ *       showing/hiding darkscreens. Might be better to split the
+ *       darkscreen functionality somewhere else and clean up
  */
 var updateTileInteractivity = function(planetid) {
 
@@ -93,13 +97,19 @@ var updateTileInteractivity = function(planetid) {
 
 	if ( actiontype && clientTurn == clientGame.game.turn) {
 
-		tiles[planetid].mouseChildren = true;
+		if ( actiontype == ACT_BUILD && !planets[planetid].buildableBy[clientTurn]) {
+			showDarkScreen(planetid);
+			tiles[planetid].mouseChildren = false;
+		}
+		else if ( planets[planetid].explored ) {
+			hideDarkScreen(planetid);
+			tiles[planetid].mouseChildren = true;
+			updateResourcesInteractivity(planetid, planets, actiontype, objecttype);
+			updatePlanetInteractivity(planetid, planets, actiontype, objecttype);
+		}
 
-		updateResourcesInteractivity(planetid, planets, actiontype, objecttype);
-		updatePlanetInteractivity(planetid, planets, actiontype, objecttype);
-
-	} else {
-
+	} else if ( planets[planetid].explored ) {
+		hideDarkScreen(planetid);
 		tiles[planetid].mouseChildren = false;
 	}
 };

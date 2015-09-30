@@ -251,7 +251,7 @@ var start_planets = {
 
 		for ( var i = 0; i < planets.length; i++) {
 			if ( planets[i].w == 2 ){
-				for ( var j = i; j < planets.length; j++ ) {
+				for ( var j = i + 1; j < planets.length; j++ ) {
 					var distX = Math.abs(planets[j].x - planets[i].x);
 					var distY = Math.abs(planets[j].y - planets[i].y);	
 					if ( distX + distY <= 3) {
@@ -581,6 +581,9 @@ var start_planets = {
 	var updateBuildableBy = function( player, planetid, game ) {
 
 		var planets = game.board.planets;
+
+		planets[planetid].buildableBy[player] = true;
+		
 		// for each planet id bordering this planet (including itself)
 		for ( var pid in planets[planetid].borders ){
 			// if border is open with this planet (not unexplored or blocked)

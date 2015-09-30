@@ -148,6 +148,10 @@ var confirmPendingAction = function() {
 };
 
 var cancelPendingAction = function() {
+	if(clientGame.game.round != 0) {
+		clearPendingAction();
+		updateBoardInteractivity();
+	}
 	hideConfirmMenu();
 };
 
