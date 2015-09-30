@@ -251,10 +251,20 @@ var start_planets = {
 
 		for ( var i = 0; i < planets.length; i++) {
 			if ( planets[i].w == 2 ){
+
 				for ( var j = i + 1; j < planets.length; j++ ) {
-					var distX = Math.abs(planets[j].x - planets[i].x);
-					var distY = Math.abs(planets[j].y - planets[i].y);	
-					if ( distX + distY <= 3) {
+
+					var centX1 = planets[i].x + (0.5 * planets[i].w);
+					var centY1 = planets[i].y + (0.5 * planets[i].w);
+					var centX2 = planets[j].x + (0.5 * planets[j].w);
+					var centY2 = planets[j].y + (0.5 * planets[j].w);
+
+					var distX = Math.abs(centX2 - centX1);
+					var distY = Math.abs(centY2 - centY1);
+
+					var dist = Math.sqrt( ( distX * distX ) + ( distY * distY ) );
+
+					if ( dist < 2.25) {
 						createBorder(planets, i, j);
 					}
 				}
@@ -583,7 +593,7 @@ var start_planets = {
 		var planets = game.board.planets;
 
 		planets[planetid].buildableBy[player] = true;
-		
+
 		// for each planet id bordering this planet (including itself)
 		for ( var pid in planets[planetid].borders ){
 			// if border is open with this planet (not unexplored or blocked)
