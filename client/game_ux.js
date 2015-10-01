@@ -15,14 +15,14 @@ var toggleIllegalActionMenu = function(response) {
 
 /**
  * Uses the playerMenuOn array to determine if a player div is expanded or
- * collapsed. Toggles to the opposite state when clicked and animates correctly
+ * collapsed. Toggles to the opposite state when clicked and transitions correctly
  */
 var togglePlayersMenu = function( i ) {
 	if ( playerMenuOn[i] ){
-		$("#player-div" + i ).animate({height: '100px', bottom: '100px'}, 500);
+		$("#player-div" + i ).transition({height: '100px', bottom: '100px'}, 500);
 		playerMenuOn[i] = false;
 	} else {
-		$("#player-div" + i ).animate({height: '415px', bottom: '415px'}, 500);
+		$("#player-div" + i ).transition({height: '415px', bottom: '415px'}, 500);
 		playerMenuOn[i] = true;
 	}
 };
@@ -66,10 +66,10 @@ var toggleTurnMenu = function() {
 var togglePlayerTurnMenus = function() {
 	for ( var i = 0; i < clientGame.game.players.length; i++) {
 		if (i == clientGame.game.turn ){
-			$('#player-turn-div' + i).animate({opacity: 1.0});
+			$('#player-turn-div' + i).transition({opacity: 1.0});
 		}
 		else {
-			$('#player-turn-div' + i).animate({opacity: 0.0});
+			$('#player-turn-div' + i).transition({opacity: 0.0});
 		}
 	}
 }
@@ -94,7 +94,7 @@ var clickStructureButton = function( objecttype ){
 
 var hideYourTurnMenu = function() {
 	$('#turn-done-button')[0].style.visibility = "hidden";
-	$("#your-turn-div").animate({ opacity: 0.00, top: "38%"}, 500, function(){
+	$("#your-turn-div").transition({ opacity: 0.00, top: "38%"}, 500, function(){
 		$('#your-turn-div')[0].style.visibility = "hidden";
 	});
 };
@@ -102,11 +102,11 @@ var hideYourTurnMenu = function() {
 var displayConfirmMenu = function() {
 	displayConfirmMessage();
 	$('#confirm-action-div')[0].style.visibility = "visible";
-	$("#confirm-action-div").animate({ opacity: 1.00, top: "40%"}, 500 );
+	$("#confirm-action-div").transition({ opacity: 1.00, top: "40%"}, 500 );
 };
 
 var hideConfirmMenu = function() {
-	$("#confirm-action-div").animate({ opacity: 0.00, top: "38%"}, 500, 
+	$("#confirm-action-div").transition({ opacity: 0.00, top: "38%"}, 500, 
 		function(){
 			$('#confirm-action-div')[0].style.visibility = "hidden";
 		});
@@ -162,8 +162,8 @@ var displayYourTurnMenu = function() {
 	displayTurnHelpMessage();
 	$('#your-turn-div')[0].style.visibility = "visible";
 	$('#turn-done-button')[0].style.visibility = "visible";
-	$("#your-turn-div").animate({ opacity: 1.00, top: "40%"}, 500, function() {
-		$("#your-turn-div").delay(3000).animate({ opacity: 0.00, top: "38%"}, 500, function(){
+	$("#your-turn-div").transition({ opacity: 1.00, top: "40%"}, 500, function() {
+		$("#your-turn-div").delay(3000).transition({ opacity: 0.00, top: "38%"}, 500, function(){
 			$('#your-turn-div')[0].style.visibility = "hidden";
 		});
 	});

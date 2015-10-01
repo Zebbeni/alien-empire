@@ -120,7 +120,6 @@ var updateMessagesHtml = function( messages, div_id ) {
 
 //update lobby stage, make it visible, and hide login stage
 var moveToLobby = function() {
-    console.log("moving to lobby");
     $('#login-div')[0].style.visibility = "hidden";
     $('#your-turn-div')[0].style.visibility = "hidden";
     $('#pending-action-div')[0].style.visibility = "hidden";
@@ -133,9 +132,9 @@ var moveToLobby = function() {
     $('#logout-button')[0].style.visibility = "visible";
     $('#main-div')[0].style.visibility = "visible";
 
-    $("#lobby-div").animate({top: '450px'}, 1000);
-    $("#logout-button").animate({top: '-30px'}, 1000);
-    $("#main-div").animate({top: '450px', opacity: 1.00}, 1000);
+    $("#lobby-div").transition({top: '450px'}, 1000);
+    $("#logout-button").transition({top: '-30px'}, 1000);
+    $("#main-div").transition({top: '450px', opacity: 1.00}, 1000);
 };
 
 /**
@@ -143,15 +142,15 @@ var moveToLobby = function() {
  */
 var moveToGame = function( fn ) {
     $('#screen-div')[0].style.visibility = "hidden";
-    $("#logout-button").animate({top: '-60px'}, 1000);
-    $("#staging-div").animate({top: '350px'}, 1000);
-    $("#main-div").animate({top: '350px', opacity: 0.00 }, 1000, function(){
+    $("#logout-button").transition({top: '-60px'}, 1000);
+    $("#staging-div").transition({top: '350px'}, 1000);
+    $("#main-div").transition({top: '350px', opacity: 0.00 }, 1000, function(){
         $('#main-div')[0].style.visibility = "hidden";
         $("#staging-div")[0].style.visibility = "hidden";
         $("#lobby-div")[0].style.visibility = "hidden";
         $("#logout-button")[0].style.visibility = "hidden";
     });
-    $("#lobby-div").animate({top: '350px'}, 1000, fn );
+    $("#lobby-div").transition({top: '350px'}, 1000, fn );
 };
 
 var initializeLobby = function(users, newMsg, games) {
@@ -212,7 +211,7 @@ var displayGameStage = function() {
 var moveToGameStage = function() {
     $('#screen-div')[0].style.visibility = "visible";
     $('#staging-div')[0].style.visibility = "visible";
-    $("#staging-div").animate({top: '400px'}, 500);
+    $("#staging-div").transition({top: '400px'}, 500);
 };
 
 var hideGameStage = function() {

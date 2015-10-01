@@ -406,7 +406,7 @@ var drawResource = function( planetid, index, num_resources ) {
 		var structure = resource.getChildByName("structure");
 		var structureImg = loader.getResult( OBJ_ENGLISH[ kind ] + player );
 
-		structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(0, 0, structureImg.width, structureImg.height);
+		structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(1, 1, structureImg.width - 2, structureImg.height - 2);
 		structure.x = icon.x + 38;
 		structure.y = icon.y - 48;
 	}

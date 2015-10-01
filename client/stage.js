@@ -1,4 +1,5 @@
 var background, backLoader, backgroundScale, backgroundW, backgroundH;
+var resizeTimer;
 var prevWidth = 0;
 var prevHeight = 0;
 var pixelRatio = 1.0;
@@ -24,6 +25,8 @@ var init_stage = function() {
 	init_background();
 
 	initProgressBar();
+
+	updatePixelRatio();
 
 	// start drag event
 	stage.on("stagemousedown", function(evt){
@@ -93,35 +96,38 @@ var setCanvasSize = function() {
 
 			setBackgroundSize();
 
+			updatePixelRatio();
+
 			centerProgressBar();
 			centerBoard();
-
-			updatePixelRatio(gameCanvas);
 
 			stage.update();
 		}
 	}
 };
 
-var updatePixelRatio = function(canvas) {
+var updatePixelRatio = function() {
+
+	var canvas = $('#gameCanvas')[0];
+
 	if (window.devicePixelRatio) {
 
-	    // grab the width and height from canvas
-	    var height = canvas.getAttribute('height');
-	    var width = canvas.getAttribute('width');
+		// grab the width and height from canvas
+		var height = canvas.getAttribute('height');
+		var width = canvas.getAttribute('width');
 
-	    // reset the canvas width and height with window.devicePixelRatio applied
-	    canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
-	    canvas.setAttribute('height', Math.round( height * window.devicePixelRatio));
+		// reset the canvas width and height with window.devicePixelRatio applied
+		canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
+		canvas.setAttribute('height', Math.round( height * window.devicePixelRatio));
 
-	    // force the canvas back to the original size using css
-	    canvas.style.width = width+"px";
-	    canvas.style.height = height+"px";
+		// force the canvas back to the original size using css
+		canvas.style.width = width+"px";
+		canvas.style.height = height+"px";
 
-	    // set CreateJS to render scaled
-	    stage.scaleX = stage.scaleY = pixelRatio = window.devicePixelRatio;
-
-	} else {
+		// set CreateJS to render scaled
+		stage.scaleX = stage.scaleY = pixelRatio = window.devicePixelRatio;
+	}
+	else {
 		stage.scaleX = stage.scaleY = pixelRatio = 1.0;
 	}
 };

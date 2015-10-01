@@ -1,5 +1,4 @@
 var stage, board, tiles, fleets, scale, sWid, is_dragging;
-var resizeTimer;
 var lastMouse = { x:0, y:0 };
 var is_dragging = false;
 
