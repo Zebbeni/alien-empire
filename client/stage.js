@@ -1,4 +1,7 @@
 var background, backLoader, backgroundScale, backgroundW, backgroundH;
+var prevWidth = 0;
+var prevHeight = 0;
+var pixelRatio = 1.0;
 
 /**
  * Periodically checks to see if window has been resized. 
@@ -6,7 +9,7 @@ var background, backLoader, backgroundScale, backgroundW, backgroundH;
  */ 
 $(window).resize(function () {
 	clearTimeout(resizeTimer);
-	resizeTimer = setTimeout(setCanvasSize, 50);
+	resizeTimer = setTimeout(setCanvasSize, 100);
  });
 
 /**
@@ -37,7 +40,10 @@ var init_stage = function() {
 	// move board relative to mouse movement
 	stage.on("stagemousemove", function(evt){
 		if (board && is_dragging) {
-			moveBoard( evt.stageX - lastMouse.x, evt.stageY - lastMouse.y, 1);
+			moveBoard( evt.stageX - lastMouse.x, 
+					   evt.stageY - lastMouse.y, 
+					   1, 
+					   pixelRatio);
 			lastMouse.x = evt.stageX;
 			lastMouse.y = evt.stageY;
 		}
@@ -70,18 +76,53 @@ var drawBackground = function() {
  * re-centers the game board and updates the stage
  */
 var setCanvasSize = function() {
-	if(stage) { // make sure stage exists before trying this
-		var gameCanvas = $('#gameCanvas')[0];
-		var ctx = gameCanvas.getContext("2d");
-		ctx.canvas.width  = window.innerWidth;
-		ctx.canvas.height = window.innerHeight;
+	// make sure stage exists before trying this
+	if( stage ) {
+		if ( prevWidth != window.innerWidth 
+			|| prevHeight != window.innerHeight 
+			|| pixelRatio != window.devicePixelRatio ) {
 
-		setBackgroundSize();
+			var gameCanvas = $('#gameCanvas')[0];
+			var ctx = gameCanvas.getContext("2d");
 
-		centerProgressBar();
-		centerBoard();
+			prevWidth = window.innerWidth;
+			prevHeight = window.innerHeight;
 
-		stage.update();
+			ctx.canvas.width  = window.innerWidth;
+			ctx.canvas.height = window.innerHeight;
+
+			setBackgroundSize();
+
+			centerProgressBar();
+			centerBoard();
+
+			updatePixelRatio(gameCanvas);
+
+			stage.update();
+		}
+	}
+};
+
+var updatePixelRatio = function(canvas) {
+	if (window.devicePixelRatio) {
+
+	    // grab the width and height from canvas
+	    var height = canvas.getAttribute('height');
+	    var width = canvas.getAttribute('width');
+
+	    // reset the canvas width and height with window.devicePixelRatio applied
+	    canvas.setAttribute('width', Math.round(width * window.devicePixelRatio));
+	    canvas.setAttribute('height', Math.round( height * window.devicePixelRatio));
+
+	    // force the canvas back to the original size using css
+	    canvas.style.width = width+"px";
+	    canvas.style.height = height+"px";
+
+	    // set CreateJS to render scaled
+	    stage.scaleX = stage.scaleY = pixelRatio = window.devicePixelRatio;
+
+	} else {
+		stage.scaleX = stage.scaleY = pixelRatio = 1.0;
 	}
 };
 
