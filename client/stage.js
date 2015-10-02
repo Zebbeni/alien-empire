@@ -112,6 +112,8 @@ var updatePixelRatio = function() {
 
 	if (window.devicePixelRatio) {
 
+		console.log("updating Pixel Ratio");
+
 		// grab the width and height from canvas
 		var height = canvas.getAttribute('height');
 		var width = canvas.getAttribute('width');
@@ -133,6 +135,9 @@ var updatePixelRatio = function() {
 };
 
 var setBackgroundSize = function() {
+
+	console.log("updating Pixel Ratio");
+
 	var scaleX = window.innerWidth / backgroundW;
 	var scaleY = window.innerHeight / backgroundH;
 	backgroundScale = scaleX > scaleY ? scaleX : scaleY;
