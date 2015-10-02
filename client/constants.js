@@ -21,7 +21,7 @@ var ACT_LOADED_ASSETS = 0;
 var ACT_TURN_DONE = 1;
 var ACT_PLACE = 2; // build anywhere, no payment
 var ACT_BUILD = 3;
-// var ACT_RECRUIT = 4;
+var ACT_RECRUIT = 4;
 // var ACT_DOWNGRADE = 5;
 // var ACT_REMOVE = 6;
 // var ACT_RETIRE = 7;
@@ -39,6 +39,26 @@ var OBJ_FACTORY = 2;
 var OBJ_EMBASSY = 3;
 var OBJ_BASE = 4;
 var OBJ_FLEET = 5;
+
+var AGT_EXPLORER = 1;
+var AGT_MINER = 2;
+var AGT_SURVEYOR = 3;
+var AGT_AMBASSADOR = 4;
+var AGT_ENVOY = 5;
+var AGT_SPY = 6;
+var AGT_SMUGGLER = 7;
+var AGT_SABATEUR = 8;
+
+var AGT_ENGLISH = {
+					1: "Explorer",
+					2: "Miner",
+					3: "Surveyor",
+					4: "Envoy",
+					5: "Ambassador",
+					6: "Spy",
+					7: "Smuggler",
+					8: "Sabateur"
+};
 
 var ACT_ENGLISH = {
 					1: 'End Turn',

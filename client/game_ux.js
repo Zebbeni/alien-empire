@@ -72,24 +72,47 @@ var togglePlayerTurnMenus = function() {
 			$('#player-turn-div' + i).transition({opacity: 0.0});
 		}
 	}
-}
+};
 
 var clickBuildButton = function() {
-	if(clientGame.game.round != 0 && $('#build-buttons-div')[0].style.visibility == "hidden") {
-		$('#build-buttons-div')[0].style.visibility = "visible";
+	if ( clientGame.game.round != 0 ) {
 		setPendingAction( ACT_BUILD );
+		toggleMenu('#build-buttons-div');
+		$('#recruit-buttons-div')[0].style.visibility = "hidden";
+	}
+};
+
+var clickRecruitButton = function() {
+	if ( clientGame.game.round != 0 ) {
+		setPendingAction( ACT_RECRUIT );
+		toggleMenu('#recruit-buttons-div');
+		$('#build-buttons-div')[0].style.visibility = "hidden";
+	}
+};
+
+/**
+ * Simple function, hides a menu with a given id if visible, makes
+ * it visible if it's hidden
+ */
+var toggleMenu = function( menuid ) {
+	if ( $(menuid)[0].style.visibility == "hidden" ) {
+		$(menuid)[0].style.visibility = "visible";  
 	}
 	else {
-		$('#build-buttons-div')[0].style.visibility = "hidden";
-		if ( clientGame.game.round != 0 ){
-			clearPendingAction();
-		}
+		$(menuid)[0].style.visibility = "hidden";
 	}
 };
 
 var clickStructureButton = function( objecttype ){
 	setPendingObject(objecttype);
 	updateBoardInteractivity();
+};
+
+var clickAgentButton = function( agenttype ){
+	setPendingObject(agenttype);
+	updateBoardInteractivity();
+
+	console.log("recruiting a", AGT_ENGLISH[agenttype]);
 };
 
 var hideYourTurnMenu = function() {
