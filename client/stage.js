@@ -59,7 +59,7 @@ var init_background = function() {
 	stage.addChild(background);
 
 	backLoader = new createjs.LoadQueue(false);
-	backLoader.loadFile({src: "https://s3-us-west-2.amazonaws.com/alien-empire/images/space_background.jpg", id: "space_background"});
+	backLoader.loadFile({src: URL + "images/space_background.jpg", id: "space_background"});
 	backLoader.addEventListener("complete", drawBackground);
 };
 

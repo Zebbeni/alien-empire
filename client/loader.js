@@ -8,49 +8,47 @@ var load_assets = function() {
 
 	if (!is_all_loaded){
 
-		var url = "https://s3-us-west-2.amazonaws.com/alien-empire/";
-
 		manifest = [
-			{src: url + "game/metal.png", id: "metal"},
-			{src: url + "game/water.png", id: "water"},
-			{src: url + "game/fuel.png", id: "fuel"},
-			{src: url + "game/food.png", id: "food"},
-			{src: url + "game/stars.png", id: "stars"},
-			{src: url + "game/asteroids.png", id: "asteroids"},
+			{src: URL + "game/metal.png", id: "metal"},
+			{src: URL + "game/water.png", id: "water"},
+			{src: URL + "game/fuel.png", id: "fuel"},
+			{src: URL + "game/food.png", id: "food"},
+			{src: URL + "game/stars.png", id: "stars"},
+			{src: URL + "game/asteroids.png", id: "asteroids"},
 
-			{src: url + "game/arrow_red.png", id: "arrow_color0"},
-			{src: url + "game/arrow_blue.png", id: "arrow_color1"},
-			{src: url + "game/arrow_green.png", id: "arrow_color2"},
-			{src: url + "game/arrow_yellow.png", id: "arrow_color3"},
+			{src: URL + "game/arrow_red.png", id: "arrow_color0"},
+			{src: URL + "game/arrow_blue.png", id: "arrow_color1"},
+			{src: URL + "game/arrow_green.png", id: "arrow_color2"},
+			{src: URL + "game/arrow_yellow.png", id: "arrow_color3"},
 
-			{src: url + "game/mine_red.png", id: "mine0"},
-			{src: url + "game/mine_blue.png", id: "mine1"},
-			{src: url + "game/mine_green.png", id: "mine2"},
-			{src: url + "game/mine_yellow.png", id: "mine3"},
+			{src: URL + "game/mine_red.png", id: "mine0"},
+			{src: URL + "game/mine_blue.png", id: "mine1"},
+			{src: URL + "game/mine_green.png", id: "mine2"},
+			{src: URL + "game/mine_yellow.png", id: "mine3"},
 
-			{src: url + "game/factory_red.png", id: "factory0"},
-			{src: url + "game/factory_blue.png", id: "factory1"},
-			{src: url + "game/factory_green.png", id: "factory2"},
-			{src: url + "game/factory_yellow.png", id: "factory3"},
+			{src: URL + "game/factory_red.png", id: "factory0"},
+			{src: URL + "game/factory_blue.png", id: "factory1"},
+			{src: URL + "game/factory_green.png", id: "factory2"},
+			{src: URL + "game/factory_yellow.png", id: "factory3"},
 			
-			{src: url + "game/embassy_red.png", id: "embassy0"},
-			{src: url + "game/embassy_blue.png", id: "embassy1"},
-			{src: url + "game/embassy_green.png", id: "embassy2"},
-			{src: url + "game/embassy_yellow.png", id: "embassy3"},
+			{src: URL + "game/embassy_red.png", id: "embassy0"},
+			{src: URL + "game/embassy_blue.png", id: "embassy1"},
+			{src: URL + "game/embassy_green.png", id: "embassy2"},
+			{src: URL + "game/embassy_yellow.png", id: "embassy3"},
 
-			{src: url + "game/base_red.png", id: "base0"},
-			{src: url + "game/base_blue.png", id: "base1"},
-			{src: url + "game/base_green.png", id: "base2"},
-			{src: url + "game/base_yellow.png", id: "base3"},
+			{src: URL + "game/base_red.png", id: "base0"},
+			{src: URL + "game/base_blue.png", id: "base1"},
+			{src: URL + "game/base_green.png", id: "base2"},
+			{src: URL + "game/base_yellow.png", id: "base3"},
 
-			{src: url + "game/fleet_red.png", id: "fleet0"},
-			{src: url + "game/fleet_blue.png", id: "fleet1"},
-			{src: url + "game/fleet_green.png", id: "fleet2"},
-			{src: url + "game/fleet_yellow.png", id: "fleet3"}
+			{src: URL + "game/fleet_red.png", id: "fleet0"},
+			{src: URL + "game/fleet_blue.png", id: "fleet1"},
+			{src: URL + "game/fleet_green.png", id: "fleet2"},
+			{src: URL + "game/fleet_yellow.png", id: "fleet3"}
 		];
 
 		for ( var p = 1; p <= 29; p++ ) {
-			manifest.push({src: url + "game/planet_" + p + ".png", id: "planet_" + p });
+			manifest.push({src: URL + "game/planet_" + p + ".png", id: "planet_" + p });
 		}
 
 		// loader = new createjs.LoadQueue(false);

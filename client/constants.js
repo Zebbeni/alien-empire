@@ -1,3 +1,5 @@
+var URL = "https://s3-us-west-2.amazonaws.com/alien-empire/";
+
 // width in pixels of a small planet tile
 var sWid = 212;
 var MOVE_DISTANCE = 5;
