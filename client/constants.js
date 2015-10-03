@@ -53,8 +53,8 @@ var AGT_ENGLISH = {
 					1: "Explorer",
 					2: "Miner",
 					3: "Surveyor",
-					4: "Envoy",
-					5: "Ambassador",
+					4: "Ambassador",
+					5: "Envoy",
 					6: "Spy",
 					7: "Smuggler",
 					8: "Sabateur"
@@ -64,6 +64,7 @@ var ACT_ENGLISH = {
 					1: 'End Turn',
 					2: 'Place',
 					3: 'Build',
+					4: 'Recruit'
 					};
 
 var RES_ENGLISH = { 
@@ -93,7 +94,19 @@ var COL_ENGLISH = {
 var ACTION_REQUIREMENTS = {
 	1: [],
 	2: ['actiontype','objecttype','planetid','resourceid'],
-	3: ['actiontype','objecttype','planetid','resourceid']
+	3: ['actiontype','objecttype','planetid','resourceid'],
+	4: ['actiontype','agenttype','planetid']
+};
+
+var AGT_OBJTYPE = {
+	1: OBJ_FACTORY,
+	2: OBJ_FACTORY,
+	3: OBJ_FACTORY,
+	4: OBJ_EMBASSY,
+	5: OBJ_EMBASSY,
+	6: OBJ_EMBASSY,
+	7: OBJ_BASE,
+	8: OBJ_BASE
 };
 
 var STRUCT_REQS = {

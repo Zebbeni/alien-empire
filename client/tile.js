@@ -94,24 +94,75 @@ var updateTileInteractivity = function(planetid) {
 	var planets = clientGame.game.board.planets;
 	var actiontype = pendingAction.actiontype;
 	var objecttype = pendingAction.objecttype;
+	var agenttype = pendingAction.agenttype;
 
 	if ( actiontype && clientTurn == clientGame.game.turn) {
 
-		if ( actiontype == ACT_BUILD && !planets[planetid].buildableBy[clientTurn]) {
+		if ( actiontype == ACT_BUILD 
+				&& !planets[planetid].buildableBy[clientTurn]) {
 			showDarkScreen(planetid);
 			tiles[planetid].mouseChildren = false;
+		}
+		else if ( actiontype == ACT_RECRUIT ) {
+
+			if ( playerHasStruct( clientTurn, planetid, AGT_OBJTYPE[ agenttype ] ) ) {
+				hideDarkScreen(planetid);
+				tiles[planetid].mouseChildren = true;
+				updatePlanetInteractivity(planetid, actiontype, null);
+			}
+			else {
+				showDarkScreen(planetid);
+				tiles[planetid].mouseChildren = false;
+			}
 		}
 		else if ( planets[planetid].explored ) {
 			hideDarkScreen(planetid);
 			tiles[planetid].mouseChildren = true;
 			updateResourcesInteractivity(planetid, planets, actiontype, objecttype);
-			updatePlanetInteractivity(planetid, planets, actiontype, objecttype);
+			updatePlanetInteractivity(planetid, actiontype, objecttype);
 		}
 
 	} else if ( planets[planetid].explored ) {
 		hideDarkScreen(planetid);
 		tiles[planetid].mouseChildren = false;
 	}
+};
+
+var playerHasStruct = function( player, planetid, objecttype ) {
+	
+	var structExists = false;
+
+	switch (objecttype) {
+
+		case OBJ_MINE:
+		case OBJ_FACTORY:
+		case OBJ_EMBASSY:
+
+			return playerHasResourceStruct( player, planetid, objecttype );
+
+		case OBJ_BASE:
+
+			var base = clientGame.game.board.planets[planetid].base;
+			return ( base && base.player == player );
+
+		default:
+			return false;
+	}
+
+	return false;
+};
+
+var playerHasResourceStruct = function( player, planetid, objecttype ) {
+
+	var planet = clientGame.game.board.planets[planetid];
+
+	for ( var i = 0; i < planet.resources.length; i++ ){
+		var struct = planet.resources[i].structure;
+		if ( struct && struct.player == player && struct.kind == objecttype ) {
+			return true;
+		}
+	}
+	return false;
 };
 
 var updateResourcesInteractivity = function(planetid, planets, acttype, objtype) {
@@ -143,13 +194,16 @@ var updateResourceInteractivity = function(planetid, index, planets, acttype, ob
 	}
 };
 
-var updatePlanetInteractivity = function(planetid, planets, acttype, objtype){
+var updatePlanetInteractivity = function(planetid, acttype, objtype){
 
 	var planet = tiles[planetid].getChildByName("planet");
 
 	planet.mouseEnabled = false;
 
-	if ( isSpaceObject(objtype)) {
+	if ( acttype == ACT_BUILD && isSpaceObject(objtype)) {
+		planet.mouseEnabled = true;
+	}
+	else if ( acttype == ACT_RECRUIT ) {
 		planet.mouseEnabled = true;
 	}
 

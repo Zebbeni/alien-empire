@@ -29,7 +29,7 @@ var togglePlayersMenu = function( i ) {
 
 /**
  * Updates menus and board interactivity when a game action occurs.
- * TODO: Break this up and/or rename it. It's grown in its function
+ * TODO: Break this up and/or rename it. It's grown in its responsibility
  */
 var toggleTurnMenu = function() {
 
@@ -109,7 +109,7 @@ var clickStructureButton = function( objecttype ){
 };
 
 var clickAgentButton = function( agenttype ){
-	setPendingObject(agenttype);
+	setPendingAgent(agenttype);
 	updateBoardInteractivity();
 
 	console.log("recruiting a", AGT_ENGLISH[agenttype]);
@@ -145,14 +145,22 @@ var displayConfirmMessage = function() {
 
 	var actiontype = pendingAction.actiontype;
 	var objecttype = pendingAction.objecttype;
+	var agenttype = pendingAction.agenttype;
 	var index = pendingAction.resourceid;
-	// set resource kind to  if index = 4
+
 	var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
 
-	message = ACT_ENGLISH[actiontype] + " a " 
-			  + RES_ENGLISH[resourcekind] + " " 
-			  + OBJ_ENGLISH[objecttype] + " on " 
-			  + planetname + "?";
+	if ( actiontype == ACT_BUILD || actiontype == ACT_PLACE ) {
+		message = ACT_ENGLISH[actiontype] + " a " 
+				  + RES_ENGLISH[resourcekind] + " " 
+				  + OBJ_ENGLISH[objecttype] + " on " 
+				  + planetname + "?";
+	} 
+	else if ( actiontype == ACT_RECRUIT ) {
+		message = ACT_ENGLISH[actiontype] + " a " 
+				  + AGT_ENGLISH[agenttype] + " on " 
+				  + planetname + "?";
+	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
 };

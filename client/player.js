@@ -24,3 +24,7 @@ var setPendingResource = function( index ) {
 var setPendingObject = function( objecttype ) {
 	pendingAction.objecttype = objecttype;
 };
+
+var setPendingAgent = function( agenttype ) {
+	pendingAction.agenttype = agenttype;
+};
