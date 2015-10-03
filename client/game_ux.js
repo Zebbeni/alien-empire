@@ -76,15 +76,18 @@ var togglePlayerTurnMenus = function() {
 
 var clickBuildButton = function() {
 	if ( clientGame.game.round != 0 ) {
-		setPendingAction( ACT_BUILD );
+		clearPendingAction();
+		updateBoardInteractivity();
 		toggleMenu('#build-buttons-div');
 		$('#recruit-buttons-div')[0].style.visibility = "hidden";
 	}
 };
 
 var clickRecruitButton = function() {
+	updateBoardInteractivity();
 	if ( clientGame.game.round != 0 ) {
-		setPendingAction( ACT_RECRUIT );
+		clearPendingAction();
+		updateBoardInteractivity();
 		toggleMenu('#recruit-buttons-div');
 		$('#build-buttons-div')[0].style.visibility = "hidden";
 	}
@@ -104,11 +107,13 @@ var toggleMenu = function( menuid ) {
 };
 
 var clickStructureButton = function( objecttype ){
+	setPendingAction( ACT_BUILD );
 	setPendingObject(objecttype);
 	updateBoardInteractivity();
 };
 
 var clickAgentButton = function( agenttype ){
+	setPendingAction( ACT_RECRUIT );
 	setPendingAgent(agenttype);
 	updateBoardInteractivity();
 
