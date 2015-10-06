@@ -27,12 +27,12 @@
 		ACT_TURN_DONE : 1,
 		ACT_PLACE : 2, // build anywhere, no payment
 		ACT_BUILD : 3,
-		// var ACT_RECRUIT : 4,
-		// var ACT_DOWNGRADE : 5,
-		// var ACT_REMOVE : 6,
-		// var ACT_RETIRE : 7,
-		// var ACT_MOVE : 8,
-		// var ACT_LAUNCHMISSION : 9,
+		// ACT_RECRUIT : 4,
+		// ACT_DOWNGRADE : 5,
+		// ACT_REMOVE : 6,
+		// ACT_RETIRE : 7,
+		// ACT_MOVE : 8,
+		// ACT_LAUNCHMISSION : 9,
 
 		PNT_STRUCTURES : 0,
 		PNT_EXPLORE : 1,
@@ -45,6 +45,19 @@
 		OBJ_EMBASSY : 3,
 		OBJ_BASE : 4,
 		OBJ_FLEET : 5,
+
+		AGT_EXPLORER : 1,
+		AGT_MINER : 2,
+		AGT_SURVEYOR : 3,
+		AGT_AMBASSADOR : 4,
+		AGT_ENVOY : 5,
+		AGT_SPY : 6,
+		AGT_SMUGGLER : 7,
+		AGT_SABATEUR : 8,
+
+		AGT_STATUS_OFF : 0,
+		AGT_STATUS_ON : 1,
+		AGT_STATUS_DEAD : 2,
 
 		OBJ_VALUE : {
 			1: 0,

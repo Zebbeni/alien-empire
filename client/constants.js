@@ -49,6 +49,10 @@ var AGT_SPY = 6;
 var AGT_SMUGGLER = 7;
 var AGT_SABATEUR = 8;
 
+var AGT_STATUS_OFF = 0;
+var AGT_STATUS_ON = 1;
+var AGT_STATUS_DEAD = 2;
+
 var AGT_ENGLISH = {
 					1: "Explorer",
 					2: "Miner",
