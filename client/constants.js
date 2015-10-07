@@ -102,16 +102,16 @@ var ACTION_REQUIREMENTS = {
 	4: ['actiontype','agenttype','planetid']
 };
 
-var AGT_OBJTYPE = {
-	1: OBJ_FACTORY,
-	2: OBJ_FACTORY,
-	3: OBJ_FACTORY,
-	4: OBJ_EMBASSY,
-	5: OBJ_EMBASSY,
-	6: OBJ_EMBASSY,
-	7: OBJ_BASE,
-	8: OBJ_BASE
-};
+// var AGT_OBJTYPE = {
+// 	1: OBJ_FACTORY,
+// 	2: OBJ_FACTORY,
+// 	3: OBJ_FACTORY,
+// 	4: OBJ_EMBASSY,
+// 	5: OBJ_EMBASSY,
+// 	6: OBJ_EMBASSY,
+// 	7: OBJ_BASE,
+// 	8: OBJ_BASE
+// };
 
 var STRUCT_REQS = {
 

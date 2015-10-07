@@ -27,7 +27,7 @@
 		ACT_TURN_DONE : 1,
 		ACT_PLACE : 2, // build anywhere, no payment
 		ACT_BUILD : 3,
-		// ACT_RECRUIT : 4,
+		ACT_RECRUIT : 4,
 		// ACT_DOWNGRADE : 5,
 		// ACT_REMOVE : 6,
 		// ACT_RETIRE : 7,
@@ -67,6 +67,17 @@
 			5: 1
 		},
 
+		AGT_ENGLISH : {
+							1: "Explorer",
+							2: "Miner",
+							3: "Surveyor",
+							4: "Ambassador",
+							5: "Envoy",
+							6: "Spy",
+							7: "Smuggler",
+							8: "Sabateur"
+						},
+
 		ACT_ENGLISH : {
 							1: 'End Turn',
 							2: 'Place',
@@ -80,6 +91,18 @@
 							4: "base",
 							5: "fleet"
 						},
+
+		AGT_OBJTYPE : {
+			1: 2,
+			2: 2,
+			3: 2,
+			4: 3,
+			5: 3,
+			6: 3,
+			7: 4,
+			8: 4
+		},
+
 
 		STRUCT_REQS : {
 			1: { 

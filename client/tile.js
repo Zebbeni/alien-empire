@@ -92,77 +92,36 @@ var updateTileImage = function(planetid) {
 var updateTileInteractivity = function(planetid) {
 
 	var planets = clientGame.game.board.planets;
+	var planet = planets[planetid];
 	var actiontype = pendingAction.actiontype;
 	var objecttype = pendingAction.objecttype;
 	var agenttype = pendingAction.agenttype;
 
-	if ( actiontype && clientTurn == clientGame.game.turn) {
-
-		if ( actiontype == ACT_BUILD 
-				&& !planets[planetid].buildableBy[clientTurn]) {
-			showDarkScreen(planetid);
-			tiles[planetid].mouseChildren = false;
-		}
-		else if ( actiontype == ACT_RECRUIT ) {
-
-			if ( playerHasStruct( clientTurn, planetid, AGT_OBJTYPE[ agenttype ] ) ) {
-				hideDarkScreen(planetid);
-				tiles[planetid].mouseChildren = true;
-				updatePlanetInteractivity(planetid, actiontype, null);
-			}
-			else {
-				showDarkScreen(planetid);
-				tiles[planetid].mouseChildren = false;
-			}
-		}
-		else if ( planets[planetid].explored ) {
-			hideDarkScreen(planetid);
-			tiles[planetid].mouseChildren = true;
-			updateResourcesInteractivity(planetid, planets, actiontype, objecttype);
-			updatePlanetInteractivity(planetid, actiontype, objecttype);
-		}
-
-	} else if ( planets[planetid].explored ) {
+	if ( planet.explored ) {
 		hideDarkScreen(planetid);
+	} 
+	else {
+		showDarkScreen(planetid);
 		tiles[planetid].mouseChildren = false;
 	}
-};
 
-var playerHasStruct = function( player, planetid, objecttype ) {
-	
-	var structExists = false;
+	if ( actiontype && clientTurn == clientGame.game.turn) {
 
-	switch (objecttype) {
-
-		case OBJ_MINE:
-		case OBJ_FACTORY:
-		case OBJ_EMBASSY:
-
-			return playerHasResourceStruct( player, planetid, objecttype );
-
-		case OBJ_BASE:
-
-			var base = clientGame.game.board.planets[planetid].base;
-			return ( base && base.player == player );
-
-		default:
-			return false;
-	}
-
-	return false;
-};
-
-var playerHasResourceStruct = function( player, planetid, objecttype ) {
-
-	var planet = clientGame.game.board.planets[planetid];
-
-	for ( var i = 0; i < planet.resources.length; i++ ){
-		var struct = planet.resources[i].structure;
-		if ( struct && struct.player == player && struct.kind == objecttype ) {
-			return true;
+		switch (actiontype) {
+			case ACT_PLACE:
+			case ACT_BUILD:
+				tiles[planetid].mouseChildren = true;
+				updateResourcesInteractivity(planetid, planets, actiontype, objecttype);
+				updatePlanetInteractivity(planetid, actiontype, objecttype);
+				break;
+			case ACT_RECRUIT:
+				tiles[planetid].mouseChildren = true;
+				updatePlanetInteractivity(planetid, actiontype, null);
+				break;
+			default:
+				break;
 		}
-	}
-	return false;
+	} 
 };
 
 var updateResourcesInteractivity = function(planetid, planets, acttype, objtype) {

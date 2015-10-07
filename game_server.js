@@ -36,6 +36,8 @@ var actions = require('./game_actions');
 			case cons.ACT_BUILD:
 				return actions.resolveGameAction( action, gameInfo.game );
 				break;
+			case cons.ACT_RECRUIT:
+				return actions.resolveGameAction( action, gameInfo.game );
 			default:
 				return false;
 		}

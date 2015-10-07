@@ -4,6 +4,7 @@
  */
 
 var cons = require('./server_constants');
+var helpers = require('./game_helpers');
 
 (function() {
 
@@ -78,7 +79,6 @@ var cons = require('./server_constants');
 				};
 		} 
 		else {
-
 			return {
 					to: cons.EVENT_ALL,
 					evnt: cons.ACT_ENGLISH[ action.actiontype ],
@@ -98,6 +98,8 @@ var applyAction = function( action, game ){
 			return applyPlaceAction( action, game );
 		case cons.ACT_BUILD:
 			return applyBuildAction( action, game );
+		case cons.ACT_RECRUIT:
+			return applyRecruitAction( action, game );
 		default:
 			return { 
 					isIllegal: true,
@@ -301,6 +303,44 @@ var applyBuildAction = function( action, game ) {
 					};
 	}
 	return { isIllegal: false };
+};
+
+var applyRecruitAction = function( action, game ) {
+	var agenttype = action.agenttype;
+	var planetid = action.planetid;
+	var player = action.player;
+
+	var id = String(player) + String(agenttype);
+	var agent = game.board.agents[ id ];
+	var objecttype = cons.AGT_OBJTYPE[ agenttype ];
+
+	if ( agent.status == cons.AGT_STATUS_DEAD ) {
+		return { isIllegal: true,
+				 response: "Your " + cons.AGT_ENGLISH[agenttype] 
+				 			+ " cannot return during this game."
+			};
+	}
+
+	if ( agent.status == cons.AGT_STATUS_ON ) {
+		return { isIllegal: true,
+				 response: "Your " + cons.AGT_ENGLISH[agenttype] 
+				 			+ " is already on the board."
+			};
+	}
+
+	if ( !helpers.playerHasStruct( player, planetid, objecttype, game)){
+		return { isIllegal: true,
+				 response: "You must recruit a new " + cons.AGT_ENGLISH[agenttype] 
+				 			+ " at your " + cons.OBJ_ENGLISH[objecttype]
+			};
+	}
+
+	agent.planetid = planetid;
+	agent.used = false;
+	agent.status = cons.AGT_STATUS_ON;
+	game.board.planets[planetid].agents.push( id );
+
+	return { isIllegal: false};
 };
 
 // Updates planet.settledBy[player] to true or false 
