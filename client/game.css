@@ -158,3 +158,7 @@
 	font-weight: bold;
 	color: black;
 }
+
+.create-button:hover, .build-structure-button:hover, .recruit-agent-button:hover, #turn-done-button:hover {
+	background: rgba(161, 233, 210, .8);
+}
