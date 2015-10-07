@@ -46,7 +46,48 @@ var load_assets = function() {
 			{src: url + "game/fleet_red.png", id: "fleet0"},
 			{src: url + "game/fleet_blue.png", id: "fleet1"},
 			{src: url + "game/fleet_green.png", id: "fleet2"},
-			{src: url + "game/fleet_yellow.png", id: "fleet3"}
+			{src: url + "game/fleet_yellow.png", id: "fleet3"},
+
+			{src: url + "game/explorer_red.png", id: "explorer0"},
+			{src: url + "game/explorer_blue.png", id: "explorer1"},
+			{src: url + "game/explorer_green.png", id: "explorer2"},
+			{src: url + "game/explorer_yellow.png", id: "explorer3"},
+
+			{src: url + "game/miner_red.png", id: "miner0"},
+			{src: url + "game/miner_blue.png", id: "miner1"},
+			{src: url + "game/miner_green.png", id: "miner2"},
+			{src: url + "game/miner_yellow.png", id: "miner3"},
+
+			{src: url + "game/surveyor_red.png", id: "surveyor0"},
+			{src: url + "game/surveyor_blue.png", id: "surveyor1"},
+			{src: url + "game/surveyor_green.png", id: "surveyor2"},
+			{src: url + "game/surveyor_yellow.png", id: "surveyor3"},
+
+			{src: url + "game/ambassador_red.png", id: "ambassador0"},
+			{src: url + "game/ambassador_blue.png", id: "ambassador1"},
+			{src: url + "game/ambassador_green.png", id: "ambassador2"},
+			{src: url + "game/ambassador_yellow.png", id: "ambassador3"},
+
+			{src: url + "game/envoy_red.png", id: "envoy0"},
+			{src: url + "game/envoy_blue.png", id: "envoy1"},
+			{src: url + "game/envoy_green.png", id: "envoy2"},
+			{src: url + "game/envoy_yellow.png", id: "envoy3"},
+
+			{src: url + "game/spy_red.png", id: "spy0"},
+			{src: url + "game/spy_blue.png", id: "spy1"},
+			{src: url + "game/spy_green.png", id: "spy2"},
+			{src: url + "game/spy_yellow.png", id: "spy3"},
+
+			{src: url + "game/smuggler_red.png", id: "smuggler0"},
+			{src: url + "game/smuggler_blue.png", id: "smuggler1"},
+			{src: url + "game/smuggler_green.png", id: "smuggler2"},
+			{src: url + "game/smuggler_yellow.png", id: "smuggler3"},
+
+			{src: url + "game/sabateur_red.png", id: "sabateur0"},
+			{src: url + "game/sabateur_blue.png", id: "sabateur1"},
+			{src: url + "game/sabateur_green.png", id: "sabateur2"},
+			{src: url + "game/sabateur_yellow.png", id: "sabateur3"}
+
 		];
 
 		for ( var p = 1; p <= 29; p++ ) {
