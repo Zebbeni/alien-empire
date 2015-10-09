@@ -31,9 +31,9 @@ var centerBoard = function() {
 /**
  * Moves board given x and y shifts, times a multiplier
  */
-var moveBoard = function(right, down, mult, scale) {
-	board.x = board.x + (right * mult / scale);
-	board.y = board.y + (down * mult / scale);
+var moveBoard = function(right, down, mult ) {
+	board.x += (right * mult / pixelRatio);
+	board.y += (down * mult / pixelRatio);
 
 	stage.update();
 };

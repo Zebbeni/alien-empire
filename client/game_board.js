@@ -32,6 +32,8 @@ var handleKeyUp = function( e ) {
 		case 187: // equals (plus sign)
 			zoomBoard(1.1111);
 			break;
+		default:
+			break;
 	}
 
 };
@@ -49,6 +51,8 @@ var handleKeyDown = function( e ) {
 			break;
 		case 40:
 			moveBoard(0, 1, MOVE_DISTANCE);
+			break;
+		default:
 			break;
 	}
 };

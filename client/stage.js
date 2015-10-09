@@ -45,8 +45,7 @@ var init_stage = function() {
 		if (board && is_dragging) {
 			moveBoard( evt.stageX - lastMouse.x, 
 					   evt.stageY - lastMouse.y, 
-					   1, 
-					   pixelRatio);
+					   1);
 			lastMouse.x = evt.stageX;
 			lastMouse.y = evt.stageY;
 		}
