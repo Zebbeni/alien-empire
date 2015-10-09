@@ -83,6 +83,7 @@ var drawBoard = function() {
 		drawAsteroids();
 		drawTiles();
 		drawFleets();
+		drawAgents();
 
 		stage.addChild( board );
 		
@@ -114,6 +115,16 @@ var drawFleets = function() {
 
 	for ( var p = 0; p < planets.length; p++ ) {	
 		updateFleets(p);
+	}
+};
+
+var drawAgents = function() {
+
+	initAgents();
+	var planets = clientGame.game.board.planets;
+
+	for ( var p = 0; p < planets.length; p++ ) {	
+		updateAgents(p);
 	}
 };
 

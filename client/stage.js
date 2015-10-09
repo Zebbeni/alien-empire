@@ -20,7 +20,7 @@ $(window).resize(function () {
 var init_stage = function() {
 	
 	stage = new createjs.Stage("gameCanvas");
-	stage.enableMouseOver(20);
+	stage.enableMouseOver(50);
 
 	init_background();
 
@@ -111,8 +111,6 @@ var updatePixelRatio = function() {
 	var canvas = $('#gameCanvas')[0];
 
 	if (window.devicePixelRatio) {
-
-		console.log("updating Pixel Ratio");
 
 		// grab the width and height from canvas
 		var height = canvas.getAttribute('height');

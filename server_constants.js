@@ -68,20 +68,21 @@
 		},
 
 		AGT_ENGLISH : {
-							1: "Explorer",
-							2: "Miner",
-							3: "Surveyor",
-							4: "Ambassador",
-							5: "Envoy",
-							6: "Spy",
-							7: "Smuggler",
-							8: "Sabateur"
+							1: "explorer",
+							2: "miner",
+							3: "surveyor",
+							4: "ambassador",
+							5: "envoy",
+							6: "spy",
+							7: "smuggler",
+							8: "sabateur"
 						},
 
 		ACT_ENGLISH : {
 							1: 'End Turn',
 							2: 'Place',
 							3: 'Build',
+							4: 'Recruit'
 						},
 
 		OBJ_ENGLISH : {

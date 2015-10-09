@@ -1,5 +1,7 @@
 // width in pixels of a small planet tile
 var sWid = 212;
+var agtWid = 100;
+var agtSpace = 5;
 var MOVE_DISTANCE = 5;
 
 var NUM_FLEETS = 3;
@@ -54,14 +56,14 @@ var AGT_STATUS_ON = 1;
 var AGT_STATUS_DEAD = 2;
 
 var AGT_ENGLISH = {
-					1: "Explorer",
-					2: "Miner",
-					3: "Surveyor",
-					4: "Ambassador",
-					5: "Envoy",
-					6: "Spy",
-					7: "Smuggler",
-					8: "Sabateur"
+					1: "explorer",
+					2: "miner",
+					3: "surveyor",
+					4: "ambassador",
+					5: "envoy",
+					6: "spy",
+					7: "smuggler",
+					8: "sabateur"
 };
 
 var ACT_ENGLISH = {

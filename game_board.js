@@ -217,6 +217,7 @@ var initializeAgents = function(num_players) {
 		for (var a = cons.AGT_EXPLORER; a <= cons.AGT_SABATEUR; a++) {
 			agents[ String(p) + String(a) ] =  {
 				player: p,
+				agenttype: a,
 				planetid: undefined,
 				used: false,
 				status: cons.AGT_STATUS_OFF, // AGT_STATUS_ON, AGT_STATUS_OFF, AGT_STATUS_DEAD

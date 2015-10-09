@@ -116,8 +116,6 @@ var clickAgentButton = function( agenttype ){
 	setPendingAction( ACT_RECRUIT );
 	setPendingAgent(agenttype);
 	updateBoardInteractivity();
-
-	console.log("recruiting a", AGT_ENGLISH[agenttype]);
 };
 
 var hideYourTurnMenu = function() {

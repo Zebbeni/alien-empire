@@ -79,6 +79,7 @@ var drawTile = function(planetid) {
 var updateTileImage = function(planetid) {
 	drawResources(planetid);
 	drawOrbitStructures(planetid);
+	drawAgents(planetid);
 };
 
 /**

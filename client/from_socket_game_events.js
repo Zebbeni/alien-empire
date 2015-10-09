@@ -31,6 +31,13 @@ socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
 
 });
 
+socket.on( ACT_ENGLISH[ ACT_RECRUIT ], function(content) {
+    
+    updateAll( content );
+
+});
+
+
 socket.on('game end', function(content) {
 
 	clientGame = null;
