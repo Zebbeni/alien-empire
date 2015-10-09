@@ -18,7 +18,7 @@ var initAgents = function(planetid) {
 		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, agentImg.width, agentImg.height);
 		agentshape.visible = false;
 		agentshape.mouseEnabled = false; //default this to false, otherwise it slows processing down
-		agentshape.cache(0, 0, agtWid, agtWid);
+		// agentshape.cache(0, 0, agtWid, agtWid);
 
 		board.addChild( agentshape );
 	}
@@ -55,7 +55,7 @@ var updateAgents = function(planetid) {
 		agentshape.x = tiles[planetid].x + agentsX;
 		agentshape.y = tiles[planetid].y + agentsY;
 
-		agentshape.updateCache();
+		// agentshape.updateCache();
 
 		agentsX += agtWid + space;
 	}
