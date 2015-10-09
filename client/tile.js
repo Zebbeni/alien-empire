@@ -193,6 +193,8 @@ var drawStars = function( planetid, img_width ) {
 
 	stars.x = starOffsetX * -1;
 	stars.y = starOffsetY * -1;
+
+	stars.cache(starOffsetX, starOffsetY, img_width, img_width);
 };
 
 /**
@@ -249,8 +251,15 @@ var drawPlanet = function( planetid ) {
 		var img_id = planets[planetid].art;
 		var planetImg = loader.getResult("planet_" + img_id);
 		
-		picture.graphics.beginBitmapFill(planetImg).drawRect(0, 0, planetImg.width, planetImg.height);
-		
+		var offsetX = -12;
+		var offsetY = 28;
+		if ( planets[planetid].w == 2 ) {
+			offsetX = 0;
+			offsetY = 25;
+		}
+
+		picture.graphics.beginBitmapFill(planetImg).drawRect(offsetX, offsetY, planetImg.width, planetImg.height);
+
 		var arrow = planet.getChildByName("arrow");
 		var arrowImg = loader.getResult("arrow_color" + clientColor);
 		arrow.graphics.beginBitmapFill(arrowImg).drawRect(0, 0, arrowImg.width, arrowImg.height);
@@ -261,19 +270,20 @@ var drawPlanet = function( planetid ) {
 			case 1:
 				picture.scaleX = 0.45;
 				picture.scaleY = 0.45;
-				picture.x = 12;
-				picture.y = -28;
 				arrow.x = 80;
 				arrow.y = -24;
 				break;
 
 			case 2:
-				picture.x = 0;
-				picture.y = -25;
 				arrow.x = 185;
 				arrow.y = 28;
 				break;
 		}
+
+		picture.x = offsetX * -1;
+		picture.y = offsetY * -1;
+
+		picture.cache(offsetX, offsetY, planetImg.width, planetImg.height);
 	}
 };
 
@@ -326,6 +336,7 @@ var drawNametext = function( planetid ) {
 				break;
 		}
 	}
+
 };
 
 var initResources = function( planetid ) {
@@ -493,6 +504,8 @@ var drawDarkScreen = function(planetid, img_width) {
 	if(planets[planetid].explored) {
 		darkscreen.visible = false;
 	}
+
+	darkscreen.cache(0, 0, img_width, img_width);
 };
 
 var showDarkScreen = function( planetid ) {
@@ -517,6 +530,8 @@ var drawLightScreen = function(planetid, img_width) {
 	lightscreen.graphics.beginFill("rgba(255, 255, 255, 0.1)");
 	lightscreen.graphics.drawRect(0, 0, img_width, img_width);
 	lightscreen.visible = false;
+
+	lightscreen.cache(0, 0, img_width, img_width);
 };
 
 var showLightscreen = function( planetid ) {
