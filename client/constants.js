@@ -2,6 +2,7 @@
 var sWid = 212;
 var agtWid = 100;
 var agtSpace = 5;
+var offline = true;
 var MOVE_DISTANCE = 5;
 
 var NUM_FLEETS = 3;

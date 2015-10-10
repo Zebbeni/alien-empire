@@ -9,6 +9,9 @@ var load_assets = function() {
 	if (!is_all_loaded){
 
 		var url = "https://s3-us-west-2.amazonaws.com/alien-empire/";
+		if ( offline ){
+			url = "images/";
+		}
 
 		manifest = [
 			{src: url + "game/metal.png", id: "metal"},
@@ -95,6 +98,9 @@ var load_assets = function() {
 		}
 
 		loader = new createjs.LoadQueue(true, null, true);
+		if (offline) {
+			loader = new createjs.LoadQueue(false);
+		}
 
 		loader.addEventListener("complete", handleComplete);
 		loader.addEventListener("progress", handleProgress);
