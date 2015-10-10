@@ -79,7 +79,6 @@ var drawTile = function(planetid) {
 var updateTileImage = function(planetid) {
 	drawResources(planetid);
 	drawOrbitStructures(planetid);
-	drawAgents(planetid);
 };
 
 /**
@@ -194,7 +193,7 @@ var drawStars = function( planetid, img_width ) {
 	stars.x = starOffsetX * -1;
 	stars.y = starOffsetY * -1;
 
-	stars.cache(starOffsetX, starOffsetY, img_width, img_width);
+	// stars.cache(starOffsetX, starOffsetY, img_width, img_width);
 };
 
 /**
@@ -282,8 +281,6 @@ var drawPlanet = function( planetid ) {
 
 		picture.x = offsetX * -1;
 		picture.y = offsetY * -1;
-
-		picture.cache(offsetX, offsetY, planetImg.width, planetImg.height);
 	}
 };
 
@@ -504,8 +501,6 @@ var drawDarkScreen = function(planetid, img_width) {
 	if(planets[planetid].explored) {
 		darkscreen.visible = false;
 	}
-
-	darkscreen.cache(0, 0, img_width, img_width);
 };
 
 var showDarkScreen = function( planetid ) {
@@ -531,7 +526,6 @@ var drawLightScreen = function(planetid, img_width) {
 	lightscreen.graphics.drawRect(0, 0, img_width, img_width);
 	lightscreen.visible = false;
 
-	lightscreen.cache(0, 0, img_width, img_width);
 };
 
 var showLightscreen = function( planetid ) {
