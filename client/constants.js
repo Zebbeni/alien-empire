@@ -4,6 +4,8 @@ var agtWid = 100;
 var agtSpace = 5;
 var offline = true;
 var MOVE_DISTANCE = 5;
+var MENU_ON = 1;
+var MENU_OFF = 2;
 
 var NUM_FLEETS = 3;
 

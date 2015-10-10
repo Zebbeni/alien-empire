@@ -125,8 +125,8 @@ var moveToLobby = function() {
     $('#pending-action-div')[0].style.visibility = "hidden";
     $('#turn-done-button')[0].style.visibility = "hidden";
     $('#button-bar-div')[0].style.visibility = "hidden";
-    $('#build-buttons-div')[0].style.visibility = "hidden";
-    $('#recruit-buttons-div')[0].style.visibility = "hidden";
+    $('#build-recruit-buttons-div')[0].style.visibility = "hidden";
+    // $('#recruit-buttons-div')[0].style.visibility = "hidden";
     $('#players-wrapper-div')[0].style.visibility = "hidden";
     
     $('#lobby-div')[0].style.visibility = "visible";

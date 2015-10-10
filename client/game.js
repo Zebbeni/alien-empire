@@ -1,6 +1,7 @@
 
 var showInterface = function() {
 	$('#button-bar-div')[0].style.visibility = "visible";
+	$("#build-recruit-buttons-div")[0].style.visibility = "visible";
 	createPlayersMenu();
 };
 

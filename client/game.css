@@ -37,7 +37,7 @@
 }
 
 #pending-action-div {
-	top: 10px;
+	top: 35px;
 	font-size: 20px;
 }
 
@@ -133,6 +133,28 @@
 	color: black;
 }
 
+#button-bar-div {
+	position: fixed;
+	top: 0px;
+	left: 50%;
+	width: 510px;
+	margin-left: -205px;
+}
+
+#build-recruit-buttons-div {
+	position: fixed;
+	top: 35px;
+	left: 50%;
+	width: 700px;
+	margin-left: -350px;
+}
+
+#build-buttons-div, #recruit-buttons-div {
+	position: absolute;
+	width: 700px;
+	margin: 0 auto;
+}
+
 .create-button {
 	position: relative;
 	float: left;
@@ -149,14 +171,22 @@
 .build-structure-button, .recruit-agent-button {
 	position: relative;
 	float: left;
-	height: 25px;
-	width: 200px;
 	top: 0px;
 	margin: 3px;
 	background: rgba(131, 203, 180, .8);
 	font-size: 15px;
 	font-weight: bold;
 	color: black;
+}
+
+.build-structure-button {
+	height: 110px;
+	width: 110px;
+}
+
+.recruit-agent-button {
+	height: 70px;
+	width: 70px;
 }
 
 .create-button:hover, .build-structure-button:hover, .recruit-agent-button:hover, #turn-done-button:hover {

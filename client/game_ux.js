@@ -38,7 +38,7 @@ var toggleTurnMenu = function() {
 		if( clientGame.game.round == 0){
 			setPendingObject( OBJ_MINE );
 			setPendingAction( ACT_PLACE );
-			showPendingActionDiv();
+			displayTurnHelpMessage();
 		}
 
 		else {
@@ -51,7 +51,7 @@ var toggleTurnMenu = function() {
 	} else {
 
 		clearPendingAction();
-		hidePendingActionDiv();
+		toggleMenu("#pending-action-div", MENU_OFF);
 		hideYourTurnMenu();
 		updateBoard();
 
@@ -79,6 +79,7 @@ var clickBuildButton = function() {
 		clearPendingAction();
 		updateBoardInteractivity();
 		toggleMenu('#build-buttons-div');
+		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#recruit-buttons-div')[0].style.visibility = "hidden";
 	}
 };
@@ -89,6 +90,7 @@ var clickRecruitButton = function() {
 		clearPendingAction();
 		updateBoardInteractivity();
 		toggleMenu('#recruit-buttons-div');
+		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#build-buttons-div')[0].style.visibility = "hidden";
 	}
 };
@@ -97,8 +99,8 @@ var clickRecruitButton = function() {
  * Simple function, hides a menu with a given id if visible, makes
  * it visible if it's hidden
  */
-var toggleMenu = function( menuid ) {
-	if ( $(menuid)[0].style.visibility == "hidden" ) {
+var toggleMenu = function( menuid, val ) {
+	if ( val == MENU_ON || (val != MENU_OFF && $(menuid)[0].style.visibility == "hidden" )) {
 		$(menuid)[0].style.visibility = "visible";  
 	}
 	else {
@@ -109,12 +111,16 @@ var toggleMenu = function( menuid ) {
 var clickStructureButton = function( objecttype ){
 	setPendingAction( ACT_BUILD );
 	setPendingObject(objecttype);
+	toggleMenu("#build-buttons-div");
+	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
 
 var clickAgentButton = function( agenttype ){
 	setPendingAction( ACT_RECRUIT );
 	setPendingAgent(agenttype);
+	toggleMenu("#recruit-buttons-div");
+	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
 
@@ -168,22 +174,16 @@ var displayConfirmMessage = function() {
 	$('#your-action-message-div')[0].innerHTML = message;
 };
 
-var showPendingActionDiv = function() {
-	$('#pending-action-div')[0].style.visibility = "visible";
-};
-
-var hidePendingActionDiv = function() {
-	$('#pending-action-div')[0].style.visibility = "hidden";
-};
-
 var confirmPendingAction = function() {
 	hideConfirmMenu();
+	toggleMenu("#pending-action-div", MENU_OFF);
 	submitAction();
 };
 
 var cancelPendingAction = function() {
 	if(clientGame.game.round != 0) {
 		clearPendingAction();
+		toggleMenu("#pending-action-div", MENU_OFF);
 		updateBoardInteractivity();
 	}
 	hideConfirmMenu();
@@ -193,7 +193,6 @@ var cancelPendingAction = function() {
  * Display your turn menu (and fades back out after a few seconds)
  */
 var displayYourTurnMenu = function() {
-	displayTurnHelpMessage();
 	$('#your-turn-div')[0].style.visibility = "visible";
 	$('#turn-done-button')[0].style.visibility = "visible";
 	$("#your-turn-div").transition({ opacity: 1.00, top: "40%"}, 500, function() {
@@ -209,15 +208,24 @@ var displayYourTurnMenu = function() {
  */
 var displayTurnHelpMessage = function() {
 	var message;
-	switch(clientGame.game.round) {
-		case 0:
+	switch (pendingAction.actiontype){
+		case ACT_PLACE:
 			message = "Choose a location to place your mine";
 			break;
+		case ACT_BUILD:
+			message = "Choose a location to build your " + 
+					   OBJ_ENGLISH[pendingAction.objecttype];
+			break;
+		case ACT_RECRUIT:
+			message = "Choose a planet to recruit your " + 
+					   AGT_ENGLISH[pendingAction.agenttype];
+			break;
 		default:
-			message = "";
 			break;
 	}
+
 	$('#pending-action-div')[0].innerHTML = message;
+	toggleMenu("#pending-action-div", MENU_ON);
 };
 
 /**
