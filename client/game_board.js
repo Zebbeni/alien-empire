@@ -157,6 +157,7 @@ var updateBoard = function() {
 			updateTileInteractivity(p);
 			updateTileImage(p);
 			updateFleets(p);
+			updateAgents(p);
 		}
 
 	stage.update();

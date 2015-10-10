@@ -3,7 +3,7 @@
  * current planetid (either a number or undefined). 
  */
 
-var initAgents = function(planetid) {
+var initAgents = function() {
 
 	for( var agentid in clientGame.game.board.agents ) {
 
@@ -15,10 +15,9 @@ var initAgents = function(planetid) {
 		agentshape.name = AGT_ENGLISH[ agenttype ] + player;
 
 		var agentImg = loader.getResult( AGT_ENGLISH[agenttype] + player );
-		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, agentImg.width, agentImg.height);
+		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 105, 105);
 		agentshape.visible = false;
 		agentshape.mouseEnabled = false; //default this to false, otherwise it slows processing down
-		// agentshape.cache(0, 0, agtWid, agtWid);
 
 		board.addChild( agentshape );
 	}
@@ -49,13 +48,13 @@ var updateAgents = function(planetid) {
 		var agenttype = agent.agenttype;
 
 		var agentshape = board.getChildByName(AGT_ENGLISH[agenttype] + player);
-		board.setChildIndex(agentshape, board.getNumChildren()-1);
+		
+		board.setChildIndex(agentshape, board.getNumChildren() - 1);
 
 		agentshape.visible = true;
+
 		agentshape.x = tiles[planetid].x + agentsX;
 		agentshape.y = tiles[planetid].y + agentsY;
-
-		// agentshape.updateCache();
 
 		agentsX += agtWid + space;
 	}
