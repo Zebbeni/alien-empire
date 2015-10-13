@@ -7,6 +7,10 @@ var MOVE_DISTANCE = 5;
 var MENU_ON = 1;
 var MENU_OFF = 2;
 
+var GAME_CLOSED = 0;
+var GAME_STAGING = 1;
+var GAME_PROGRESS = 2;
+
 var NUM_FLEETS = 3;
 
 var RES_METAL = 0;

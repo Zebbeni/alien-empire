@@ -23,12 +23,6 @@ var submitMessage = function() {
     socket_sendMessage( msg );
 };
 
-var submitStagingMessage = function() {
-    var msg = $('#staging-chat-input')[0].value;
-    $('#staging-chat-input')[0].value = '';
-    socket_sendStagingMessage( msg );
-};
-
 var submitNewGame = function() {
     socket_createGame();
 };
@@ -43,12 +37,6 @@ var submitStagingReady = function(){
 
 var submitStagingLeave = function(){
     socket_leaveStaging();
-};
-
-var submitStagingMessage = function() {
-    var msg = $('#staging-chat-input')[0].value;
-    $('#staging-chat-input')[0].value = '';
-    socket_sendStagingMessage(msg);
 };
 
 // deletes local info so it isn't repopulated on login as a different user

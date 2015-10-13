@@ -34,11 +34,6 @@ socket.on('new chat message', function(newMsg) {
     updateLobby(false, newMsg, false);
 });
 
-// This should only get sent to users in the correct staging room.
-socket.on('room new staging message', function(newMsg) {
-    updateGameStage(false, newMsg);
-});
-
 socket.on('new game added', function(games) {
     updateLobby(false, false, games);
 });

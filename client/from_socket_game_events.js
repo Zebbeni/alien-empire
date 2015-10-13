@@ -1,3 +1,13 @@
+// This should only get sent to users in the correct staging room.
+socket.on('new game message', function(newMsg) {
+    if ( clientGame.status == GAME_STAGING) {
+        updateGameStage(false, newMsg);
+    } 
+    else {
+        updateGameMessages( newMsg );
+    } 
+});
+
 socket.on('room game starting', function(gameInfo) {
 
     updateClientGame( gameInfo );

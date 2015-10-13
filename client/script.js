@@ -76,52 +76,6 @@ var displayMessages = function() {
 
 };
 
-var displayStagingMessages = function() {
-
-    updateMessagesHtml( clientGame.messages, "staging-messages-div");
-
-};
-
-var displayGameMessages = function() {
-    updateMessagesHtml( clientGame.messages, "game-messages-div");
-};
-
-var updateMessagesHtml = function( messages, div_id ) {
-
-    var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
-    var lastUserId = null;
-    var msg = null;
-
-    for (var m = 0; m < messages.length; m++){ //different
-
-        msg = messages[m]; //different
-        messagesHtml += '<tr>'
-
-        // if server message, message spans both columns and is centered
-        if (msg.id == -1) {
-            messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
-        }
-        else {
-            messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td">' : '<td class="msg-user-td">' );
-
-            if (msg.id != lastUserId) { // Only display user name if it's a different user talking
-               messagesHtml += all_users[msg.id].name;
-            }
-
-            messagesHtml += '</td><td class="msg-content-td';
-            messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + msg.message + '</td>';
-        }
-        messagesHtml += '</tr>'
-
-        lastUserId = msg.id;
-    }
-    messagesHtml += '</table>'
-
-    var msgDiv = document.getElementById( div_id ); //different
-    msgDiv.innerHTML = messagesHtml;
-    msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
-};
-
 //update lobby stage, make it visible, and hide login stage
 var moveToLobby = function() {
     $('#login-div')[0].style.visibility = "hidden";

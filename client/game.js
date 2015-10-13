@@ -90,3 +90,8 @@ var initializePlayerAttributes = function() {
 var updateClientGame = function( content ) {
 	$.extend(true, clientGame, content );
 };
+
+var updateGameMessages = function( newMsg ) {
+	clientGame.messages.push( newMsg );
+	displayGameMessages();
+};

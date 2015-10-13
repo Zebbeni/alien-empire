@@ -10,6 +10,10 @@
 		EVENT_ONE : 1,
 		EVENT_ALL : 2,
 
+		GAME_CLOSED : 0,
+		GAME_STAGING : 1,
+		GAME_PROGRESS : 2,
+
 		RES_METAL : 0,
 		RES_WATER : 1,
 		RES_FUEL : 2,

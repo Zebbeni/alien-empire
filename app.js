@@ -7,10 +7,8 @@ app.use(express.static(__dirname + '/client'));
 var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
-var EVENT_ONE = 1;
-var EVENT_ALL = 2;
-
 var game_server = require('./game_server');
+var cons = require('./server_constants');
 
 var gamesInfo = [];
 var users = [];
@@ -120,7 +118,7 @@ io.sockets.on('connection', function(socket) {
         io.in('lobby').emit('new chat message', newMsg);
     });
 
-    socket.on('send staging message', function(msg, fn) {
+    socket.on('send game message', function(msg, fn) {
         fn('true');
         var gameid = users[socket.userid].gameid;
         var gameInfo = gamesInfo[gameid];
@@ -132,7 +130,7 @@ io.sockets.on('connection', function(socket) {
 
         gamesInfo[gameid].messages.push(newMsg);
 
-        io.in(gameInfo.room).emit('room new staging message', newMsg);
+        io.in(gameInfo.room).emit('new game message', newMsg);
     });
 
     socket.on('create game', function() {
@@ -250,10 +248,10 @@ io.sockets.on('connection', function(socket) {
         var gameInfo = gamesInfo[gameid];
         var response = game_server.resolveAction( action, gameInfo );
 
-        if ( response.to == EVENT_ONE ) {
+        if ( response.to == cons.EVENT_ONE ) {
             socket.emit(response.evnt, response.content);
         }
-        else if ( response.to == EVENT_ALL ) {
+        else if ( response.to == cons.EVENT_ALL ) {
             io.in(gameInfo.room).emit(response.evnt, response.content);
         }
     });
@@ -280,7 +278,7 @@ io.sockets.on('connection', function(socket) {
                 var gameInfo = gamesInfo[gameid];
 
                 // if game is still in staging, remove user from game and alert
-                if (gameInfo.status == 1) {
+                if (gameInfo.status == cons.GAME_STAGING) {
 
                     removeUserFromStaging(gameInfo, socket.userid);
                     removePlayerFromReady(gameid, socket.userid);
@@ -304,7 +302,7 @@ io.sockets.on('connection', function(socket) {
                 }
 
                 // otherwise, if game running, allow user to reconnect
-                else if (gameInfo.status == 2) {
+                else if (gameInfo.status == cons.GAME_PROGRESS) {
                     // in the meantime, alert users that one player is gone
                 }
             }
@@ -346,7 +344,7 @@ var removeUserFromStaging = function(gameInfo, userid) {
         gameInfo.players.splice(index, 1);
 
         if (gameInfo.players.length == 0) {
-            gameInfo.status = 0; // 0: CLOSED, 1: STAGING: 2: INGAME
+            gameInfo.status = cons.GAME_CLOSED;
         }
 
         gamesInfo[gameid] = gameInfo;

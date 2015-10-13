@@ -106,9 +106,9 @@
 
 #game-messages-wrapper-div {
 	position: absolute;
-	width: 400px;
+	width: 350px;
 	height: 200px;
-	bottom: 25px;
+	bottom: 100px;
 	right: 25px;
 	background: rgba(0, 0, 0, .1);
 }
@@ -120,11 +120,16 @@
 }
 
 #game-messages-div {
+	vertical-align: bottom;
 	height: 160px;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 #game-chat-input {
+	text-align: center;
 	height: 25px;
+	color: rgba(255, 255, 255, .9);
 	background: rgba(0, 0, 0, .1);
 }
 
