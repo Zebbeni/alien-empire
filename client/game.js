@@ -2,6 +2,7 @@
 var showInterface = function() {
 	$('#button-bar-div')[0].style.visibility = "visible";
 	$("#build-recruit-buttons-div")[0].style.visibility = "visible";
+	$('#game-messages-wrapper-div')[0].style.visibility = "visible";
 	createPlayersMenu();
 };
 
@@ -17,6 +18,7 @@ var createAll = function( content ) {
 	initializePlayerAttributes();
 	setGlobals();
 	drawBoard();
+	displayGameMessages();
 	showInterface();
 	toggleTurnMenu();
 	updateBoardInteractivity();
@@ -32,6 +34,7 @@ var updateAll = function( content ) {
 	console.log("updating all");
 	updateClientGame( content );
 	updateBoard();
+	displayGameMessages();
 	updatePlayerStatsMenus();
 	toggleTurnMenu();
 	updateBoardInteractivity();

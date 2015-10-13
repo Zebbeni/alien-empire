@@ -82,6 +82,10 @@ var displayStagingMessages = function() {
 
 };
 
+var displayGameMessages = function() {
+    updateMessagesHtml( clientGame.messages, "game-messages-div");
+};
+
 var updateMessagesHtml = function( messages, div_id ) {
 
     var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
@@ -126,7 +130,7 @@ var moveToLobby = function() {
     $('#turn-done-button')[0].style.visibility = "hidden";
     $('#button-bar-div')[0].style.visibility = "hidden";
     $('#build-recruit-buttons-div')[0].style.visibility = "hidden";
-    // $('#recruit-buttons-div')[0].style.visibility = "hidden";
+    $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
     $('#players-wrapper-div')[0].style.visibility = "hidden";
     
     $('#lobby-div')[0].style.visibility = "visible";

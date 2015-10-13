@@ -86,6 +86,14 @@
         <div>
             <input type="button" id="turn-done-button" style="visibility: hidden" value="End Turn" onclick="javascript:submitTurnDone();"></input>
         </div>
+        <div id="game-messages-wrapper-div" style="visibility: hidden">
+            <div id="game-messages-div">
+                
+            </div>
+            <form action="javascript:submitGameMessage();">
+                <input type="text" id="game-chat-input" placeholder="Type a message here!" autofocus></input>
+            </form>
+        </div>
         <div id="confirm-action-div" style="visibility: hidden">
             <div id="your-action-message-div"></div>
             <div id="action-confirm-button-wrapper">

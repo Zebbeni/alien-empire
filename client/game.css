@@ -49,7 +49,7 @@
 	position: fixed;
 	width: 150px;
 	height: 50px;
-	right: 25px;
+	left: 25px;
 	bottom: 25px;
 	margin: 10px;
 	padding: 5px;
@@ -102,6 +102,30 @@
 	overflow-y: hidden;
 	font-size: 20px;
 	color: white;
+}
+
+#game-messages-wrapper-div {
+	position: absolute;
+	width: 400px;
+	height: 200px;
+	bottom: 25px;
+	right: 25px;
+	background: rgba(0, 0, 0, .1);
+}
+
+#game-messages-div, #game-chat-input {
+	position: relative;
+	width: 100%;
+	margin: 5px;
+}
+
+#game-messages-div {
+	height: 160px;
+}
+
+#game-chat-input {
+	height: 25px;
+	background: rgba(0, 0, 0, .1);
 }
 
 #player-turn-div0 {
