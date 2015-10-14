@@ -19,6 +19,7 @@ var createAll = function( content ) {
 	setGlobals();
 	drawBoard();
 	displayGameMessages();
+	createInterface();
 	showInterface();
 	toggleTurnMenu();
 	updateBoardInteractivity();

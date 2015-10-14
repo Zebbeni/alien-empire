@@ -174,14 +174,14 @@
 	position: fixed;
 	top: 35px;
 	left: 50%;
-	width: 700px;
-	margin-left: -350px;
+	width: 650px;
+	margin-left: -325px;
 }
 
 #build-buttons-div, #recruit-buttons-div {
 	position: absolute;
-	width: 700px;
-	margin: 0 auto;
+	width: 650px;
+	height: 100px;
 }
 
 .create-button {
@@ -197,7 +197,7 @@
 	color: black;
 }
 
-.build-structure-button, .recruit-agent-button {
+.build-structure-button {
 	position: relative;
 	float: left;
 	top: 0px;
@@ -208,17 +208,22 @@
 	color: black;
 }
 
+.recruit-agent-button {
+	background: none;
+	margin: 0px;
+	padding:;
+}
+
+.recruit-agent-button:hover {
+
+}
+
 .build-structure-button {
 	height: 110px;
 	width: 110px;
 }
 
-.recruit-agent-button {
-	height: 70px;
-	width: 70px;
-}
-
-.create-button:hover, .build-structure-button:hover, .recruit-agent-button:hover, #turn-done-button:hover {
+.create-button:hover, .build-structure-button:hover, #turn-done-button:hover {
 	background: rgba(161, 233, 210, .8);
 }
 

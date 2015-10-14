@@ -199,7 +199,7 @@ var displayStagingMessages = function() {
 
 var updateMessagesHtml = function( messages, div_id ) {
 
-    var messagesHtml = '<table style="height:10px"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
+    var messagesHtml = '<table style="height:10px" class="message-table"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
     var lastUserId = null;
     var msg = null;
 
@@ -359,4 +359,22 @@ var updatePlayerStatsMenus = function() {
 
 		statsDiv.innerHTML = statsDivHTML;
 	}
+};
+
+var createInterface = function() {
+	var innerHTML = '<table><tr>';
+	var url = 'https://s3-us-west-2.amazonaws.com/alien-empire/interface/';
+
+	console.lo
+	for (var i = AGT_EXPLORER - 1; i <= AGT_SABATEUR + 1; i++) {
+		innerHTML += '<td style="padding: 0px margin: 0px"><input type="image" class="recruit-agent-button"';
+		innerHTML += ' src="' + url + 'agents_recruit_bar_off_' + (i + 1) + '_' + clientTurn + '.png"';
+		if ( i >= AGT_EXPLORER && i <= AGT_SABATEUR ) {
+			innerHTML += ' onclick="javascript:clickAgentButton(' + i + ');"';
+		}
+		innerHTML += '></input></td>';
+	};
+
+	innerHTML += '</tr></table>'
+	$('#recruit-buttons-div')[0].innerHTML = innerHTML;
 };

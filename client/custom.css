@@ -5,7 +5,7 @@
 }
 
 td, div, input {
-	border-radius: 10px;
+	/*border-radius: 10px;*/
 	word-wrap:break-word;
 }
 
@@ -15,11 +15,14 @@ form {
 
 table {
 	position:relative;
-	table-layout: fixed;
 	width:100%;
 	height:100%;
 	background-color: #f3f3f3;
 	border-collapse: collapse;
+}
+
+.message-table {
+	table-layout: fixed;
 }
 
 #text-title-div {
@@ -291,10 +294,10 @@ table {
 	background: white;
 }
 
-#input-username, input{
+#input-username {
 	position: absolute center center;
-	border-radius: 5px;
 	padding: 5px;
+	border-radius: 5px;
 	background: rgba(131, 203, 180, .38);
 }
 

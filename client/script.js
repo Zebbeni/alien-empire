@@ -84,6 +84,7 @@ var moveToLobby = function() {
     $('#turn-done-button')[0].style.visibility = "hidden";
     $('#button-bar-div')[0].style.visibility = "hidden";
     $('#build-recruit-buttons-div')[0].style.visibility = "hidden";
+    $('#recruit-buttons-div')[0].style.visibility = "hidden";
     $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
     $('#players-wrapper-div')[0].style.visibility = "hidden";
     

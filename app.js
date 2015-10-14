@@ -9,6 +9,7 @@ var io = require('./node_modules/socket.io').listen(server);
 
 var game_server = require('./game_server');
 var cons = require('./server_constants');
+var helpers = require('./game_helpers');
 
 var gamesInfo = [];
 var users = [];
@@ -223,12 +224,7 @@ io.sockets.on('connection', function(socket) {
 
         var username = users[socket.userid].name;
 
-        var newMsg = {
-                        id: -1, // -1 indicates a server message
-                        message: username + " left the game"
-                    };
-
-        gamesInfo[gameid].messages.push(newMsg);
+        helpers.addNewServerMessage( gamesInfo[gameid], username + " left the game");
 
         socket.emit('self left game staging', gameInfo);
         socket.broadcast.to(gameInfo.room).emit(
