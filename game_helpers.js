@@ -25,6 +25,15 @@ var cons = require('./server_constants');
 		return false;
 	};
 
+	module.exports.addNewServerMessage = function(gameInfo, msg) {
+    var newMsg = {
+                    id: -1, // -1 indicates a server message
+                    message: msg
+                };
+
+    gameInfo.messages.push(newMsg);
+};
+
 }());
 
 var playerHasResourceStruct = function( player, planetid, objecttype, game ) {

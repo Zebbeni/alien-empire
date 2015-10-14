@@ -110,12 +110,13 @@
 	height: 200px;
 	bottom: 100px;
 	right: 25px;
-	background: rgba(0, 0, 0, .1);
+	background: rgba(0, 0, 0, .0);
 }
 
 #game-messages-div, #game-chat-input {
 	position: relative;
 	width: 100%;
+	background: rgba(255, 255, 255, 0.1);
 	margin: 5px;
 }
 
@@ -130,7 +131,6 @@
 	text-align: center;
 	height: 25px;
 	color: rgba(255, 255, 255, .9);
-	background: rgba(0, 0, 0, .1);
 }
 
 #player-turn-div0 {
@@ -220,4 +220,19 @@
 
 .create-button:hover, .build-structure-button:hover, .recruit-agent-button:hover, #turn-done-button:hover {
 	background: rgba(161, 233, 210, .8);
+}
+
+#game-chat-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+    color:    rgba(255, 255, 255, 0.5);
+}
+#game-chat-input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+   color:    rgba(255, 255, 255, 0.5);
+   opacity:  1;
+}
+#game-chat-input::-moz-placeholder { /* Mozilla Firefox 19+ */
+   color:    rgba(255, 255, 255, 0.5);
+   opacity:  1;
+}
+#game-chat-input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+   color:    rgba(255, 255, 255, 0.5);
 }
