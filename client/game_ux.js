@@ -312,7 +312,7 @@ var createPlayerTurnMenus = function() {
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
 		var innerHTML = "";
 
-		if (i == clientTurn) {
+		if ( i == clientTurn) {
 			innerHTML += "Your turn!";
 		}
 		else {
