@@ -32,9 +32,8 @@ var createAll = function( content ) {
  */
 var updateAll = function( content ) {
 
-	console.log("updating all");
 	updateClientGame( content );
-	initializePlayerAttributes();
+	updatePlayerStatsMenus();
 	updateBoard();
 	displayGameMessages();
 	toggleTurnMenu();

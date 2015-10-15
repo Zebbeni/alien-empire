@@ -309,7 +309,7 @@ var createPlayersMenu = function() {
 
 var createPlayerTurnMenus = function() {
 
-	for ( var i = 0; i < clientGame.players.length; i++ ) {
+	for ( var i = 0; i < clientGame.game.players.length; i++ ) {
 		var innerHTML = "";
 
 		if ( i == clientTurn) {
@@ -330,7 +330,7 @@ var updatePlayerStatsMenus = function() {
 
 		var statsDiv = $('#player-stats-div' + i )[0];
 
-		var username = all_users[clientGame.players[i]].name;
+		var username = all_users[clientGame.game.players[i]].name;
 
 		var points = clientGame.game.points[i];
 		var structures = clientGame.game.structures[i];
