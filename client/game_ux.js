@@ -362,13 +362,13 @@ var updatePlayerStatsMenus = function() {
 };
 
 var createInterface = function() {
-	var innerHTML = '<table><tr>';
+	var innerHTML = '<table id="recruit-agents-table"><tr>';
 	var url = 'https://s3-us-west-2.amazonaws.com/alien-empire/interface/';
+	var imgSize = pixelRatio <= 1 ? "1x" : "2x";
 
-	console.lo
-	for (var i = AGT_EXPLORER - 1; i <= AGT_SABATEUR + 1; i++) {
+	for (var i = AGT_EXPLORER; i <= AGT_SABATEUR; i++) {
 		innerHTML += '<td style="padding: 0px margin: 0px"><input type="image" class="recruit-agent-button"';
-		innerHTML += ' src="' + url + 'agents_recruit_bar_off_' + (i + 1) + '_' + clientTurn + '.png"';
+		innerHTML += ' src="' + url + imgSize + '_agents_bar_' + i + '.png" width="79px" height="100px"';
 		if ( i >= AGT_EXPLORER && i <= AGT_SABATEUR ) {
 			innerHTML += ' onclick="javascript:clickAgentButton(' + i + ');"';
 		}
@@ -377,4 +377,6 @@ var createInterface = function() {
 
 	innerHTML += '</tr></table>'
 	$('#recruit-buttons-div')[0].innerHTML = innerHTML;
+	$('#recruit-buttons-div').css("background-image", "url(" + url + imgSize + "_agents_bar_p" + clientTurn + ".png)");
+	$('#recruit-buttons-div').css("background-size", "100%");
 };

@@ -184,6 +184,13 @@
 	height: 100px;
 }
 
+#recruit-agents-table {
+	padding: 0px;
+	margin-left: 10px;
+	width: 627px;
+	table-layout: fixed;
+}
+
 .create-button {
 	position: relative;
 	float: left;
