@@ -29,12 +29,21 @@ table {
 	table-layout: fixed;
 }
 
-#text-title-div, #text-tag-div {
+#text-title-div, #text-tag-div, #lobby-title-div {
 	position: absolute;
 	font-family: 'Cinzel Decorative', cursive;
 	width: 100%;
 	text-align: center;
 	color: rgb(72, 159, 129);
+}
+
+#lobby-title-div {
+	font-size: 25px;
+	font-weight: 700;
+	top: -40px;
+	width: 100px;
+	left: 50%;
+	margin-left: -50px;
 }
 
 #text-title-div {
@@ -53,7 +62,7 @@ table {
 	position: relative;
 	left: 94%;
 	top: -60px;
-	color: rgb(77, 183, 193);
+	color: rgb(72, 159, 129);
 	background: rgba(0,0,0,0);
 }
 
@@ -63,17 +72,34 @@ table {
 
 #create-game-button {
 	position: relative;
-	width: 95%;
-	height: 50px;
-	margin: 10px;
+	float: left;
+	left: 18px;
+	top: 39px;
+	width: 359px;
+	height: 44px;
 	padding: 5px;
-	background: rgb(127, 233, 243);
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_createnew_button.png");
 	font-weight: bold;
 	color: black;
 }
 
+#resume-game-button {
+	position: relative;
+	float: left;
+	left: 18px;
+	top: 48px;
+	width: 358px;
+	height: 32px;
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_resume_button.png");
+	color: #adf22c;
+}
+
 #create-game-button:hover{
-	background: rgb(137, 243, 253);
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_createnew_button_hover.png");
+}
+
+#resume-game-button:hover{
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_resume_button_hover.png");
 }
 
 #main-div {
@@ -90,10 +116,11 @@ table {
 	position: fixed;
 	top: 425px;
 	left: 50%;
-	width: 1000px;
-	height: 700px;
-	margin-left: -500px;
+	width: 989px;
+	height: 698px;
+	margin-left: -494px;
 	margin-top: -400px;
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_lobby_menu.png");
 }
 
 #staging-div {
@@ -119,18 +146,12 @@ table {
 	background: rgba(255, 255, 255, .8);
 }
 
-#users-div, #chat-div, #games-div {
-	margin: 5px;
-	height: 100%;
-	background: rgba(131, 203, 180, .38);
-}
-
 #messages-div, #users-scroll, #games-list-div, #staging-inner-div, #staging-messages-div {
 	position: relative;
 	padding: 10px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	background: rgba(0, 0, 0, .6);
+	/*background: rgba(0, 0, 0, .6);*/
 }
 
 #staging-inner-div {
@@ -139,11 +160,34 @@ table {
 	width: 480px;
 }
 
+#users-wrapper-div, #messages-wrapper-div, #games-wrapper-div {
+	position: relative;
+	float: left;
+	height: 700px;
+}
+
+#users-wrapper-div {
+	width: 237px;
+}
+
+#messages-wrapper-div {
+	left: 10px;
+	width: 336px;
+}
+
+#games-wrapper-div {
+	left: 20px;
+	width: 395px;
+}
+
 #games-list-div {
 	position: relative;
-	height: 620px;
-	margin-left: 10px;
-	margin-right: 10px;
+	float: left;
+	left: 18px;
+	top: 60px;
+	width: 359px;
+	height: 537px;
+	color: black;
 }
 
 .game-button {
@@ -189,10 +233,22 @@ table {
 }
 
 #messages-div {
-	width: 94%;
-	left: 3%;
-	height: 600px;
-	top: 1.3%;
+	width: 301px;
+	height: 564px;
+	left: 18px;
+	top: 38px;
+}
+
+#chat-input {
+	position: relative;
+	width: 301px;
+	height: 61px;
+	left: 18px;
+	top: 53px;
+	padding: 5px;
+	overflow-y: scroll;
+	color: black;
+	background: none;
 }
 
 #staging-messages-div {
@@ -271,22 +327,11 @@ table {
 }
 
 #users-scroll {
-	height: 682px;
-	width: 92%;
-	left: 4%;
-	top: 1.3%;
-}
-
-#chat-input {
-	position: relative;
-	width: 94%;
-	height: 73px;
-	left: 3%;
-	top: 18px;
-	padding: 5px;
-	overflow-y: scroll;
-	background: rgba(255,255,255,.9);
-	color: black;
+	float: left;
+	height: 638px;
+	width: 200px;
+	left: 20px;
+	top: 38px;
 }
 
 #staging-chat-input {
@@ -300,7 +345,7 @@ table {
 }
 
 #chat-input:hover, #staging-chat-input:hover{
-	background: white;
+	background: rgba(255,255,255,0.5);
 }
 
 #input-username {
@@ -318,12 +363,12 @@ table {
 
 #input-username-div {
 	position: absolute;
-	top: 260px;
+	top: 270px;
 	height: 106px;
 	width: 296px;
 	left: 50%;
 	margin-left: -148px;
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/login/2x_login.png");
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/login/1x_login.png");
 }
 
 #copyright {

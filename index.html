@@ -12,7 +12,7 @@
         <div id="main-div">
             <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="login-div">
-                <div id="text-title-div">Alien empirE</div>
+                <div id="text-title-div">Star hoppeR</div>
                 <div id="text-tag-div">Build | Explore | Trade | Destroy</div>
                 <div id="input-username-div">
                     <form action="javascript:submitLogin();">
@@ -21,29 +21,23 @@
                 </div>
             </div>
             <div id="lobby-div" style="visibility: hidden">
-                <table>
-                    <tr>
-                        <td width="247px" height="700px">
-                            <div id="users-div">
-                                <div id="users-scroll"></div>
-                            </div>
-                        </td><td width="347px" height="700px">
-                            <div id="chat-div">
-                                <div id="messages-div">
-                                </div>
-                                <form action="javascript:submitMessage();">
-                                    <input type="text" id="chat-input" placeholder="Send a message!" autofocus></input>
-                                </form>
-                            </div>
-                        </td><td width="406px" height="700px">
-                            <div id="games-div">
-                                <input type="button" id="create-game-button" value="New Game" onclick="javascript:submitNewGame();"></input>
-                                <div id="games-list-div">
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <div id="lobby-title-div">Lobby</div>
+                <div id="users-wrapper-div">
+                    <div id="users-scroll"></div>
+                </div>
+                <div id="messages-wrapper-div">
+                    <div id="messages-div"></div>
+                    <div>
+                    <form action="javascript:submitMessage();">
+                        <input type="text" id="chat-input" placeholder="Send a message!" autocomplete="off" autofocus/>
+                    </form>
+                    </div>
+                </div>
+                <div id="games-wrapper-div">
+                    <input type="button" id="create-game-button" value="Create New Game" onclick="javascript:submitNewGame();"/>
+                    <input type="button" id="resume-game-button" value="Resume Saved Game"/>
+                    <div id="games-list-div"></div>
+                </div>
             </div>
             <div id="screen-div" style="visibility: hidden"></div>
             <div id="staging-div" style="visibility: hidden">

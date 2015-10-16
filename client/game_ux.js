@@ -378,5 +378,4 @@ var createInterface = function() {
 	innerHTML += '</tr></table>'
 	$('#recruit-buttons-div')[0].innerHTML = innerHTML;
 	$('#recruit-buttons-div').css("background-image", "url(" + url + imgSize + "_agents_bar_p" + clientTurn + ".png)");
-	$('#recruit-buttons-div').css("background-size", "100%");
 };
