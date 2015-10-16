@@ -117,7 +117,7 @@ var initProgressBar = function() {
 
 	loadProgress = new createjs.Container();
 
-	loadProgressLabel = new createjs.Text("Loading","20px Arial", loadingColor);
+	loadProgressLabel = new createjs.Text("Loading","bold 20px Play", loadingColor);
 	loadProgressLabel.lineWidth = 200;
 	loadProgressLabel.textAlign = "center";
 	loadProgressLabel.x = 100;

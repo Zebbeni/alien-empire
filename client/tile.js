@@ -288,7 +288,7 @@ var drawPlanet = function( planetid ) {
  * Initialize name text, add to tile container
  */
 var initNametext = function( planetid ) {
-	var nametext = new createjs.Text("", "25px Arial", "white");
+	var nametext = new createjs.Text("", "normal 25px Play", "white");
 	nametext.name = "nametext";
 	tiles[planetid].addChild( nametext );
 };
