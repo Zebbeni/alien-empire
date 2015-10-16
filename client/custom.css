@@ -3,6 +3,8 @@
 	font-family: 'Play', sans-serif;
 	font-style: normal;
 	font-size: 11pt;
+	background-size: 100%;
+	background-repeat: no-repeat;
 	outline: none;
 }
 
@@ -27,19 +29,24 @@ table {
 	table-layout: fixed;
 }
 
-#text-title-div {
-	font-size: 23pt;
-	color: rgba(131, 203, 180, .9);
+#text-title-div, #text-tag-div {
+	position: absolute;
+	font-family: 'Cinzel Decorative', cursive;
+	width: 100%;
+	text-align: center;
+	color: rgb(72, 159, 129);
 }
 
-#login-div {
-   position:fixed;
-   top: 40%;
-   left: 50%;
-   width:180px;
-   height:50px;
-   margin-top: -50px; /*set to a negative number 1/2 of your height*/
-   margin-left: -90px; /*set to a negative number 1/2 of your width*/
+#text-title-div {
+	font-weight: 700;
+	font-size: 70pt;
+	top: 125px;
+}
+
+#text-tag-div {
+	font-style: normal;
+	font-size: 15pt;
+	top: 225px;
 }
 
 #logout-button {
@@ -297,10 +304,26 @@ table {
 }
 
 #input-username {
-	position: absolute center center;
+	position: relative;
+	width: 220px;
+	height: 38px;
+	top: 38px;
+	left: 38px;
 	padding: 5px;
 	border-radius: 5px;
-	background: rgba(131, 203, 180, .38);
+	font-size: 18px;
+	color: white;
+	background: none;
+}
+
+#input-username-div {
+	position: absolute;
+	top: 260px;
+	height: 106px;
+	width: 296px;
+	left: 50%;
+	margin-left: -148px;
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/login/2x_login.png");
 }
 
 #copyright {

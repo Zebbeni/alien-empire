@@ -4,7 +4,7 @@
         <link rel="stylesheet" type="text/css" href="custom.css" />
         <link rel="stylesheet" type="text/css" href="game.css" />
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
-        <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Play:400,700'>
+        <link href='https://fonts.googleapis.com/css?family=Play:400,700|Cinzel+Decorative:400,700' rel='stylesheet' type='text/css'>
     </head>
     <body>
         <div id="game-canvas-div"><canvas id="gameCanvas"></canvas></div>
@@ -12,10 +12,13 @@
         <div id="main-div">
             <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="login-div">
-                <div id="text-title-div">Alien Empire</div>
-                <form action="javascript:submitLogin();">
-                    <input id="input-username" type="text", placeholder="Enter a Username!" autofocus/>
-                </form>
+                <div id="text-title-div">Alien empirE</div>
+                <div id="text-tag-div">Build | Explore | Trade | Destroy</div>
+                <div id="input-username-div">
+                    <form action="javascript:submitLogin();">
+                        <input id="input-username" type="text", placeholder="Enter a Username!" autocomplete="off" autofocus/>
+                    </form>
+                </div>
             </div>
             <div id="lobby-div" style="visibility: hidden">
                 <table>
