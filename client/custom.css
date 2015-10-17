@@ -1,7 +1,7 @@
 *{
 	border: none;
 	font-family: 'Play', sans-serif;
-	font-style: normal;
+	font-weight: 400;
 	font-size: 11pt;
 	background-size: 100%;
 	background-repeat: no-repeat;
@@ -38,12 +38,12 @@ table {
 }
 
 #lobby-title-div {
-	font-size: 25px;
+	font-size: 23px;
 	font-weight: 700;
-	top: -40px;
-	width: 100px;
+	top: -35px;
+	width: 200px;
 	left: 50%;
-	margin-left: -50px;
+	margin-left: -100px;
 }
 
 #text-title-div {
@@ -75,12 +75,13 @@ table {
 	float: left;
 	left: 18px;
 	top: 39px;
-	width: 359px;
-	height: 44px;
+	width: 361px;
+	height: 48px;
 	padding: 5px;
 	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_createnew_button.png");
-	font-weight: bold;
-	color: black;
+	font-weight: 400;
+	font-size: 18px;
+	color: white;
 }
 
 #resume-game-button {
@@ -88,10 +89,12 @@ table {
 	float: left;
 	left: 18px;
 	top: 48px;
-	width: 358px;
-	height: 32px;
+	width: 361px;
+	height: 35px;
 	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_resume_button.png");
-	color: #adf22c;
+	font-weight: 400;
+	font-size: 14px;
+	color: white;
 }
 
 #create-game-button:hover{
@@ -127,11 +130,11 @@ table {
 	position: fixed;
 	top: 350px;
 	left: 50%;
-	width: 500px;
-	height: 600px;
+	width: 501px;
+	height: 599px;
 	margin-left: -250px;
 	margin-top: -300px;
-	background: rgba(131, 203, 180, .58);
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_staging_menu.png");
 }
 
 #screen-div {
@@ -143,7 +146,7 @@ table {
 	width: 100%;
 	height: 100%;
 	border-radius: 0px;
-	background: rgba(255, 255, 255, .8);
+	background: rgba(0, 0, 0, .6);
 }
 
 #messages-div, #users-scroll, #games-list-div, #staging-inner-div, #staging-messages-div {
@@ -185,86 +188,166 @@ table {
 	float: left;
 	left: 18px;
 	top: 60px;
-	width: 359px;
-	height: 537px;
-	color: black;
+	width: 358px;
+	height: 530px;
 }
 
 .game-button {
-	height: 60px;
-	width: 350px;
-	background: rgba(117, 223, 233, .8);
-	margin: 3px;
-	color: black;
+	position: relative;
+	top: -15px;
+	left: -3px;
+	margin-top: 5px;
+	height: 100px;
+	width: 347px;
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_joingame_button.png");
+	font-size: 16px;
+	color: white;
 }
 
 .game-button:hover {
-	background: rgba(117, 223, 233, 1);
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_joingame_button_hover.png");
+}
+
+#staging-playernum-div {
+	position: absolute;
+	top: 143px;
+	right: 5px;
+	width: 90px;
+	height: 37px;
+}
+
+#staging-pointnum-div {
+	top: 182px;
+	position: absolute;
+	right: 5px;
+	width: 98px;
+	height: 37px;
+}
+
+.staging-playernum-button, .staging-playernum-selected {
+	float: right;
+	width: 28px;
+	height: 33px;
+	margin-left: 1px;
+	color: white;
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_player_button.png");
+}
+
+.staging-playernum-button:hover {
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_player_button_hover.png");
+}
+
+.staging-playernum-selected {
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_player_button_selected.png");
+}
+
+.staging-pointnum-button, .staging-pointnum-selected {
+	float: right;
+	width: 31px;
+	height: 33px;
+	margin-left: 1px;
+	color: white;
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_point_button.png");
+}
+
+.staging-pointnum-button:hover {
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_point_button_hover.png");
+}
+
+.staging-pointnum-selected {
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_point_button_selected.png");
 }
 
 #staging-leave-button {
 	position: absolute;
-	right: 10px;
-	width: 150px;
-	height: 60px;
-	bottom: 10px;
-	font-size: 30pt;
-	color: black;
-	background: rgb(77, 183, 193);
+	right: 2px;
+	width: 158px;
+	height: 65px;
+	bottom: 9px;
+	font-size: 15pt;
+	font-weight: 700;
+	color: white;
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_back_button.png");
 }
 
 #staging-leave-button:hover {
-	background: rgb(97, 203, 213);
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_back_button_hover.png");
 }
 
 #staging-ready-button {
 	position: absolute;
-	right: 10px;
-	width: 150px;
-	height: 375px;
+	right: 2px;
+	width: 158px;
+	height: 281px;
 	bottom: 80px;
-	font-size: 30pt;
+	font-size: 18pt;
+	font-weight: 700;
 	color: black;
-	background: rgb(127, 233, 243);
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_ready_button.png");
 }
 
 #staging-ready-button:hover {
-	background: rgb(137, 243, 253);
+	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_ready_button_hover.png");
 }
 
 #messages-div {
 	width: 301px;
-	height: 564px;
+	height: 533px;
 	left: 18px;
 	top: 38px;
 }
 
 #chat-input {
 	position: relative;
+	float: left;
 	width: 301px;
-	height: 61px;
+	height: 58px;
 	left: 18px;
-	top: 53px;
+	top: 46px;
 	padding: 5px;
 	overflow-y: scroll;
 	color: black;
 	background: none;
 }
 
+.send-message-button {
+	position: relative;
+	width: 305px;
+	height: 35px;
+	color: white;
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_sendmessage_button.png");
+}
+
+.send-message-button:hover {
+	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_sendmessage_button_hover.png");
+}
+
+#send-message-lobby {
+	top: 54px;
+	left: 16px;
+}
+
+#send-message-staging {
+	top: 39px;
+	left: -4px;
+}
+
 #staging-messages-div {
-	width: 300px;
-	height: 470px;
-	background: rgba(0, 0, 0, 0.2);
+	top: 20px;
+	left: -4px;
+	width: 302px;
+	height: 427px;
+	background: none;
 }
 
 #staging-users-div {
 	position: absolute;
-	right: 10px;
-	top: 10px;
-	width: 150px;
-	height: 105px;
+	right: 5px;
+	top: 30px;
+	width: 154px;
+	height: 103px;
 	padding: 10px;
-	background: rgba(0, 0, 0, 0.2);
+	background: none;
 }
 
 .msg-server-td, .msg-self-td, .msg-user-td, .msg-content-td {
@@ -336,11 +419,14 @@ table {
 
 #staging-chat-input {
 	position: relative;
-	width: 300px;
-	height: 80px;
-	top: 10px;
+	padding: 5px;
+	float: left;
+	width: 302px;
+	height: 60px;
+	top: 31px;
+	left: -4px;
 	overflow-y: scroll;
-	background: rgba(255,255,255,.9);
+	background: none;
 	color: black;
 }
 
@@ -382,19 +468,20 @@ table {
 
 ::-webkit-scrollbar {
     width: 10px;
+    background: none;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    background: rgba(131, 203, 180,0.6);  
+    background: rgba(131, 203, 180, 0.6);  
 }
 
 ::-webkit-scrollbar-thumb:hover {
     -webkit-border-radius: 10px;
     border-radius: 10px;
-    background: rgba(131, 203, 180,0.8);  
+    background: rgba(131, 203, 180,0.8);
 }
 
 ::-webkit-scrollbar-thumb:window-inactive {

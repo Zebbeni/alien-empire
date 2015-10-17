@@ -170,10 +170,9 @@ io.sockets.on('connection', function(socket) {
             
             var username = users[socket.userid].name;
 
-            var newMsg = {
-                            id: -1, // -1 indicates a server message
-                            message: username + " joined the game"
-                        };
+            var newMsg = helpers.addNewServerMessage( 
+                                                gamesInfo[gameid], 
+                                                username + " joined the game");
 
             gamesInfo[gameid].messages.push(newMsg);
 
@@ -224,13 +223,15 @@ io.sockets.on('connection', function(socket) {
 
         var username = users[socket.userid].name;
 
-        helpers.addNewServerMessage( gamesInfo[gameid], username + " left the game");
+        var newMsg = helpers.addNewServerMessage( 
+                        gamesInfo[gameid], 
+                        username + " left the game");
 
         socket.emit('self left game staging', gameInfo);
         socket.broadcast.to(gameInfo.room).emit(
                                             'room user left staging',
                                             gamesInfo[gameid].players, 
-                                            newMsg, 
+                                            newMsg,
                                             gamesInfo[gameid].ready);
         io.in('lobby').emit('user left game', gameInfo);
     });

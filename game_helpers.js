@@ -26,13 +26,14 @@ var cons = require('./server_constants');
 	};
 
 	module.exports.addNewServerMessage = function(gameInfo, msg) {
-    var newMsg = {
-                    id: -1, // -1 indicates a server message
-                    message: msg
-                };
+	    var newMsg = {
+	                    id: -1, // -1 indicates a server message
+	                    message: msg
+	                };
 
-    gameInfo.messages.push(newMsg);
-};
+	    gameInfo.messages.push(newMsg);
+	    return newMsg;
+	};
 
 }());
 
