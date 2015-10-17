@@ -174,7 +174,6 @@ io.sockets.on('connection', function(socket) {
                                                 gamesInfo[gameid], 
                                                 username + " joined the game");
 
-            gamesInfo[gameid].messages.push(newMsg);
 
             socket.emit('self joined game', gameInfo);
             socket.broadcast.to(gameInfo.room).emit(
