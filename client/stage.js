@@ -10,7 +10,7 @@ var pixelRatio = 1.0;
  */ 
 $(window).resize(function () {
 	clearTimeout(resizeTimer);
-	resizeTimer = setTimeout(setCanvasSize, 100);
+	resizeTimer = setTimeout( checkPixelRatioAndUpdate, 100);
  });
 
 /**
@@ -58,12 +58,8 @@ var init_background = function() {
 	stage.addChild(background);
 
 	backLoader = new createjs.LoadQueue(false);
-	if (!offline) {
-		backLoader.loadFile({src: "https://s3-us-west-2.amazonaws.com/alien-empire/images/space_background.jpg", id: "space_background"});
-	}
-	else {
-		backLoader.loadFile({src: "images/space_background.jpg", id: "space_background"});
-	}
+	backLoader.loadFile({src: s3url + "images/space_background.jpg", id: "space_background"});
+	
 	backLoader.addEventListener("complete", drawBackground);
 };
 
@@ -74,38 +70,44 @@ var drawBackground = function() {
 	backgroundH = backgroundImg.height;
 
 	background.graphics.beginBitmapFill(backgroundImg).drawRect(0, 0, backgroundW, backgroundH);
-
-	setCanvasSize();
+	updateCanvasSize();
 };
+
+
+var checkPixelRatioAndUpdate = function() {
+	if ( prevWidth != window.innerWidth || prevHeight != window.innerHeight || pixelRatio != window.devicePixelRatio ) {
+
+		console.log("updating Pixel Ratio");
+
+		prevWidth = window.innerWidth;
+		prevHeight = window.innerHeight;
+
+		setInterfaceImages();
+		updateCanvasSize();
+	}
+}
 
  /**
  * sets Canvas size (usually on window resize)
  * re-centers the game board and updates the stage
  */
-var setCanvasSize = function() {
+var updateCanvasSize = function() {
 	// make sure stage exists before trying this
 	if( stage ) {
-		if ( prevWidth != window.innerWidth 
-			|| prevHeight != window.innerHeight 
-			|| pixelRatio != window.devicePixelRatio ) {
 
-			var gameCanvas = $('#gameCanvas')[0];
-			var ctx = gameCanvas.getContext("2d");
+		var gameCanvas = $('#gameCanvas')[0];
+		var ctx = gameCanvas.getContext("2d");
 
-			prevWidth = window.innerWidth;
-			prevHeight = window.innerHeight;
+		ctx.canvas.width  = window.innerWidth;
+		ctx.canvas.height = window.innerHeight;
 
-			ctx.canvas.width  = window.innerWidth;
-			ctx.canvas.height = window.innerHeight;
+		setBackgroundSize();
 
-			setBackgroundSize();
+		updatePixelRatio();
 
-			updatePixelRatio();
-
-			centerProgressBar();
-			centerBoard();
-		}
-		
+		centerProgressBar();
+		centerBoard();
+	
 		stage.update();
 	}
 };
@@ -138,8 +140,6 @@ var updatePixelRatio = function() {
 };
 
 var setBackgroundSize = function() {
-
-	console.log("updating Pixel Ratio");
 
 	var scaleX = window.innerWidth / backgroundW;
 	var scaleY = window.innerHeight / backgroundH;

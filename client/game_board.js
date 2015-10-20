@@ -82,7 +82,7 @@ var drawBoard = function() {
 
 	if (stage) {
 
-		setCanvasSize();
+		updateCanvasSize();
 
 		drawAsteroids();
 		drawTiles();

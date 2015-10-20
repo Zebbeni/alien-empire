@@ -1,3 +1,28 @@
+var DOMimageMap = [
+	{ elmt: '#input-username-div', path: 'login/', img: 'login' },
+	{ elmt: '#lobby-div', path: 'lobby/', img: 'lobby_menu' },
+	{ elmt: '#create-game-button', path: 'lobby/', img: 'createnew_button' },
+	{ elmt: '#resume-game-button', path: 'lobby/', img: 'resume_button' },
+	{ elmt: '.game-button', path: 'lobby/', img: 'joingame_button' },
+	{ elmt: '.send-message-button', path: 'lobby/', img: 'sendmessage_button' },
+	{ elmt: '#staging-div', path: 'staging/', img: 'staging_menu' },
+	{ elmt: '.staging-playernum-button', path: 'staging/', img: 'player_button' },
+	{ elmt: '.staging-playernum-selected', path: 'staging/', img: 'player_button' },
+	{ elmt: '.staging-pointnum-button', path: 'staging/', img: 'point_button' },
+	{ elmt: '.staging-pointnum-selected', path: 'staging/', img: 'point_button' },
+	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
+	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' }
+];
+
+$.fn.preload = function() {
+    this.each(function(){
+        $('<img/>')[0].src = this;
+    });
+};
+
+$(document).ready(function () {
+	setInterfaceImages();
+});
 
 var playerMenuOn = [false, false, false, false];
 
@@ -361,14 +386,35 @@ var updatePlayerStatsMenus = function() {
 	}
 };
 
+/** 
+ * Sets UX images using DOMimageMap, picking images according to the 
+ * current device pixel ratio
+ */
+var setInterfaceImages = function() {
+
+	var px = window.devicePixelRatio > 1.0 ? '2x_' : '1x_';
+
+	for (var i = 0; i < DOMimageMap.length; i++){
+		var element = DOMimageMap[i];
+
+		var name = element.elmt;
+		var img = element.img;
+		var path = s3url + element.path + px + img;
+
+		$( name ).css("background-image", 'url(' + path + '.png)');
+	}
+};
+
 var createInterface = function() {
 	var innerHTML = '<table id="recruit-agents-table"><tr>';
-	var url = 'https://s3-us-west-2.amazonaws.com/alien-empire/interface/';
+	var path = s3url + 'interface/';
 	var imgSize = pixelRatio <= 1 ? "1x" : "2x";
 
 	for (var i = AGT_EXPLORER; i <= AGT_SABATEUR; i++) {
-		innerHTML += '<td style="padding: 0px margin: 0px"><input type="image" class="recruit-agent-button"';
-		innerHTML += ' src="' + url + imgSize + '_agents_bar_' + i + '.png" width="79px" height="100px"';
+		innerHTML += '<td style="padding: 0px margin: 0px">'
+	 				+ '<input type="image" class="recruit-agent-button"'
+					+ ' src="' + path + imgSize + '_agents_bar_' + i + '.png"'
+					+ ' width="79px" height="100px"';
 		if ( i >= AGT_EXPLORER && i <= AGT_SABATEUR ) {
 			innerHTML += ' onclick="javascript:clickAgentButton(' + i + ');"';
 		}
@@ -377,5 +423,5 @@ var createInterface = function() {
 
 	innerHTML += '</tr></table>'
 	$('#recruit-buttons-div')[0].innerHTML = innerHTML;
-	$('#recruit-buttons-div').css("background-image", "url(" + url + imgSize + "_agents_bar_p" + clientTurn + ".png)");
+	$('#recruit-buttons-div').css("background-image", "url(" + path + imgSize + "_agents_bar_p" + clientTurn + ".png)");
 };

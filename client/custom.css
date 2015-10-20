@@ -3,13 +3,13 @@
 	font-family: 'Play', sans-serif;
 	font-weight: 400;
 	font-size: 11pt;
-	background-size: 100%;
+	background-size: auto 100%;
 	background-repeat: no-repeat;
+	background-position: top left;
 	outline: none;
 }
 
 td, div, input {
-	/*border-radius: 10px;*/
 	word-wrap:break-word;
 }
 
@@ -29,7 +29,7 @@ table {
 	table-layout: fixed;
 }
 
-#text-title-div, #text-tag-div, #lobby-title-div {
+#text-title-div, #text-tagline-div, #lobby-title-div {
 	position: absolute;
 	font-family: 'Cinzel Decorative', cursive;
 	width: 100%;
@@ -52,7 +52,7 @@ table {
 	top: 125px;
 }
 
-#text-tag-div {
+#text-tagline-div {
 	font-style: normal;
 	font-size: 15pt;
 	top: 225px;
@@ -78,10 +78,13 @@ table {
 	width: 361px;
 	height: 48px;
 	padding: 5px;
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_createnew_button.png");
 	font-weight: 400;
 	font-size: 18px;
 	color: white;
+}
+
+#create-game-button:hover {
+	background-position: -361px 0;
 }
 
 #resume-game-button {
@@ -91,18 +94,13 @@ table {
 	top: 48px;
 	width: 361px;
 	height: 35px;
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_resume_button.png");
 	font-weight: 400;
 	font-size: 14px;
 	color: white;
 }
 
-#create-game-button:hover{
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_createnew_button_hover.png");
-}
-
-#resume-game-button:hover{
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_resume_button_hover.png");
+#resume-game-button:hover {
+	background-position: -361px 0;
 }
 
 #main-div {
@@ -123,7 +121,6 @@ table {
 	height: 698px;
 	margin-left: -494px;
 	margin-top: -400px;
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_lobby_menu.png");
 }
 
 #staging-div {
@@ -134,7 +131,6 @@ table {
 	height: 599px;
 	margin-left: -250px;
 	margin-top: -300px;
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_staging_menu.png");
 }
 
 #screen-div {
@@ -154,7 +150,6 @@ table {
 	padding: 10px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	/*background: rgba(0, 0, 0, .6);*/
 }
 
 #staging-inner-div {
@@ -184,7 +179,6 @@ table {
 }
 
 #games-list-div {
-	position: relative;
 	float: left;
 	left: 18px;
 	top: 60px;
@@ -199,13 +193,12 @@ table {
 	margin-top: 5px;
 	height: 100px;
 	width: 347px;
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_joingame_button.png");
 	font-size: 16px;
 	color: white;
 }
 
 .game-button:hover {
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_joingame_button_hover.png");
+	background-position: -347px 0;
 }
 
 #staging-playernum-div {
@@ -231,15 +224,14 @@ table {
 	margin-left: 1px;
 	font-size: 16px;
 	color: white;
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_player_button.png");
 }
 
 .staging-playernum-button:hover {
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_player_button_hover.png");
+	background-position: -28px 0;
 }
 
 .staging-playernum-selected {
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_player_button_selected.png");
+	background-position: -56px 0;
 }
 
 .staging-pointnum-button, .staging-pointnum-selected {
@@ -249,15 +241,14 @@ table {
 	margin-left: 1px;
 	font-size: 16px;
 	color: white;
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_point_button.png");
 }
 
 .staging-pointnum-button:hover {
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_point_button_hover.png");
+	background-position: -31px 0;
 }
 
 .staging-pointnum-selected {
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_point_button_selected.png");
+	background-position: -62px 0;
 }
 
 #staging-leave-button {
@@ -269,11 +260,10 @@ table {
 	font-size: 15pt;
 	font-weight: 700;
 	color: white;
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_back_button.png");
 }
 
 #staging-leave-button:hover {
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_back_button_hover.png");
+	background-position: -158px 0;
 }
 
 #staging-ready-button {
@@ -285,11 +275,10 @@ table {
 	font-size: 18pt;
 	font-weight: 700;
 	color: black;
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_ready_button.png");
 }
 
 #staging-ready-button:hover {
-	background: url("https://s3-us-west-2.amazonaws.com/alien-empire/staging/1x_ready_button_hover.png");
+	background-position: -158px 0;
 }
 
 #messages-div {
@@ -317,11 +306,10 @@ table {
 	width: 305px;
 	height: 35px;
 	color: white;
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_sendmessage_button.png");
 }
 
 .send-message-button:hover {
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/lobby/1x_sendmessage_button_hover.png");
+	background-position: -305px 0;
 }
 
 #send-message-lobby {
@@ -456,7 +444,6 @@ table {
 	width: 296px;
 	left: 50%;
 	margin-left: -148px;
-	background-image: url("https://s3-us-west-2.amazonaws.com/alien-empire/login/1x_login.png");
 }
 
 #copyright {

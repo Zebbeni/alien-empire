@@ -45,6 +45,9 @@ var displayGames = function() {
         }
     }
     $('#games-list-div')[0].innerHTML = gamesHtml;
+
+    // update .game-button here, it won't get updated if we only do it onload
+    setInterfaceImages();
 };
 
 var displayStagingPlayers = function() {
