@@ -1,3 +1,5 @@
+var cons = require('./server_constants');
+
 (function() {
 
     module.exports.addUserToGame = function(gameInfo, user) {

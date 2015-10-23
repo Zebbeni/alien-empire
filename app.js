@@ -218,7 +218,7 @@ io.sockets.on('connection', function(socket) {
         var gameInfo = gamesInfo[gameid];
 
         staging.removeUserFromStaging(gamesInfo[gameid], users[socket.userid]);
-        removePlayerFromReady(gamesInfo[gameid], socket.userid);
+        staging.removePlayerFromReady(gamesInfo[gameid], socket.userid);
 
         socket.leave(gameInfo.room);
 
@@ -279,7 +279,7 @@ io.sockets.on('connection', function(socket) {
                 if (gameInfo.status == cons.GAME_STAGING) {
 
                     staging.removeUserFromStaging( gamesInfo[gameid], users[socket.userid] );
-                    removePlayerFromReady(gamesInfo[gameid], socket.userid);
+                    staging.removePlayerFromReady(gamesInfo[gameid], socket.userid);
 
                     newMsg = {
                         id: -1, // -1 indicates a server message
