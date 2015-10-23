@@ -8,6 +8,7 @@ var server = require('http').createServer(app);
 var io = require('./node_modules/socket.io').listen(server);
 
 var game_server = require('./game_server');
+var staging = require('./server_staging');
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
 
@@ -137,8 +138,9 @@ io.sockets.on('connection', function(socket) {
     socket.on('create game', function() {
 
         var roomId = 'game' + gamesInfo.length;
+        var gameid = gamesInfo.length;
         var gameInfo = {
-                        gameid: gamesInfo.length,
+                        gameid: gameid,
                         status: 1, // 0: CLOSED, 1: STAGING: 2: INGAME
                         players: [],
                         ready: [],
@@ -148,7 +150,7 @@ io.sockets.on('connection', function(socket) {
 
         gamesInfo.push(gameInfo);
 
-        addUserToGame( gameInfo, socket.userid );
+        staging.addUserToGame( gamesInfo[gameid], users[socket.userid] );
 
         socket.join( roomId );
 
@@ -164,7 +166,7 @@ io.sockets.on('connection', function(socket) {
 
         if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
         {
-            addUserToGame( gameInfo, socket.userid);
+            staging.addUserToGame( gamesInfo[gameid], users[socket.userid] );
 
             socket.join( gameInfo.room );
             
@@ -191,7 +193,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('ready game staging', function(fn) {
         var gameid = users[socket.userid].gameid;
-        var returnValue = addPlayerToReady(gameid, socket.userid);
+        var returnValue = staging.addPlayerToReady(gamesInfo[gameid], socket.userid);
 
         fn(returnValue);
 
@@ -200,7 +202,7 @@ io.sockets.on('connection', function(socket) {
                             gamesInfo[gameid].ready);
 
         // START game if all players in staging are now ready
-        if ( allPlayersReady(gameid) ) {
+        if ( staging.allPlayersReady( gamesInfo[gameid] )) {
 
             gamesInfo[gameid].status = 2;
 
@@ -215,8 +217,8 @@ io.sockets.on('connection', function(socket) {
     socket.on('leave game staging', function(gameid) {
         var gameInfo = gamesInfo[gameid];
 
-        removeUserFromStaging(gameInfo, socket.userid);
-        removePlayerFromReady(gameid, socket.userid);
+        staging.removeUserFromStaging(gamesInfo[gameid], users[socket.userid]);
+        removePlayerFromReady(gamesInfo[gameid], socket.userid);
 
         socket.leave(gameInfo.room);
 
@@ -276,8 +278,8 @@ io.sockets.on('connection', function(socket) {
                 // if game is still in staging, remove user from game and alert
                 if (gameInfo.status == cons.GAME_STAGING) {
 
-                    removeUserFromStaging(gameInfo, socket.userid);
-                    removePlayerFromReady(gameid, socket.userid);
+                    staging.removeUserFromStaging( gamesInfo[gameid], users[socket.userid] );
+                    removePlayerFromReady(gamesInfo[gameid], socket.userid);
 
                     newMsg = {
                         id: -1, // -1 indicates a server message
@@ -305,67 +307,6 @@ io.sockets.on('connection', function(socket) {
         }
     });
 });
-
-var addUserToGame = function(gameInfo, userid) {
-    var gameid = gameInfo.gameid;
-
-    // set this user's gameid to the game they just joined
-    users[userid].gameid = gameInfo.gameid;
-
-    // update gameInfo with new player id
-    gameInfo.players.push(userid);
-
-    // update gamesInfo
-    gamesInfo[gameid] = gameInfo;
-};
-
-var addPlayerToReady = function(gameid, userid) {
-
-    var gameInfo = gamesInfo[gameid];
-    var index = gameInfo.ready.indexOf(userid);
-
-    if ( index == -1 ){
-        gamesInfo[gameid].ready.push(userid);
-        return true;
-    }
-    return false;
-};
-
-var removeUserFromStaging = function(gameInfo, userid) {
-    var gameid = gameInfo.gameid;
-    var index = gameInfo.players.indexOf(userid);
-
-    if (index != -1) {
-
-        gameInfo.players.splice(index, 1);
-
-        if (gameInfo.players.length == 0) {
-            gameInfo.status = cons.GAME_CLOSED;
-        }
-
-        gamesInfo[gameid] = gameInfo;
-    }
-    users[userid].gameid = null;
-};
-
-var removePlayerFromReady = function(gameid, userid) {
-    var gameInfo = gamesInfo[gameid];
-    var index = gameInfo.ready.indexOf(userid);
-
-    if ( index != -1 ) {
-        gamesInfo[gameid].ready.splice(index, 1);
-    }
-};
-
-var allPlayersReady = function(gameid) {
-    var gameInfo = gamesInfo[gameid];
-    var players = gameInfo.players;
-    var ready = gameInfo.ready;
-    // TODO: add a num_players option that the host
-    // of the game can set. Only return true if
-    // all players ready and all slots are filled
-    return (players.length == ready.length);
-};
 
 // [START hello_world]
 /* Say hello! */
