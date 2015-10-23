@@ -70,12 +70,9 @@ io.sockets.on('connection', function(socket) {
             socket.emit('login failed already logged in', socket.name);
         }
         else {
-            var newMsg = {
-                            id: -1, // -1 indicates a server message
-                            message: name + " joined the room"
-                        };
-
-            messages.push( newMsg );
+            var newMsg = helpers.addLobbyMessage( messages, 
+                                                  cons.MSG_SERVER, 
+                                                  name + " joined the room");
 
             socket.emit('login success', users, socket.userid, socket.name, 
                             newMsg, gamesInfo, function(data) { 
@@ -94,28 +91,20 @@ io.sockets.on('connection', function(socket) {
 
         socket.leave('lobby');
 
-        var newMsg = {
-                        id: -1, // -1 indicates a server message
-                        message: username + " left the room"
-                    };
+        var newMsg = helpers.addLobbyMessage( messages, 
+                                              cons.MSG_SERVER, 
+                                              username + " left the room" );
 
-        messages.push( newMsg );
-
-        socket.emit('leave lobby', function(data){
-            // debug(data);
-        });
+        socket.emit('leave lobby', function(data){ console.log("data") });
         socket.broadcast.to('lobby').emit('user logout', users, newMsg);
     });
 
     socket.on('send chat message', function(msg, fn) {
         fn('true');
 
-        var newMsg = {
-                        id: socket.userid,
-                        message: msg
-                    };
-
-        messages.push(newMsg);
+        var newMsg = helpers.addLobbyMessage( messages, 
+                                              socket.userid, 
+                                              msg);
 
         io.in('lobby').emit('new chat message', newMsg);
     });
@@ -125,12 +114,9 @@ io.sockets.on('connection', function(socket) {
         var gameid = users[socket.userid].gameid;
         var gameInfo = gamesInfo[gameid];
 
-        var newMsg = {
-                        id: socket.userid,
-                        message: msg
-                    };
-
-        gamesInfo[gameid].messages.push(newMsg);
+        var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
+                                             socket.userid, 
+                                             msg);
 
         io.in(gameInfo.room).emit('new game message', newMsg);
     });
@@ -172,16 +158,16 @@ io.sockets.on('connection', function(socket) {
             
             var username = users[socket.userid].name;
 
-            var newMsg = helpers.addNewServerMessage( 
-                                                gamesInfo[gameid], 
-                                                username + " joined the game");
-
+            var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
+                                                 cons.MSG_SERVER, 
+                                                 username + " joined the game");
 
             socket.emit('self joined game', gameInfo);
             socket.broadcast.to(gameInfo.room).emit(
                                             'room user joined staging', 
                                             gameInfo.players, 
                                             newMsg );
+
             socket.in('lobby').emit('user joined game', gameInfo);
 
             fn('true');
@@ -224,9 +210,9 @@ io.sockets.on('connection', function(socket) {
 
         var username = users[socket.userid].name;
 
-        var newMsg = helpers.addNewServerMessage( 
-                        gamesInfo[gameid], 
-                        username + " left the game");
+        var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
+                                             cons.MSG_SERVER,
+                                             username + " left the game");
 
         socket.emit('self left game staging', gameInfo);
         socket.broadcast.to(gameInfo.room).emit(
@@ -261,12 +247,10 @@ io.sockets.on('connection', function(socket) {
             var username = socket.name;
             users[socket.userid].status = 0; // 0: OFFLINE
 
-            var newMsg = {
-                            id: -1, // -1 indicates a server message
-                            message: username + " left the room"
-                        };
+            var newMsg = helpers.addLobbyMessage( messages, 
+                                                  cons.MSG_SERVER, 
+                                                  username + " left the room" );
 
-            messages.push( newMsg );
             io.in('lobby').emit('user logout', users, newMsg);
 
             // extra loose ends to tie up if user was in a game
@@ -278,15 +262,14 @@ io.sockets.on('connection', function(socket) {
                 // if game is still in staging, remove user from game and alert
                 if (gameInfo.status == cons.GAME_STAGING) {
 
-                    staging.removeUserFromStaging( gamesInfo[gameid], users[socket.userid] );
-                    staging.removePlayerFromReady(gamesInfo[gameid], socket.userid);
+                    staging.removeUserFromStaging( gamesInfo[gameid], 
+                                                   users[socket.userid] );
+                    staging.removePlayerFromReady( gamesInfo[gameid], 
+                                                   socket.userid);
 
-                    newMsg = {
-                        id: -1, // -1 indicates a server message
-                        message: username + " left the game"
-                    };
-
-                    gamesInfo[gameid].messages.push(newMsg);
+                    var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
+                                                         socket.userid,
+                                                         username + " left the game");
 
                     gameInfo = gamesInfo[gameid];
 

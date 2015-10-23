@@ -19,6 +19,8 @@
 		USR_STAGING: 2,
 		USR_INGAME: 3,
 
+		MSG_SERVER: -1,
+
 		RES_METAL : 0,
 		RES_WATER : 1,
 		RES_FUEL : 2,

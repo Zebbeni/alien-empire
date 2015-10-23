@@ -25,13 +25,23 @@ var cons = require('./server_constants');
 		return false;
 	};
 
-	module.exports.addNewServerMessage = function(gameInfo, msg) {
+	module.exports.addGameMessage = function(gameInfo, userid, msg) {
 	    var newMsg = {
-	                    id: -1, // -1 indicates a server message
+	                    id: userid, // -1 indicates a server message
 	                    message: msg
 	                };
 
 	    gameInfo.messages.push(newMsg);
+	    return newMsg;
+	};
+
+	module.exports.addLobbyMessage = function(messages, userid, msg) {
+	    var newMsg = {
+	                    id: userid, // -1 indicates a server message
+	                    message: msg
+	                };
+
+	    messages.push(newMsg);
 	    return newMsg;
 	};
 
