@@ -225,13 +225,13 @@ var displayStagingMessages = function() {
 var updateMessagesHtml = function( messages, div_id ) {
 
     var messagesHtml = '<table style="height:10px" class="message-table"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
-    var lastUserId = null;
     var msg = null;
-    var rowspan;
+    var combinedMessage;
 
-    for (var m = 0; m < messages.length; m++){ //different
-    	rowspan = 1;
-        msg = messages[m]; //different
+    for (var m = 0; m < messages.length; m++){
+
+    	combinedMessage = '';
+        msg = messages[m];
         messagesHtml += '<tr>'
 
         // if server message, message spans both columns and is centered
@@ -239,30 +239,23 @@ var updateMessagesHtml = function( messages, div_id ) {
             messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
         }
         else {
-        	
-            if (msg.id != lastUserId) { // Only display user name if it's a different user talking
-            	
-            	messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td" ' : '<td class="msg-user-td" ' );
 
-            	for (var n = m+1; n < messages.length; n++) {
-	            	if (messages[n].id == msg.id){
-	            		rowspan += 1;
-	            	} else {
-		            	break;
-		            }
-	            }
+        	messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td" >' : '<td class="msg-user-td" >' );
+        	messagesHtml += all_users[msg.id].name + '</td>';
 
-           		messagesHtml += 'rowspan="' + rowspan + '">';
+        	while ( m < messages.length && messages[ m ].id == msg.id ) {
 
-               messagesHtml += all_users[msg.id].name + '</td>';
+            		combinedMessage += messages[ m ].message + '<br>';
+            		m++; 
             }
+            // decrement m again otherwise we'll skip the first message input by a new user
+            m--;
 
             messagesHtml += '<td class="msg-content-td';
-            messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + msg.message + '</td>';
+            messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + combinedMessage + '</td>';
         }
-        messagesHtml += '</tr>'
 
-        lastUserId = msg.id;
+        messagesHtml += '</tr>'
     }
     messagesHtml += '</table>'
 
