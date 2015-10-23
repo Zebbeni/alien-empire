@@ -353,6 +353,7 @@ table {
 
 .msg-self-td, .msg-user-td {
 	text-align: right;
+	width: 35%;
 }
 
 .msg-content-td, .msg-user-td {
@@ -360,15 +361,13 @@ table {
 }
 
 .msg-self-content-td, .msg-self-td {
+	vertical-align: top;
 	color: white;
 }
 
-.msg-self-td, .msg-user-td {
-	width: 30%;
-}
-
 .msg-content-td {
-	width: 70%;
+	vertical-align: top;
+	width: 65%;
 }
 
 .user-list-div, .self-list-div, .staging-user-list-div, .staging-user-ready-list-div {

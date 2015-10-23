@@ -227,9 +227,10 @@ var updateMessagesHtml = function( messages, div_id ) {
     var messagesHtml = '<table style="height:10px" class="message-table"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
     var lastUserId = null;
     var msg = null;
+    var rowspan;
 
     for (var m = 0; m < messages.length; m++){ //different
-
+    	rowspan = 1;
         msg = messages[m]; //different
         messagesHtml += '<tr>'
 
@@ -238,13 +239,25 @@ var updateMessagesHtml = function( messages, div_id ) {
             messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
         }
         else {
-            messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td">' : '<td class="msg-user-td">' );
-
+        	
             if (msg.id != lastUserId) { // Only display user name if it's a different user talking
-               messagesHtml += all_users[msg.id].name;
+            	
+            	messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td" ' : '<td class="msg-user-td" ' );
+
+            	for (var n = m+1; n < messages.length; n++) {
+	            	if (messages[n].id == msg.id){
+	            		rowspan += 1;
+	            	} else {
+		            	break;
+		            }
+	            }
+
+           		messagesHtml += 'rowspan="' + rowspan + '">';
+
+               messagesHtml += all_users[msg.id].name + '</td>';
             }
 
-            messagesHtml += '</td><td class="msg-content-td';
+            messagesHtml += '<td class="msg-content-td';
             messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + msg.message + '</td>';
         }
         messagesHtml += '</tr>'
