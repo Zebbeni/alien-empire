@@ -9,7 +9,7 @@ socket.on('login failed already logged in', function(username) {
 // Get starting arrays of users, messages, and games. Draw lobby
 socket.on('login success', function(users, userid, username, newMsg, games, fn) {
     fn('client entered lobby');
-    status = 1; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
+    status = USR_ONLINE;
     clientId = userid;
     clientName = username;
     initializeLobby(users, newMsg, games);
@@ -39,7 +39,7 @@ socket.on('new game added', function(games) {
 });
 
 socket.on('self joined game', function(game) {
-    status = 2; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
+    status = USR_STAGING;
     updateLobby(false, false, game);
     initializeGameStage(game);
     updateGameStage(false, false, false);
@@ -60,7 +60,7 @@ socket.on('room user ready staging', function(ready) {
 });
 
 socket.on('self left game staging', function(game) {
-    status = 1;
+    status = USR_ONLINE;
     clientGame = null;
     hideGameStage();
     all_games[ game.gameid ] = game;

@@ -35,7 +35,7 @@ io.sockets.on('connection', function(socket) {
                 socket.userid = u;
 
                 // check if user already logged in
-                if(users[u].status != 0) {
+                if(users[u].status != cons.USR_OFFLINE) {
                     is_logged_in = true;
                 }
 

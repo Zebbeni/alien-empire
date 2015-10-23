@@ -3,9 +3,10 @@ var sWid = 212;
 var agtWid = 100;
 var agtSpace = 5;
 
-var offline = false; // checked by loader when creating settings for LoadQueue
-var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
-// var s3url = 'images/'; // set s3url to this if testing offline
+// var offline = false; // checked by loader when creating settings for LoadQueue
+// var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
+var offline = true;
+var s3url = 'images/'; // set s3url to this if testing offline
 
 var MOVE_DISTANCE = 5;
 var MENU_ON = 1;
@@ -14,6 +15,11 @@ var MENU_OFF = 2;
 var GAME_CLOSED = 0;
 var GAME_STAGING = 1;
 var GAME_PROGRESS = 2;
+
+var USR_OFFLINE = 0;
+var USR_ONLINE = 1;
+var USR_STAGING = 2;
+var USR_INGAME = 3;
 
 var NUM_FLEETS = 3;
 

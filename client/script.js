@@ -7,7 +7,7 @@ var stageLobby = null;
 var clientId = null;
 var clientName = null;
 var clientGame = null;
-var status = 0; // 0: OFFLINE 1: LOBBY 2: STAGING 3: INGAME
+var status = USR_OFFLINE; // 0: USR_OFFLINE 1: USR_ONLINE 2: USR_STAGING 3: USR_INGAME
 
 //ADDED FOR EASEL STUFF
 var stage = null;
@@ -16,7 +16,7 @@ var displayUsers = function() {
     var usersScrollItems = '';
 
     for (var u = 0; u < all_users.length; u++){
-        if (all_users[u].status == 1) {
+        if (all_users[u].status == USR_ONLINE) {
          
             if (u == clientId){
                 usersScrollItems += '<div class="self-list-div">' + all_users[u].name + '</div>';
@@ -34,7 +34,7 @@ var displayGames = function() {
     var hostid = null;
     for (var g = 0; g < all_games.length; g++) {
 
-        if (all_games[g].status == 1) { // if game is in staging
+        if (all_games[g].status == GAME_STAGING) { // if game is in staging
 
             gamesHtml += '<input type="button" class="game-button" ';
 
@@ -48,29 +48,6 @@ var displayGames = function() {
 
     // update .game-button here, it won't get updated if we only do it onload
     setInterfaceImages();
-};
-
-var displayStagingPlayers = function() {
-    var stagingPlayersHtml = '';
-    var players = clientGame.players;
-    var ready = clientGame.ready;
-
-    for (var u = 0; u < players.length; u++){
-
-        var playerid = players[u];
-        var divClass = '<div class="staging-user-list-div">  ';
-
-        // if user is ready, draw white
-        var index = ready.indexOf(playerid);
-
-        if (index != -1) {
-            divClass = '<div class="staging-user-ready-list-div">✓ ';
-        }
-
-        stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
-
-    }
-    $('#staging-users-div')[0].innerHTML = stagingPlayersHtml;
 };
 
 var displayMessages = function() {
@@ -148,36 +125,3 @@ var displayLobby = function() {
     displayMessages();
     displayGames();
 };
-
-var initializeGameStage = function(game) {
-    clientGame = game;
-};
-
-var updateGameStage = function(users, newMsg, ready) {
-    if (users) {
-        clientGame.players = users;
-    }
-    if (newMsg) {
-        clientGame.messages.push(newMsg);
-    }
-    if (ready) {
-        clientGame.ready = ready;
-    }
-    displayGameStage();
-};
-
-var displayGameStage = function() {
-    displayStagingPlayers();
-    displayStagingMessages();
-};
-
-var moveToGameStage = function() {
-    $('#screen-div')[0].style.visibility = "visible";
-    $('#staging-div')[0].style.visibility = "visible";
-    $("#staging-div").transition({top: '400px'}, 500);
-};
-
-var hideGameStage = function() {
-    $('#screen-div')[0].style.visibility = "hidden";
-    $('#staging-div')[0].style.visibility = "hidden";
-}
