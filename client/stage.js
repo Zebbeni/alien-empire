@@ -77,8 +77,6 @@ var drawBackground = function() {
 var checkPixelRatioAndUpdate = function() {
 	if ( prevWidth != window.innerWidth || prevHeight != window.innerHeight || pixelRatio != window.devicePixelRatio ) {
 
-		console.log("updating Pixel Ratio");
-
 		prevWidth = window.innerWidth;
 		prevHeight = window.innerHeight;
 
