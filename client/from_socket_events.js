@@ -13,13 +13,20 @@ socket.on('login success', function(users, userid, username, newMsg, games, fn) 
     clientId = userid;
     clientName = username;
     initializeLobby(users, newMsg, games);
+
+    // hide login elements, show lobby
+    leaveLogin();
     moveToLobby();
+
     updateLobby(false, false, false);
 });
 
 socket.on('leave lobby', function(fn) {
     fn('client has left lobby');
+
+    // hide lobby elements, show login
     leaveLobby();
+    moveToLogin();
 });
 
 socket.on('user login', function( users, newMsg) {

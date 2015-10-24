@@ -52,6 +52,9 @@ socket.on('game end', function(content) {
 
 	clientGame = null;
     setGlobals();
+
+    // hide game ux elements, show lobby
+    leaveGameInterface();
     moveToLobby();
 });
 

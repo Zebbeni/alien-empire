@@ -1,11 +1,5 @@
 // javascript functions called from UX
 
-var leaveLobby = function() {
-    $('#login-div')[0].style.visibility = "visible";
-    $('#lobby-div')[0].style.visibility = "hidden";
-    $('#logout-button')[0].style.visibility = "hidden";
-};
-
 var submitLogin = function() {
     var name = $('#input-username')[0].value;
     socket_login(name);

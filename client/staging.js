@@ -42,14 +42,3 @@ var displayGameStage = function() {
     displayStagingPlayers();
     displayStagingMessages();
 };
-
-var moveToGameStage = function() {
-    $('#screen-div')[0].style.visibility = "visible";
-    $('#staging-div')[0].style.visibility = "visible";
-    $("#staging-div").transition({top: '400px'}, 500);
-};
-
-var hideGameStage = function() {
-    $('#screen-div')[0].style.visibility = "hidden";
-    $('#staging-div')[0].style.visibility = "hidden";
-}

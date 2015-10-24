@@ -56,43 +56,6 @@ var displayMessages = function() {
 
 };
 
-//update lobby stage, make it visible, and hide login stage
-var moveToLobby = function() {
-    $('#login-div')[0].style.visibility = "hidden";
-    $('#your-turn-div')[0].style.visibility = "hidden";
-    $('#pending-action-div')[0].style.visibility = "hidden";
-    $('#turn-done-button')[0].style.visibility = "hidden";
-    $('#button-bar-div')[0].style.visibility = "hidden";
-    $('#build-recruit-buttons-div')[0].style.visibility = "hidden";
-    $('#recruit-buttons-div')[0].style.visibility = "hidden";
-    $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
-    $('#players-wrapper-div')[0].style.visibility = "hidden";
-    
-    $('#lobby-div')[0].style.visibility = "visible";
-    $('#logout-button')[0].style.visibility = "visible";
-    $('#main-div')[0].style.visibility = "visible";
-
-    $("#lobby-div").transition({top: '450px'}, 1000);
-    $("#logout-button").transition({top: '-30px'}, 1000);
-    $("#main-div").transition({top: '450px', opacity: 1.00}, 1000);
-};
-
-/**
- * Hide the lobby and perform some function after the last animation is complete.
- */
-var moveToGame = function( fn ) {
-    $('#screen-div')[0].style.visibility = "hidden";
-    $("#logout-button").transition({top: '-60px'}, 1000);
-    $("#staging-div").transition({top: '350px'}, 1000);
-    $("#main-div").transition({top: '350px', opacity: 0.00 }, 1000, function(){
-        $('#main-div')[0].style.visibility = "hidden";
-        $("#staging-div")[0].style.visibility = "hidden";
-        $("#lobby-div")[0].style.visibility = "hidden";
-        $("#logout-button")[0].style.visibility = "hidden";
-    });
-    $("#lobby-div").transition({top: '350px'}, 1000, fn );
-};
-
 var initializeLobby = function(users, newMsg, games) {
     all_users = users;
     all_games = games;

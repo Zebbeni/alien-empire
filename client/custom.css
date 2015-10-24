@@ -58,6 +58,10 @@ table {
 	top: 225px;
 }
 
+#login-div {
+	opacity: 0.0;
+}
+
 #logout-button {
 	position: relative;
 	left: 94%;
@@ -115,6 +119,7 @@ table {
 
 #lobby-div {
 	position: fixed;
+	opacity: 0.0;
 	top: 425px;
 	left: 50%;
 	width: 989px;
@@ -125,6 +130,7 @@ table {
 
 #staging-div {
 	position: fixed;
+	opacity: 0.0;
 	top: 350px;
 	left: 50%;
 	width: 501px;
@@ -135,6 +141,7 @@ table {
 
 #screen-div {
 	position: fixed;
+	opacity: 0.0;
 	padding: 0;
 	margin: 0;
 	top: 0;

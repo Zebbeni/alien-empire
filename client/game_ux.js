@@ -24,6 +24,10 @@ $(document).ready(function () {
 	setInterfaceImages();
 });
 
+$(window).load(function() {
+	moveToLogin();
+});
+
 var playerMenuOn = [false, false, false, false];
 
 var toggleRecruitMenu = function() {
