@@ -82,6 +82,8 @@ var drawBoard = function() {
 
 	if (stage) {
 
+		initSelection();
+
 		updateCanvasSize();
 
 		drawAsteroids();

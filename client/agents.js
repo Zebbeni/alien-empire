@@ -8,6 +8,7 @@ var initAgents = function() {
 	//create container to store all agent shapes
 	var agentsContainer = new createjs.Container();
 	agentsContainer.name = 'agentsContainer';
+	agentsContainer.mouseEnabled = true;
 	agentsContainer.x = 0;
 	agentsContainer.y = 0;
 
@@ -20,10 +21,18 @@ var initAgents = function() {
 		var agentshape = new createjs.Shape();
 		agentshape.name = AGT_ENGLISH[ agenttype ] + player;
 
-		var agentImg = loader.getResult( AGT_ENGLISH[agenttype] + player );
+		var agentImg = loader.getResult( agentshape.name );
 		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 105, 105);
 		agentshape.visible = false;
-		agentshape.mouseEnabled = false; //default this to false, otherwise it slows processing down
+		agentshape.mouseEnabled = true; //default this to false, otherwise it slows processing down
+
+		agentshape.on("mouseover", function() {
+			selectAgent( this.name );
+		});
+
+		agentshape.on("mouseout", function() {
+			hideSelection();
+		});
 
 		agentsContainer.addChild(agentshape);
 	}
@@ -68,4 +77,11 @@ var updateAgents = function(planetid) {
 
 		agentsX += agtWid + space;
 	}
+};
+
+var selectAgent = function( agentname) {
+	var agentsContainer = board.getChildByName('agentsContainer');
+	var agentshape = agentsContainer.getChildByName( agentname );
+	console.log('selecting agent', agentshape);
+	setSelection(agentshape.x + 27, agentshape.y - 28);
 };

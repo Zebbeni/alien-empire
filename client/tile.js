@@ -207,22 +207,16 @@ var initPlanet = function ( planetid ) {
 	picture.name = "picture";
 	planet.addChild(picture);
 
-	var arrow = new createjs.Shape();
-	arrow.name = "arrow";
-	planet.addChild(arrow);
-
 	planet.hitArea = tiles[planetid].getChildByName("stars");
 	planet.mouseChildren = false;
 	planet.mouseEnabled = true;
 
 	planet.on("mouseover", function() {
-		planet.getChildByName("arrow").visible = true;
-		stage.update();
+		selectPlanet(planetid);
 	});
 
 	planet.on("mouseout", function() {
-		planet.getChildByName("arrow").visible = false;
-		stage.update();
+		hideSelection();
 	});
 
 	planet.on("click", function() {
@@ -259,28 +253,35 @@ var drawPlanet = function( planetid ) {
 
 		picture.graphics.beginBitmapFill(planetImg).drawRect(offsetX, offsetY, planetImg.width, planetImg.height);
 
-		var arrow = planet.getChildByName("arrow");
-		var arrowImg = loader.getResult("arrow_color" + clientColor);
-		arrow.graphics.beginBitmapFill(arrowImg).drawRect(0, 0, arrowImg.width, arrowImg.height);
-		arrow.visible = false;
-
 		switch ( planets[planetid].w ) {
 
 			case 1:
 				picture.scaleX = 0.45;
 				picture.scaleY = 0.45;
-				arrow.x = 80;
-				arrow.y = -24;
 				break;
 
 			case 2:
-				arrow.x = 185;
-				arrow.y = 28;
 				break;
 		}
 
 		picture.x = offsetX * -1;
 		picture.y = offsetY * -1;
+	}
+};
+
+var selectPlanet = function(planetid) {
+
+	var planet = clientGame.game.board.planets[planetid];
+	var x = tiles[planetid].x;
+	var y = tiles[planetid].y;
+
+	switch ( planet.w ) {
+		case 1:
+			setSelection( x + 80, y - 24);
+			break;
+		case 2:
+			setSelection( x + 185, y + 28);
+			break;
 	}
 };
 
@@ -357,21 +358,18 @@ var initResource = function( planetid, index ) {
 	structure.name = "structure";
 	resource.addChild(structure);
 
-	var arrow = new createjs.Shape();
-	arrow.name = "arrow";
-	resource.addChild(arrow);
-
 	resource.mouseChildren = false;
 	resource.mouseEnabled = true;
 
 	resource.on("mouseover", function() {
-		resource.getChildByName("arrow").visible = true;
+		selectResource(planetid, index);
+
 		resource.getChildByName("icon").shadow = new createjs.Shadow( color[clientColor], 0, 3, 0);
 		stage.update();
 	});
 
 	resource.on("mouseout", function() {
-		resource.getChildByName("arrow").visible = false;
+		hideSelection();
 		resource.getChildByName("icon").shadow = null;
 		stage.update();
 	});
@@ -414,13 +412,6 @@ var drawResource = function( planetid, index, num_resources ) {
 
 	icon.x = index * (4 + iconW);
 
-	var arrow = resource.getChildByName("arrow");
-	var arrowImg = loader.getResult("arrow_color" + clientColor);
-	arrow.graphics.beginBitmapFill(arrowImg).drawRect(0, 0, arrowImg.width, arrowImg.height);
-	arrow.x = icon.x + 24;
-	arrow.y = icon.y - 32;
-	arrow.visible = false;
-
 	var struct = planets[planetid].resources[index].structure;
 	if ( struct ) {
 		var player = struct.player;
@@ -443,6 +434,18 @@ var drawResource = function( planetid, index, num_resources ) {
 			resource.y = 349;
 			break;
 	}
+};
+
+var selectResource = function(planetid, index) {
+	
+	var tile = tiles[planetid];
+	var resource = tile.getChildByName('resource' + index);
+	var icon = resource.getChildByName('icon');
+	
+	var x = tile.x + resource.x + icon.x + 24;
+	var y = tile.y + resource.y + icon.y - 32;
+
+	setSelection(x, y);
 };
 
 var initOrbitStructures = function(planetid) {
