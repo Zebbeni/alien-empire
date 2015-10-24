@@ -69,6 +69,9 @@ var helpers = require('./game_helpers');
 	 */
 	module.exports.resolveGameAction = function( action, game ) {
 
+		// calls applyAction to apply user action to game
+		// gets a return value that includes isIllegal status,
+		// 
 		var applyResult = applyAction( action, game );
 
 		if( applyResult.isIllegal ) {
@@ -84,7 +87,8 @@ var helpers = require('./game_helpers');
 					evnt: cons.ACT_ENGLISH[ action.actiontype ],
 					content: {
 							game: game,
-							action: action
+							action: action,
+							response: applyResult.response
 						}
 					};
 		}

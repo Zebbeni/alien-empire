@@ -22,7 +22,8 @@ var initAgents = function() {
 		agentshape.name = AGT_ENGLISH[ agenttype ] + player;
 
 		var agentImg = loader.getResult( agentshape.name );
-		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 105, 105);
+		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 103, 103);
+		agentshape.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
 		agentshape.visible = false;
 		agentshape.mouseEnabled = true; //default this to false, otherwise it slows processing down
 

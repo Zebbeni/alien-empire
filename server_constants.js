@@ -20,6 +20,7 @@
 		USR_INGAME: 3,
 
 		MSG_SERVER: -1,
+		MSG_ACTION: -2,
 
 		RES_METAL : 0,
 		RES_WATER : 1,

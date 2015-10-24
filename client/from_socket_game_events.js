@@ -16,10 +16,11 @@ socket.on('room game starting', function(gameInfo) {
 
 });
 
-socket.on('turn update', function(content) {
+socket.on('turn update', function(content, msg) {
 
     updateClientGame(content);
     toggleTurnMenu();
+    updateGameMessages( msg );
 
 });
 
@@ -29,21 +30,24 @@ socket.on('loading done', function(content) {
 
 });
 
-socket.on( ACT_ENGLISH[ ACT_PLACE ], function(content) {
+socket.on( ACT_ENGLISH[ ACT_PLACE ], function(content, msg) {
 
 	updateAll( content );
+    updateGameMessages( msg );
 
 });
 
-socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content) {
+socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content, msg) {
 
 	updateAll( content );
+    updateGameMessages( msg );
 
 });
 
-socket.on( ACT_ENGLISH[ ACT_RECRUIT ], function(content) {
+socket.on( ACT_ENGLISH[ ACT_RECRUIT ], function(content, msg) {
     
     updateAll( content );
+    updateGameMessages( msg );
 
 });
 

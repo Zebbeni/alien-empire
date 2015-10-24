@@ -28,14 +28,10 @@ var actions = require('./game_actions');
 		switch (action.actiontype) {
 			case cons.ACT_LOADED_ASSETS:
 				return actions.resolveLoadingDone( action, gameInfo.game );
-				break;
 			case cons.ACT_TURN_DONE:
 				return actions.resolveTurnDone( action, gameInfo.game );
-				break;
 			case cons.ACT_PLACE:
 			case cons.ACT_BUILD:
-				return actions.resolveGameAction( action, gameInfo.game );
-				break;
 			case cons.ACT_RECRUIT:
 				return actions.resolveGameAction( action, gameInfo.game );
 			default:

@@ -47,18 +47,6 @@ io.sockets.on('connection', function(socket) {
 		io.in('lobby').emit('new chat message', newMsg);
 	});
 
-	socket.on('send game message', function(msg, fn) {
-		fn('true');
-		var gameid = users[socket.userid].gameid;
-		var gameInfo = gamesInfo[gameid];
-
-		var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
-											 socket.userid, 
-											 msg);
-
-		io.in(gameInfo.room).emit('new game message', newMsg);
-	});
-
 	socket.on('create game', function() {
 
 		staging.userCreateGame(socket, io, users, gamesInfo);
@@ -89,15 +77,30 @@ io.sockets.on('connection', function(socket) {
 	 * applied to the game objects
 	 */
 	socket.on('do game action', function(gameid, action) {
-		var gameInfo = gamesInfo[gameid];
-		var response = game_server.resolveAction( action, gameInfo );
+		var response = game_server.resolveAction( action, gamesInfo[gameid] );
 
 		if ( response.to == cons.EVENT_ONE ) {
 			socket.emit(response.evnt, response.content);
 		}
 		else if ( response.to == cons.EVENT_ALL ) {
-			io.in(gameInfo.room).emit(response.evnt, response.content);
+
+			var newMsg = helpers.addGameActionMessage( gamesInfo[gameid],
+													   socket.userid,
+													   action );
+			io.in(gamesInfo[gameid].room).emit(response.evnt, response.content, newMsg);
 		}
+	});
+
+	socket.on('send game message', function(msg, fn) {
+		fn('true');
+		var gameid = users[socket.userid].gameid;
+		var gameInfo = gamesInfo[gameid];
+
+		var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
+											 socket.userid, 
+											 msg);
+
+		io.in(gameInfo.room).emit('new game message', newMsg);
 	});
 
 });

@@ -21,6 +21,9 @@ var USR_ONLINE = 1;
 var USR_STAGING = 2;
 var USR_INGAME = 3;
 
+var MSG_SERVER = -1;
+var MSG_ACTION = -2;
+
 var NUM_FLEETS = 3;
 
 var RES_METAL = 0;
@@ -88,7 +91,14 @@ var ACT_ENGLISH = {
 					2: 'Place',
 					3: 'Build',
 					4: 'Recruit'
-					};
+				};
+
+var ACT_ENGLISH_PAST = {
+					1: " finished turn",
+					2: " placed a ",
+					3: " built a new ",
+					4: " recruited a new "
+				};
 
 var RES_ENGLISH = { 
 					0: "metal", 

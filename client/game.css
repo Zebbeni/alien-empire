@@ -45,6 +45,26 @@
 	font-size: 30px;
 }
 
+.msg-action-div {
+	
+}
+
+.msg-action-p0 {
+	color: red;
+}
+
+.msg-action-p1 {
+	color: blue;
+}
+
+.msg-action-p2 {
+	color: green;
+}
+
+.msg-action-p3 {
+	color: yellow;
+}
+
 #turn-done-button {
 	position: fixed;
 	width: 150px;

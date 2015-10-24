@@ -234,38 +234,83 @@ var updateMessagesHtml = function( messages, div_id ) {
 
     for (var m = 0; m < messages.length; m++){
 
-    	combinedMessage = '';
+    	// combinedMessage = '';
         msg = messages[m];
-        messagesHtml += '<tr>'
 
         // if server message, message spans both columns and is centered
-        if (msg.id == -1) {
-            messagesHtml += '<td class="msg-server-td" colspan="2" >' + msg.message + '</td>';
-        }
-        else {
-
-        	messagesHtml += ( msg.id == clientId ? '<td class="msg-self-td" >' : '<td class="msg-user-td" >' );
-        	messagesHtml += all_users[msg.id].name + '</td>';
-
-        	while ( m < messages.length && messages[ m ].id == msg.id ) {
-
-            		combinedMessage += messages[ m ].message + '<br>';
-            		m++; 
-            }
-            // decrement m again otherwise we'll skip the first message input by a new user
-            m--;
-
-            messagesHtml += '<td class="msg-content-td';
-            messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + combinedMessage + '</td>';
-        }
-
-        messagesHtml += '</tr>'
+        switch (msg.id) {
+	        case MSG_SERVER:
+	            messagesHtml += buildServerMessage( msg );
+	            break;
+	        case MSG_ACTION:
+	        	messagesHtml += buildActionMessage( msg.message );
+	            break;
+	        default:
+	        	var htmlAndM = buildChatMessage( msg, messages, m );
+	        	messagesHtml += htmlAndM.html;
+	        	m = htmlAndM.m;
+	        	break;
+    	}
     }
     messagesHtml += '</table>'
 
     var msgDiv = document.getElementById( div_id ); //different
     msgDiv.innerHTML = messagesHtml;
     msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
+};
+
+// return a message spanning both columns
+var buildServerMessage = function( msg ) {
+	return '<tr><td class="msg-server-td" colspan="2" >' + msg.message + '</td></tr>';
+};
+
+// builds and returns a message based on the variables in @action
+var buildActionMessage = function( actionMsg ){
+	var player = actionMsg.player;
+	var userid = clientGame.game.players[player];
+	var name = all_users[userid].name;
+
+	messagesHtml = '<tr><td class="msg-action-td msg-action-p' + player + '" colspan="2" >';
+
+	var message = name + ACT_ENGLISH_PAST[actionMsg.actiontype];
+	switch ( actionMsg.actiontype ) {
+		case ACT_PLACE:
+		case ACT_BUILD:
+			message += OBJ_ENGLISH[actionMsg.objecttype];
+			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			break;
+		case ACT_RECRUIT:
+			message += AGT_ENGLISH[actionMsg.agenttype];
+			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			break;
+	}
+
+	messagesHtml += message;
+	messagesHtml += '</td></tr>'
+	return messagesHtml;
+};
+
+// loops through and combines all concurrent messages from the same user into
+// one. Returns this as well as an updated value for @m (the message index)
+var buildChatMessage = function( msg, messages, m) {
+
+	messagesHtml = ( msg.id == clientId ? '<tr><td class="msg-self-td" >' : '<td class="msg-user-td" >' );
+	messagesHtml += all_users[msg.id].name + '</td>';
+
+	var combinedMessage = '';
+
+	while ( m < messages.length && messages[ m ].id == msg.id ) {
+
+			combinedMessage += messages[ m ].message + '<br>';
+			m++; 
+	}
+	// decrement m again otherwise we'll skip the first message input by a new user
+	m--;
+
+	messagesHtml += '<td class="msg-content-td';
+	messagesHtml += ( msg.id == clientId ? ' msg-self-content-td">' : '">') + combinedMessage + '</td></tr>';
+
+	return { html: messagesHtml, m: m };
 };
 
 /**

@@ -1,51 +1,60 @@
 var cons = require('./server_constants');
 
-(function() {
-	module.exports.playerHasStruct = function( player, planetid, objecttype, game ) {
-		
-		var structExists = false;
+var playerHasStruct = function( player, planetid, objecttype, game ) {
+	
+	var structExists = false;
 
-		switch (objecttype) {
+	switch (objecttype) {
 
-			case cons.OBJ_MINE:
-			case cons.OBJ_FACTORY:
-			case cons.OBJ_EMBASSY:
+		case cons.OBJ_MINE:
+		case cons.OBJ_FACTORY:
+		case cons.OBJ_EMBASSY:
 
-				return playerHasResourceStruct( player, planetid, objecttype, game );
+			return playerHasResourceStruct( player, planetid, objecttype, game );
 
-			case cons.OBJ_BASE:
+		case cons.OBJ_BASE:
 
-				var base = game.board.planets[planetid].base;
-				return ( base && base.player == player );
+			var base = game.board.planets[planetid].base;
+			return ( base && base.player == player );
 
-			default:
-				return false;
-		}
+		default:
+			return false;
+	}
 
-		return false;
-	};
+	return false;
+};
 
-	module.exports.addGameMessage = function(gameInfo, userid, msg) {
-	    var newMsg = {
-	                    id: userid, // -1 indicates a server message
-	                    message: msg
-	                };
+/**
+ * addGameMessage appends a new message object to a gameInfo object
+ * @msg is either a string or an action object
+ */
+var addGameMessage = function(gameInfo, userid, msg) {
+    var newMsg = {
+                    id: userid, // when userid is MSG_ACTION...
+                    message: msg // msg is an action, client will turn it to english
+                };
 
-	    gameInfo.messages.push(newMsg);
-	    return newMsg;
-	};
+    gameInfo.messages.push(newMsg);
+    return newMsg;
+};
 
-	module.exports.addLobbyMessage = function(messages, userid, msg) {
-	    var newMsg = {
-	                    id: userid, // -1 indicates a server message
-	                    message: msg
-	                };
+var addGameActionMessage = function(gameInfo, userid, action) {
 
-	    messages.push(newMsg);
-	    return newMsg;
-	};
+	var newMsg = addGameMessage( gameInfo, 
+								 cons.MSG_ACTION, 
+								 action );
+	return newMsg;
+};
 
-}());
+var addLobbyMessage = function(messages, userid, msg) {
+    var newMsg = {
+                    id: userid, // -1 indicates a server message
+                    message: msg
+                };
+
+    messages.push(newMsg);
+    return newMsg;
+};
 
 var playerHasResourceStruct = function( player, planetid, objecttype, game ) {
 
@@ -59,3 +68,12 @@ var playerHasResourceStruct = function( player, planetid, objecttype, game ) {
 	}
 	return false;
 };
+
+(function() {
+	module.exports = {
+		playerHasStruct: playerHasStruct,
+		addGameMessage: addGameMessage,
+		addGameActionMessage: addGameActionMessage,
+		addLobbyMessage: addLobbyMessage,
+	}
+}());
