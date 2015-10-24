@@ -61,104 +61,26 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('create game', function() {
 
-		var roomId = 'game' + gamesInfo.length;
-		var gameid = gamesInfo.length;
-		var gameInfo = {
-						gameid: gameid,
-						status: 1, // 0: CLOSED, 1: STAGING: 2: INGAME
-						players: [],
-						ready: [],
-						room: roomId,
-						messages: []
-					};
+		staging.userCreateGame(socket, io, users, gamesInfo);
 
-		gamesInfo.push(gameInfo);
-
-		staging.addUserToGame( gamesInfo[gameid], users[socket.userid] );
-
-		socket.join( roomId );
-
-		// emit a different function to the socket who created the game
-		// as they are also joining it
-		socket.emit('self joined game', gameInfo);
-		io.in('lobby').emit('new game added', gameInfo);
 	});
 
 	socket.on('join game', function(gameid, fn) {
 
-		var gameInfo = gamesInfo[gameid];
+		staging.userJoinGame(socket, users, gamesInfo, gameid, fn);
 
-		if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
-		{
-			staging.addUserToGame( gamesInfo[gameid], users[socket.userid] );
-
-			socket.join( gameInfo.room );
-			
-			var username = users[socket.userid].name;
-
-			var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
-												 cons.MSG_SERVER, 
-												 username + " joined the game");
-
-			socket.emit('self joined game', gameInfo);
-			socket.broadcast.to(gameInfo.room).emit(
-											'room user joined staging', 
-											gameInfo.players, 
-											newMsg );
-
-			socket.in('lobby').emit('user joined game', gameInfo);
-
-			fn('true');
-		}
-		else {
-			fn('false');
-		}
 	});
 
 	socket.on('ready game staging', function(fn) {
-		var gameid = users[socket.userid].gameid;
-		var returnValue = staging.addPlayerToReady(gamesInfo[gameid], socket.userid);
 
-		fn(returnValue);
+		staging.setUserReady(socket, io, users, gamesInfo, fn);
 
-		io.in(gamesInfo[gameid].room).emit(
-							'room user ready staging', 
-							gamesInfo[gameid].ready);
-
-		// START game if all players in staging are now ready
-		if ( staging.allPlayersReady( gamesInfo[gameid] )) {
-
-			gamesInfo[gameid].status = 2;
-
-			gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
-
-			io.in('lobby').emit('game starting', gamesInfo[gameid]);
-			io.in(gamesInfo[gameid].room).emit('room game starting', 
-												gamesInfo[gameid]);
-		}
 	});
 
 	socket.on('leave game staging', function(gameid) {
-		var gameInfo = gamesInfo[gameid];
 
-		staging.removeUserFromStaging(gamesInfo[gameid], users[socket.userid]);
-		staging.removePlayerFromReady(gamesInfo[gameid], socket.userid);
+		staging.userLeaveStaging(socket, io, users, gamesInfo, gameid);
 
-		socket.leave(gameInfo.room);
-
-		var username = users[socket.userid].name;
-
-		var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
-											 cons.MSG_SERVER,
-											 username + " left the game");
-
-		socket.emit('self left game staging', gameInfo);
-		socket.broadcast.to(gameInfo.room).emit(
-											'room user left staging',
-											gamesInfo[gameid].players, 
-											newMsg,
-											gamesInfo[gameid].ready);
-		io.in('lobby').emit('user left game', gameInfo);
 	});
 
 	/**
