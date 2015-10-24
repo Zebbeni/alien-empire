@@ -5,6 +5,12 @@
 
 var initAgents = function() {
 
+	//create container to store all agent shapes
+	var agentsContainer = new createjs.Container();
+	agentsContainer.name = 'agentsContainer';
+	agentsContainer.x = 0;
+	agentsContainer.y = 0;
+
 	for( var agentid in clientGame.game.board.agents ) {
 
 		var agent = clientGame.game.board.agents[agentid];
@@ -19,12 +25,15 @@ var initAgents = function() {
 		agentshape.visible = false;
 		agentshape.mouseEnabled = false; //default this to false, otherwise it slows processing down
 
-		board.addChild( agentshape );
+		agentsContainer.addChild(agentshape);
 	}
+
+	board.addChild(agentsContainer);
 };
 
 var updateAgents = function(planetid) {
 
+	var agentsContainer = board.getChildByName('agentsContainer');
 	var planet = clientGame.game.board.planets[planetid];
 	var agents = clientGame.game.board.agents;
 	var num_agents = planet.agents.length;
@@ -47,9 +56,10 @@ var updateAgents = function(planetid) {
 		var player = agent.player;
 		var agenttype = agent.agenttype;
 
-		var agentshape = board.getChildByName(AGT_ENGLISH[agenttype] + player);
+		var agentshape = agentsContainer.getChildByName(AGT_ENGLISH[agenttype] + player);
 		
-		board.setChildIndex(agentshape, board.getNumChildren() - 1);
+		agentsContainer.setChildIndex( agentshape, 
+									   agentsContainer.getNumChildren() - 1);
 
 		agentshape.visible = true;
 

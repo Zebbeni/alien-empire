@@ -5,6 +5,11 @@
 
 var initFleets = function() {
 
+	var fleetsContainer = new createjs.Container();
+	fleetsContainer.name = 'fleetsContainer';
+	fleetsContainer.x = 0;
+	fleetsContainer.y = 0;
+
 	for(var fleetid in clientGame.game.board.fleets) {
 
 		var fleet = clientGame.game.board.fleets[fleetid];
@@ -16,11 +21,14 @@ var initFleets = function() {
 		fleetshape.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(0, 0, fleetImg.width, fleetImg.height);
 		fleetshape.visible = false;
 
-		board.addChild( fleetshape );
+		fleetsContainer.addChild( fleetshape );
 	}
+
+	board.addChild( fleetsContainer );
 };
 
 var updateFleets = function(planetid) {
+	var fleetsContainer = board.getChildByName('fleetsContainer');
 	var planet = clientGame.game.board.planets[planetid];
 	var fleets = clientGame.game.board.fleets;
 	var num_fleets = planet.fleets.length;
@@ -52,7 +60,7 @@ var updateFleets = function(planetid) {
 	for( var i = 0; i < planet.fleets.length; i++ ){
 
 		var fleetid = planet.fleets[i];
-		var fleetshape = board.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
+		var fleetshape = fleetsContainer.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
 
 		if( fleets[fleetid].planetid != undefined ){
 
