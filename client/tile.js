@@ -363,15 +363,10 @@ var initResource = function( planetid, index ) {
 
 	resource.on("mouseover", function() {
 		selectResource(planetid, index);
-
-		resource.getChildByName("icon").shadow = new createjs.Shadow( color[clientColor], 0, 3, 0);
-		stage.update();
 	});
 
 	resource.on("mouseout", function() {
 		hideSelection();
-		resource.getChildByName("icon").shadow = null;
-		stage.update();
 	});
 
 	resource.on("click", function() {
