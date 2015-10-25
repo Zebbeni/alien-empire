@@ -178,9 +178,8 @@
 	position: absolute;
 	width: 350px;
 	height: 200px;
-	bottom: 100px;
-	right: 25px;
-	background: rgba(0, 0, 0, .0);
+	bottom: 170px;
+	left: 0px;
 }
 
 #game-messages-div, #game-chat-input {
@@ -232,12 +231,43 @@
 	color: black;
 }
 
-#button-bar-div {
+/*#button-bar-div {
 	position: fixed;
 	bottom: 100px;
 	left: 50%;
 	width: 510px;
 	margin-left: -205px;
+}*/
+
+#bottom-bar-div {
+	position: absolute;
+	bottom: 0px;
+	width: 1024px;
+	left: 50%;
+	margin-left: -512px;
+}
+
+#resources-menu-div, #structures-menu-div, #agents-menu-div {
+	position: absolute;
+	bottom: 0px;
+}
+
+#resources-menu-div {
+	left: 0px;
+	width: 390px;
+	height: 156px;
+}
+
+#structures-menu-div {
+	left: 390px;
+	width: 390px;
+	height: 143px;
+}
+
+#agents-menu-div {
+	left: 780px;
+	width: 244px;
+	height: 162px;
 }
 
 /*#build-recruit-buttons-div {

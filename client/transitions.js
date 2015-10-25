@@ -66,6 +66,8 @@ var moveToGameInterface = function() {
     // $('#button-bar-div')[0].style.visibility = "visible";
     // $("#build-recruit-buttons-div")[0].style.visibility = "visible";
     $('#game-messages-wrapper-div')[0].style.visibility = "visible";
+
+    $('#bottom-bar-div')[0].style.visibility = "visible";
 };
 
 var leaveGameInterface = function() {
@@ -77,4 +79,6 @@ var leaveGameInterface = function() {
     // $('#button-bar-div')[0].style.visibility = "hidden";
     // $("#build-recruit-buttons-div")[0].style.visibility = "hidden";
     $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
+
+    $('#bottom-bar-div')[0].style.visibility = "hidden";
 };

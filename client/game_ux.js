@@ -20,7 +20,10 @@ var DOMimageMap = [
 	{ elmt: '.water-icon', path: 'interface/', img: 'res_water_icon'},
 	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
 	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
-	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'}
+	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
+	{ elmt: '#resources-menu-div', path: 'interface/', img: 'resources_menu'},
+	{ elmt: '#structures-menu-div', path: 'interface/', img: 'structures_menu'},
+	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
 ];
 
 $.fn.preload = function() {
