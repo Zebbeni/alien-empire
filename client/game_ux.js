@@ -11,7 +11,11 @@ var DOMimageMap = [
 	{ elmt: '.staging-pointnum-button', path: 'staging/', img: 'point_button' },
 	{ elmt: '.staging-pointnum-selected', path: 'staging/', img: 'point_button' },
 	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
-	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' }
+	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
+	{ elmt: '#player-div0', path: 'interface/', img: 'player_menu_p0'},
+	{ elmt: '#player-div1', path: 'interface/', img: 'player_menu_p1'},
+	{ elmt: '#player-div2', path: 'interface/', img: 'player_menu_p2'},
+	{ elmt: '#player-div3', path: 'interface/', img: 'player_menu_p3'}
 ];
 
 $.fn.preload = function() {
@@ -359,7 +363,7 @@ var displayTurnHelpMessage = function() {
  */
 var createPlayersMenu = function() {
 
-	var wrapperWidth = (210 * clientGame.players.length);
+	var wrapperWidth = (260 * clientGame.players.length) + 10;
 	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
 
 	var marginleft = Math.round(wrapperWidth / -2) + "px";
@@ -371,10 +375,11 @@ var createPlayersMenu = function() {
 
 		innerHTML += '<div id="player-div' + i 
 					 + '" class="player-div" style="bottom: 100px" '
-					 + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
+					 + '>';
+					 // + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
 
-		innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div"></div>';
-		innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
+		// innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div"></div>';
+		// innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
 
 		innerHTML += '</div>';
 	}
@@ -389,56 +394,56 @@ var createPlayersMenu = function() {
 
 var createPlayerTurnMenus = function() {
 
-	for ( var i = 0; i < clientGame.game.players.length; i++ ) {
-		var innerHTML = "";
+	// for ( var i = 0; i < clientGame.game.players.length; i++ ) {
+	// 	var innerHTML = "";
 
-		if ( i == clientTurn) {
-			innerHTML += "Your turn!";
-		}
-		else {
-			innerHTML += COL_ENGLISH[i] + "'s turn!";
-		}
+	// 	if ( i == clientTurn) {
+	// 		innerHTML += "Your turn!";
+	// 	}
+	// 	else {
+	// 		innerHTML += COL_ENGLISH[i] + "'s turn!";
+	// 	}
 
-		$('#player-turn-div' + i )[0].innerHTML = innerHTML;
-	}
+	// 	$('#player-turn-div' + i )[0].innerHTML = innerHTML;
+	// }
 
 };
 
 var updatePlayerStatsMenus = function() {
 
-	for ( var i = 0; i < clientGame.players.length; i++ ) {
+	// for ( var i = 0; i < clientGame.players.length; i++ ) {
 
-		var statsDiv = $('#player-stats-div' + i )[0];
+	// 	var statsDiv = $('#player-stats-div' + i )[0];
 
-		var username = all_users[clientGame.game.players[i]].name;
+	// 	var username = all_users[clientGame.game.players[i]].name;
 
-		var points = clientGame.game.points[i];
-		var structures = clientGame.game.structures[i];
-		var resources = clientGame.game.resources[i];
+	// 	var points = clientGame.game.points[i];
+	// 	var structures = clientGame.game.structures[i];
+	// 	var resources = clientGame.game.resources[i];
 
-		statsDivHTML = username;
-		statsDivHTML += '<br>' + points[PNT_TOTAL];
+	// 	statsDivHTML = username;
+	// 	statsDivHTML += '<br>' + points[PNT_TOTAL];
 
-		statsDivHTML += '<p style="text-align:left">';
-		statsDivHTML += 'Metal: ' + resources[RES_METAL];
-		statsDivHTML += '<br>Water: ' + resources[RES_WATER];
-		statsDivHTML += '<br>Fuel: ' + resources[RES_FUEL];
-		statsDivHTML += '<br>Food: ' + resources[RES_FOOD];
+	// 	statsDivHTML += '<p style="text-align:left">';
+	// 	statsDivHTML += 'Metal: ' + resources[RES_METAL];
+	// 	statsDivHTML += '<br>Water: ' + resources[RES_WATER];
+	// 	statsDivHTML += '<br>Fuel: ' + resources[RES_FUEL];
+	// 	statsDivHTML += '<br>Food: ' + resources[RES_FOOD];
 
-		statsDivHTML += '<br><br>Structure Points: ' + points[PNT_STRUCTURES];
-		statsDivHTML += '<br>Exploration Points:  ' + points[PNT_EXPLORE];
-		statsDivHTML += '<br>Envoy Points:        ' + points[PNT_ENVOY];
-		statsDivHTML += '<br>Destruction Points:  ' + points[PNT_DESTROY];
+	// 	statsDivHTML += '<br><br>Structure Points: ' + points[PNT_STRUCTURES];
+	// 	statsDivHTML += '<br>Exploration Points:  ' + points[PNT_EXPLORE];
+	// 	statsDivHTML += '<br>Envoy Points:        ' + points[PNT_ENVOY];
+	// 	statsDivHTML += '<br>Destruction Points:  ' + points[PNT_DESTROY];
 
-		statsDivHTML += '<br><br>Mines: ' + structures[OBJ_MINE];
-		statsDivHTML += '<br>Factories:  ' + structures[OBJ_FACTORY];
-		statsDivHTML += '<br>Embassies:        ' + structures[OBJ_EMBASSY];
-		statsDivHTML += '<br>Bases:  ' + structures[OBJ_BASE];
-		statsDivHTML += '<br>Fleets:  ' + structures[OBJ_FLEET];
-		statsDivHTML += '</p>';
+	// 	statsDivHTML += '<br><br>Mines: ' + structures[OBJ_MINE];
+	// 	statsDivHTML += '<br>Factories:  ' + structures[OBJ_FACTORY];
+	// 	statsDivHTML += '<br>Embassies:        ' + structures[OBJ_EMBASSY];
+	// 	statsDivHTML += '<br>Bases:  ' + structures[OBJ_BASE];
+	// 	statsDivHTML += '<br>Fleets:  ' + structures[OBJ_FLEET];
+	// 	statsDivHTML += '</p>';
 
-		statsDiv.innerHTML = statsDivHTML;
-	}
+	// 	statsDiv.innerHTML = statsDivHTML;
+	// }
 };
 
 /** 
@@ -461,22 +466,22 @@ var setInterfaceImages = function() {
 };
 
 var createInterface = function() {
-	var innerHTML = '<table id="recruit-agents-table"><tr>';
-	var path = s3url + 'interface/';
-	var imgSize = pixelRatio <= 1 ? "1x" : "2x";
+	// var innerHTML = '<table id="recruit-agents-table"><tr>';
+	// var path = s3url + 'interface/';
+	// var imgSize = pixelRatio <= 1 ? "1x" : "2x";
 
-	for (var i = AGT_EXPLORER; i <= AGT_SABATEUR; i++) {
-		innerHTML += '<td style="padding: 0px margin: 0px">'
-	 				+ '<input type="image" class="recruit-agent-button"'
-					+ ' src="' + path + imgSize + '_agents_bar_' + i + '.png"'
-					+ ' width="79px" height="100px"';
-		if ( i >= AGT_EXPLORER && i <= AGT_SABATEUR ) {
-			innerHTML += ' onclick="javascript:clickAgentButton(' + i + ');"';
-		}
-		innerHTML += '></input></td>';
-	};
+	// for (var i = AGT_EXPLORER; i <= AGT_SABATEUR; i++) {
+	// 	innerHTML += '<td style="padding: 0px margin: 0px">'
+	//  				+ '<input type="image" class="recruit-agent-button"'
+	// 				+ ' src="' + path + imgSize + '_agents_bar_' + i + '.png"'
+	// 				+ ' width="79px" height="100px"';
+	// 	if ( i >= AGT_EXPLORER && i <= AGT_SABATEUR ) {
+	// 		innerHTML += ' onclick="javascript:clickAgentButton(' + i + ');"';
+	// 	}
+	// 	innerHTML += '></input></td>';
+	// };
 
-	innerHTML += '</tr></table>'
-	$('#recruit-buttons-div')[0].innerHTML = innerHTML;
-	$('#recruit-buttons-div').css("background-image", "url(" + path + imgSize + "_agents_bar_p" + clientTurn + ".png)");
+	// innerHTML += '</tr></table>'
+	// $('#recruit-buttons-div')[0].innerHTML = innerHTML;
+	// $('#recruit-buttons-div').css("background-image", "url(" + path + imgSize + "_agents_bar_p" + clientTurn + ".png)");
 };

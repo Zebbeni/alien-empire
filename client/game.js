@@ -15,6 +15,7 @@ var createAll = function( content ) {
 	createPlayersMenu();
 	createInterface();
 	moveToGameInterface();
+	setInterfaceImages();
 	toggleTurnMenu();
 	updateBoardInteractivity();
 

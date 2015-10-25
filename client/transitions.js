@@ -63,8 +63,8 @@ var hideGameStage = function() {
 
 // Revisit these two functions when you actually create the nice game interface
 var moveToGameInterface = function() {
-    $('#button-bar-div')[0].style.visibility = "visible";
-    $("#build-recruit-buttons-div")[0].style.visibility = "visible";
+    // $('#button-bar-div')[0].style.visibility = "visible";
+    // $("#build-recruit-buttons-div")[0].style.visibility = "visible";
     $('#game-messages-wrapper-div')[0].style.visibility = "visible";
 };
 
@@ -72,9 +72,9 @@ var leaveGameInterface = function() {
     $('#your-turn-div')[0].style.visibility = "hidden";
     $('#pending-action-div')[0].style.visibility = "hidden";
     $('#turn-done-button')[0].style.visibility = "hidden";
-    $('#recruit-buttons-div')[0].style.visibility = "hidden";
+    // $('#recruit-buttons-div')[0].style.visibility = "hidden";
     $('#players-wrapper-div')[0].style.visibility = "hidden";
-    $('#button-bar-div')[0].style.visibility = "hidden";
-    $("#build-recruit-buttons-div")[0].style.visibility = "hidden";
+    // $('#button-bar-div')[0].style.visibility = "hidden";
+    // $("#build-recruit-buttons-div")[0].style.visibility = "hidden";
     $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
 };

@@ -46,7 +46,7 @@
 }
 
 .msg-action-div {
-	
+
 }
 
 .msg-action-p0 {
@@ -69,8 +69,8 @@
 	position: fixed;
 	width: 150px;
 	height: 50px;
-	left: 25px;
-	bottom: 25px;
+	right: 25px;
+	top: 100px;
 	margin: 10px;
 	padding: 5px;
 	background: rgba(131, 203, 180, .8);
@@ -86,22 +86,25 @@
 
 #players-wrapper-div {
 	position: absolute;
-	bottom: 0px;
-	height: 0px;
+	top: 0px;
+	height: 43px;
 	left: 50%;
 	margin: 0 auto;
 }
 
 .player-div {
 	position: relative;
-	overflow-y: hidden;
+	/*overflow-y: hidden;*/
 	float: left;
-	width: 200px;
-	height: 100px;
+	top: 0px;
+	width: 250px;
+	height: 43px;
+	margin-left: 5px;
+	margin-right: 5px;
 	color: black;
 }
 
-.player-stats-div, .player-turn-div {
+/*.player-stats-div, .player-turn-div {
 	display: table;
 	padding: 5px;
 	margin: 5px;
@@ -109,20 +112,20 @@
 	text-align: center;
 	position: relative;
 	width: 190px;
-}
+}*/
 
-.player-stats-div {
+/*.player-stats-div {
 	color: black;
 	font-weight: bold;
 	background: rgba(131, 203, 180, .8);
-}
+}*/
 
-.player-turn-div {
+/*.player-turn-div {
 	height: 30px;
 	overflow-y: hidden;
 	font-size: 20px;
 	color: white;
-}
+}*/
 
 #game-messages-wrapper-div {
 	position: absolute;
@@ -136,7 +139,7 @@
 #game-messages-div, #game-chat-input {
 	position: relative;
 	width: 100%;
-	background: rgba(255, 255, 255, 0.1);
+	background: rgba(0, 0, 0, 0.5);
 	margin: 5px;
 }
 
@@ -153,7 +156,7 @@
 	color: rgba(255, 255, 255, .9);
 }
 
-#player-turn-div0 {
+/*#player-turn-div0 {
 	background: rgba(255, 84, 84, .8);
 }
 
@@ -167,7 +170,7 @@
 
 #player-turn-div3 {
 	background: rgba(253, 255, 58, .8);
-}
+}*/
 
 #action-confirm-button, #action-cancel-button {
 	position: relative;
@@ -184,34 +187,35 @@
 
 #button-bar-div {
 	position: fixed;
-	top: 0px;
+	bottom: 100px;
 	left: 50%;
 	width: 510px;
 	margin-left: -205px;
 }
 
-#build-recruit-buttons-div {
-	position: fixed;
-	top: 35px;
+/*#build-recruit-buttons-div {
+	position: absolute;
+	bottom: 100px;
 	left: 50%;
 	width: 650px;
 	margin-left: -325px;
-}
+}*/
 
-#build-buttons-div, #recruit-buttons-div {
+/*#build-buttons-div, #recruit-buttons-div {
 	position: absolute;
+	top: 0px;
 	width: 650px;
 	height: 100px;
-}
+}*/
 
-#recruit-agents-table {
+/*#recruit-agents-table {
 	padding: 0px;
 	margin-left: 10px;
 	width: 627px;
 	table-layout: fixed;
-}
+}*/
 
-.create-button {
+/*.create-button {
 	position: relative;
 	float: left;
 	height: 25px;
@@ -222,9 +226,9 @@
 	font-size: 15px;
 	font-weight: bold;
 	color: black;
-}
+}*/
 
-.build-structure-button {
+/*.build-structure-button {
 	position: relative;
 	float: left;
 	top: 0px;
@@ -233,24 +237,28 @@
 	font-size: 15px;
 	font-weight: bold;
 	color: black;
-}
+}*/
 
-.recruit-agent-button {
+/*.recruit-agent-button {
 	background: none;
 	margin: 0px;
 	padding:;
-}
+}*/
 
-.recruit-agent-button:hover {
+/*.recruit-agent-button:hover {
 
-}
+}*/
 
-.build-structure-button {
+/*.build-structure-button {
 	height: 110px;
 	width: 110px;
-}
+}*/
 
-.create-button:hover, .build-structure-button:hover, #turn-done-button:hover {
+/*.create-button:hover, .build-structure-button:hover {
+	background: rgba(161, 233, 210, .8);
+}*/
+
+#turn-done-button:hover {
 	background: rgba(161, 233, 210, .8);
 }
 
