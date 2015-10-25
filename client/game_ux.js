@@ -15,7 +15,12 @@ var DOMimageMap = [
 	{ elmt: '#player-div0', path: 'interface/', img: 'player_menu_p0'},
 	{ elmt: '#player-div1', path: 'interface/', img: 'player_menu_p1'},
 	{ elmt: '#player-div2', path: 'interface/', img: 'player_menu_p2'},
-	{ elmt: '#player-div3', path: 'interface/', img: 'player_menu_p3'}
+	{ elmt: '#player-div3', path: 'interface/', img: 'player_menu_p3'},
+	{ elmt: '.metal-icon', path: 'interface/', img: 'res_metal_icon'},
+	{ elmt: '.water-icon', path: 'interface/', img: 'res_water_icon'},
+	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
+	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
+	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'}
 ];
 
 $.fn.preload = function() {
@@ -373,14 +378,26 @@ var createPlayersMenu = function() {
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
 
-		innerHTML += '<div id="player-div' + i 
-					 + '" class="player-div" style="bottom: 100px" '
-					 + '>';
-					 // + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
+		innerHTML += '<div id="player-div' + i + '" class="player-div" style="bottom: 100px">';
 
-		// innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div"></div>';
-		// innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
+		var username = all_users[clientGame.game.players[i]].name;
+		var resources = clientGame.game.resources[i];
+		var points = clientGame.game.points[i];
 
+		innerHTML += '<div class="player-id-div">' + username + '</div>';
+
+		innerHTML += '<div class="player-stats-div">';
+		
+		innerHTML += '<table class="player-stats-table"><tr>';
+		innerHTML += '<td class="metal-icon"></td>';
+		innerHTML += '<td class="water-icon"></td>';
+		innerHTML += '<td class="fuel-icon"></td>';
+		innerHTML += '<td class="food-icon"></td>';
+
+		innerHTML += '<td class="points-icon"></td>';
+
+		innerHTML += '</tr></table>';
+		innerHTML += '</div>';
 		innerHTML += '</div>';
 	}
 
@@ -411,39 +428,18 @@ var createPlayerTurnMenus = function() {
 
 var updatePlayerStatsMenus = function() {
 
-	// for ( var i = 0; i < clientGame.players.length; i++ ) {
+	for ( var i = 0; i < clientGame.players.length; i++ ) {
 
-	// 	var statsDiv = $('#player-stats-div' + i )[0];
+		var playerDiv = '#player-div' + i;
+		var resources = clientGame.game.resources[i];
+		var points = clientGame.game.points[i];
 
-	// 	var username = all_users[clientGame.game.players[i]].name;
-
-	// 	var points = clientGame.game.points[i];
-	// 	var structures = clientGame.game.structures[i];
-	// 	var resources = clientGame.game.resources[i];
-
-	// 	statsDivHTML = username;
-	// 	statsDivHTML += '<br>' + points[PNT_TOTAL];
-
-	// 	statsDivHTML += '<p style="text-align:left">';
-	// 	statsDivHTML += 'Metal: ' + resources[RES_METAL];
-	// 	statsDivHTML += '<br>Water: ' + resources[RES_WATER];
-	// 	statsDivHTML += '<br>Fuel: ' + resources[RES_FUEL];
-	// 	statsDivHTML += '<br>Food: ' + resources[RES_FOOD];
-
-	// 	statsDivHTML += '<br><br>Structure Points: ' + points[PNT_STRUCTURES];
-	// 	statsDivHTML += '<br>Exploration Points:  ' + points[PNT_EXPLORE];
-	// 	statsDivHTML += '<br>Envoy Points:        ' + points[PNT_ENVOY];
-	// 	statsDivHTML += '<br>Destruction Points:  ' + points[PNT_DESTROY];
-
-	// 	statsDivHTML += '<br><br>Mines: ' + structures[OBJ_MINE];
-	// 	statsDivHTML += '<br>Factories:  ' + structures[OBJ_FACTORY];
-	// 	statsDivHTML += '<br>Embassies:        ' + structures[OBJ_EMBASSY];
-	// 	statsDivHTML += '<br>Bases:  ' + structures[OBJ_BASE];
-	// 	statsDivHTML += '<br>Fleets:  ' + structures[OBJ_FLEET];
-	// 	statsDivHTML += '</p>';
-
-	// 	statsDiv.innerHTML = statsDivHTML;
-	// }
+		$(playerDiv).find('.metal-icon')[0].innerHTML = resources[RES_METAL];
+		$(playerDiv).find('.water-icon')[0].innerHTML = resources[RES_WATER];
+		$(playerDiv).find('.fuel-icon')[0].innerHTML = resources[RES_FUEL];
+		$(playerDiv).find('.food-icon')[0].innerHTML = resources[RES_FOOD];
+		$(playerDiv).find('.points-icon')[0].innerHTML = points[PNT_TOTAL];
+	}
 };
 
 /** 

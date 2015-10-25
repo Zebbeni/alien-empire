@@ -104,6 +104,53 @@
 	color: black;
 }
 
+.player-id-div {
+	position: relative;
+	display: table-cell;
+	top: 0px;
+	left: 0px;
+	height: 43px;
+	width: 104px;
+	padding: 2px;
+	font-size: 14px;
+	font-family: 'Cinzel Decorative', cursive;
+	font-weight: 700;
+	text-align: center;
+	vertical-align: middle;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	word-break: break-word;
+	line-height: 90%;
+	color: black;
+}
+
+.player-stats-div {
+	position: absolute;
+	top: 4px;
+	right: 12px;
+	width: 135px;
+	height: 31px;
+	padding: 3px;
+}
+
+.metal-icon, .water-icon, .fuel-icon, .food-icon, .points-icon {
+	width: 25px;
+	height: 25px;
+	font-size: 17px; 
+	text-align: center;
+}
+
+.metal-icon, .water-icon, .fuel-icon, .food-icon {
+	color: white;
+}
+
+
+.points-icon {
+	color: black;
+	margin-left: 10px;
+	font-weight: bold;
+}
+
 /*.player-stats-div, .player-turn-div {
 	display: table;
 	padding: 5px;
