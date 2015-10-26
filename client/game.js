@@ -13,7 +13,7 @@ var createAll = function( content ) {
 	drawBoard();
 	displayGameMessages();
 	createPlayersMenu();
-	createInterface();
+	createBottomBarMenus();
 	moveToGameInterface();
 	setInterfaceImages();
 	toggleTurnMenu();
@@ -29,11 +29,13 @@ var updateAll = function( content ) {
 
 	updateClientGame( content );
 	updatePlayerStatsMenus();
+	updateBottomBarMenus();
 	updateBoard();
 	displayGameMessages();
 	toggleTurnMenu();
 	updateBoardInteractivity();
 
+	setInterfaceImages(); // resets css of any new image elements added to DOM
 };
 
 /**

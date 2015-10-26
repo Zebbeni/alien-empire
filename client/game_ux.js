@@ -24,6 +24,13 @@ var DOMimageMap = [
 	{ elmt: '#resources-menu-div', path: 'interface/', img: 'resources_menu'},
 	{ elmt: '#structures-menu-div', path: 'interface/', img: 'structures_menu'},
 	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
+	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
+	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
+	{ elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
+	{ elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
+	{ elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
+	{ elmt: '.struct-base-button', path: 'interface/', img: 'structbase_button'},
+	{ elmt: '.struct-fleet-button', path: 'interface/', img: 'structfleet_button'},
 ];
 
 $.fn.preload = function() {
@@ -141,6 +148,7 @@ var clickRecruitButton = function() {
  * it visible if it's hidden
  */
 var toggleMenu = function( menuid, val ) {
+	console.log('toggling', menuid, val);
 	if ( val == MENU_ON || (val != MENU_OFF && $(menuid)[0].style.visibility == "hidden" )) {
 		$(menuid)[0].style.visibility = "visible";  
 	}
@@ -152,7 +160,7 @@ var toggleMenu = function( menuid, val ) {
 var clickStructureButton = function( objecttype ){
 	setPendingAction( ACT_BUILD );
 	setPendingObject(objecttype);
-	toggleMenu("#build-buttons-div");
+	// toggleMenu("#build-buttons-div");
 	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
@@ -160,7 +168,7 @@ var clickStructureButton = function( objecttype ){
 var clickAgentButton = function( agenttype ){
 	setPendingAction( ACT_RECRUIT );
 	setPendingAgent(agenttype);
-	toggleMenu("#recruit-buttons-div");
+	// toggleMenu("#recruit-buttons-div");
 	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
@@ -371,7 +379,7 @@ var displayTurnHelpMessage = function() {
  */
 var createPlayersMenu = function() {
 
-	var wrapperWidth = (260 * clientGame.players.length) + 10;
+	var wrapperWidth = (256 * clientGame.players.length);
 	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
 
 	var marginleft = Math.round(wrapperWidth / -2) + "px";
@@ -412,6 +420,154 @@ var createPlayersMenu = function() {
 	$('#players-wrapper-div')[0].style.visibility = "visible";
 };
 
+var updatePlayerStatsMenus = function() {
+
+	for ( var i = 0; i < clientGame.players.length; i++ ) {
+
+		var playerDiv = '#player-div' + i;
+		var resources = clientGame.game.resources[i];
+		var points = clientGame.game.points[i];
+
+		$(playerDiv).find('.metal-icon')[0].innerHTML = resources[RES_METAL];
+		$(playerDiv).find('.water-icon')[0].innerHTML = resources[RES_WATER];
+		$(playerDiv).find('.fuel-icon')[0].innerHTML = resources[RES_FUEL];
+		$(playerDiv).find('.food-icon')[0].innerHTML = resources[RES_FOOD];
+		$(playerDiv).find('.points-icon')[0].innerHTML = points[PNT_TOTAL];
+	}
+};
+
+var createBottomBarMenus = function() {
+	createResourcesMenu();
+	createStructuresMenu();
+	createAgentsMenu();
+};
+
+var updateBottomBarMenus = function() {
+	updateResourcesMenu();
+	updateStructuresMenu();
+	updateAgentsMenu();
+};
+
+var createResourcesMenu = function() {
+	
+	var innerHTML = '';	
+
+	for ( var i = 0; i <= RES_FOOD; i++ ){
+		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
+				   + '<div class="gain-div"></div><div class="loss-div"></div>'
+        		   + '<table class="resource-table" cellspacing="0"></table>'
+        		   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
+        		   + '</div>';
+	}
+
+	innerHTML += '<input type="button" id="trade-button" value="Trade"></input>';
+
+	$('#resources-menu-div')[0].innerHTML = innerHTML;
+
+	updateResourcesMenu();
+};
+
+var updateResourcesMenu = function() {
+
+	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
+
+	for ( var i = 0; i <= RES_FOOD; i++ ){
+
+		var resourceDiv = '#resource-div' + i;
+		$(resourceDiv).find('.gain-div')[0].innerHTML = '+2';
+		$(resourceDiv).find('.loss-div')[0].innerHTML = '-1';
+
+		var resources = clientGame.game.resources[clientTurn];
+		var innerHTML = '<tr>';
+		for ( var n = 0; n < 10; n++ ) {
+			innerHTML += (n < resources[i] ? 
+						  '<td class="' + icons[i] + '"></td>':
+						  '<td width="25px" height="25px"></td>');
+
+		}
+		innerHTML += '</tr>';
+
+		$(resourceDiv).find('.resource-table').html(innerHTML);
+	}
+};
+
+var createStructuresMenu = function() {
+	var innerHTML = '';
+
+	innerHTML += '<div id="struct-mines-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-fleets-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-factories-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-embassies-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-base-div"></div>';
+
+	$('#structures-menu-div')[0].innerHTML = innerHTML;
+
+	updateStructuresMenu();
+};
+
+var updateStructuresMenu = function() {
+
+	var structures = clientGame.game.structures[clientTurn];
+
+	var innerHTML = '<tr>';
+	for ( var i = 0; i < 4; i++ ){
+		innerHTML += (i < structures[OBJ_MINE] ? 
+				  '<td><input type="button" class="struct-mine-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_MINE);"></input></td>':
+				  '<td width="34px" height="34px"></td>');
+	}
+	innerHTML += '</tr>';
+	$('#struct-mines-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = '<tr>';
+	for ( var i = 0; i < 3; i++ ){
+		innerHTML += (i < structures[OBJ_FLEET] ? 
+				  '<td><input type="button" class="struct-fleet-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);"></input></td>':
+				  '<td width="42px" height="33px"></td>');
+	}
+	innerHTML += '</tr>';
+	$('#struct-fleets-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = '<tr>';
+	for ( var i = 0; i < 3; i++ ){
+		innerHTML += (i < structures[OBJ_FACTORY] ? 
+				  '<td><input type="button" class="struct-factory-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);"></input></td>':
+				  '<td width="34px" height="50px"></td>');
+	}
+	innerHTML += '</tr>'
+	$('#struct-factories-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = '<tr>';
+	for ( var i = 0; i < 5; i++ ){
+		innerHTML += (i < structures[OBJ_EMBASSY] ? 
+				  '<td><input type="button" class="struct-embassy-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);"></input></td>':
+				  '<td width="37px" height="50px"></td>');
+	}
+	innerHTML += '</tr>'
+	$('#struct-embassies-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = (structures[OBJ_BASE] > 0 ? 
+			  '<input type="button" class="struct-base-button"'
+			  + 'onclick="javascript:clickStructureButton(OBJ_BASE);"></input>':
+			  '');
+	$('#struct-base-div').html(innerHTML);
+};
+
+var createAgentsMenu = function() {
+
+};
+
+var updateAgentsMenu = function() {
+
+};
+
 var createPlayerTurnMenus = function() {
 
 	// for ( var i = 0; i < clientGame.game.players.length; i++ ) {
@@ -427,22 +583,6 @@ var createPlayerTurnMenus = function() {
 	// 	$('#player-turn-div' + i )[0].innerHTML = innerHTML;
 	// }
 
-};
-
-var updatePlayerStatsMenus = function() {
-
-	for ( var i = 0; i < clientGame.players.length; i++ ) {
-
-		var playerDiv = '#player-div' + i;
-		var resources = clientGame.game.resources[i];
-		var points = clientGame.game.points[i];
-
-		$(playerDiv).find('.metal-icon')[0].innerHTML = resources[RES_METAL];
-		$(playerDiv).find('.water-icon')[0].innerHTML = resources[RES_WATER];
-		$(playerDiv).find('.fuel-icon')[0].innerHTML = resources[RES_FUEL];
-		$(playerDiv).find('.food-icon')[0].innerHTML = resources[RES_FOOD];
-		$(playerDiv).find('.points-icon')[0].innerHTML = points[PNT_TOTAL];
-	}
 };
 
 /** 
@@ -462,25 +602,4 @@ var setInterfaceImages = function() {
 
 		$( name ).css("background-image", 'url(' + path + '.png)');
 	}
-};
-
-var createInterface = function() {
-	// var innerHTML = '<table id="recruit-agents-table"><tr>';
-	// var path = s3url + 'interface/';
-	// var imgSize = pixelRatio <= 1 ? "1x" : "2x";
-
-	// for (var i = AGT_EXPLORER; i <= AGT_SABATEUR; i++) {
-	// 	innerHTML += '<td style="padding: 0px margin: 0px">'
-	//  				+ '<input type="image" class="recruit-agent-button"'
-	// 				+ ' src="' + path + imgSize + '_agents_bar_' + i + '.png"'
-	// 				+ ' width="79px" height="100px"';
-	// 	if ( i >= AGT_EXPLORER && i <= AGT_SABATEUR ) {
-	// 		innerHTML += ' onclick="javascript:clickAgentButton(' + i + ');"';
-	// 	}
-	// 	innerHTML += '></input></td>';
-	// };
-
-	// innerHTML += '</tr></table>'
-	// $('#recruit-buttons-div')[0].innerHTML = innerHTML;
-	// $('#recruit-buttons-div').css("background-image", "url(" + path + imgSize + "_agents_bar_p" + clientTurn + ".png)");
 };

@@ -83,7 +83,7 @@ var checkPixelRatioAndUpdate = function() {
 		setInterfaceImages();
 		updateCanvasSize();
 	}
-}
+};
 
  /**
  * sets Canvas size (usually on window resize)
@@ -130,7 +130,6 @@ var updatePixelRatio = function() {
 
 		// set CreateJS to render scaled
 		stage.scaleX = stage.scaleY = pixelRatio = window.devicePixelRatio;
-		createInterface();
 	}
 	else {
 		stage.scaleX = stage.scaleY = pixelRatio = 1.0;

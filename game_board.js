@@ -38,10 +38,10 @@ var start_planets = {
 
 			resources.push( {} );
 
-			resources[i][cons.RES_METAL] = 2;
-			resources[i][cons.RES_WATER] = 2;
-			resources[i][cons.RES_FUEL] = 2;
-			resources[i][cons.RES_FOOD] = 2;
+			resources[i][cons.RES_METAL] = 6;
+			resources[i][cons.RES_WATER] = 3;
+			resources[i][cons.RES_FUEL] = 5;
+			resources[i][cons.RES_FOOD] = 9;
 		}
 		
 		return resources;

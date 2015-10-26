@@ -27,9 +27,12 @@
 	position: relative;
 	margin: 0 auto;
 	padding: 10px;
-	background: rgba(131, 203, 180, .8);
 	color: white;
 	text-align: center;
+}
+
+#your-turn-message-div, #your-action-message-div {
+	background: rgba(131, 203, 180, .8);
 }
 
 #your-turn-message-div {
@@ -38,7 +41,7 @@
 
 #pending-action-div {
 	top: 35px;
-	font-size: 20px;
+	font-size: 15px;
 }
 
 #your-action-message-div {
@@ -99,8 +102,8 @@
 	top: 0px;
 	width: 250px;
 	height: 43px;
-	margin-left: 5px;
-	margin-right: 5px;
+	margin-left: 3px;
+	margin-right: 3px;
 	color: black;
 }
 
@@ -177,21 +180,21 @@
 #game-messages-wrapper-div {
 	position: absolute;
 	width: 350px;
-	height: 200px;
-	bottom: 170px;
+	height: 130px;
+	bottom: 160px;
 	left: 0px;
 }
 
 #game-messages-div, #game-chat-input {
 	position: relative;
 	width: 100%;
-	background: rgba(0, 0, 0, 0.5);
-	margin: 5px;
+	background: rgba(0, 0, 0, 0.3);
+	margin: 2px;
 }
 
 #game-messages-div {
 	vertical-align: bottom;
-	height: 160px;
+	height: 90px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -268,6 +271,184 @@
 	left: 780px;
 	width: 244px;
 	height: 162px;
+}
+
+.resource-div {
+	position: absolute;
+	float: left;
+	left: 10px;
+	height: 27px;
+	width: 372px;
+}
+
+#resource-div0 {
+	top: 35px;
+}
+
+#resource-div1 {
+	top: 60px;
+}
+
+#resource-div2 {
+	top: 85px;
+}
+
+#resource-div3 {
+	top: 110px;
+}
+
+.gain-div, .loss-div {
+	position: absolute;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: middle;
+	top: 2px;
+	height: 25px;
+	width: 25px;
+}
+
+.gain-div {
+	left: 6px;
+	color: #008ebc;
+}
+
+.loss-div {
+	left: 31px;
+	color: #ff5656;
+}
+
+.resource-table {
+	position: absolute;
+	table-layout: fixed;
+	top: 0px;
+	left: 60px;
+	height: 25px;
+	width: 250px;
+}
+
+.fourtoone-button {
+	position: absolute;
+	top: 1px;
+	right: 0px;
+	width: 55px;
+	height: 25px;
+	color: black;
+	font-weight: bold;
+}
+
+.fourtoone-button:hover {
+	background-position: -55px 0;
+}
+
+#trade-button {
+	position: absolute;
+	right: 7px;
+	top: 5px;
+	font-weight: bold;
+	width: 55px;
+	height: 27px;
+	color: black;
+}
+
+#trade-button:hover {
+	background-position: -55px 0;
+}
+
+#struct-mines-div, #struct-fleets-div, #struct-factories-div, #struct-embassies-div, #struct-base-div {
+	position: absolute;
+}
+
+#struct-mines-div {
+	top: 36px;
+	left: 27px;
+	width: 136px;
+	height: 34px;
+}
+
+#struct-fleets-div {
+	top: 36px;
+	left: 170px;
+	width: 126px;
+	height: 33px;
+}
+
+#struct-factories-div {
+	top: 70px;
+	left: 13px;
+	width: 108px;
+	height: 50px;
+}
+
+#struct-embassies-div {
+	top: 72px;
+	left: 120px;
+	width: 185px;
+	height: 50px;
+}
+
+#struct-base-div {
+	top: 40px;
+	left: 304px;
+	width: 70px;
+	height: 70px;
+}
+
+.struct-table {
+	width: 100%;
+	height: 100%;
+}
+
+.struct-mine-button, .struct-factory-button, .struct-embassy-button, .struct-base-button,
+.struct-fleet-button {
+	background-color: transparent;
+}
+
+.struct-mine-button {
+	width: 34px;
+	height: 34px;
+}
+
+.struct-mine-button:hover {
+	background-position: -34px;
+}
+
+.struct-factory-button {
+	width: 34px;
+	height: 50px;
+}
+
+.struct-factory-button:hover {
+	background-position: -34px 0;
+}
+
+.struct-embassy-button {
+	width: 37px;
+	height: 50px;
+}
+
+.struct-embassy-button:hover {
+	background-position: -37px 0;
+}
+
+.struct-fleet-button {
+	width: 42px;
+	height: 33px;
+}
+
+.struct-fleet-button:hover {
+	background-position: -42px 0;
+}
+
+.struct-base-button {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 70px;
+	height: 70px;
+}
+
+.struct-base-button:hover {
+	background-position: -70px 0;
 }
 
 /*#build-recruit-buttons-div {
