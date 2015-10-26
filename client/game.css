@@ -31,8 +31,12 @@
 	text-align: center;
 }
 
-#your-turn-message-div, #your-action-message-div {
-	background: rgba(131, 203, 180, .8);
+#your-turn-message-div, #your-action-message-div, #turn-done-button {
+	background: rgba(0, 0, 0, .3);
+}
+
+#turn-done-button:hover {
+	background: rgba(100, 100, 100, .3);
 }
 
 #your-turn-message-div {
@@ -76,7 +80,6 @@
 	top: 100px;
 	margin: 10px;
 	padding: 5px;
-	background: rgba(131, 203, 180, .8);
 	font-weight: bold;
 	color: black;
 }
@@ -140,7 +143,9 @@
 	width: 25px;
 	height: 25px;
 	font-size: 17px; 
+	padding: 0px;
 	text-align: center;
+	vertical-align: middle;
 }
 
 .metal-icon, .water-icon, .fuel-icon, .food-icon {
@@ -451,6 +456,24 @@
 	background-position: -70px 0;
 }
 
+#agents-table {
+	position: absolute;
+	top: 31px;
+	left: 13px;
+	width: 216px;
+	height: 108px;
+}
+
+.agent-button {
+	width: 54px;
+	height: 54px;
+	background-color: transparent;
+}
+
+.agent-button:hover {
+	background-position: -54px 0;
+}
+
 /*#build-recruit-buttons-div {
 	position: absolute;
 	bottom: 100px;
@@ -515,10 +538,6 @@
 /*.create-button:hover, .build-structure-button:hover {
 	background: rgba(161, 233, 210, .8);
 }*/
-
-#turn-done-button:hover {
-	background: rgba(161, 233, 210, .8);
-}
 
 #game-chat-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    rgba(255, 255, 255, 0.5);

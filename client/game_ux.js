@@ -31,6 +31,14 @@ var DOMimageMap = [
 	{ elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
 	{ elmt: '.struct-base-button', path: 'interface/', img: 'structbase_button'},
 	{ elmt: '.struct-fleet-button', path: 'interface/', img: 'structfleet_button'},
+	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
+	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
+	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
+	{ elmt: '#agent-button-ambassador', path: 'interface/', img: 'agentambassador_button'},
+	{ elmt: '#agent-button-envoy', path: 'interface/', img: 'agentenvoy_button'},
+	{ elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
+	{ elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
+	{ elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
 ];
 
 $.fn.preload = function() {
@@ -148,7 +156,6 @@ var clickRecruitButton = function() {
  * it visible if it's hidden
  */
 var toggleMenu = function( menuid, val ) {
-	console.log('toggling', menuid, val);
 	if ( val == MENU_ON || (val != MENU_OFF && $(menuid)[0].style.visibility == "hidden" )) {
 		$(menuid)[0].style.visibility = "visible";  
 	}
@@ -561,11 +568,39 @@ var updateStructuresMenu = function() {
 };
 
 var createAgentsMenu = function() {
+	var innerHTML = '<table id="agents-table"></table>';
 
+	$('#agents-menu-div')[0].innerHTML = innerHTML;
+
+	updateAgentsMenu();
 };
 
 var updateAgentsMenu = function() {
+	var innerHTML = '<tr>';
 
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-explorer" '
+				+ 'onclick="javascript:clickAgentButton(AGT_EXPLORER);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-miner" '
+				+ 'onclick="javascript:clickAgentButton(AGT_MINER);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-surveyor" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SURVEYOR);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-smuggler" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SMUGGLER);"></input></td>';
+
+	innerHTML += '</tr><tr>';
+
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-ambassador" '
+				+ 'onclick="javascript:clickAgentButton(AGT_AMBASSADOR);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-envoy" '
+				+ 'onclick="javascript:clickAgentButton(AGT_ENVOY);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-spy" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SPY);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-sabateur" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SABATEUR);"></input></td>';
+
+	innerHTML += '</tr>';
+
+	$('#agents-table').html(innerHTML);
 };
 
 var createPlayerTurnMenus = function() {
