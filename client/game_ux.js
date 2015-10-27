@@ -605,19 +605,6 @@ var updateAgentsMenu = function() {
 
 var createPlayerTurnMenus = function() {
 
-	// for ( var i = 0; i < clientGame.game.players.length; i++ ) {
-	// 	var innerHTML = "";
-
-	// 	if ( i == clientTurn) {
-	// 		innerHTML += "Your turn!";
-	// 	}
-	// 	else {
-	// 		innerHTML += COL_ENGLISH[i] + "'s turn!";
-	// 	}
-
-	// 	$('#player-turn-div' + i )[0].innerHTML = innerHTML;
-	// }
-
 };
 
 /** 
