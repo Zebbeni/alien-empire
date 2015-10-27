@@ -253,6 +253,7 @@
 	width: 1024px;
 	left: 50%;
 	margin-left: -512px;
+	opacity: 0.0;
 }
 
 #resources-menu-div, #structures-menu-div, #agents-menu-div {
