@@ -11,7 +11,34 @@ var DOMimageMap = [
 	{ elmt: '.staging-pointnum-button', path: 'staging/', img: 'point_button' },
 	{ elmt: '.staging-pointnum-selected', path: 'staging/', img: 'point_button' },
 	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
-	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' }
+	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
+	{ elmt: '#player-div0', path: 'interface/', img: 'player_menu_p0'},
+	{ elmt: '#player-div1', path: 'interface/', img: 'player_menu_p1'},
+	{ elmt: '#player-div2', path: 'interface/', img: 'player_menu_p2'},
+	{ elmt: '#player-div3', path: 'interface/', img: 'player_menu_p3'},
+	{ elmt: '.metal-icon', path: 'interface/', img: 'res_metal_icon'},
+	{ elmt: '.water-icon', path: 'interface/', img: 'res_water_icon'},
+	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
+	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
+	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
+	{ elmt: '#resources-menu-div', path: 'interface/', img: 'resources_menu'},
+	{ elmt: '#structures-menu-div', path: 'interface/', img: 'structures_menu'},
+	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
+	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
+	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
+	{ elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
+	{ elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
+	{ elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
+	{ elmt: '.struct-base-button', path: 'interface/', img: 'structbase_button'},
+	{ elmt: '.struct-fleet-button', path: 'interface/', img: 'structfleet_button'},
+	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
+	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
+	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
+	{ elmt: '#agent-button-ambassador', path: 'interface/', img: 'agentambassador_button'},
+	{ elmt: '#agent-button-envoy', path: 'interface/', img: 'agentenvoy_button'},
+	{ elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
+	{ elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
+	{ elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
 ];
 
 $.fn.preload = function() {
@@ -140,7 +167,7 @@ var toggleMenu = function( menuid, val ) {
 var clickStructureButton = function( objecttype ){
 	setPendingAction( ACT_BUILD );
 	setPendingObject(objecttype);
-	toggleMenu("#build-buttons-div");
+	// toggleMenu("#build-buttons-div");
 	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
@@ -148,7 +175,7 @@ var clickStructureButton = function( objecttype ){
 var clickAgentButton = function( agenttype ){
 	setPendingAction( ACT_RECRUIT );
 	setPendingAgent(agenttype);
-	toggleMenu("#recruit-buttons-div");
+	// toggleMenu("#recruit-buttons-div");
 	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
@@ -359,7 +386,7 @@ var displayTurnHelpMessage = function() {
  */
 var createPlayersMenu = function() {
 
-	var wrapperWidth = (210 * clientGame.players.length);
+	var wrapperWidth = (256 * clientGame.players.length);
 	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
 
 	var marginleft = Math.round(wrapperWidth / -2) + "px";
@@ -369,13 +396,26 @@ var createPlayersMenu = function() {
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
 
-		innerHTML += '<div id="player-div' + i 
-					 + '" class="player-div" style="bottom: 100px" '
-					 + ' onclick="javascript:togglePlayersMenu(' + i + ')">';
+		innerHTML += '<div id="player-div' + i + '" class="player-div" style="bottom: 100px">';
 
-		innerHTML += '<div id="player-turn-div' + i + '" class="player-turn-div"></div>';
-		innerHTML += '<div id="player-stats-div' + i +'" class="player-stats-div"></div>';
+		var username = all_users[clientGame.game.players[i]].name;
+		var resources = clientGame.game.resources[i];
+		var points = clientGame.game.points[i];
 
+		innerHTML += '<div class="player-id-div">' + username + '</div>';
+
+		innerHTML += '<div class="player-stats-div">';
+		
+		innerHTML += '<table class="player-stats-table"><tr>';
+		innerHTML += '<td class="metal-icon"></td>';
+		innerHTML += '<td class="water-icon"></td>';
+		innerHTML += '<td class="fuel-icon"></td>';
+		innerHTML += '<td class="food-icon"></td>';
+
+		innerHTML += '<td class="points-icon"></td>';
+
+		innerHTML += '</tr></table>';
+		innerHTML += '</div>';
 		innerHTML += '</div>';
 	}
 
@@ -387,58 +427,184 @@ var createPlayersMenu = function() {
 	$('#players-wrapper-div')[0].style.visibility = "visible";
 };
 
-var createPlayerTurnMenus = function() {
-
-	for ( var i = 0; i < clientGame.game.players.length; i++ ) {
-		var innerHTML = "";
-
-		if ( i == clientTurn) {
-			innerHTML += "Your turn!";
-		}
-		else {
-			innerHTML += COL_ENGLISH[i] + "'s turn!";
-		}
-
-		$('#player-turn-div' + i )[0].innerHTML = innerHTML;
-	}
-
-};
-
 var updatePlayerStatsMenus = function() {
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
 
-		var statsDiv = $('#player-stats-div' + i )[0];
-
-		var username = all_users[clientGame.game.players[i]].name;
-
-		var points = clientGame.game.points[i];
-		var structures = clientGame.game.structures[i];
+		var playerDiv = '#player-div' + i;
 		var resources = clientGame.game.resources[i];
+		var points = clientGame.game.points[i];
 
-		statsDivHTML = username;
-		statsDivHTML += '<br>' + points[PNT_TOTAL];
-
-		statsDivHTML += '<p style="text-align:left">';
-		statsDivHTML += 'Metal: ' + resources[RES_METAL];
-		statsDivHTML += '<br>Water: ' + resources[RES_WATER];
-		statsDivHTML += '<br>Fuel: ' + resources[RES_FUEL];
-		statsDivHTML += '<br>Food: ' + resources[RES_FOOD];
-
-		statsDivHTML += '<br><br>Structure Points: ' + points[PNT_STRUCTURES];
-		statsDivHTML += '<br>Exploration Points:  ' + points[PNT_EXPLORE];
-		statsDivHTML += '<br>Envoy Points:        ' + points[PNT_ENVOY];
-		statsDivHTML += '<br>Destruction Points:  ' + points[PNT_DESTROY];
-
-		statsDivHTML += '<br><br>Mines: ' + structures[OBJ_MINE];
-		statsDivHTML += '<br>Factories:  ' + structures[OBJ_FACTORY];
-		statsDivHTML += '<br>Embassies:        ' + structures[OBJ_EMBASSY];
-		statsDivHTML += '<br>Bases:  ' + structures[OBJ_BASE];
-		statsDivHTML += '<br>Fleets:  ' + structures[OBJ_FLEET];
-		statsDivHTML += '</p>';
-
-		statsDiv.innerHTML = statsDivHTML;
+		$(playerDiv).find('.metal-icon')[0].innerHTML = resources[RES_METAL];
+		$(playerDiv).find('.water-icon')[0].innerHTML = resources[RES_WATER];
+		$(playerDiv).find('.fuel-icon')[0].innerHTML = resources[RES_FUEL];
+		$(playerDiv).find('.food-icon')[0].innerHTML = resources[RES_FOOD];
+		$(playerDiv).find('.points-icon')[0].innerHTML = points[PNT_TOTAL];
 	}
+};
+
+var createBottomBarMenus = function() {
+	createResourcesMenu();
+	createStructuresMenu();
+	createAgentsMenu();
+};
+
+var updateBottomBarMenus = function() {
+	updateResourcesMenu();
+	updateStructuresMenu();
+	updateAgentsMenu();
+};
+
+var createResourcesMenu = function() {
+	
+	var innerHTML = '';	
+
+	for ( var i = 0; i <= RES_FOOD; i++ ){
+		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
+				   + '<div class="gain-div"></div><div class="loss-div"></div>'
+        		   + '<table class="resource-table" cellspacing="0"></table>'
+        		   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
+        		   + '</div>';
+	}
+
+	innerHTML += '<input type="button" id="trade-button" value="Trade"></input>';
+
+	$('#resources-menu-div')[0].innerHTML = innerHTML;
+
+	updateResourcesMenu();
+};
+
+var updateResourcesMenu = function() {
+
+	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
+
+	for ( var i = 0; i <= RES_FOOD; i++ ){
+
+		var resourceDiv = '#resource-div' + i;
+		$(resourceDiv).find('.gain-div')[0].innerHTML = '+2';
+		$(resourceDiv).find('.loss-div')[0].innerHTML = '-1';
+
+		var resources = clientGame.game.resources[clientTurn];
+		var innerHTML = '<tr>';
+		for ( var n = 0; n < 10; n++ ) {
+			innerHTML += (n < resources[i] ? 
+						  '<td class="' + icons[i] + '"></td>':
+						  '<td width="25px" height="25px"></td>');
+
+		}
+		innerHTML += '</tr>';
+
+		$(resourceDiv).find('.resource-table').html(innerHTML);
+	}
+};
+
+var createStructuresMenu = function() {
+	var innerHTML = '';
+
+	innerHTML += '<div id="struct-mines-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-fleets-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-factories-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-embassies-div"><table class="struct-table">'
+					+ '</table></div>';
+	innerHTML += '<div id="struct-base-div"></div>';
+
+	$('#structures-menu-div')[0].innerHTML = innerHTML;
+
+	updateStructuresMenu();
+};
+
+var updateStructuresMenu = function() {
+
+	var structures = clientGame.game.structures[clientTurn];
+
+	var innerHTML = '<tr>';
+	for ( var i = 0; i < 4; i++ ){
+		innerHTML += (i < structures[OBJ_MINE] ? 
+				  '<td><input type="button" class="struct-mine-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_MINE);"></input></td>':
+				  '<td width="34px" height="34px"></td>');
+	}
+	innerHTML += '</tr>';
+	$('#struct-mines-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = '<tr>';
+	for ( var i = 0; i < 3; i++ ){
+		innerHTML += (i < structures[OBJ_FLEET] ? 
+				  '<td><input type="button" class="struct-fleet-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);"></input></td>':
+				  '<td width="42px" height="33px"></td>');
+	}
+	innerHTML += '</tr>';
+	$('#struct-fleets-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = '<tr>';
+	for ( var i = 0; i < 3; i++ ){
+		innerHTML += (i < structures[OBJ_FACTORY] ? 
+				  '<td><input type="button" class="struct-factory-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);"></input></td>':
+				  '<td width="34px" height="50px"></td>');
+	}
+	innerHTML += '</tr>'
+	$('#struct-factories-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = '<tr>';
+	for ( var i = 0; i < 5; i++ ){
+		innerHTML += (i < structures[OBJ_EMBASSY] ? 
+				  '<td><input type="button" class="struct-embassy-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);"></input></td>':
+				  '<td width="37px" height="50px"></td>');
+	}
+	innerHTML += '</tr>'
+	$('#struct-embassies-div').find('.struct-table').html(innerHTML);
+
+	innerHTML = (structures[OBJ_BASE] > 0 ? 
+			  '<input type="button" class="struct-base-button"'
+			  + 'onclick="javascript:clickStructureButton(OBJ_BASE);"></input>':
+			  '');
+	$('#struct-base-div').html(innerHTML);
+};
+
+var createAgentsMenu = function() {
+	var innerHTML = '<table id="agents-table"></table>';
+
+	$('#agents-menu-div')[0].innerHTML = innerHTML;
+
+	updateAgentsMenu();
+};
+
+var updateAgentsMenu = function() {
+	var innerHTML = '<tr>';
+
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-explorer" '
+				+ 'onclick="javascript:clickAgentButton(AGT_EXPLORER);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-miner" '
+				+ 'onclick="javascript:clickAgentButton(AGT_MINER);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-surveyor" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SURVEYOR);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-smuggler" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SMUGGLER);"></input></td>';
+
+	innerHTML += '</tr><tr>';
+
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-ambassador" '
+				+ 'onclick="javascript:clickAgentButton(AGT_AMBASSADOR);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-envoy" '
+				+ 'onclick="javascript:clickAgentButton(AGT_ENVOY);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-spy" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SPY);"></input></td>';
+	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-sabateur" '
+				+ 'onclick="javascript:clickAgentButton(AGT_SABATEUR);"></input></td>';
+
+	innerHTML += '</tr>';
+
+	$('#agents-table').html(innerHTML);
+};
+
+var createPlayerTurnMenus = function() {
+
 };
 
 /** 
@@ -458,25 +624,4 @@ var setInterfaceImages = function() {
 
 		$( name ).css("background-image", 'url(' + path + '.png)');
 	}
-};
-
-var createInterface = function() {
-	var innerHTML = '<table id="recruit-agents-table"><tr>';
-	var path = s3url + 'interface/';
-	var imgSize = pixelRatio <= 1 ? "1x" : "2x";
-
-	for (var i = AGT_EXPLORER; i <= AGT_SABATEUR; i++) {
-		innerHTML += '<td style="padding: 0px margin: 0px">'
-	 				+ '<input type="image" class="recruit-agent-button"'
-					+ ' src="' + path + imgSize + '_agents_bar_' + i + '.png"'
-					+ ' width="79px" height="100px"';
-		if ( i >= AGT_EXPLORER && i <= AGT_SABATEUR ) {
-			innerHTML += ' onclick="javascript:clickAgentButton(' + i + ');"';
-		}
-		innerHTML += '></input></td>';
-	};
-
-	innerHTML += '</tr></table>'
-	$('#recruit-buttons-div')[0].innerHTML = innerHTML;
-	$('#recruit-buttons-div').css("background-image", "url(" + path + imgSize + "_agents_bar_p" + clientTurn + ".png)");
 };

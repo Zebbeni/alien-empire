@@ -27,9 +27,16 @@
 	position: relative;
 	margin: 0 auto;
 	padding: 10px;
-	background: rgba(131, 203, 180, .8);
 	color: white;
 	text-align: center;
+}
+
+#your-turn-message-div, #your-action-message-div, #turn-done-button {
+	background: rgba(0, 0, 0, .3);
+}
+
+#turn-done-button:hover {
+	background: rgba(100, 100, 100, .3);
 }
 
 #your-turn-message-div {
@@ -38,7 +45,7 @@
 
 #pending-action-div {
 	top: 35px;
-	font-size: 20px;
+	font-size: 15px;
 }
 
 #your-action-message-div {
@@ -46,7 +53,7 @@
 }
 
 .msg-action-div {
-	
+
 }
 
 .msg-action-p0 {
@@ -69,11 +76,10 @@
 	position: fixed;
 	width: 150px;
 	height: 50px;
-	left: 25px;
-	bottom: 25px;
+	right: 25px;
+	top: 100px;
 	margin: 10px;
 	padding: 5px;
-	background: rgba(131, 203, 180, .8);
 	font-weight: bold;
 	color: black;
 }
@@ -86,22 +92,74 @@
 
 #players-wrapper-div {
 	position: absolute;
-	bottom: 0px;
-	height: 0px;
+	top: 0px;
+	height: 43px;
 	left: 50%;
 	margin: 0 auto;
 }
 
 .player-div {
 	position: relative;
-	overflow-y: hidden;
+	/*overflow-y: hidden;*/
 	float: left;
-	width: 200px;
-	height: 100px;
+	top: 0px;
+	width: 250px;
+	height: 43px;
+	margin-left: 3px;
+	margin-right: 3px;
 	color: black;
 }
 
-.player-stats-div, .player-turn-div {
+.player-id-div {
+	position: relative;
+	display: table-cell;
+	top: 0px;
+	left: 0px;
+	height: 43px;
+	width: 104px;
+	padding: 2px;
+	font-size: 14px;
+	font-family: 'Cinzel Decorative', cursive;
+	font-weight: 700;
+	text-align: center;
+	vertical-align: middle;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	word-break: break-word;
+	line-height: 90%;
+	color: black;
+}
+
+.player-stats-div {
+	position: absolute;
+	top: 4px;
+	right: 12px;
+	width: 135px;
+	height: 31px;
+	padding: 3px;
+}
+
+.metal-icon, .water-icon, .fuel-icon, .food-icon, .points-icon {
+	width: 25px;
+	height: 25px;
+	font-size: 17px; 
+	padding: 0px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.metal-icon, .water-icon, .fuel-icon, .food-icon {
+	color: white;
+}
+
+
+.points-icon {
+	color: black;
+	margin-left: 10px;
+	font-weight: bold;
+}
+
+/*.player-stats-div, .player-turn-div {
 	display: table;
 	padding: 5px;
 	margin: 5px;
@@ -109,40 +167,39 @@
 	text-align: center;
 	position: relative;
 	width: 190px;
-}
+}*/
 
-.player-stats-div {
+/*.player-stats-div {
 	color: black;
 	font-weight: bold;
 	background: rgba(131, 203, 180, .8);
-}
+}*/
 
-.player-turn-div {
+/*.player-turn-div {
 	height: 30px;
 	overflow-y: hidden;
 	font-size: 20px;
 	color: white;
-}
+}*/
 
 #game-messages-wrapper-div {
 	position: absolute;
 	width: 350px;
-	height: 200px;
-	bottom: 100px;
-	right: 25px;
-	background: rgba(0, 0, 0, .0);
+	height: 130px;
+	bottom: 160px;
+	left: 0px;
 }
 
 #game-messages-div, #game-chat-input {
 	position: relative;
 	width: 100%;
-	background: rgba(255, 255, 255, 0.1);
-	margin: 5px;
+	background: rgba(0, 0, 0, 0.3);
+	margin: 2px;
 }
 
 #game-messages-div {
 	vertical-align: bottom;
-	height: 160px;
+	height: 90px;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -153,7 +210,7 @@
 	color: rgba(255, 255, 255, .9);
 }
 
-#player-turn-div0 {
+/*#player-turn-div0 {
 	background: rgba(255, 84, 84, .8);
 }
 
@@ -167,7 +224,7 @@
 
 #player-turn-div3 {
 	background: rgba(253, 255, 58, .8);
-}
+}*/
 
 #action-confirm-button, #action-cancel-button {
 	position: relative;
@@ -182,36 +239,265 @@
 	color: black;
 }
 
-#button-bar-div {
+/*#button-bar-div {
 	position: fixed;
-	top: 0px;
+	bottom: 100px;
 	left: 50%;
 	width: 510px;
 	margin-left: -205px;
+}*/
+
+#bottom-bar-div {
+	position: absolute;
+	bottom: 0px;
+	width: 1024px;
+	left: 50%;
+	margin-left: -512px;
+	opacity: 0.0;
 }
 
-#build-recruit-buttons-div {
-	position: fixed;
+#resources-menu-div, #structures-menu-div, #agents-menu-div {
+	position: absolute;
+	bottom: 0px;
+}
+
+#resources-menu-div {
+	left: 0px;
+	width: 390px;
+	height: 156px;
+}
+
+#structures-menu-div {
+	left: 390px;
+	width: 390px;
+	height: 143px;
+}
+
+#agents-menu-div {
+	left: 780px;
+	width: 244px;
+	height: 162px;
+}
+
+.resource-div {
+	position: absolute;
+	float: left;
+	left: 10px;
+	height: 27px;
+	width: 372px;
+}
+
+#resource-div0 {
 	top: 35px;
+}
+
+#resource-div1 {
+	top: 60px;
+}
+
+#resource-div2 {
+	top: 85px;
+}
+
+#resource-div3 {
+	top: 110px;
+}
+
+.gain-div, .loss-div {
+	position: absolute;
+	font-weight: bold;
+	text-align: center;
+	vertical-align: middle;
+	top: 2px;
+	height: 25px;
+	width: 25px;
+}
+
+.gain-div {
+	left: 6px;
+	color: #008ebc;
+}
+
+.loss-div {
+	left: 31px;
+	color: #ff5656;
+}
+
+.resource-table {
+	position: absolute;
+	table-layout: fixed;
+	top: 0px;
+	left: 60px;
+	height: 25px;
+	width: 250px;
+}
+
+.fourtoone-button {
+	position: absolute;
+	top: 1px;
+	right: 0px;
+	width: 55px;
+	height: 25px;
+	color: black;
+	font-weight: bold;
+}
+
+.fourtoone-button:hover {
+	background-position: -55px 0;
+}
+
+#trade-button {
+	position: absolute;
+	right: 7px;
+	top: 5px;
+	font-weight: bold;
+	width: 55px;
+	height: 27px;
+	color: black;
+}
+
+#trade-button:hover {
+	background-position: -55px 0;
+}
+
+#struct-mines-div, #struct-fleets-div, #struct-factories-div, #struct-embassies-div, #struct-base-div {
+	position: absolute;
+}
+
+#struct-mines-div {
+	top: 36px;
+	left: 27px;
+	width: 136px;
+	height: 34px;
+}
+
+#struct-fleets-div {
+	top: 36px;
+	left: 170px;
+	width: 126px;
+	height: 33px;
+}
+
+#struct-factories-div {
+	top: 70px;
+	left: 13px;
+	width: 108px;
+	height: 50px;
+}
+
+#struct-embassies-div {
+	top: 72px;
+	left: 120px;
+	width: 185px;
+	height: 50px;
+}
+
+#struct-base-div {
+	top: 40px;
+	left: 304px;
+	width: 70px;
+	height: 70px;
+}
+
+.struct-table {
+	width: 100%;
+	height: 100%;
+}
+
+.struct-mine-button, .struct-factory-button, .struct-embassy-button, .struct-base-button,
+.struct-fleet-button {
+	background-color: transparent;
+}
+
+.struct-mine-button {
+	width: 34px;
+	height: 34px;
+}
+
+.struct-mine-button:hover {
+	background-position: -34px;
+}
+
+.struct-factory-button {
+	width: 34px;
+	height: 50px;
+}
+
+.struct-factory-button:hover {
+	background-position: -34px 0;
+}
+
+.struct-embassy-button {
+	width: 37px;
+	height: 50px;
+}
+
+.struct-embassy-button:hover {
+	background-position: -37px 0;
+}
+
+.struct-fleet-button {
+	width: 42px;
+	height: 33px;
+}
+
+.struct-fleet-button:hover {
+	background-position: -42px 0;
+}
+
+.struct-base-button {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 70px;
+	height: 70px;
+}
+
+.struct-base-button:hover {
+	background-position: -70px 0;
+}
+
+#agents-table {
+	position: absolute;
+	top: 31px;
+	left: 13px;
+	width: 216px;
+	height: 108px;
+}
+
+.agent-button {
+	width: 54px;
+	height: 54px;
+	background-color: transparent;
+}
+
+.agent-button:hover {
+	background-position: -54px 0;
+}
+
+/*#build-recruit-buttons-div {
+	position: absolute;
+	bottom: 100px;
 	left: 50%;
 	width: 650px;
 	margin-left: -325px;
-}
+}*/
 
-#build-buttons-div, #recruit-buttons-div {
+/*#build-buttons-div, #recruit-buttons-div {
 	position: absolute;
+	top: 0px;
 	width: 650px;
 	height: 100px;
-}
+}*/
 
-#recruit-agents-table {
+/*#recruit-agents-table {
 	padding: 0px;
 	margin-left: 10px;
 	width: 627px;
 	table-layout: fixed;
-}
+}*/
 
-.create-button {
+/*.create-button {
 	position: relative;
 	float: left;
 	height: 25px;
@@ -222,9 +508,9 @@
 	font-size: 15px;
 	font-weight: bold;
 	color: black;
-}
+}*/
 
-.build-structure-button {
+/*.build-structure-button {
 	position: relative;
 	float: left;
 	top: 0px;
@@ -233,26 +519,26 @@
 	font-size: 15px;
 	font-weight: bold;
 	color: black;
-}
+}*/
 
-.recruit-agent-button {
+/*.recruit-agent-button {
 	background: none;
 	margin: 0px;
 	padding:;
-}
+}*/
 
-.recruit-agent-button:hover {
+/*.recruit-agent-button:hover {
 
-}
+}*/
 
-.build-structure-button {
+/*.build-structure-button {
 	height: 110px;
 	width: 110px;
-}
+}*/
 
-.create-button:hover, .build-structure-button:hover, #turn-done-button:hover {
+/*.create-button:hover, .build-structure-button:hover {
 	background: rgba(161, 233, 210, .8);
-}
+}*/
 
 #game-chat-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    rgba(255, 255, 255, 0.5);

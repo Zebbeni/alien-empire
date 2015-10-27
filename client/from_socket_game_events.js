@@ -30,23 +30,9 @@ socket.on('loading done', function(content) {
 
 });
 
-socket.on( ACT_ENGLISH[ ACT_PLACE ], function(content, msg) {
+socket.on( 'game action', function(content, msg) {
 
 	updateAll( content );
-    updateGameMessages( msg );
-
-});
-
-socket.on( ACT_ENGLISH[ ACT_BUILD ], function(content, msg) {
-
-	updateAll( content );
-    updateGameMessages( msg );
-
-});
-
-socket.on( ACT_ENGLISH[ ACT_RECRUIT ], function(content, msg) {
-    
-    updateAll( content );
     updateGameMessages( msg );
 
 });
