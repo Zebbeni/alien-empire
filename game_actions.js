@@ -39,7 +39,7 @@ var helpers = require('./game_helpers');
 			updateTurn( game );
 			return {
 					to: cons.EVENT_ALL,
-					evnt: 'turn update',
+					evnt: 'game event',
 					content: {
 						game: game
 					}
@@ -84,7 +84,7 @@ var helpers = require('./game_helpers');
 		else {
 			return {
 					to: cons.EVENT_ALL,
-					evnt: cons.ACT_ENGLISH[ action.actiontype ],
+					evnt: 'game event',
 					content: {
 							game: game,
 							action: action,

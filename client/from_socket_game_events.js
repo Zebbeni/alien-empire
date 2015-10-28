@@ -16,21 +16,22 @@ socket.on('room game starting', function(gameInfo) {
 
 });
 
-socket.on('turn update', function(content, msg) {
-
-    updateClientGame(content);
-    toggleTurnMenu();
-    updateGameMessages( msg );
-
-});
-
+/**
+ * triggered when server acknowledges the client's loading done
+ * message. Sends current game object to client
+ */
 socket.on('loading done', function(content) {
 
 	createAll( content );
 
 });
 
-socket.on( 'game action', function(content, msg) {
+/** 
+ * triggered by any player action that updates the game state
+ * and require all clients to be updated. msg is a string or
+ * action, to be added to game messages
+ */
+socket.on( 'game event', function(content, msg) {
 
 	updateAll( content );
     updateGameMessages( msg );

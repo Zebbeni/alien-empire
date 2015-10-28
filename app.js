@@ -87,7 +87,7 @@ io.sockets.on('connection', function(socket) {
 			var newMsg = helpers.addGameActionMessage( gamesInfo[gameid],
 													   socket.userid,
 													   action );
-			io.in(gamesInfo[gameid].room).emit('game action', response.content, newMsg);
+			io.in(gamesInfo[gameid].room).emit(response.evnt, response.content, newMsg);
 		}
 	});
 
