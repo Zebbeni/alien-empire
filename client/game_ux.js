@@ -55,39 +55,15 @@ $(window).load(function() {
 	moveToLogin();
 });
 
-var playerMenuOn = [false, false, false, false];
-
-var toggleRecruitMenu = function() {
-	console.log("this is where we would show agents to recruit");
-};
-
-/**
- * Displays an 'illegal action' message returned from the server.
- * TODO: Animate this in a nice div instead of an ugly alert
- */
-var toggleIllegalActionMenu = function(response) {
-	alert( response );
-};
-
-/**
- * Uses the playerMenuOn array to determine if a player div is expanded or
- * collapsed. Toggles to the opposite state when clicked and transitions correctly
- */
-var togglePlayersMenu = function( i ) {
-	if ( playerMenuOn[i] ){
-		$("#player-div" + i ).transition({height: '100px', bottom: '100px'}, 500);
-		playerMenuOn[i] = false;
-	} else {
-		$("#player-div" + i ).transition({height: '415px', bottom: '415px'}, 500);
-		playerMenuOn[i] = true;
-	}
-};
-
+var createInterface = function() {
+	createPlayerStatsMenus();
+	createBottomBarMenus();
+}
 /**
  * Updates menus and board interactivity when a game action occurs.
  * TODO: Break this up and/or rename it. It's grown in its responsibility
  */
-var toggleTurnMenu = function() {
+var updateInterface = function() {
 
 	if( clientGame.game.turn == clientTurn ) {
 
@@ -113,21 +89,15 @@ var toggleTurnMenu = function() {
 
 	}
 
-	togglePlayerTurnMenus();
+	setInterfaceImages();
 };
 
 /**
- * Fades in or fades out player-turn-divs based on whose turn it is
+ * Displays an 'illegal action' message returned from the server.
+ * TODO: Animate this in a nice div instead of an ugly alert
  */
-var togglePlayerTurnMenus = function() {
-	for ( var i = 0; i < clientGame.game.players.length; i++) {
-		if (i == clientGame.game.turn ){
-			$('#player-turn-div' + i).transition({opacity: 1.0});
-		}
-		else {
-			$('#player-turn-div' + i).transition({opacity: 0.0});
-		}
-	}
+var toggleIllegalActionMenu = function(response) {
+	alert( response );
 };
 
 var clickBuildButton = function() {
@@ -167,7 +137,6 @@ var toggleMenu = function( menuid, val ) {
 var clickStructureButton = function( objecttype ){
 	setPendingAction( ACT_BUILD );
 	setPendingObject(objecttype);
-	// toggleMenu("#build-buttons-div");
 	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
@@ -175,7 +144,6 @@ var clickStructureButton = function( objecttype ){
 var clickAgentButton = function( agenttype ){
 	setPendingAction( ACT_RECRUIT );
 	setPendingAgent(agenttype);
-	// toggleMenu("#recruit-buttons-div");
 	displayTurnHelpMessage();
 	updateBoardInteractivity();
 };
@@ -384,7 +352,7 @@ var displayTurnHelpMessage = function() {
  * Creates basic structure first and then calls reusable updatePlayersTurnMenus and 
  * updatePlayersStatsMenus functions to fill contents 
  */
-var createPlayersMenu = function() {
+var createPlayerStatsMenus = function() {
 
 	var wrapperWidth = (256 * clientGame.players.length);
 	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
@@ -420,10 +388,6 @@ var createPlayersMenu = function() {
 	}
 
 	$('#players-wrapper-div')[0].innerHTML = innerHTML;
-
-	createPlayerTurnMenus();
-	updatePlayerStatsMenus();
-
 	$('#players-wrapper-div')[0].style.visibility = "visible";
 };
 
@@ -603,13 +567,11 @@ var updateAgentsMenu = function() {
 	$('#agents-table').html(innerHTML);
 };
 
-var createPlayerTurnMenus = function() {
-
-};
-
 /** 
  * Sets UX images using DOMimageMap, picking images according to the 
  * current device pixel ratio
+ * TODO: this is currently being called WAY too often. there should be a better
+ * function to target only css that needs to be updated
  */
 var setInterfaceImages = function() {
 

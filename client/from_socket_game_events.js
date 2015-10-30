@@ -22,7 +22,8 @@ socket.on('room game starting', function(gameInfo) {
  */
 socket.on('loading done', function(content) {
 
-	createAll( content );
+    updateClientGame( content )
+	createAll();
 
 });
 
@@ -33,7 +34,8 @@ socket.on('loading done', function(content) {
  */
 socket.on( 'game event', function(content, msg) {
 
-	updateAll( content );
+    updateClientGame( content )
+	updateAll();
     updateGameMessages( msg );
 
 });

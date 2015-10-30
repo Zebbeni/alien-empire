@@ -16,6 +16,12 @@ var GAME_CLOSED = 0;
 var GAME_STAGING = 1;
 var GAME_PROGRESS = 2;
 
+var PHS_MISSIONS = 0;
+var PHS_RESOURCE = 1;
+var PHS_UPKEEP = 2;
+var PHS_BUILD = 3;
+var PHS_ACTIONS = 4;
+
 var USR_OFFLINE = 0;
 var USR_ONLINE = 1;
 var USR_STAGING = 2;

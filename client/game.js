@@ -5,37 +5,31 @@
  * Recevies initialized game object from server, assigns to clientGame,
  * draws the board, draws the UI, and shows the correct turn menus 
  */
-var createAll = function( content ) {
-
-	updateClientGame(content);
+var createAll = function() {
+	
 	initializePlayerAttributes();
 	setGlobals();
-	drawBoard();
-	displayGameMessages();
-	createPlayersMenu();
-	createBottomBarMenus();
-	moveToGameInterface();
-	setInterfaceImages();
-	toggleTurnMenu();
-	updateBoardInteractivity();
+	createBoard();
 
+	createInterface();
+	moveToGameInterface();
+
+	updateAll();
 };
 
 /**
  * Receives new game from socket, updates clientGame, redraws the board,
  * updates player stats menus and animates the correct turn menus in/out 
  */
-var updateAll = function( content ) {
+var updateAll = function() {
 
-	updateClientGame( content );
 	updatePlayerStatsMenus();
 	updateBottomBarMenus();
 	updateBoard();
+	
 	displayGameMessages();
-	toggleTurnMenu();
+	updateInterface();
 	updateBoardInteractivity();
-
-	setInterfaceImages(); // resets css of any new image elements added to DOM
 };
 
 /**

@@ -78,7 +78,7 @@ var handleClickPlanet = function( planetid ) {
 /**
  * Calls init and draw functions for each tile in game board
  */
-var drawBoard = function() {
+var createBoard = function() {
 
 	if (stage) {
 
