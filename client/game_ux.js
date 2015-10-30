@@ -65,6 +65,9 @@ var createInterface = function() {
  */
 var updateInterface = function() {
 
+	updatePlayerStatsMenus();
+	updateBottomBarMenus();
+	
 	if( clientGame.game.turn == clientTurn ) {
 
 		if( clientGame.game.round == 0){

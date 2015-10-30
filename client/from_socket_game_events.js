@@ -24,7 +24,7 @@ socket.on('loading done', function(content) {
 
     updateClientGame( content )
 	createAll();
-
+    updateAll();
 });
 
 /** 
