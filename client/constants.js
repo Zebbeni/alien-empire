@@ -22,6 +22,14 @@ var PHS_UPKEEP = 2;
 var PHS_BUILD = 3;
 var PHS_ACTIONS = 4;
 
+var PHS_ENGLISH = {
+	0: 'Missions',
+	1: 'Resources',
+	2: 'Upkeep',
+	3: 'Build',
+	4: 'Actions'
+};
+
 var USR_OFFLINE = 0;
 var USR_ONLINE = 1;
 var USR_STAGING = 2;

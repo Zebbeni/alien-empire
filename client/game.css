@@ -31,7 +31,7 @@
 	text-align: center;
 }
 
-#your-turn-message-div, #your-action-message-div, #turn-done-button {
+#your-turn-message-div, #your-action-message-div {
 	background: rgba(0, 0, 0, .3);
 }
 
@@ -50,6 +50,15 @@
 
 #your-action-message-div {
 	font-size: 30px;
+}
+
+#round-div {
+	position: absolute;
+	opacity: 0.0;
+	top: 100px;
+	left: 25px;
+	width: 100px;
+	height: 150px;
 }
 
 .msg-action-div {
@@ -73,14 +82,14 @@
 }
 
 #turn-done-button {
-	position: fixed;
-	width: 150px;
-	height: 50px;
-	right: 25px;
-	top: 100px;
-	margin: 10px;
+	position: absolute;
+	width: 100px;
+	height: 40px;
+	left: 25px;
+	top: 260px;
 	padding: 5px;
 	font-weight: bold;
+	background: rgba(131, 203, 180, .8);
 	color: black;
 }
 

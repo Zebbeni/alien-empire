@@ -21,6 +21,8 @@ var createAll = function() {
  */
 var updateAll = function() {
 
+	updatePlayerStatsMenus();
+	updateBottomBarMenus();
 	updateBoard();
 	
 	displayGameMessages();

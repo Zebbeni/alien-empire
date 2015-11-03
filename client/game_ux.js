@@ -58,6 +58,7 @@ $(window).load(function() {
 var createInterface = function() {
 	createPlayerStatsMenus();
 	createBottomBarMenus();
+	createRoundMenu();
 }
 /**
  * Updates menus and board interactivity when a game action occurs.
@@ -67,7 +68,7 @@ var updateInterface = function() {
 
 	updatePlayerStatsMenus();
 	updateBottomBarMenus();
-	
+
 	if( clientGame.game.turn == clientTurn ) {
 
 		if( clientGame.game.round == 0){
@@ -568,6 +569,20 @@ var updateAgentsMenu = function() {
 	innerHTML += '</tr>';
 
 	$('#agents-table').html(innerHTML);
+};
+
+var createRoundMenu = function() {
+	var innerHTML = '<table>';
+	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
+		innerHTML += '<tr>' + '<td id="phase-div' + i + '" class="phase-div">'
+					+ PHS_ENGLISH[i] + '</td>' + '</tr>';
+	}
+	innerHTML += '</table>';
+	$('#round-div')[0].innerHTML = innerHTML;
+};
+
+var updateRoundMenu = function() {
+
 };
 
 /** 

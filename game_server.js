@@ -15,8 +15,9 @@ var actions = require('./game_actions');
 			points: board.initializePlayerPoints( num_users ),
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
-			secondmines: false,
+			phase: cons.PHS_MISSIONS,
 			turn: 0,
+			secondmines: false,
 			board: board.initializeBoard( num_users )
 		};
 
