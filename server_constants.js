@@ -14,6 +14,7 @@
 		GAME_STAGING : 1,
 		GAME_PROGRESS : 2,
 
+		PHS_PLACING: -1,
 		PHS_MISSIONS: 0,
 		PHS_RESOURCE: 1,
 		PHS_UPKEEP: 2,
@@ -51,6 +52,8 @@
 		// ACT_RETIRE : 7,
 		// ACT_MOVE : 8,
 		// ACT_LAUNCHMISSION : 9,
+		ACT_COLLECT_RESOURCES : 10,
+		ACT_PAY_UPKEEP : 11,
 
 		PNT_STRUCTURES : 0,
 		PNT_EXPLORE : 1,
@@ -130,7 +133,8 @@
 					2: 1,
 					3: 1 
 				},
-				upkeep: {}
+				upkeep: {},
+				max: 4,
 			}, 
 			2: {
 
@@ -141,7 +145,8 @@
 				},
 				upkeep: {
 					0: 1
-				}
+				},
+				max: 3
 			},
 			3: {
 				build: {
@@ -151,7 +156,8 @@
 				},
 				upkeep: {
 					1: 1
-				}
+				},
+				max: 5
 			},
 			4: {
 				build: {
@@ -162,7 +168,8 @@
 				},
 				upkeep: {
 					2: 1
-				}
+				},
+				max: 1
 			},
 			5: {
 				build: {
@@ -172,7 +179,8 @@
 				},
 				upkeep: {
 					2: 1
-				}
+				},
+				max: 3
 			}
 		}
 	};

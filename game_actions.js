@@ -104,6 +104,10 @@ var applyAction = function( action, game ){
 			return applyBuildAction( action, game );
 		case cons.ACT_RECRUIT:
 			return applyRecruitAction( action, game );
+		case cons.ACT_COLLECT_RESOURCES:
+			return applyCollectResourcesAction( action, game );
+		case cons.ACT_PAY_UPKEEP:
+			return applyPayUpkeep( action, game );
 		default:
 			return { 
 					isIllegal: true,
@@ -151,6 +155,7 @@ var applyPlaceAction = function( action, game ){
 
 		updateTurn( game ); // placing should increment the turn
 		
+		calcResourcesToCollect( game, player );
 		return { isIllegal: false };
 	}
 };
@@ -162,7 +167,18 @@ var applyBuildAction = function( action, game ) {
 	var player = action.player;
 	var planet = game.board.planets[planetid];
 
-	// first check to make sure player has an available structure
+	// check to make sure game is on the build phase
+	if ( game.phase != cons.PHS_BUILD ){
+		return { isIllegal: true,
+				 response: "This action must be done during the build phase" };
+	}
+
+	if ( game.turn != player ) {
+		return { isIllegal: true,
+				 response: "This action must be done during your turn" };
+	}
+
+	// check to make sure player has an available structure
 	if ( game.structures[ player ][ objecttype ] <= 0 ){
 
 		return { isIllegal: true,
@@ -306,6 +322,8 @@ var applyBuildAction = function( action, game ) {
 					 response: "Unknown building type"
 					};
 	}
+
+	calcResourcesToCollect( game, player);
 	return { isIllegal: false };
 };
 
@@ -317,6 +335,17 @@ var applyRecruitAction = function( action, game ) {
 	var id = String(player) + String(agenttype);
 	var agent = game.board.agents[ id ];
 	var objecttype = cons.AGT_OBJTYPE[ agenttype ];
+
+	// check to make sure game is on the build phase
+	if ( game.phase != cons.PHS_BUILD ){
+		return { isIllegal: true,
+				 response: "You must recruit new agents during the build phase" };
+	}
+
+	if ( game.turn != player ) {
+		return { isIllegal: true,
+				 response: "You must recruit agents during your turn" };
+	}
 
 	if ( agent.status == cons.AGT_STATUS_DEAD ) {
 		return { isIllegal: true,
@@ -345,6 +374,90 @@ var applyRecruitAction = function( action, game ) {
 	game.board.planets[planetid].agents.push( id );
 
 	return { isIllegal: false};
+};
+
+var applyCollectResourcesAction = function( action, game ){
+	var player = action.player;
+	
+	if ( game.phase != cons.PHS_RESOURCE ) {
+		return { isIllegal: true,
+				 response: "The resource phase is complete"
+			};
+	}
+
+	if ( game.phaseDone[player] ) {
+		return { isIllegal: true,
+				 response: "You have already collected resources"
+			};
+	}
+
+	calcResourcesToCollect( game, player );
+
+	var collect = game.resourceCollect[player];
+
+	// Check here if the user has too many resources and reject until
+	// they've 4:1'd their extras before allowing them to collect new resources
+	for (var i = 0; i <= cons.RES_FOOD; i++){
+		if (game.resources[player][i] + collect[i] > 10){
+			return { isIllegal: true,
+				 response: "You must trade or 4 to 1 before collecting more"
+			};
+		}
+	}
+
+	collectPlayerResources(action, game);
+
+	game.phaseDone[player] = true;
+	updatePhase( game );
+
+	return { isIllegal: false};
+};
+
+var applyPayUpkeep = function( action, game ){
+
+	var player = action.player;
+
+	if ( game.phase != cons.PHS_UPKEEP ){
+		return { isIllegal: true,
+				 response: "The upkeep phase is complete"
+			};
+	}
+
+	if ( game.phaseDone[player] ) {
+		return { isIllegal: true,
+				 response: "You have already paid upkeep"
+			};
+	}
+
+	calcResourceUpkeep( game, player );
+
+	// Check here if the user has too few resources and return illegal message if so
+	// They will need to remove some stuff and re-submit an upkeep action
+
+	payPlayerUpkeep(action, game);
+
+	game.phaseDone[player] = true;
+	updatePhase( game );
+
+	return { isIllegal: false };
+};
+
+var collectPlayerResources = function( action, game){
+
+	var toCollect = game.resourceCollect[action.player];
+
+	for ( var i = 0; i < toCollect.length; i++){
+		game.resources[action.player][i] += toCollect[i];
+	}
+};
+
+var payPlayerUpkeep = function(action, game){
+
+	var toPay = game.resourceUpkeep[action.player];
+
+	for ( var i = 0; i < toPay.length; i++) {
+		game.resources[action.player][i] -= toPay[i];
+	}
 };
 
 // Updates planet.settledBy[player] to true or false 
@@ -378,6 +491,65 @@ var updateBuildableBy = function( player, planetid, game ) {
 	}
 };
 
+/**
+ * This calculates and updates the resourceCollect array for a single
+ * player. It should be run at various times during each round, particularly
+ * when a building is created or removed, or a mission is completed.
+ *
+ * TODO: this is technically pretty inefficent. It would be better
+ * to only update when a building is added, upgraded, destroyed, or a 
+ * resource num is changed, but it shouldn't be a big deal for the numbers
+ * we're dealing with
+ */
+var calcResourcesToCollect = function( game, player ) {
+	
+	var resourceCollect = [0, 0, 0, 0];
+	var planets = game.board.planets;
+	
+	for ( var i = 0; i < planets.length; i++ ) {
+		
+		if (planets[i].explored) {
+
+			for ( var r = 0; r < planets[i].resources.length; r++ ){
+
+				var resource = planets[i].resources[r];
+				var structure = resource.structure;
+
+				if ( structure != undefined ) {
+					
+					// add 2 if a non-mine type of structure, otherwise use num
+					var kind = structure.kind;
+					var numToAdd = (kind == cons.OBJ_MINE ? resource.num : 2);
+
+					if (structure.player == player) {
+						resourceCollect[resource.kind] += numToAdd;
+					}
+				}
+			}
+		}
+	}
+
+	game.resourceCollect[player] = resourceCollect;
+};
+
+var calcResourceUpkeep = function( game, player ) {
+	var resourceUpkeep = [0, 0, 0, 0];
+
+	for ( var obj = cons.OBJ_MINE; obj <= cons.OBJ_FLEET; obj++ ){
+
+		// get number of structures of type obj that are on board
+		var num = cons.STRUCT_REQS[obj].max - game.structures[player][obj];
+		// get upkeep object for this type of structure
+		var upkeep = cons.STRUCT_REQS[obj].upkeep;
+
+		for (var res in upkeep){
+			resourceUpkeep[res] += (upkeep[res] * num);
+		}
+	}
+
+	game.resourceUpkeep[player] = resourceUpkeep;
+};
+
 var updateTurn = function( game ){
 	if(game.round == 0){
 		if(game.secondmines) {
@@ -385,6 +557,7 @@ var updateTurn = function( game ){
 			if (game.turn < 0) {
 				game.turn = 0;
 				game.round = 1;
+				game.phase = cons.PHS_RESOURCE;
 			}
 		} else {
 			game.turn += 1;
@@ -399,6 +572,21 @@ var updateTurn = function( game ){
 			game.round += 1;
 			game.turn = 0;
 		}
+	}
+};
+
+var updatePhase = function( game ){
+	switch (game.phase) {
+		case cons.PHS_RESOURCE:
+		case cons.PHS_UPKEEP:
+			if(game.phaseDone.indexOf(false) == -1){
+				game.phase = (game.phase + 1) % 5;
+				game.turn = 0;
+				helpers.clearPhaseDone( game );
+			}
+			break;
+		default:
+			break;
 	}
 };
 

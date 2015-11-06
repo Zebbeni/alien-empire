@@ -68,6 +68,8 @@ var updateInterface = function() {
 
 	updatePlayerStatsMenus();
 	updateBottomBarMenus();
+	updateRoundMenu();
+	updatePhaseMenus();
 
 	if( clientGame.game.turn == clientTurn ) {
 
@@ -282,6 +284,8 @@ var buildActionMessage = function( actionMsg ){
 			message += AGT_ENGLISH[actionMsg.agenttype];
 			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
 			break;
+		case ACT_COLLECT_RESOURCES:
+			break;
 	}
 
 	messagesHtml += message;
@@ -445,12 +449,14 @@ var createResourcesMenu = function() {
 var updateResourcesMenu = function() {
 
 	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
+	var collect = clientGame.game.resourceCollect[clientTurn];
+	var upkeep = clientGame.game.resourceUpkeep[clientTurn];
 
 	for ( var i = 0; i <= RES_FOOD; i++ ){
 
 		var resourceDiv = '#resource-div' + i;
-		$(resourceDiv).find('.gain-div')[0].innerHTML = '+2';
-		$(resourceDiv).find('.loss-div')[0].innerHTML = '-1';
+		$(resourceDiv).find('.gain-div')[0].innerHTML = '+' + collect[i];
+		$(resourceDiv).find('.loss-div')[0].innerHTML = '-' + upkeep[i];
 
 		var resources = clientGame.game.resources[clientTurn];
 		var innerHTML = '<tr>';
@@ -573,16 +579,51 @@ var updateAgentsMenu = function() {
 
 var createRoundMenu = function() {
 	var innerHTML = '<table>';
+	innerHTML += '<tr><td id="round-td"></td><tr>';
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
-		innerHTML += '<tr>' + '<td id="phase-div' + i + '" class="phase-div">'
+		innerHTML += '<tr>' + '<td id="phase-td' + i + '" class="phase-td">'
 					+ PHS_ENGLISH[i] + '</td>' + '</tr>';
-	}
+	};
 	innerHTML += '</table>';
 	$('#round-div')[0].innerHTML = innerHTML;
 };
 
 var updateRoundMenu = function() {
 
+	if (clientGame.game.phase == PHS_PLACING){
+		$('#round-td')[0].innerHTML = PHS_ENGLISH[PHS_PLACING];
+		$('#round-td').css({background: "rgba(255, 255, 100, 0.5"});
+	}
+	else {
+		$('#round-td')[0].innerHTML = 'Round ' + clientGame.game.round;
+		$('#round-td').css({background: "none"});
+	}
+
+	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
+		if ( i == clientGame.game.phase) {
+			$('#phase-td' + i).addClass('phase-td-current')
+		} 
+		else {
+			$('#phase-td' + i).removeClass('phase-td-current')
+		}
+	};
+};
+
+var updatePhaseMenus = function() {
+
+	$('#resource-phase-div')[0].style.visibility = "hidden";
+	$('#upkeep-phase-div')[0].style.visibility = "hidden";
+
+	switch(clientGame.game.phase) {
+		case PHS_RESOURCE:
+			$('#resource-phase-div')[0].style.visibility = "visible";
+			break;
+		case PHS_UPKEEP:
+			$('#upkeep-phase-div')[0].style.visibility = "visible";
+			break;
+		default:
+			break;
+	}
 };
 
 /** 

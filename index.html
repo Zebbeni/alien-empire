@@ -84,7 +84,14 @@
                 </form>
             </div>
         </div>
-        <div id="round-div" style="visibility: hidden">
+        <div id="round-div" style="visibility: hidden"></div>
+        <div id="resource-phase-div" class="phase-div" style="visibility: hidden">
+            <div>Resource Phase</div>
+            <input type="button" value="Collect" onclick="javascript:submitCollectResources();"/>
+        </div>
+        <div id="upkeep-phase-div" class="phase-div" style="visibility: hidden">
+            <div>Upkeep Phase</div>
+            <input type="button" value="Pay Upkeep" onclick="javascript:submitPayUpkeep();"/>
         </div>
         <div id="confirm-action-div" style="visibility: hidden">
             <div id="your-action-message-div"></div>

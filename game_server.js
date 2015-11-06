@@ -11,11 +11,16 @@ var actions = require('./game_actions');
 			gameid: gameid,
 			num_players: num_users,
 			structures: board.initializePlayerStructures( num_users ),
-			resources: board.initializePlayerResources( num_users ),
+
+			resources: initPlayerResources( num_users ),
+			resourceCollect: initResourceCollect( num_users ),
+			resourceUpkeep: initResourceUpkeep( num_users ),
+
 			points: board.initializePlayerPoints( num_users ),
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
-			phase: cons.PHS_MISSIONS,
+			phase: cons.PHS_PLACING,
+			phaseDone: board.initializePhaseDone( num_users ),
 			turn: 0,
 			secondmines: false,
 			board: board.initializeBoard( num_users )
@@ -34,6 +39,8 @@ var actions = require('./game_actions');
 			case cons.ACT_PLACE:
 			case cons.ACT_BUILD:
 			case cons.ACT_RECRUIT:
+			case cons.ACT_COLLECT_RESOURCES:
+			case cons.ACT_PAY_UPKEEP:
 				return actions.resolveGameAction( action, gameInfo.game );
 			default:
 				return false;
@@ -41,3 +48,35 @@ var actions = require('./game_actions');
 	};
 
 }());
+
+var initPlayerResources = function( num_users ) {
+	var resources = [];
+
+	for ( var i = 0; i < num_users; i++ ){
+
+		resources.push( {} );
+
+		resources[i][cons.RES_METAL] = 2;
+		resources[i][cons.RES_WATER] = 2;
+		resources[i][cons.RES_FUEL] = 2;
+		resources[i][cons.RES_FOOD] = 2;
+	}
+	
+	return resources;
+};
+
+var initResourceCollect = function( num_users ){
+	var resourceCollect = [];
+	for (var i = 0; i < num_users; i++) {
+		resourceCollect.push( [0, 0, 0, 0] );
+	}
+	return resourceCollect;
+};
+
+var initResourceUpkeep = function( num_users ){
+	var resourceUpkeep = [];
+	for (var i = 0; i < num_users; i++) {
+		resourceUpkeep.push( [0, 0, 0, 0] );
+	}
+	return resourceUpkeep;
+};
