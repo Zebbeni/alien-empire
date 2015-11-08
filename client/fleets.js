@@ -21,6 +21,16 @@ var initFleets = function() {
 		fleetshape.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(0, 0, fleetImg.width, fleetImg.height);
 		fleetshape.visible = false;
 
+		fleetshape.mouseEnabled = true;
+
+		fleetshape.on("mouseover", function() {
+			selectFleet( this.name );
+		});
+
+		fleetshape.on("mouseout", function() {
+			hideSelection();
+		});
+
 		fleetsContainer.addChild( fleetshape );
 	}
 
@@ -87,5 +97,11 @@ var updateFleets = function(planetid) {
 			console.log("Fleet doesn't have a planetid but planet still sees it.");
 		}
 	}
+};
 
+var selectFleet = function( fleetname) {
+	var fleetsContainer = board.getChildByName('fleetsContainer');
+	var fleetshape = fleetsContainer.getChildByName( fleetname );
+	console.log('selecting fleet', fleetshape);
+	setSelection(fleetshape.x + 15, fleetshape.y - 25);
 };

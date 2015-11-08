@@ -52,3 +52,17 @@ var socket_submitPayUpkeep = function() {
 		console.log('payint upkeep: ', data);
 	});
 };
+
+/**
+ * This is a stand-in, to allow mission phase to be passed. Eventually
+ * this should be more developed.
+ */
+var socket_submitMissionsViewed = function() {
+	var action = {
+					player: clientTurn,
+					actiontype: ACT_VIEWED_MISSIONS
+				};
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('viewed missions: ', data);
+	});
+};

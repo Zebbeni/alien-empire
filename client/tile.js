@@ -102,7 +102,7 @@ var updateTileInteractivity = function(planetid) {
 	} 
 	else {
 		showDarkScreen(planetid);
-		tiles[planetid].mouseChildren = false;
+		// tiles[planetid].mouseChildren = false;
 	}
 
 	if ( actiontype && clientTurn == clientGame.game.turn) {

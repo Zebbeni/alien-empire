@@ -67,6 +67,7 @@ var ACT_RECRUIT = 4;
 // var ACT_LAUNCHMISSION = 9;
 var ACT_COLLECT_RESOURCES = 10;
 var ACT_PAY_UPKEEP = 11;
+var ACT_VIEWED_MISSIONS = 12;
 
 var PNT_STRUCTURES = 0;
 var PNT_EXPLORE = 1;
@@ -116,7 +117,9 @@ var ACT_ENGLISH_PAST = {
 					2: " placed a ",
 					3: " built a new ",
 					4: " recruited a new ",
-					10: " collected resources"
+					10: " collected resources",
+					11: " paid upkeep",
+					12: " viewed missions",
 				};
 
 var RES_ENGLISH = { 

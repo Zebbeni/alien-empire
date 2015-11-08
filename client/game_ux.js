@@ -108,20 +108,15 @@ var toggleIllegalActionMenu = function(response) {
 
 var clickBuildButton = function() {
 	if ( clientGame.game.round != 0 ) {
-		clearPendingAction();
 		updateBoardInteractivity();
-		toggleMenu('#build-buttons-div');
 		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#recruit-buttons-div')[0].style.visibility = "hidden";
 	}
 };
 
 var clickRecruitButton = function() {
-	updateBoardInteractivity();
 	if ( clientGame.game.round != 0 ) {
-		clearPendingAction();
 		updateBoardInteractivity();
-		toggleMenu('#recruit-buttons-div');
 		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#build-buttons-div')[0].style.visibility = "hidden";
 	}
@@ -141,17 +136,21 @@ var toggleMenu = function( menuid, val ) {
 };
 
 var clickStructureButton = function( objecttype ){
-	setPendingAction( ACT_BUILD );
-	setPendingObject(objecttype);
-	displayTurnHelpMessage();
-	updateBoardInteractivity();
+	if ( clientGame.game.phase == PHS_BUILD ) {
+		setPendingAction( ACT_BUILD );
+		setPendingObject(objecttype);
+		displayTurnHelpMessage();
+		updateBoardInteractivity();
+	}
 };
 
 var clickAgentButton = function( agenttype ){
-	setPendingAction( ACT_RECRUIT );
-	setPendingAgent(agenttype);
-	displayTurnHelpMessage();
-	updateBoardInteractivity();
+	if ( clientGame.game.phase == PHS_BUILD ) {
+		setPendingAction( ACT_RECRUIT );
+		setPendingAgent(agenttype);
+		displayTurnHelpMessage();
+		updateBoardInteractivity();
+	}
 };
 
 var hideYourTurnMenu = function() {
@@ -611,10 +610,14 @@ var updateRoundMenu = function() {
 
 var updatePhaseMenus = function() {
 
+	$('#missions-phase-div')[0].style.visibility = "hidden";
 	$('#resource-phase-div')[0].style.visibility = "hidden";
 	$('#upkeep-phase-div')[0].style.visibility = "hidden";
 
 	switch(clientGame.game.phase) {
+		case PHS_MISSIONS:
+			$('#missions-phase-div')[0].style.visibility = "visible";
+			break;
 		case PHS_RESOURCE:
 			$('#resource-phase-div')[0].style.visibility = "visible";
 			break;

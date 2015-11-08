@@ -37,6 +37,7 @@ var actions = require('./game_actions');
 			case cons.ACT_TURN_DONE:
 				return actions.resolveTurnDone( action, gameInfo.game );
 			case cons.ACT_PLACE:
+			case cons.ACT_VIEWED_MISSIONS:
 			case cons.ACT_BUILD:
 			case cons.ACT_RECRUIT:
 			case cons.ACT_COLLECT_RESOURCES:
@@ -56,10 +57,10 @@ var initPlayerResources = function( num_users ) {
 
 		resources.push( {} );
 
-		resources[i][cons.RES_METAL] = 2;
-		resources[i][cons.RES_WATER] = 2;
-		resources[i][cons.RES_FUEL] = 2;
-		resources[i][cons.RES_FOOD] = 2;
+		resources[i][cons.RES_METAL] = 7;
+		resources[i][cons.RES_WATER] = 7;
+		resources[i][cons.RES_FUEL] = 7;
+		resources[i][cons.RES_FOOD] = 7;
 	}
 	
 	return resources;

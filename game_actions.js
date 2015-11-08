@@ -108,6 +108,8 @@ var applyAction = function( action, game ){
 			return applyCollectResourcesAction( action, game );
 		case cons.ACT_PAY_UPKEEP:
 			return applyPayUpkeep( action, game );
+		case cons.ACT_VIEWED_MISSIONS:
+			return applyViewedMissions( action, game );
 		default:
 			return { 
 					isIllegal: true,
@@ -324,6 +326,8 @@ var applyBuildAction = function( action, game ) {
 	}
 
 	calcResourcesToCollect( game, player);
+	calcResourceUpkeep( game, player );
+	
 	return { isIllegal: false };
 };
 
@@ -397,7 +401,7 @@ var applyCollectResourcesAction = function( action, game ){
 
 	// Check here if the user has too many resources and reject until
 	// they've 4:1'd their extras before allowing them to collect new resources
-	for (var i = 0; i <= cons.RES_FOOD; i++){
+	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
 		if (game.resources[player][i] + collect[i] > 10){
 			return { isIllegal: true,
 				 response: "You must trade or 4 to 1 before collecting more"
@@ -430,11 +434,42 @@ var applyPayUpkeep = function( action, game ){
 	}
 
 	calcResourceUpkeep( game, player );
+	
+	var upkeep = game.resourceUpkeep[player];
+
+	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
+		if ( game.resources[player][i] - upkeep[i] < 0){
+			return { isIllegal: true,
+				 response: "You do not have enough resources to pay upkeep"
+			};
+		}
+	}
 
 	// Check here if the user has too few resources and return illegal message if so
 	// They will need to remove some stuff and re-submit an upkeep action
 
 	payPlayerUpkeep(action, game);
+
+	game.phaseDone[player] = true;
+	updatePhase( game );
+
+	return { isIllegal: false };
+};
+
+var applyViewedMissions = function( action, game) {
+	var player = action.player;
+
+	if ( game.phase != cons.PHS_MISSIONS ){
+		return { isIllegal: true,
+				 response: "The resolve missions phase is complete"
+			};
+	}
+
+	if ( game.phaseDone[player] ){
+		return { isIllegal: true,
+				 response: "Waiting for other players to finish viewing"
+			};
+	}
 
 	game.phaseDone[player] = true;
 	updatePhase( game );
@@ -547,47 +582,89 @@ var calcResourceUpkeep = function( game, player ) {
 		}
 	}
 
+	for (var a = cons.AGT_EXPLORER; a <= cons.AGT_SABATEUR; a++) {
+		// ugh TODO: why did we ever use this way of indexing agents?
+		var agent = game.board.agents[ String(player) + String(a) ];
+		if ( agent.status == cons.AGT_STATUS_ON ){
+			resourceUpkeep[cons.RES_FOOD] += 1;
+		}
+	}
+
 	game.resourceUpkeep[player] = resourceUpkeep;
 };
 
 var updateTurn = function( game ){
-	if(game.round == 0){
-		if(game.secondmines) {
-			game.turn -= 1;
-			if (game.turn < 0) {
-				game.turn = 0;
-				game.round = 1;
-				game.phase = cons.PHS_RESOURCE;
+	switch (game.phase){
+
+		case cons.PHS_PLACING:
+
+			if(game.secondmines) {
+				game.turn -= 1;
+				if (game.turn < 0) {
+					updatePhase( game );
+				}
+			} else {
+				game.turn += 1;
+				if (game.turn >= game.players.length) {
+					game.turn = game.players.length - 1;
+					game.secondmines = true;
+				}
 			}
-		} else {
+
+			break;
+
+		case cons.PHS_RESOURCE:
+		case cons.PHS_UPKEEP:
+
+			break;
+
+		case cons.PHS_BUILD:
+		case cons.PHS_ACTIONS:
+
 			game.turn += 1;
-			if (game.turn >= game.players.length) {
-				game.turn = game.players.length - 1;
-				game.secondmines = true;
+			if ( game.turn >= game.players.length) {
+				updatePhase( game );
+
 			}
-		}
-	} else {
-		game.turn += 1;
-		if ( game.turn >= game.players.length) {
-			game.round += 1;
-			game.turn = 0;
-		}
+			break;
 	}
 };
 
 var updatePhase = function( game ){
+	
+	game.turn = 0;
+
+	if (game.phase == cons.PHS_ACTIONS || game.phase == cons.PHS_PLACING) {
+		updateRound( game );
+	}
+
 	switch (game.phase) {
+		case cons.PHS_PLACING:
+			game.phase = cons.PHS_RESOURCE;
+			break;
+		// including missions here is temporary. Eventually there should
+		// be extra logic to move to the next mission in the queue, and so on
+		// until all missions have been viewed, and THEN update the phase
+		case cons.PHS_MISSIONS:
 		case cons.PHS_RESOURCE:
 		case cons.PHS_UPKEEP:
 			if(game.phaseDone.indexOf(false) == -1){
 				game.phase = (game.phase + 1) % 5;
-				game.turn = 0;
 				helpers.clearPhaseDone( game );
 			}
+			break;
+		case cons.PHS_BUILD:
+		case cons.PHS_ACTIONS:
+			game.phase = (game.phase +1) % 5;
+			helpers.clearPhaseDone( game );
 			break;
 		default:
 			break;
 	}
+};
+
+var updateRound = function( game ){
+	game.round += 1;
 };
 
 var hasEnoughToBuild = function( player, objecttype, game ) {

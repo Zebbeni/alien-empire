@@ -23,3 +23,7 @@ var submitCollectResources = function() {
 var submitPayUpkeep = function() {
 	socket_submitPayUpkeep();
 };
+
+var submitMissionsViewed = function() {
+	socket_submitMissionsViewed();
+};

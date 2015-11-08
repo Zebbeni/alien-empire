@@ -69,7 +69,7 @@
 	background: rgba(255, 255, 100, 0.5);
 }
 
-#resource-phase-div, #upkeep-phase-div {
+#missions-phase-div, #resource-phase-div, #upkeep-phase-div {
 	position: absolute;
 	width: 300px;
 	height: 100px;
@@ -216,6 +216,7 @@
 	height: 130px;
 	bottom: 160px;
 	left: 0px;
+	pointer-events: none;
 }
 
 #game-messages-div, #game-chat-input {
@@ -230,12 +231,14 @@
 	height: 90px;
 	overflow-y: auto;
 	overflow-x: hidden;
+	pointer-events: none;
 }
 
 #game-chat-input {
 	text-align: center;
 	height: 25px;
 	color: rgba(255, 255, 255, .9);
+	pointer-events: auto;
 }
 
 /*#player-turn-div0 {
