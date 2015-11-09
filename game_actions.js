@@ -189,7 +189,25 @@ var applyBuildAction = function( action, game ) {
 				};
 
 	} 
-	else if ( !hasEnoughToBuild( player, objecttype, game ) ) {
+	
+	if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
+
+		var structure = planet.resources[index].structure;
+		
+		if ( !structure || structure.kind != cons.OBJ_MINE) {
+			return { isIllegal: true,
+					 response: "Choose an existing mine to build your " 
+					 	+ cons.OBJ_ENGLISH[objecttype]
+					};
+		}
+		else if ( structure.player != player ) {
+			return { isIllegal: true,
+					 response: "You must build this structure on your own mine."
+					};
+		}
+	}
+
+	if ( !hasEnoughToBuild( player, objecttype, game ) ) {
 	
 		return { isIllegal: true,
 				 response: "You do not have enough resources to build a new " 
@@ -327,7 +345,7 @@ var applyBuildAction = function( action, game ) {
 
 	calcResourcesToCollect( game, player);
 	calcResourceUpkeep( game, player );
-	
+
 	return { isIllegal: false };
 };
 
