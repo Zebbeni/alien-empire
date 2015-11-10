@@ -116,6 +116,10 @@ var updateTileInteractivity = function(planetid) {
 
 			break;
 
+		case PHS_RESOURCE:
+
+			mouseTile( planetid, false );
+
 		case PHS_BUILD:
 
 			if (actiontype){
@@ -146,7 +150,7 @@ var updateTileInteractivity = function(planetid) {
 				mouseResources( planets, planetid, false, false, false );
 				mousePlanet( planetid, false );
 			}
-			
+
 			break;
 	}
 };
@@ -202,21 +206,6 @@ var mouseResource = function( planets, planetid, index, empty, friendly, opponen
 
 	}
 };
-
-// var updatePlanetInteractivity = function(planetid, acttype, objtype){
-
-// 	var planet = tiles[planetid].getChildByName("planet");
-
-// 	planet.mouseEnabled = false;
-
-// 	if ( acttype == ACT_BUILD && isSpaceObject(objtype)) {
-// 		planet.mouseEnabled = true;
-// 	}
-// 	else if ( acttype == ACT_RECRUIT ) {
-// 		planet.mouseEnabled = true;
-// 	}
-
-// };
 
 /**
  * Initialize stars shape, add to tile container

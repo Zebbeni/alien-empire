@@ -57,6 +57,7 @@ $(window).load(function() {
 
 var createInterface = function() {
 	createPlayerStatsMenus();
+	createTurnHelpMessage();
 	createBottomBarMenus();
 	createRoundMenu();
 }
@@ -70,13 +71,13 @@ var updateInterface = function() {
 	updateBottomBarMenus();
 	updateRoundMenu();
 	updatePhaseMenus();
+	updateTurnHelpMessage();
 
 	if( clientGame.game.turn == clientTurn ) {
 
 		if( clientGame.game.round == 0){
 			setPendingObject( OBJ_MINE );
 			setPendingAction( ACT_PLACE );
-			displayTurnHelpMessage();
 		}
 
 		else {
@@ -89,7 +90,6 @@ var updateInterface = function() {
 	} else {
 
 		clearPendingAction();
-		toggleMenu("#pending-action-div", MENU_OFF);
 		hideYourTurnMenu();
 		updateBoard();
 
@@ -109,7 +109,6 @@ var toggleIllegalActionMenu = function(response) {
 var clickBuildButton = function() {
 	if ( clientGame.game.round != 0 ) {
 		updateBoardInteractivity();
-		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#recruit-buttons-div')[0].style.visibility = "hidden";
 	}
 };
@@ -117,7 +116,6 @@ var clickBuildButton = function() {
 var clickRecruitButton = function() {
 	if ( clientGame.game.round != 0 ) {
 		updateBoardInteractivity();
-		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#build-buttons-div')[0].style.visibility = "hidden";
 	}
 };
@@ -139,7 +137,7 @@ var clickStructureButton = function( objecttype ){
 	if ( clientGame.game.phase == PHS_BUILD ) {
 		setPendingAction( ACT_BUILD );
 		setPendingObject(objecttype);
-		displayTurnHelpMessage();
+		updateTurnHelpMessage();
 		updateBoardInteractivity();
 	}
 };
@@ -148,7 +146,7 @@ var clickAgentButton = function( agenttype ){
 	if ( clientGame.game.phase == PHS_BUILD ) {
 		setPendingAction( ACT_RECRUIT );
 		setPendingAgent(agenttype);
-		displayTurnHelpMessage();
+		updateTurnHelpMessage();
 		updateBoardInteractivity();
 	}
 };
@@ -205,14 +203,12 @@ var displayConfirmMessage = function() {
 
 var confirmPendingAction = function() {
 	hideConfirmMenu();
-	toggleMenu("#pending-action-div", MENU_OFF);
 	submitAction();
 };
 
 var cancelPendingAction = function() {
 	if(clientGame.game.round != 0) {
 		clearPendingAction();
-		toggleMenu("#pending-action-div", MENU_OFF);
 		updateBoardInteractivity();
 	}
 	hideConfirmMenu();
@@ -328,30 +324,62 @@ var displayYourTurnMenu = function() {
 	});
 };
 
-/**
- * Displays a message in the pending-action-div div telling the player
- * what to do, based on the round #
- */
-var displayTurnHelpMessage = function() {
-	var message;
-	switch (pendingAction.actiontype){
-		case ACT_PLACE:
-			message = "Choose a location to place your mine";
+var createTurnHelpMessage = function() {
+	$('#pending-action-div')[0].style.visibility = "visible";
+};
+
+var updateTurnHelpMessage = function() {
+
+	var message = "";
+	var actiontype = (pendingAction != {} ? pendingAction.actiontype : null)
+
+	switch (clientGame.game.phase) {
+
+		case PHS_PLACING:
+
+			if (clientTurn == clientGame.game.turn){
+				if ( clientGame.game.secondmines ){
+					message = "Choose an empty resource to place"
+								+ " your last free mine";
+				} 
+				else {
+					message = "Choose an empty resource to place"
+								+ " your first free mine";
+				}
+			}
 			break;
-		case ACT_BUILD:
-			message = "Choose a location to build your " + 
-					   OBJ_ENGLISH[pendingAction.objecttype];
+
+		case PHS_UPKEEP:
+
+			if ( !clientGame.game.phaseDone[clientTurn] ) {
+				message = "You may click structures or agents to remove"
+							+ " before paying upkeep";
+			}
 			break;
-		case ACT_RECRUIT:
-			message = "Choose a planet to recruit your " + 
-					   AGT_ENGLISH[pendingAction.agenttype];
+
+		case PHS_BUILD:
+
+			if (clientTurn == clientGame.game.turn){
+				if (actiontype == ACT_BUILD){
+					message = "Choose a location to place your "
+								+ OBJ_ENGLISH[pendingAction.objecttype];
+				} else if (actiontype == ACT_RECRUIT) {
+					message = "Choose a planet to recruit your "
+						   		+ AGT_ENGLISH[pendingAction.agenttype];
+				} else {
+					message = "Click a structure or agent to place on board"
+								+ " (or click End Turn)";
+				}
+			}
 			break;
+			
+		case PHS_RESOURCE:
 		default:
 			break;
+
 	}
 
 	$('#pending-action-div')[0].innerHTML = message;
-	toggleMenu("#pending-action-div", MENU_ON);
 };
 
 /**
