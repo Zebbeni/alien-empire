@@ -31,20 +31,16 @@ var start_planets = {
 		return players;
 	};
 
-	module.exports.initializePlayerResources = function( num_users ) {
-		var resources = [];
-
-		for ( var i = 0; i < num_users; i++ ){
-
-			resources.push( {} );
-
-			resources[i][cons.RES_METAL] = 10;
-			resources[i][cons.RES_WATER] = 10;
-			resources[i][cons.RES_FUEL] = 10;
-			resources[i][cons.RES_FOOD] = 10;
+	/**
+	 * Creates an array of boolean values indicating if each player has
+	 * completed the current phase
+	 */
+	module.exports.initializePhaseDone = function( num_users ){
+		var phaseDone = [];
+		for (var i = 0; i < num_users; i++) {
+			phaseDone.push(false);
 		}
-		
-		return resources;
+		return phaseDone;
 	};
 
 	module.exports.initializePlayerPoints = function( num_users ) {
@@ -70,11 +66,11 @@ var start_planets = {
 		for ( var i = 0; i < num_users; i++) {
 			structures.push( {} );
 
-			structures[i][cons.OBJ_MINE] = 4;
-			structures[i][cons.OBJ_FACTORY] = 3;
-			structures[i][cons.OBJ_EMBASSY] = 5;
-			structures[i][cons.OBJ_BASE] = 1;
-			structures[i][cons.OBJ_FLEET] = 3;
+			structures[i][cons.OBJ_MINE] = cons.STRUCT_REQS[cons.OBJ_MINE].max;
+			structures[i][cons.OBJ_FACTORY] = cons.STRUCT_REQS[cons.OBJ_FACTORY].max;
+			structures[i][cons.OBJ_EMBASSY] = cons.STRUCT_REQS[cons.OBJ_EMBASSY].max;
+			structures[i][cons.OBJ_BASE] = cons.STRUCT_REQS[cons.OBJ_BASE].max;
+			structures[i][cons.OBJ_FLEET] = cons.STRUCT_REQS[cons.OBJ_FLEET].max;
 		}
 
 		return structures;

@@ -52,13 +52,48 @@
 	font-size: 30px;
 }
 
+#turn-done-button {
+	position: absolute;
+	width: 100px;
+	height: 40px;
+	right: 10px;
+	bottom: 330px;
+	padding: 5px;
+	font-weight: bold;
+	background: rgba(131, 203, 180, .8);
+	color: black;
+}
+
 #round-div {
 	position: absolute;
 	opacity: 0.0;
-	top: 100px;
-	left: 25px;
+	bottom: 172px;
+	right: 10px;
 	width: 100px;
-	height: 150px;
+	height: auto;
+	background: rgba( 0, 0, 0, 0.8);
+}
+
+#round-td, .phase-td {
+	height: 15px;
+	color: white;
+	padding: 2px;
+}
+
+.phase-td-current {
+	color: black;
+	background: rgba(255, 255, 100, 0.5);
+}
+
+#missions-phase-div, #resource-phase-div, #upkeep-phase-div {
+	position: absolute;
+	width: 300px;
+	height: 100px;
+	top: 50%;
+	left: 50%;
+	margin-left: -150px;
+	margin-top: -50px;
+	background: rgba(255, 255, 255, 0.9);
 }
 
 .msg-action-div {
@@ -66,31 +101,19 @@
 }
 
 .msg-action-p0 {
-	color: red;
+	color: #FF4848;
 }
 
 .msg-action-p1 {
-	color: blue;
+	color: #33C3FF;
 }
 
 .msg-action-p2 {
-	color: green;
+	color: #00FF00;
 }
 
 .msg-action-p3 {
-	color: yellow;
-}
-
-#turn-done-button {
-	position: absolute;
-	width: 100px;
-	height: 40px;
-	left: 25px;
-	top: 260px;
-	padding: 5px;
-	font-weight: bold;
-	background: rgba(131, 203, 180, .8);
-	color: black;
+	color: #FFF011;
 }
 
 #action-confirm-button-wrapper {
@@ -103,19 +126,15 @@
 	position: absolute;
 	top: 0px;
 	height: 43px;
-	left: 50%;
-	margin: 0 auto;
+	width: 100%;
 }
 
 .player-div {
-	position: relative;
-	/*overflow-y: hidden;*/
-	float: left;
+	position: absolute;
 	top: 0px;
 	width: 250px;
 	height: 43px;
-	margin-left: 3px;
-	margin-right: 3px;
+	margin-left: -125px;
 	color: black;
 }
 
@@ -197,6 +216,7 @@
 	height: 130px;
 	bottom: 160px;
 	left: 0px;
+	pointer-events: none;
 }
 
 #game-messages-div, #game-chat-input {
@@ -211,12 +231,14 @@
 	height: 90px;
 	overflow-y: auto;
 	overflow-x: hidden;
+	pointer-events: none;
 }
 
 #game-chat-input {
 	text-align: center;
 	height: 25px;
 	color: rgba(255, 255, 255, .9);
+	pointer-events: auto;
 }
 
 /*#player-turn-div0 {
@@ -258,15 +280,17 @@
 
 #bottom-bar-div {
 	position: absolute;
+	left: 0px;
 	bottom: 0px;
-	width: 1024px;
-	left: 50%;
-	margin-left: -512px;
+	width: 100%;
+	height: 162px;
 	opacity: 0.0;
+	pointer-events: none;
 }
 
 #resources-menu-div, #structures-menu-div, #agents-menu-div {
 	position: absolute;
+	pointer-events: auto;
 	bottom: 0px;
 }
 
@@ -277,13 +301,13 @@
 }
 
 #structures-menu-div {
-	left: 390px;
+	right: 244px;
 	width: 390px;
 	height: 143px;
 }
 
 #agents-menu-div {
-	left: 780px;
+	right: 0px;
 	width: 244px;
 	height: 162px;
 }

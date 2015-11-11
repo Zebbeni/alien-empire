@@ -69,11 +69,18 @@ var playerHasResourceStruct = function( player, planetid, objecttype, game ) {
 	return false;
 };
 
+var clearPhaseDone = function( game ){
+		for (var i = 0; i < game.phaseDone.length; i++) {
+			game.phaseDone[i] = false;
+		}
+	};
+
 (function() {
 	module.exports = {
 		playerHasStruct: playerHasStruct,
 		addGameMessage: addGameMessage,
 		addGameActionMessage: addGameActionMessage,
 		addLobbyMessage: addLobbyMessage,
+		clearPhaseDone: clearPhaseDone,
 	}
 }());

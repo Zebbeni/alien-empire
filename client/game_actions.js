@@ -15,3 +15,15 @@ var submitGameMessage = function(divid) {
     $(divid)[0].value = '';
     socket_sendGameMessage(msg);
 };
+
+var submitCollectResources = function() {
+	socket_submitCollectResources();
+};
+
+var submitPayUpkeep = function() {
+	socket_submitPayUpkeep();
+};
+
+var submitMissionsViewed = function() {
+	socket_submitMissionsViewed();
+};

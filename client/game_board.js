@@ -141,9 +141,11 @@ var drawAgents = function() {
 var updateBoardInteractivity = function() {
 	var planets = clientGame.game.board.planets;
 
-	for ( var p = 0; p < planets.length; p++ ) {	
+	for ( var p = 0; p < planets.length; p++ ) {
 		updateTileInteractivity(p);
 	}
+	// updateFleetsInteractivity();
+	// updateAgentsInteractivity();
 };
 
 /**

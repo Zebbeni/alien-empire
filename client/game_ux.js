@@ -57,6 +57,7 @@ $(window).load(function() {
 
 var createInterface = function() {
 	createPlayerStatsMenus();
+	createTurnHelpMessage();
 	createBottomBarMenus();
 	createRoundMenu();
 }
@@ -66,19 +67,13 @@ var createInterface = function() {
  */
 var updateInterface = function() {
 
-	updatePlayerStatsMenus();
-	updateBottomBarMenus();
+	clearPendingAction();
 
 	if( clientGame.game.turn == clientTurn ) {
 
 		if( clientGame.game.round == 0){
 			setPendingObject( OBJ_MINE );
 			setPendingAction( ACT_PLACE );
-			displayTurnHelpMessage();
-		}
-
-		else {
-			clearPendingAction();
 		}
 
 		displayYourTurnMenu();
@@ -86,12 +81,16 @@ var updateInterface = function() {
 
 	} else {
 
-		clearPendingAction();
-		toggleMenu("#pending-action-div", MENU_OFF);
 		hideYourTurnMenu();
 		updateBoard();
 
 	}
+
+	updatePlayerStatsMenus();
+	updateBottomBarMenus();
+	updateRoundMenu();
+	updatePhaseMenus();
+	updateTurnHelpMessage();
 
 	setInterfaceImages();
 };
@@ -106,21 +105,14 @@ var toggleIllegalActionMenu = function(response) {
 
 var clickBuildButton = function() {
 	if ( clientGame.game.round != 0 ) {
-		clearPendingAction();
 		updateBoardInteractivity();
-		toggleMenu('#build-buttons-div');
-		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#recruit-buttons-div')[0].style.visibility = "hidden";
 	}
 };
 
 var clickRecruitButton = function() {
-	updateBoardInteractivity();
 	if ( clientGame.game.round != 0 ) {
-		clearPendingAction();
 		updateBoardInteractivity();
-		toggleMenu('#recruit-buttons-div');
-		toggleMenu("#pending-action-div", MENU_OFF);
 		$('#build-buttons-div')[0].style.visibility = "hidden";
 	}
 };
@@ -139,17 +131,21 @@ var toggleMenu = function( menuid, val ) {
 };
 
 var clickStructureButton = function( objecttype ){
-	setPendingAction( ACT_BUILD );
-	setPendingObject(objecttype);
-	displayTurnHelpMessage();
-	updateBoardInteractivity();
+	if ( clientGame.game.phase == PHS_BUILD ) {
+		setPendingAction( ACT_BUILD );
+		setPendingObject(objecttype);
+		updateTurnHelpMessage();
+		updateBoardInteractivity();
+	}
 };
 
 var clickAgentButton = function( agenttype ){
-	setPendingAction( ACT_RECRUIT );
-	setPendingAgent(agenttype);
-	displayTurnHelpMessage();
-	updateBoardInteractivity();
+	if ( clientGame.game.phase == PHS_BUILD ) {
+		setPendingAction( ACT_RECRUIT );
+		setPendingAgent(agenttype);
+		updateTurnHelpMessage();
+		updateBoardInteractivity();
+	}
 };
 
 var hideYourTurnMenu = function() {
@@ -204,14 +200,12 @@ var displayConfirmMessage = function() {
 
 var confirmPendingAction = function() {
 	hideConfirmMenu();
-	toggleMenu("#pending-action-div", MENU_OFF);
 	submitAction();
 };
 
 var cancelPendingAction = function() {
 	if(clientGame.game.round != 0) {
 		clearPendingAction();
-		toggleMenu("#pending-action-div", MENU_OFF);
 		updateBoardInteractivity();
 	}
 	hideConfirmMenu();
@@ -282,6 +276,8 @@ var buildActionMessage = function( actionMsg ){
 			message += AGT_ENGLISH[actionMsg.agenttype];
 			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
 			break;
+		case ACT_COLLECT_RESOURCES:
+			break;
 	}
 
 	messagesHtml += message;
@@ -325,30 +321,62 @@ var displayYourTurnMenu = function() {
 	});
 };
 
-/**
- * Displays a message in the pending-action-div div telling the player
- * what to do, based on the round #
- */
-var displayTurnHelpMessage = function() {
-	var message;
-	switch (pendingAction.actiontype){
-		case ACT_PLACE:
-			message = "Choose a location to place your mine";
+var createTurnHelpMessage = function() {
+	$('#pending-action-div')[0].style.visibility = "visible";
+};
+
+var updateTurnHelpMessage = function() {
+
+	var message = "";
+	var actiontype = (pendingAction != {} ? pendingAction.actiontype : null)
+
+	switch (clientGame.game.phase) {
+
+		case PHS_PLACING:
+
+			if (clientTurn == clientGame.game.turn){
+				if ( clientGame.game.secondmines ){
+					message = "Choose an empty resource to place"
+								+ " your last free mine";
+				} 
+				else {
+					message = "Choose an empty resource to place"
+								+ " your first free mine";
+				}
+			}
 			break;
-		case ACT_BUILD:
-			message = "Choose a location to build your " + 
-					   OBJ_ENGLISH[pendingAction.objecttype];
+
+		case PHS_UPKEEP:
+
+			if ( !clientGame.game.phaseDone[clientTurn] ) {
+				message = "You may click structures or agents to remove"
+							+ " before paying upkeep";
+			}
 			break;
-		case ACT_RECRUIT:
-			message = "Choose a planet to recruit your " + 
-					   AGT_ENGLISH[pendingAction.agenttype];
+
+		case PHS_BUILD:
+
+			if (clientTurn == clientGame.game.turn){
+				if (actiontype == ACT_BUILD){
+					message = "Choose a location to place your "
+								+ OBJ_ENGLISH[pendingAction.objecttype];
+				} else if (actiontype == ACT_RECRUIT) {
+					message = "Choose a planet to recruit your "
+						   		+ AGT_ENGLISH[pendingAction.agenttype];
+				} else {
+					message = "Click a structure or agent to place on board"
+								+ " (or click End Turn)";
+				}
+			}
 			break;
+			
+		case PHS_RESOURCE:
 		default:
 			break;
+
 	}
 
 	$('#pending-action-div')[0].innerHTML = message;
-	toggleMenu("#pending-action-div", MENU_ON);
 };
 
 /**
@@ -358,12 +386,11 @@ var displayTurnHelpMessage = function() {
  */
 var createPlayerStatsMenus = function() {
 
-	var wrapperWidth = (256 * clientGame.players.length);
-	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
+	// var wrapperWidth = (256 * clientGame.players.length);
+	// $('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
 
-	var marginleft = Math.round(wrapperWidth / -2) + "px";
-	$('#players-wrapper-div')[0].style.marginLeft = marginleft;
-
+	// var marginleft = Math.round(wrapperWidth / -2) + "px";
+	// $('#players-wrapper-div')[0].style.marginLeft = marginleft;
 	var innerHTML = "";
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
@@ -397,7 +424,13 @@ var createPlayerStatsMenus = function() {
 
 var updatePlayerStatsMenus = function() {
 
+	var inc = (100.0 / clientGame.players.length) / 2.0;
+
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
+		// some math to evenly space player stats menus evenly along top
+		var leftPercent = String(inc * ((i * 2) + 1)) + "%";
+
+		$('#player-div' + i).css({left: leftPercent });
 
 		var playerDiv = '#player-div' + i;
 		var resources = clientGame.game.resources[i];
@@ -445,12 +478,14 @@ var createResourcesMenu = function() {
 var updateResourcesMenu = function() {
 
 	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
+	var collect = clientGame.game.resourceCollect[clientTurn];
+	var upkeep = clientGame.game.resourceUpkeep[clientTurn];
 
 	for ( var i = 0; i <= RES_FOOD; i++ ){
 
 		var resourceDiv = '#resource-div' + i;
-		$(resourceDiv).find('.gain-div')[0].innerHTML = '+2';
-		$(resourceDiv).find('.loss-div')[0].innerHTML = '-1';
+		$(resourceDiv).find('.gain-div')[0].innerHTML = '+' + collect[i];
+		$(resourceDiv).find('.loss-div')[0].innerHTML = '-' + upkeep[i];
 
 		var resources = clientGame.game.resources[clientTurn];
 		var innerHTML = '<tr>';
@@ -572,17 +607,51 @@ var updateAgentsMenu = function() {
 };
 
 var createRoundMenu = function() {
-	var innerHTML = '<table>';
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
-		innerHTML += '<tr>' + '<td id="phase-div' + i + '" class="phase-div">'
-					+ PHS_ENGLISH[i] + '</td>' + '</tr>';
-	}
-	innerHTML += '</table>';
-	$('#round-div')[0].innerHTML = innerHTML;
+		$('#phase-td' + i)[0].innerHTML = PHS_ENGLISH[i];
+	};
 };
 
 var updateRoundMenu = function() {
 
+	if (clientGame.game.phase == PHS_PLACING){
+		$('#round-td')[0].innerHTML = PHS_ENGLISH[PHS_PLACING];
+		$('#round-td').css({background: "rgba(255, 255, 100, 0.5"});
+	}
+	else {
+		$('#round-td')[0].innerHTML = 'Round ' + clientGame.game.round;
+		$('#round-td').css({background: "none"});
+	}
+
+	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
+		if ( i == clientGame.game.phase) {
+			$('#phase-td' + i).addClass('phase-td-current')
+		} 
+		else {
+			$('#phase-td' + i).removeClass('phase-td-current')
+		}
+	};
+};
+
+var updatePhaseMenus = function() {
+
+	$('#missions-phase-div')[0].style.visibility = "hidden";
+	$('#resource-phase-div')[0].style.visibility = "hidden";
+	$('#upkeep-phase-div')[0].style.visibility = "hidden";
+
+	switch(clientGame.game.phase) {
+		case PHS_MISSIONS:
+			$('#missions-phase-div')[0].style.visibility = "visible";
+			break;
+		case PHS_RESOURCE:
+			$('#resource-phase-div')[0].style.visibility = "visible";
+			break;
+		case PHS_UPKEEP:
+			$('#upkeep-phase-div')[0].style.visibility = "visible";
+			break;
+		default:
+			break;
+	}
 };
 
 /** 

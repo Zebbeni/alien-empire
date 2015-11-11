@@ -16,6 +16,7 @@ var GAME_CLOSED = 0;
 var GAME_STAGING = 1;
 var GAME_PROGRESS = 2;
 
+var PHS_PLACING = -1;
 var PHS_MISSIONS = 0;
 var PHS_RESOURCE = 1;
 var PHS_UPKEEP = 2;
@@ -23,6 +24,7 @@ var PHS_BUILD = 3;
 var PHS_ACTIONS = 4;
 
 var PHS_ENGLISH = {
+	'-1': 'Placing Mines',
 	0: 'Missions',
 	1: 'Resources',
 	2: 'Upkeep',
@@ -63,6 +65,9 @@ var ACT_RECRUIT = 4;
 // var ACT_RETIRE = 7;
 // var ACT_MOVE = 8;
 // var ACT_LAUNCHMISSION = 9;
+var ACT_COLLECT_RESOURCES = 10;
+var ACT_PAY_UPKEEP = 11;
+var ACT_VIEWED_MISSIONS = 12;
 
 var PNT_STRUCTURES = 0;
 var PNT_EXPLORE = 1;
@@ -111,7 +116,10 @@ var ACT_ENGLISH_PAST = {
 					1: " finished turn",
 					2: " placed a ",
 					3: " built a new ",
-					4: " recruited a new "
+					4: " recruited a new ",
+					10: " collected resources",
+					11: " paid upkeep",
+					12: " viewed missions",
 				};
 
 var RES_ENGLISH = { 

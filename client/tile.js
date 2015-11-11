@@ -99,73 +99,112 @@ var updateTileInteractivity = function(planetid) {
 
 	if ( planet.explored ) {
 		hideDarkScreen(planetid);
+		tiles[planetid].mouseChildren = true;
 	} 
 	else {
 		showDarkScreen(planetid);
 		tiles[planetid].mouseChildren = false;
 	}
 
-	if ( actiontype && clientTurn == clientGame.game.turn) {
+	switch (clientGame.game.phase) {
 
-		switch (actiontype) {
-			case ACT_PLACE:
-			case ACT_BUILD:
-				tiles[planetid].mouseChildren = true;
-				updateResourcesInteractivity(planetid, planets, actiontype, objecttype);
-				updatePlanetInteractivity(planetid, actiontype, objecttype);
-				break;
-			case ACT_RECRUIT:
-				tiles[planetid].mouseChildren = true;
-				updatePlanetInteractivity(planetid, actiontype, null);
-				break;
-			default:
-				break;
-		}
-	} 
-};
+		case PHS_PLACING:
 
-var updateResourcesInteractivity = function(planetid, planets, acttype, objtype) {
+			mouseTile( planetid, true );
+			mouseResources( planets, planetid, true, false, false );
+			mousePlanet( planetid, false );
 
-	for (var i = 0; i < planets[planetid].resources.length; i++) {
-		updateResourceInteractivity( planetid, i, planets, acttype, objtype );
+			break;
+
+		case PHS_RESOURCE:
+
+			mouseTile( planetid, false );
+
+		case PHS_BUILD:
+
+			if (actiontype){
+
+				mouseTile( planetid, true );
+
+				if (actiontype == ACT_BUILD) {
+
+					if ( isSpaceObject( objecttype ) ){
+
+						mouseResources( planets, planetid, false, false, false );
+						mousePlanet( planetid, true );
+					}
+					else {
+						mouseResources( planets, planetid, true, true, false );
+						mousePlanet( planetid, false );
+					}
+				}
+				else if ( actiontype == ACT_RECRUIT ) {
+
+					mouseResources( planets, planetid, false, false, false );
+					mousePlanet( planetid, true );
+				}
+			}
+			else {
+
+				mouseTile( planetid, false );
+				mouseResources( planets, planetid, false, false, false );
+				mousePlanet( planetid, false );
+			}
+
+			break;
 	}
 };
 
-var updateResourceInteractivity = function(planetid, index, planets, acttype, objtype) {
+var mouseTile = function( planetid, on ){
+	tiles[planetid].mouseEnabled = on;
+};
+
+var mousePlanet = function( planetid, on) {
+	tiles[planetid].getChildByName("planet").mouseEnabled = on;
+};
+
+/**
+ * Calls mouseResource on each resource with the given parameters
+ */
+var mouseResources = function( planets, planetid, empty, friendly, opponent ) {
+		
+	for (var index = 0; index < planets[planetid].resources.length; index++) {
+		mouseResource( planets, planetid, index, empty, friendly, opponent );
+	}
+};
+
+/**
+ * Sets mouseEnabled to true for all resources defined in parameters.
+ * Initializes all to false and then sets to true
+ *
+ * @planetid: planet id
+ * @index: index of resource
+ * @empty: true/false allow selecting empty resources
+ * @friendly: true/false select resources the player occupies
+ * @opponent: true/false selectresources owned by other players
+ */
+var mouseResource = function( planets, planetid, index, empty, friendly, opponent ) {
 
 	var resource = tiles[planetid].getChildByName("resource" + index);
 	var structure = planets[planetid].resources[index].structure;
 
-	// Assume false to begin with...
-	resource.mouseEnabled = false;
+	resource.mouseEnabled = false; // Set all false to begin with...
 
-	if( !isSpaceObject(objtype) && isBuildTypeAction(acttype)) {
-		// if no structure here and user is adding a mine, turn mouse on
-		if ( !structure && objtype == OBJ_MINE) {
-			resource.mouseEnabled = true;
-		}
-		// if user is adding a factory or embassy, turn mouse on for their mines
-		else if ( structure && structure.kind == OBJ_MINE ) {
-			if (structure.player == clientTurn && isUpgradeObject(objtype) ) {
-				resource.mouseEnabled = true;
-			}
-		}
+	if (empty && !structure) {
+
+		resource.mouseEnabled = true;
+
 	}
-};
+	else if ( structure && friendly && structure.player == clientTurn ) {
 
-var updatePlanetInteractivity = function(planetid, acttype, objtype){
+		resource.mouseEnabled = true;
 
-	var planet = tiles[planetid].getChildByName("planet");
-
-	planet.mouseEnabled = false;
-
-	if ( acttype == ACT_BUILD && isSpaceObject(objtype)) {
-		planet.mouseEnabled = true;
 	}
-	else if ( acttype == ACT_RECRUIT ) {
-		planet.mouseEnabled = true;
-	}
+	else if ( structure && opponent && structure.player != clientTurn ){
 
+		resource.mouseEnabled = true;
+
+	}
 };
 
 /**
