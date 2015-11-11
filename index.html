@@ -74,9 +74,9 @@
             <input type="button" id="turn-done-button" style="visibility: hidden" value="End Turn" onclick="javascript:submitTurnDone();"></input>
         </div>
         <div id="bottom-bar-div" style="visibility: hidden">
-            <div id="resources-menu-div"></div>
             <div id="structures-menu-div"></div>
             <div id="agents-menu-div"></div>
+            <div id="resources-menu-div"></div>
             <div id="game-messages-wrapper-div" style="visibility: hidden">
                 <div id="game-messages-div"></div>
                 <form action="javascript:submitGameMessage('#game-chat-input');">
@@ -84,7 +84,29 @@
                 </form>
             </div>
         </div>
-        <div id="round-div" style="visibility: hidden"></div>
+        <div id="round-div" style="visibility: hidden">
+            <table>
+                <tr>
+                    <td></td>
+                    <td id="round-td"></td>
+                </tr><tr>
+                    <td></td>
+                    <td id="phase-td0" class="phase-td"></td>
+                </tr><tr>
+                    <td></td>
+                    <td id="phase-td1" class="phase-td"></td>
+                </tr><tr>
+                    <td></td>
+                    <td id="phase-td2" class="phase-td"></td>
+                </tr><tr>
+                    <td></td>
+                    <td id="phase-td3" class="phase-td"></td>
+                </tr><tr>
+                    <td></td>
+                    <td id="phase-td4" class="phase-td"></td>
+                </tr>
+            </table>
+        </div>
         <div id="missions-phase-div" class="phase-div" style="visibility: hidden">
             <div>Resolving Missions Phase</div>
             <div>There are no missions to resolve this round</div>

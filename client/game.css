@@ -55,14 +55,15 @@
 #round-div {
 	position: absolute;
 	opacity: 0.0;
-	top: 100px;
-	left: 25px;
+	bottom: 172px;
+	right: 10px;
 	width: 100px;
-	height: 150px;
+	height: 190px;
+	background: rgba( 255, 255, 255, 0.8);
 }
 
-.phase-td {
-
+#round-td, .phase-td {
+	padding: 5px;
 }
 
 .phase-td-current {
@@ -280,15 +281,17 @@
 
 #bottom-bar-div {
 	position: absolute;
+	left: 0px;
 	bottom: 0px;
-	width: 1024px;
-	left: 50%;
-	margin-left: -512px;
+	width: 100%;
+	height: 162px;
 	opacity: 0.0;
+	pointer-events: none;
 }
 
 #resources-menu-div, #structures-menu-div, #agents-menu-div {
 	position: absolute;
+	pointer-events: auto;
 	bottom: 0px;
 }
 
@@ -299,13 +302,13 @@
 }
 
 #structures-menu-div {
-	left: 390px;
+	right: 244px;
 	width: 390px;
 	height: 143px;
 }
 
 #agents-menu-div {
-	left: 780px;
+	right: 0px;
 	width: 244px;
 	height: 162px;
 }

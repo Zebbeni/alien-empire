@@ -605,14 +605,9 @@ var updateAgentsMenu = function() {
 };
 
 var createRoundMenu = function() {
-	var innerHTML = '<table>';
-	innerHTML += '<tr><td id="round-td"></td><tr>';
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
-		innerHTML += '<tr>' + '<td id="phase-td' + i + '" class="phase-td">'
-					+ PHS_ENGLISH[i] + '</td>' + '</tr>';
+		$('#phase-td' + i)[0].innerHTML = PHS_ENGLISH[i];
 	};
-	innerHTML += '</table>';
-	$('#round-div')[0].innerHTML = innerHTML;
 };
 
 var updateRoundMenu = function() {
