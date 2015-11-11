@@ -52,21 +52,36 @@
 	font-size: 30px;
 }
 
+#turn-done-button {
+	position: absolute;
+	width: 100px;
+	height: 40px;
+	right: 10px;
+	bottom: 330px;
+	padding: 5px;
+	font-weight: bold;
+	background: rgba(131, 203, 180, .8);
+	color: black;
+}
+
 #round-div {
 	position: absolute;
 	opacity: 0.0;
 	bottom: 172px;
 	right: 10px;
 	width: 100px;
-	height: 190px;
-	background: rgba( 255, 255, 255, 0.8);
+	height: auto;
+	background: rgba( 0, 0, 0, 0.8);
 }
 
 #round-td, .phase-td {
-	padding: 5px;
+	height: 15px;
+	color: white;
+	padding: 2px;
 }
 
 .phase-td-current {
+	color: black;
 	background: rgba(255, 255, 100, 0.5);
 }
 
@@ -86,31 +101,19 @@
 }
 
 .msg-action-p0 {
-	color: red;
+	color: #FF4848;
 }
 
 .msg-action-p1 {
-	color: blue;
+	color: #33C3FF;
 }
 
 .msg-action-p2 {
-	color: green;
+	color: #00FF00;
 }
 
 .msg-action-p3 {
-	color: yellow;
-}
-
-#turn-done-button {
-	position: absolute;
-	width: 100px;
-	height: 40px;
-	left: 25px;
-	top: 260px;
-	padding: 5px;
-	font-weight: bold;
-	background: rgba(131, 203, 180, .8);
-	color: black;
+	color: #FFF011;
 }
 
 #action-confirm-button-wrapper {
@@ -123,19 +126,15 @@
 	position: absolute;
 	top: 0px;
 	height: 43px;
-	left: 50%;
-	margin: 0 auto;
+	width: 100%;
 }
 
 .player-div {
-	position: relative;
-	/*overflow-y: hidden;*/
-	float: left;
+	position: absolute;
 	top: 0px;
 	width: 250px;
 	height: 43px;
-	margin-left: 3px;
-	margin-right: 3px;
+	margin-left: -125px;
 	color: black;
 }
 

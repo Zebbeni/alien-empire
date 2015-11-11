@@ -67,11 +67,7 @@ var createInterface = function() {
  */
 var updateInterface = function() {
 
-	updatePlayerStatsMenus();
-	updateBottomBarMenus();
-	updateRoundMenu();
-	updatePhaseMenus();
-	updateTurnHelpMessage();
+	clearPendingAction();
 
 	if( clientGame.game.turn == clientTurn ) {
 
@@ -80,20 +76,21 @@ var updateInterface = function() {
 			setPendingAction( ACT_PLACE );
 		}
 
-		else {
-			clearPendingAction();
-		}
-
 		displayYourTurnMenu();
 		updateBoard();
 
 	} else {
 
-		clearPendingAction();
 		hideYourTurnMenu();
 		updateBoard();
 
 	}
+
+	updatePlayerStatsMenus();
+	updateBottomBarMenus();
+	updateRoundMenu();
+	updatePhaseMenus();
+	updateTurnHelpMessage();
 
 	setInterfaceImages();
 };
@@ -389,12 +386,11 @@ var updateTurnHelpMessage = function() {
  */
 var createPlayerStatsMenus = function() {
 
-	var wrapperWidth = (256 * clientGame.players.length);
-	$('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
+	// var wrapperWidth = (256 * clientGame.players.length);
+	// $('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
 
-	var marginleft = Math.round(wrapperWidth / -2) + "px";
-	$('#players-wrapper-div')[0].style.marginLeft = marginleft;
-
+	// var marginleft = Math.round(wrapperWidth / -2) + "px";
+	// $('#players-wrapper-div')[0].style.marginLeft = marginleft;
 	var innerHTML = "";
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
@@ -428,7 +424,13 @@ var createPlayerStatsMenus = function() {
 
 var updatePlayerStatsMenus = function() {
 
+	var inc = (100.0 / clientGame.players.length) / 2.0;
+
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
+		// some math to evenly space player stats menus evenly along top
+		var leftPercent = String(inc * ((i * 2) + 1)) + "%";
+
+		$('#player-div' + i).css({left: leftPercent });
 
 		var playerDiv = '#player-div' + i;
 		var resources = clientGame.game.resources[i];
