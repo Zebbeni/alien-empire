@@ -120,6 +120,11 @@
             <div>Upkeep Phase</div>
             <input type="button" value="Pay Upkeep" onclick="javascript:submitPayUpkeep();"/>
         </div>
+        <div id="agent-retire-div" style="visibility: hidden">
+            <div id="agent-retire-name"></div>
+            <input type="button" id="agent-retire-button" value="Retire"></input>
+            <input type="button" id="agent-cancel-button" value="Cancel" onclick="javascript:hideAgentRetireMenu();"></input>
+        </div>
         <div id="confirm-action-div" style="visibility: hidden">
             <div id="your-action-message-div"></div>
             <div id="action-confirm-button-wrapper">

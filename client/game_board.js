@@ -145,7 +145,7 @@ var updateBoardInteractivity = function() {
 		updateTileInteractivity(p);
 	}
 	// updateFleetsInteractivity();
-	// updateAgentsInteractivity();
+	updateAgentsInteractivity();
 };
 
 /**

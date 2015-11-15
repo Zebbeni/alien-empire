@@ -85,7 +85,7 @@
 	background: rgba(255, 255, 100, 0.5);
 }
 
-#missions-phase-div, #resource-phase-div, #upkeep-phase-div {
+#missions-phase-div, #resource-phase-div, #upkeep-phase-div, #agent-retire-div {
 	position: absolute;
 	width: 300px;
 	height: 100px;
