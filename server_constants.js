@@ -48,7 +48,7 @@
 		ACT_BUILD : 3,
 		ACT_RECRUIT : 4,
 		// ACT_DOWNGRADE : 5,
-		// ACT_REMOVE : 6,
+		ACT_REMOVE : 6,
 		ACT_RETIRE : 7,
 		// ACT_MOVE : 8,
 		// ACT_LAUNCHMISSION : 9,
@@ -115,6 +115,7 @@
 							5: "fleet"
 						},
 
+		// agent : structure mappings
 		AGT_OBJTYPE : {
 			1: 2,
 			2: 2,

@@ -120,6 +120,8 @@ var updateTileInteractivity = function(planetid) {
 
 			mouseTile( planetid, false );
 
+			break;
+
 		case PHS_BUILD:
 
 			if (actiontype){
@@ -150,6 +152,15 @@ var updateTileInteractivity = function(planetid) {
 				mouseResources( planets, planetid, false, false, false );
 				mousePlanet( planetid, false );
 			}
+
+			break;
+
+		case PHS_UPKEEP:
+
+			mouseTile( planetid, true );
+
+			mouseResources( planets, planetid, false, true, false );
+			mousePlanet( planetid, false );
 
 			break;
 	}
@@ -446,11 +457,15 @@ var drawResource = function( planetid, index, num_resources ) {
 
 	icon.x = index * (4 + iconW);
 
+	var structure = resource.getChildByName("structure");
+	structure.graphics.clear();
+	
 	var struct = planets[planetid].resources[index].structure;
+	
 	if ( struct ) {
 		var player = struct.player;
 		var kind = struct.kind;
-		var structure = resource.getChildByName("structure");
+		
 		var structureImg = loader.getResult( OBJ_ENGLISH[ kind ] + player );
 
 		structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(1, 1, structureImg.width - 2, structureImg.height - 2);

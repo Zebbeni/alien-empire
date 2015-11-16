@@ -61,7 +61,7 @@ var ACT_PLACE = 2; // build anywhere, no payment
 var ACT_BUILD = 3;
 var ACT_RECRUIT = 4;
 // var ACT_DOWNGRADE = 5;
-// var ACT_REMOVE = 6;
+var ACT_REMOVE = 6;
 var ACT_RETIRE = 7;
 // var ACT_MOVE = 8;
 // var ACT_LAUNCHMISSION = 9;
@@ -110,6 +110,7 @@ var ACT_ENGLISH = {
 					2: 'Place',
 					3: 'Build',
 					4: 'Recruit',
+					6: 'Remove',
 					7: 'Retire'
 				};
 
@@ -118,6 +119,7 @@ var ACT_ENGLISH_PAST = {
 					2: " placed a ",
 					3: " built a new ",
 					4: " recruited a new ",
+					6: " removed their ",
 					7: " retired their ",
 					10: " collected resources",
 					11: " paid upkeep",
@@ -152,7 +154,8 @@ var ACTION_REQUIREMENTS = {
 	1: [],
 	2: ['actiontype','objecttype','planetid','resourceid'],
 	3: ['actiontype','objecttype','planetid','resourceid'],
-	4: ['actiontype','agenttype','planetid']
+	4: ['actiontype','agenttype','planetid'],
+	6: ['actiontype', 'objecttype', 'planetid', 'resourceid']
 };
 
 // var AGT_OBJTYPE = {

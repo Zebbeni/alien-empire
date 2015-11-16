@@ -59,8 +59,19 @@ var handleKeyDown = function( e ) {
 
 var handleClickResource = function( planetid, index ) {
 
+	switch (clientGame.game.phase) {
+		case PHS_UPKEEP:
+			var objecttype = clientGame.game.board.planets[planetid].resources[index].structure.kind;
+			setPendingAction( ACT_REMOVE );
+			setPendingObject( objecttype );
+			break;
+		default:
+			break;
+	}
+
 	setPendingPlanet(planetid);
 	setPendingResource(index);
+
 	if ( isPendingActionReady() ) {
 		displayConfirmMenu();
 	}
@@ -145,6 +156,7 @@ var updateBoardInteractivity = function() {
 		updateTileInteractivity(p);
 	}
 	// updateFleetsInteractivity();
+	// updateBasesInteractivity();
 	updateAgentsInteractivity();
 };
 

@@ -106,6 +106,8 @@ var applyAction = function( action, game ){
 			return applyRecruitAction( action, game );
 		case cons.ACT_RETIRE:
 			return applyRetireAction( action, game );
+		case cons.ACT_REMOVE:
+			return applyRemoveAction( action, game );
 		case cons.ACT_COLLECT_RESOURCES:
 			return applyCollectResourcesAction( action, game );
 		case cons.ACT_PAY_UPKEEP:
@@ -426,16 +428,66 @@ var applyRetireAction = function( action, game ){
 				 response: "This agent is already retired." };
 	}
 
-	console.log("BEFORE\n", game.board.planets[planetid].agents);
-
 	// remove agent from planet
 	var index = game.board.planets[planetid].agents.indexOf(id);
 	game.board.planets[planetid].agents.splice( index, 1 );
 
-	console.log("AFTER\n", game.board.planets[planetid].agents);
-
 	agent.status = cons.AGT_STATUS_DEAD;
 	
+	calcResourceUpkeep( game, player );
+
+	return { isIllegal: false};
+};
+
+var applyRemoveAction = function( action, game ) {
+	var planetid = action.planetid;
+	var objecttype = action.objecttype;
+	var index = action.resourceid;
+	var player = action.player;
+	var planet = game.board.planets[planetid];
+
+	var structure = planet.resources[index].structure;
+
+	if (structure == undefined || structure == null){
+		return { isIllegal: true,
+				 response: "There is no structure to remove here." };
+	}
+
+	if (structure.player != player){
+		return { isIllegal: true,
+				 response: "You cannot remove another player's structure." };
+	}
+
+	if (structure.kind != objecttype){
+		return { isIllegal: true,
+				 response: "This action not match the structure type for this location." };
+	}
+
+	// restore the removed structure to the player's stash, reset to undefined
+	game.structures[player][objecttype] += 1;
+	planet.resources[index].structure = undefined;
+
+	// replace the structure with a mine if appropriate
+	if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
+		
+		if ( game.structures[player][cons.OBJ_MINE] >= 1 ) {
+			planet.resources[index].structure = { 
+													player: player, 
+													kind: cons.OBJ_MINE
+												};
+			game.structures[player][cons.OBJ_MINE] -= 1;
+		}
+	}
+
+	updateSettledBy( player, 
+					 planetid, 
+					 game );
+
+	updateBuildableBy( player,
+					   planetid,
+					   game );
+
+	calcResourcesToCollect( game, player );
 	calcResourceUpkeep( game, player );
 
 	return { isIllegal: false};
@@ -558,11 +610,22 @@ var payPlayerUpkeep = function(action, game){
 
 // Updates planet.settledBy[player] to true or false 
 // 
-// Currently assumes we added a bulding. We will need to add logic
-// To remove from planet.settledBy if the last structure a player
-// has on planetid is removed
+// True if player has a non-space structure on this planet
+// False if not (fleets and bases alone do not count as settled)
 var updateSettledBy = function( player, planetid, game ) {
-	game.board.planets[planetid].settledBy[player] = true;
+
+	game.board.planets[planetid].settledBy[player] = false;
+
+	var planet = game.board.planets[planetid];
+	
+	for ( var i = 0; i < planet.resources.length; i++ ) {
+		
+		var structure = planet.resources[i].structure;
+		
+		if ( structure && structure.player == player ){ 
+			game.board.planets[planetid].settledBy[player] = true;
+		}
+	}
 };
 
 // Updates planet.buildableBy[player] to true or false for this planet

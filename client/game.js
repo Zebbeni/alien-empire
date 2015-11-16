@@ -45,7 +45,8 @@ var isUpgradeObject = function(objecttype) {
 
 /**
  * Returns true if all required fields of the pending action
- * have been filled.
+ * have been filled. Also returns true if there are no 
+ * requirements listed for the given action type
  */
 var isPendingActionReady = function() {
 
@@ -75,7 +76,7 @@ var initializePlayerAttributes = function() {
 
 // Updates local copy of game with server's version
 var updateClientGame = function( content ) {
-	
+
 	$.extend(true, clientGame, content );
 	
 	// TODO: this is not the cleanest way to do this. This is 

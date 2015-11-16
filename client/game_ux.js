@@ -189,7 +189,7 @@ var displayConfirmMessage = function() {
 		case ACT_BUILD:
 		case ACT_PLACE:
 			message = ACT_ENGLISH[actiontype] + " a " 
-				  + RES_ENGLISH[resourcekind] + " " 
+				  + RES_ENGLISH[resourcekind] + "-collecting " 
 				  + OBJ_ENGLISH[objecttype] + " on " 
 				  + planetname + "?";
 			break;
@@ -202,6 +202,13 @@ var displayConfirmMessage = function() {
 			message = ACT_ENGLISH[actiontype] + " your "
 				 + AGT_ENGLISH[agenttype] + "? <br>(Agents cannot"
 				 + " be recruited again once retired)";
+			break;
+		case ACT_REMOVE:
+			message = ACT_ENGLISH[actiontype] + " your "
+				+ RES_ENGLISH[resourcekind] + "-collecting " 
+				+ OBJ_ENGLISH[objecttype] + " from " 
+				+ planetname + "?";
+			break;
 	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
