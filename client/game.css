@@ -22,6 +22,10 @@
 	margin-left: -400px;
 }
 
+#your-turn-div {
+	pointer-events: none;
+}
+
 #pending-action-div, #your-turn-message-div, #your-action-message-div {
 	display: table;
 	position: relative;

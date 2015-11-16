@@ -476,6 +476,7 @@ button {
 ::-webkit-scrollbar {
     width: 10px;
     background: none;
+    pointer-events: auto;
 }
 
 /* Handle */

@@ -62,7 +62,7 @@ var ACT_BUILD = 3;
 var ACT_RECRUIT = 4;
 // var ACT_DOWNGRADE = 5;
 // var ACT_REMOVE = 6;
-// var ACT_RETIRE = 7;
+var ACT_RETIRE = 7;
 // var ACT_MOVE = 8;
 // var ACT_LAUNCHMISSION = 9;
 var ACT_COLLECT_RESOURCES = 10;
@@ -109,7 +109,8 @@ var ACT_ENGLISH = {
 					1: 'End Turn',
 					2: 'Place',
 					3: 'Build',
-					4: 'Recruit'
+					4: 'Recruit',
+					7: 'Retire'
 				};
 
 var ACT_ENGLISH_PAST = {
@@ -117,6 +118,7 @@ var ACT_ENGLISH_PAST = {
 					2: " placed a ",
 					3: " built a new ",
 					4: " recruited a new ",
+					7: " retired their ",
 					10: " collected resources",
 					11: " paid upkeep",
 					12: " viewed missions",

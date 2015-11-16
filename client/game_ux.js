@@ -172,27 +172,36 @@ var displayConfirmMessage = function() {
 
 	var message;
 
-	var planets = clientGame.game.board.planets;
-	var planet = planets[ pendingAction.planetid ];
-	var planetname = planet.name;
-
 	var actiontype = pendingAction.actiontype;
 	var objecttype = pendingAction.objecttype;
 	var agenttype = pendingAction.agenttype;
-	var index = pendingAction.resourceid;
 
-	var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
+	if (actiontype != ACT_RETIRE) {
+		var planets = clientGame.game.board.planets;
+		var planet = planets[ pendingAction.planetid ];
+		var planetname = planet.name;
 
-	if ( actiontype == ACT_BUILD || actiontype == ACT_PLACE ) {
-		message = ACT_ENGLISH[actiontype] + " a " 
+		var index = pendingAction.resourceid;
+		var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
+	}
+
+	switch (actiontype) {
+		case ACT_BUILD:
+		case ACT_PLACE:
+			message = ACT_ENGLISH[actiontype] + " a " 
 				  + RES_ENGLISH[resourcekind] + " " 
 				  + OBJ_ENGLISH[objecttype] + " on " 
 				  + planetname + "?";
-	} 
-	else if ( actiontype == ACT_RECRUIT ) {
-		message = ACT_ENGLISH[actiontype] + " a " 
+			break;
+		case ACT_RECRUIT:
+			message = ACT_ENGLISH[actiontype] + " a " 
 				  + AGT_ENGLISH[agenttype] + " on " 
 				  + planetname + "?";
+			break;
+		case ACT_RETIRE:
+			message = ACT_ENGLISH[actiontype] + " your "
+				 + AGT_ENGLISH[agenttype] + "? <br>(Agents cannot"
+				 + " be recruited again once retired)";
 	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
@@ -276,6 +285,8 @@ var buildActionMessage = function( actionMsg ){
 			message += AGT_ENGLISH[actionMsg.agenttype];
 			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
 			break;
+		case ACT_RETIRE:
+			message += AGT_ENGLISH[actionMsg.agenttype];
 		case ACT_COLLECT_RESOURCES:
 			break;
 	}

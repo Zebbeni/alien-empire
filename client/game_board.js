@@ -163,6 +163,7 @@ var updateBoard = function() {
 			updateFleets(p);
 			updateAgents(p);
 		}
+	updateDeadAgents();
 
 	stage.update();
 };

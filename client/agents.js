@@ -64,6 +64,10 @@ var updateAgents = function(planetid) {
 	var agentsX = ((planet.w * sWid) / 2.0) - ( agtWidAll / 2.0);
 	var agentsY = planet.w == 1 ? 15 : 155 ;
 
+	if (num_agents > 0){
+		console.log(planet.agents);
+	}
+
 	for (var i = 0; i < num_agents; i++) {
 
 		var id = planet.agents[i];
@@ -85,9 +89,26 @@ var updateAgents = function(planetid) {
 	}
 };
 
+var updateDeadAgents = function() {
+
+	var agents = clientGame.game.board.agents;
+	var agentsContainer = board.getChildByName('agentsContainer');
+
+	for ( var key in agents ){
+
+		if ( agents[key].status != AGT_STATUS_ON ){
+			
+			var player = agents[key].player;
+			var agenttype = agents[key].agenttype;
+
+			var agentshape = agentsContainer.getChildByName( AGT_ENGLISH[agenttype] + player );
+
+			agentshape.visible = false;
+		}
+	}
+};
+
 var updateAgentsInteractivity = function() {
-	
-	console.log("updating agents interactivity");
 
 	var agentsContainer = board.getChildByName('agentsContainer');
 
@@ -142,17 +163,15 @@ var hideAgentRetireMenu = function() {
 var updateAgentsRetireMenu = function( agenttype ){
 	$('#agent-retire-name')[0].innerHTML = AGT_ENGLISH[agenttype];
 	$('#agent-retire-button').click( function() { 
-											submitAgentRetire( agenttype );
+											hideAgentRetireMenu();
+											setPendingAction( ACT_RETIRE );
+											setPendingAgent( agenttype );
+											displayConfirmMenu();
 										} );
-};
-
-var submitAgentRetire = function( agenttype, player ){
-	console.log('submitting agent retire ' + AGT_ENGLISH[agenttype]);
 };
 
 var selectAgent = function( agentname) {
 	var agentsContainer = board.getChildByName('agentsContainer');
 	var agentshape = agentsContainer.getChildByName( agentname );
-	console.log('selecting agent', agentshape);
 	setSelection(agentshape.x + 27, agentshape.y - 28);
 };

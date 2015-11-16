@@ -104,6 +104,8 @@ var applyAction = function( action, game ){
 			return applyBuildAction( action, game );
 		case cons.ACT_RECRUIT:
 			return applyRecruitAction( action, game );
+		case cons.ACT_RETIRE:
+			return applyRetireAction( action, game );
 		case cons.ACT_COLLECT_RESOURCES:
 			return applyCollectResourcesAction( action, game );
 		case cons.ACT_PAY_UPKEEP:
@@ -394,6 +396,47 @@ var applyRecruitAction = function( action, game ) {
 	agent.used = false;
 	agent.status = cons.AGT_STATUS_ON;
 	game.board.planets[planetid].agents.push( id );
+
+	calcResourceUpkeep( game, player );
+
+	return { isIllegal: false};
+};
+
+var applyRetireAction = function( action, game ){
+	var agenttype = action.agenttype;
+	var player = action.player;
+
+	var id = String(player) + String(agenttype);
+
+	var agent = game.board.agents[id];
+	var planetid = agent.planetid;
+
+	if (agent.player != player){
+		return { isIllegal: true,
+				 response: "You cannot retire another player's agent." };
+	}
+
+	if (agent.status == cons.AGT_STATUS_OFF) {
+		return { isIllegal: true,
+				 response: "This agent is not on the board." };
+	}
+
+	if (agent.status == cons.AGT_STATUS_DEAD) {
+		return { isIllegal: true,
+				 response: "This agent is already retired." };
+	}
+
+	console.log("BEFORE\n", game.board.planets[planetid].agents);
+
+	// remove agent from planet
+	var index = game.board.planets[planetid].agents.indexOf(id);
+	game.board.planets[planetid].agents.splice( index, 1 );
+
+	console.log("AFTER\n", game.board.planets[planetid].agents);
+
+	agent.status = cons.AGT_STATUS_DEAD;
+	
+	calcResourceUpkeep( game, player );
 
 	return { isIllegal: false};
 };

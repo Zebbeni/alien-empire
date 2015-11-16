@@ -75,7 +75,15 @@ var initializePlayerAttributes = function() {
 
 // Updates local copy of game with server's version
 var updateClientGame = function( content ) {
+	
 	$.extend(true, clientGame, content );
+	
+	// TODO: this is not the cleanest way to do this. This is 
+	// 	     sort of a hack to make sure when we slice values
+	// 		 out of arrays, the removal of the item translates
+	// 		 to the client's version
+	clientGame.game.board = null;
+	clientGame.game.board = content.game.board;
 };
 
 var updateGameMessages = function( newMsg ) {

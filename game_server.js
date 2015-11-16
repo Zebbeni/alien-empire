@@ -40,6 +40,7 @@ var actions = require('./game_actions');
 			case cons.ACT_VIEWED_MISSIONS:
 			case cons.ACT_BUILD:
 			case cons.ACT_RECRUIT:
+			case cons.ACT_RETIRE:
 			case cons.ACT_COLLECT_RESOURCES:
 			case cons.ACT_PAY_UPKEEP:
 				return actions.resolveGameAction( action, gameInfo.game );
