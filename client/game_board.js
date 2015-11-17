@@ -155,7 +155,7 @@ var updateBoardInteractivity = function() {
 	for ( var p = 0; p < planets.length; p++ ) {
 		updateTileInteractivity(p);
 	}
-	// updateFleetsInteractivity();
+	updateFleetsInteractivity();
 	// updateBasesInteractivity();
 	updateAgentsInteractivity();
 };
@@ -175,6 +175,8 @@ var updateBoard = function() {
 			updateFleets(p);
 			updateAgents(p);
 		}
+		
+	updateRemovedFleets();
 	updateDeadAgents();
 
 	stage.update();

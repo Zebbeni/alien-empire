@@ -106,6 +106,8 @@ var applyAction = function( action, game ){
 			return applyRecruitAction( action, game );
 		case cons.ACT_RETIRE:
 			return applyRetireAction( action, game );
+		case cons.ACT_REMOVE_FLEET:
+			return applyRemoveFleet( action, game );
 		case cons.ACT_REMOVE:
 			return applyRemoveAction( action, game );
 		case cons.ACT_COLLECT_RESOURCES:
@@ -434,6 +436,49 @@ var applyRetireAction = function( action, game ){
 
 	agent.status = cons.AGT_STATUS_DEAD;
 	
+	calcResourceUpkeep( game, player );
+
+	return { isIllegal: false};
+};
+
+var applyRemoveFleet = function( action, game ) {
+
+	var planetid = action.planetid;
+	var objecttype = action.objecttype;
+	var fleetid = action.targetid;
+	var player = action.player;
+
+	if ( fleetid == undefined || fleetid == null ){
+		return { isIllegal: true,
+				 response: "No fleet id chosen." };
+	}
+
+	var planet = game.board.planets[planetid];
+	var fleet = game.board.fleets[fleetid];
+
+	if ( fleet.planetid != planetid ) {
+		return { isIllegal: true,
+				 response: "This fleet is not on this planet." };
+	}
+
+	if ( fleet.player != action.player ) {
+		return { isIllegal: true,
+				 response: "You cannot remove another player's fleet." };
+	}
+	
+	var index = planet.fleets.indexOf(fleetid);
+
+	if ( index == -1 ) {
+		return { isIllegal: true,
+				 response: "This fleet is not registered with this planet." };
+	}
+
+	game.board.planets[planetid].fleets.splice( index, 1 );
+
+	game.structures[player][cons.OBJ_FLEET] += 1;
+	fleet.planetid = undefined;
+	fleet.used = false;
+
 	calcResourceUpkeep( game, player );
 
 	return { isIllegal: false};

@@ -16,6 +16,7 @@ var initFleets = function() {
 
 		var fleetshape = new createjs.Shape();
 		fleetshape.name = OBJ_ENGLISH[ OBJ_FLEET ] + fleetid;
+		fleetshape.fleetid = fleetid;
 
 		var fleetImg = loader.getResult( OBJ_ENGLISH[OBJ_FLEET] + fleet.player );
 		fleetshape.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(0, 0, fleetImg.width, fleetImg.height);
@@ -29,6 +30,10 @@ var initFleets = function() {
 
 		fleetshape.on("mouseout", function() {
 			hideSelection();
+		});
+
+		fleetshape.on("click", function() {
+			handleClickFleet( this.fleetid );
 		});
 
 		fleetsContainer.addChild( fleetshape );
@@ -99,9 +104,77 @@ var updateFleets = function(planetid) {
 	}
 };
 
+var updateRemovedFleets = function() {
+
+	var fleets = clientGame.game.board.fleets;
+	var fleetsContainer = board.getChildByName('fleetsContainer');
+
+	for ( var fleetid in fleets ){
+
+		if ( fleets[fleetid].planetid == undefined ) {
+
+			var fleetshape = fleetsContainer.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
+			fleetshape.visible = false;
+		}
+	}
+};
+
+var updateFleetsInteractivity = function(){
+	
+	var fleetsContainer = board.getChildByName('fleetsContainer');
+
+	switch ( clientGame.game.phase ) {
+		case PHS_UPKEEP:
+			mouseOnFleets( true, false );
+			break;
+		default:
+			mouseOnFleets( false, false );
+			break;
+	}
+};
+
+var mouseOnFleets = function( friendly, opponent ) {
+
+	var fleets = clientGame.game.board.fleets; 
+	var fleetsContainer = board.getChildByName('fleetsContainer');
+
+	for ( var fleetid in fleets ){
+
+		var fleetshape = fleetsContainer.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
+
+		if ( fleets[fleetid].player == clientTurn ){
+			fleetshape.mouseEnabled = friendly;
+		}
+		else {
+			fleetshape.mouseEnabled = opponent;
+		}
+	}
+};
+
+var handleClickFleet = function( fleetid ) {
+	
+	var fleet = clientGame.game.board.fleets[fleetid];
+
+	switch( clientGame.game.phase ){
+		case PHS_UPKEEP:
+			setPendingAction( ACT_REMOVE_FLEET );
+			setPendingObject( OBJ_FLEET );
+			setPendingPlanet( fleet.planetid );
+			setPendingTargetId( fleetid );
+			break;
+		case PHS_ACTIONS:
+			break;
+		default:
+			break;
+	}
+
+	if ( isPendingActionReady() ) {
+		displayConfirmMenu();
+	}
+};
+
 var selectFleet = function( fleetname) {
 	var fleetsContainer = board.getChildByName('fleetsContainer');
 	var fleetshape = fleetsContainer.getChildByName( fleetname );
-	console.log('selecting fleet', fleetshape);
 	setSelection(fleetshape.x + 15, fleetshape.y - 25);
 };

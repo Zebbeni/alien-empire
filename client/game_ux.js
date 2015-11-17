@@ -176,11 +176,13 @@ var displayConfirmMessage = function() {
 	var objecttype = pendingAction.objecttype;
 	var agenttype = pendingAction.agenttype;
 
-	if (actiontype != ACT_RETIRE) {
+	if ( actiontype != ACT_RETIRE ) {
 		var planets = clientGame.game.board.planets;
 		var planet = planets[ pendingAction.planetid ];
 		var planetname = planet.name;
+	}
 
+	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET ) {
 		var index = pendingAction.resourceid;
 		var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
 	}
@@ -207,6 +209,11 @@ var displayConfirmMessage = function() {
 			message = ACT_ENGLISH[actiontype] + " your "
 				+ RES_ENGLISH[resourcekind] + "-collecting " 
 				+ OBJ_ENGLISH[objecttype] + " from " 
+				+ planetname + "?";
+			break;
+		case ACT_REMOVE_FLEET:
+			message = ACT_ENGLISH[actiontype] + " your "
+				+ OBJ_ENGLISH[OBJ_FLEET] + " from "
 				+ planetname + "?";
 			break;
 	}
@@ -294,6 +301,12 @@ var buildActionMessage = function( actionMsg ){
 			break;
 		case ACT_RETIRE:
 			message += AGT_ENGLISH[actionMsg.agenttype];
+			break;
+		case ACT_REMOVE:
+		case ACT_REMOVE_FLEET:
+			message += OBJ_ENGLISH[actionMsg.objecttype];
+			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			break;
 		case ACT_COLLECT_RESOURCES:
 			break;
 	}

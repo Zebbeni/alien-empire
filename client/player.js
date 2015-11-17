@@ -28,3 +28,7 @@ var setPendingObject = function( objecttype ) {
 var setPendingAgent = function( agenttype ) {
 	pendingAction.agenttype = agenttype;
 };
+
+var setPendingTargetId = function( id ) {
+	pendingAction.targetid = id;
+};

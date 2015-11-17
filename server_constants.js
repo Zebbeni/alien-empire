@@ -47,7 +47,7 @@
 		ACT_PLACE : 2, // build anywhere, no payment
 		ACT_BUILD : 3,
 		ACT_RECRUIT : 4,
-		// ACT_DOWNGRADE : 5,
+		ACT_REMOVE_FLEET: 5,
 		ACT_REMOVE : 6,
 		ACT_RETIRE : 7,
 		// ACT_MOVE : 8,
@@ -104,7 +104,9 @@
 							1: 'End Turn',
 							2: 'Place',
 							3: 'Build',
-							4: 'Recruit'
+							4: 'Recruit',
+							5: 'Remove',
+							6: 'Remove'
 						},
 
 		OBJ_ENGLISH : {
