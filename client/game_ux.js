@@ -182,35 +182,42 @@ var displayConfirmMessage = function() {
 		var planetname = planet.name;
 	}
 
-	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET ) {
+	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET) {
 		var index = pendingAction.resourceid;
 		var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
 	}
 
 	switch (actiontype) {
+		
 		case ACT_BUILD:
 		case ACT_PLACE:
-			message = ACT_ENGLISH[actiontype] + " a " 
-				  + RES_ENGLISH[resourcekind] + "-collecting " 
-				  + OBJ_ENGLISH[objecttype] + " on " 
-				  + planetname + "?";
+			message = ACT_ENGLISH[actiontype] + " a ";
+			if (resourcekind != RES_NONE){
+				message += RES_ENGLISH[resourcekind] + "-collecting ";
+			}
+			message += OBJ_ENGLISH[objecttype] + " on " + planetname + "?";
 			break;
+
 		case ACT_RECRUIT:
 			message = ACT_ENGLISH[actiontype] + " a " 
 				  + AGT_ENGLISH[agenttype] + " on " 
 				  + planetname + "?";
 			break;
+
 		case ACT_RETIRE:
 			message = ACT_ENGLISH[actiontype] + " your "
 				 + AGT_ENGLISH[agenttype] + "? <br>(Agents cannot"
 				 + " be recruited again once retired)";
 			break;
+
 		case ACT_REMOVE:
-			message = ACT_ENGLISH[actiontype] + " your "
-				+ RES_ENGLISH[resourcekind] + "-collecting " 
-				+ OBJ_ENGLISH[objecttype] + " from " 
-				+ planetname + "?";
+			message = ACT_ENGLISH[actiontype] + " your ";
+			if (resourcekind != RES_NONE){
+				message += RES_ENGLISH[resourcekind] + "-collecting ";
+			}
+			message += OBJ_ENGLISH[objecttype] + " from " + planetname + "?";
 			break;
+
 		case ACT_REMOVE_FLEET:
 			message = ACT_ENGLISH[actiontype] + " your "
 				+ OBJ_ENGLISH[OBJ_FLEET] + " from "

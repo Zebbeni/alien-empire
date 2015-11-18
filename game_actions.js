@@ -491,7 +491,7 @@ var applyRemoveAction = function( action, game ) {
 	var player = action.player;
 	var planet = game.board.planets[planetid];
 
-	var structure = planet.resources[index].structure;
+	var structure = index != cons.RES_NONE ? planet.resources[index].structure : planet.base;
 
 	if (structure == undefined || structure == null){
 		return { isIllegal: true,
@@ -503,20 +503,26 @@ var applyRemoveAction = function( action, game ) {
 				 response: "You cannot remove another player's structure." };
 	}
 
-	if (structure.kind != objecttype){
+	if (objecttype != cons.OBJ_BASE && structure.kind != objecttype){
 		return { isIllegal: true,
 				 response: "This action not match the structure type for this location." };
 	}
 
 	// restore the removed structure to the player's stash, reset to undefined
 	game.structures[player][objecttype] += 1;
-	planet.resources[index].structure = undefined;
+	
+	if ( objecttype == cons.OBJ_BASE ) {
+		planet.base = undefined;
+	}
+	else {
+		planet.resources[index].structure = undefined;
+	}
 
 	// replace the structure with a mine if appropriate
 	if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
 		
 		if ( game.structures[player][cons.OBJ_MINE] >= 1 ) {
-			planet.resources[index].structure = { 
+			planet.resources[index].structure = {
 													player: player, 
 													kind: cons.OBJ_MINE
 												};

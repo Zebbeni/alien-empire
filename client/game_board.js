@@ -179,6 +179,10 @@ var updateBoard = function() {
 
 	var planets = clientGame.game.board.planets;
 
+	// this sets all bases to invisible. Update function will reveal
+	// and draw any that are on planets.
+	updateRemovedBases();
+
 	for ( var p = 0; p < planets.length; p++ ) {	
 
 			updateTileInteractivity(p);
