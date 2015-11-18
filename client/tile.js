@@ -33,7 +33,7 @@ var initTile = function( planetid ) {
 	initPlanet(planetid);
 	initNametext(planetid);
 	initResources(planetid);
-	initOrbitStructures(planetid);
+	// initOrbitStructures(planetid);
 	initDarkScreen(planetid);
 
 	tiles[planetid].on("mouseover", function() {
@@ -70,7 +70,7 @@ var drawTile = function(planetid) {
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
-	drawOrbitStructures(planetid);
+	// drawOrbitStructures(planetid);
 	drawDarkScreen(planetid, img_width);
 };
 
@@ -78,7 +78,7 @@ var drawTile = function(planetid) {
 // currently screws everything up.
 var updateTileImage = function(planetid) {
 	drawResources(planetid);
-	drawOrbitStructures(planetid);
+	// drawOrbitStructures(planetid);
 };
 
 /**
@@ -495,45 +495,6 @@ var selectResource = function(planetid, index) {
 	var y = tile.y + resource.y + icon.y - 32;
 
 	setSelection(x, y);
-};
-
-var initOrbitStructures = function(planetid) {
-	var orbitstructures = new createjs.Container();
-	orbitstructures.name = "orbitstructures";
-
-	var base = new createjs.Shape();
-	base.name = "base";
-	orbitstructures.addChild(base);
-
-	var fleets = new createjs.Container();
-	fleets.name = "fleets";
-	orbitstructures.addChild(fleets);
-
-	tiles[planetid].addChild(orbitstructures);
-};
-
-
-var drawOrbitStructures = function(planetid) {
-	var planet = clientGame.game.board.planets[planetid];
-	var orbitstructures = tiles[planetid].getChildByName("orbitstructures");
-	var base = orbitstructures.getChildByName("base");
-
-
-	if (planet.base) {
-		var player = base.player;
-		var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + planet.base.player);
-		base.graphics.beginBitmapFill(baseImg, "no-repeat").drawRect(0, 0, baseImg.width, baseImg.height);
-		switch (planet.w) {
-			case 1:
-				base.x = -25;
-				base.y = -25;
-				break;
-			case 2:
-				base.x = 25;
-				base.y = 25;
-				break;
-		}
-	}
 };
 
 var initDarkScreen = function(planetid) {

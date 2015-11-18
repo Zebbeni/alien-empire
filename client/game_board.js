@@ -100,6 +100,7 @@ var createBoard = function() {
 		drawAsteroids();
 		drawTiles();
 		drawFleets();
+		drawBases();
 		drawAgents();
 
 		stage.addChild( board );
@@ -132,6 +133,16 @@ var drawFleets = function() {
 
 	for ( var p = 0; p < planets.length; p++ ) {	
 		updateFleets(p);
+	}
+};
+
+var drawBases = function() {
+	var planets = clientGame.game.board.planets;
+
+	initBases();
+
+	for ( var p = 0; p < planets.length; p++ ) {	
+		updateBases(p);
 	}
 };
 
@@ -173,9 +184,10 @@ var updateBoard = function() {
 			updateTileInteractivity(p);
 			updateTileImage(p);
 			updateFleets(p);
+			updateBases(p);
 			updateAgents(p);
 		}
-		
+	
 	updateRemovedFleets();
 	updateDeadAgents();
 
