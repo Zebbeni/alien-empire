@@ -505,7 +505,7 @@ var applyRemoveAction = function( action, game ) {
 
 	if (objecttype != cons.OBJ_BASE && structure.kind != objecttype){
 		return { isIllegal: true,
-				 response: "This action not match the structure type for this location." };
+				 response: "This does not match the structure type for this location." };
 	}
 
 	// restore the removed structure to the player's stash, reset to undefined
@@ -513,6 +513,8 @@ var applyRemoveAction = function( action, game ) {
 	
 	if ( objecttype == cons.OBJ_BASE ) {
 		planet.base = undefined;
+		removeAllFleets( game, player );
+		// removeAllAgents( game, player, cons.OBJ_BASE );
 	}
 	else {
 		planet.resources[index].structure = undefined;
@@ -656,6 +658,31 @@ var payPlayerUpkeep = function(action, game){
 
 	for ( var i = 0; i < toPay.length; i++) {
 		game.resources[action.player][i] -= toPay[i];
+	}
+};
+
+var removeAllFleets = function( game, player ){
+
+	var fleets = game.board.fleets;
+	var planets = game.board.planets;
+
+	for ( var i in fleets ){
+
+		if ( fleets[i].player == player ){
+
+			var planetid = fleets[i].planetid;
+
+			if ( planetid != undefined ){
+				var index = planets[planetid].fleets.indexOf(i);
+				planets[planetid].fleets.splice( index, 1 );
+				
+				fleets[i].planetid = undefined;
+				fleets[i].used = false;
+
+				game.structures[player][cons.OBJ_FLEET] += 1;
+
+			}
+		}
 	}
 };
 
