@@ -514,7 +514,6 @@ var applyRemoveAction = function( action, game ) {
 	if ( objecttype == cons.OBJ_BASE ) {
 		planet.base = undefined;
 		removeAllFleets( game, player );
-		// removeAllAgents( game, player, cons.OBJ_BASE );
 	}
 	else {
 		planet.resources[index].structure = undefined;
@@ -531,6 +530,10 @@ var applyRemoveAction = function( action, game ) {
 			game.structures[player][cons.OBJ_MINE] -= 1;
 		}
 	}
+
+	checkAndRemoveAllAgentsFor( game, 
+								player, 
+								objecttype );
 
 	updateSettledBy( player, 
 					 planetid, 
@@ -658,6 +661,29 @@ var payPlayerUpkeep = function(action, game){
 
 	for ( var i = 0; i < toPay.length; i++) {
 		game.resources[action.player][i] -= toPay[i];
+	}
+};
+
+var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
+	if ( objecttype != cons.OBJ_FLEET && objecttype != cons.OBJ_MINE ) {
+		// if player has no more of this objecttype on the board
+		if ( game.structures[player][objecttype] >= cons.STRUCT_REQS[objecttype].max ) {
+
+			for ( var a = cons.AGT_EXPLORER; a <= cons.AGT_SABATEUR; a++ ) {
+				
+				if ( cons.AGT_OBJTYPE[a] == objecttype ){
+
+					var agent = game.board.agents[ String(player) + String(a)];
+					
+					if ( agent.status == cons.AGT_STATUS_ON ) {
+						
+						agent.status = cons.AGT_STATUS_OFF;
+						agent.planetid = undefined;
+						agent.used = false;
+					}
+				}
+			}
+		}
 	}
 };
 
