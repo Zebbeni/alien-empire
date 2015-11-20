@@ -63,8 +63,8 @@ var ACT_RECRUIT = 4;
 var ACT_REMOVE_FLEET = 5;
 var ACT_REMOVE = 6;
 var ACT_RETIRE = 7;
-// var ACT_MOVE = 8;
-// var ACT_LAUNCHMISSION = 9;
+var ACT_MOVE_AGENT = 8;
+var ACT_LAUNCH_MISSION = 9;
 var ACT_COLLECT_RESOURCES = 10;
 var ACT_PAY_UPKEEP = 11;
 var ACT_VIEWED_MISSIONS = 12;
@@ -104,16 +104,6 @@ var AGT_ENGLISH = {
 					7: "smuggler",
 					8: "sabateur"
 };
-
-var ACT_ENGLISH = {
-					1: 'End Turn',
-					2: 'Place',
-					3: 'Build',
-					4: 'Recruit',
-					5: 'Remove',
-					6: 'Remove',
-					7: 'Retire'
-				};
 
 var ACT_ENGLISH_PAST = {
 					1: " finished turn",
@@ -158,7 +148,9 @@ var ACTION_REQUIREMENTS = {
 	3: ['actiontype','objecttype','planetid','resourceid'],
 	4: ['actiontype','agenttype','planetid'],
 	5: ['actiontype', 'objecttype', 'planetid', 'targetid'],
-	6: ['actiontype', 'objecttype', 'planetid', 'resourceid']
+	6: ['actiontype', 'objecttype', 'planetid', 'resourceid'],
+	8: ['actiontype', 'agenttype', 'planetid'],
+	9: ['actiontype', 'agenttype', 'planetid']
 };
 
 // var AGT_OBJTYPE = {

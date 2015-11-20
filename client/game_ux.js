@@ -189,9 +189,16 @@ var displayConfirmMessage = function() {
 
 	switch (actiontype) {
 		
-		case ACT_BUILD:
 		case ACT_PLACE:
-			message = ACT_ENGLISH[actiontype] + " a ";
+			message = "Place a ";
+			if (resourcekind != RES_NONE){
+				message += RES_ENGLISH[resourcekind] + "-collecting ";
+			}
+			message += OBJ_ENGLISH[objecttype] + " on " + planetname + "?";
+			break;
+
+		case ACT_BUILD:
+			message = "Build a ";
 			if (resourcekind != RES_NONE){
 				message += RES_ENGLISH[resourcekind] + "-collecting ";
 			}
@@ -199,19 +206,17 @@ var displayConfirmMessage = function() {
 			break;
 
 		case ACT_RECRUIT:
-			message = ACT_ENGLISH[actiontype] + " a " 
-				  + AGT_ENGLISH[agenttype] + " on " 
-				  + planetname + "?";
+			message = "Recruit your " + AGT_ENGLISH[agenttype] 
+						+ " on " + planetname + "?";
 			break;
 
 		case ACT_RETIRE:
-			message = ACT_ENGLISH[actiontype] + " your "
-				 + AGT_ENGLISH[agenttype] + "? <br>(Agents cannot"
-				 + " be recruited again once retired)";
+			message = "Retire your " + AGT_ENGLISH[agenttype] 
+						+ "? <br>(Agents cannot be recruited once retired)";
 			break;
 
 		case ACT_REMOVE:
-			message = ACT_ENGLISH[actiontype] + " your ";
+			message = "Remove your ";
 			if (resourcekind != RES_NONE){
 				message += RES_ENGLISH[resourcekind] + "-collecting ";
 			}
@@ -219,9 +224,18 @@ var displayConfirmMessage = function() {
 			break;
 
 		case ACT_REMOVE_FLEET:
-			message = ACT_ENGLISH[actiontype] + " your "
-				+ OBJ_ENGLISH[OBJ_FLEET] + " from "
-				+ planetname + "?";
+			message = "Remove your " + OBJ_ENGLISH[OBJ_FLEET] + " from "
+						+ planetname + "?";
+			break;
+
+		case ACT_MOVE_AGENT:
+			message = "Move your " + AGT_ENGLISH[agenttype] + " to " 
+						+ planetname + "?";
+			break;
+
+		case ACT_LAUNCH_MISSION:
+			message = "Send your " + AGT_ENGLISH[agenttype] + " on a mission "
+						+ " to " + planetname + "?";
 			break;
 	}
 
@@ -404,6 +418,21 @@ var updateTurnHelpMessage = function() {
 				} else {
 					message = "Click a structure or agent to place on board"
 								+ " (or click End Turn)";
+				}
+			}
+			break;
+
+		case PHS_ACTIONS:
+
+			if ( clientTurn == clientGame.game.turn ){
+				if ( actiontype == ACT_MOVE_AGENT ){
+					message = "Click a location to move your "
+								+ AGT_ENGLISH[pendingAction.agenttype];
+				}
+				else if ( actiontype == ACT_LAUNCH_MISSION ){
+					message = "Click a location to send your "
+							+ AGT_ENGLISH[pendingAction.agenttype]
+							+ " on a mission";
 				}
 			}
 			break;

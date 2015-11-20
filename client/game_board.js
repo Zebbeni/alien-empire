@@ -81,6 +81,7 @@ var handleClickPlanet = function( planetid ) {
 
 	setPendingPlanet(planetid);
 	setPendingResource( RES_NONE );
+
 	if ( isPendingActionReady() ) {
 		displayConfirmMenu();
 	}

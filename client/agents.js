@@ -140,12 +140,12 @@ var mouseOnAgents = function( on ) {
 var handleClickAgent = function( agenttype ) {
 	switch ( clientGame.game.phase ){
 		case PHS_UPKEEP:
-			updateAgentsRetireMenu( agenttype );
+			updateAgentRetireMenu( agenttype );
 			showAgentRetireMenu();
 			break;
 		case PHS_ACTIONS:
-			console.log("clicked ", name);
-			// showAgentActionsMenu();
+			updateAgentActionMenu( agenttype );
+			showAgentActionMenu();
 			break;
 		default:
 			break;
@@ -160,13 +160,39 @@ var hideAgentRetireMenu = function() {
 	$('#agent-retire-div')[0].style.visibility = "hidden";
 };
 
-var updateAgentsRetireMenu = function( agenttype ){
+var updateAgentRetireMenu = function( agenttype ){
 	$('#agent-retire-name')[0].innerHTML = AGT_ENGLISH[agenttype];
 	$('#agent-retire-button').click( function() { 
 											hideAgentRetireMenu();
 											setPendingAction( ACT_RETIRE );
 											setPendingAgent( agenttype );
 											displayConfirmMenu();
+										} );
+};
+
+var showAgentActionMenu = function() {
+	$('#agent-action-div')[0].style.visibility = "visible";
+};
+
+var hideAgentActionMenu = function() {
+	$('#agent-action-div')[0].style.visibility = "hidden";
+};
+
+var updateAgentActionMenu = function( agenttype ){
+	$('#agent-action-name')[0].innerHTML = "Action: " + AGT_ENGLISH[agenttype];
+	$('#agent-move-button').click( function() { 
+											hideAgentActionMenu();
+											setPendingAction( ACT_MOVE_AGENT );
+											setPendingAgent( agenttype );
+											updateBoardInteractivity();
+											updateTurnHelpMessage();
+										} );
+	$('#agent-mission-button').click( function() { 
+											hideAgentActionMenu();
+											setPendingAction( ACT_LAUNCH_MISSION );
+											setPendingAgent( agenttype );
+											updateBoardInteractivity();
+											updateTurnHelpMessage();
 										} );
 };
 

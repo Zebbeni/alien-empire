@@ -163,6 +163,18 @@ var updateTileInteractivity = function(planetid) {
 			mousePlanet( planetid, false );
 
 			break;
+
+		case PHS_ACTIONS:
+
+			mouseTile( planetid, true );
+			mousePlanet( planetid, false );
+			mouseResources( planets, planetid, false, false, false );
+
+			if ( actiontype == ACT_MOVE_AGENT || actiontype == ACT_LAUNCH_MISSION ){
+				mousePlanet( planetid, true );
+			}
+
+			break;
 	}
 };
 
