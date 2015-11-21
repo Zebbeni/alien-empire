@@ -113,9 +113,11 @@ var ACT_ENGLISH_PAST = {
 					5: " removed their ",
 					6: " removed their ",
 					7: " retired their ",
+					8: " moved their ",
+					9: " launched a mission ",
 					10: " collected resources",
 					11: " paid upkeep",
-					12: " viewed missions",
+					12: " viewed missions"
 				};
 
 var RES_ENGLISH = { 

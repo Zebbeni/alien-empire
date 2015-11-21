@@ -43,6 +43,8 @@ var actions = require('./game_actions');
 			case cons.ACT_RETIRE:
 			case cons.ACT_REMOVE_FLEET:
 			case cons.ACT_REMOVE:
+			case cons.ACT_MOVE_AGENT:
+			case cons.ACT_LAUNCH_MISSION:
 			case cons.ACT_COLLECT_RESOURCES:
 			case cons.ACT_PAY_UPKEEP:
 				return actions.resolveGameAction( action, gameInfo.game );

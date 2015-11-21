@@ -328,7 +328,14 @@ var buildActionMessage = function( actionMsg ){
 			message += OBJ_ENGLISH[actionMsg.objecttype];
 			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
 			break;
+		case ACT_MOVE_AGENT:
+			message += AGT_ENGLISH[actionMsg.agenttype] 
+					+ ' to ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			break;
 		case ACT_COLLECT_RESOURCES:
+			// no extra info needed for collecting resources
+			break;
+		default:
 			break;
 	}
 
@@ -702,19 +709,19 @@ var updateRoundMenu = function() {
 
 var updatePhaseMenus = function() {
 
-	$('#missions-phase-div')[0].style.visibility = "hidden";
-	$('#resource-phase-div')[0].style.visibility = "hidden";
-	$('#upkeep-phase-div')[0].style.visibility = "hidden";
+	$('#missions-phase-div').hide();
+	$('#resource-phase-div').hide();
+	$('#upkeep-phase-div').hide();
 
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
-			$('#missions-phase-div')[0].style.visibility = "visible";
+			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
-			$('#resource-phase-div')[0].style.visibility = "visible";
+			$('#resource-phase-div').show();
 			break;
 		case PHS_UPKEEP:
-			$('#upkeep-phase-div')[0].style.visibility = "visible";
+			$('#upkeep-phase-div').show();
 			break;
 		default:
 			break;
