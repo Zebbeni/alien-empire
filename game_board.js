@@ -32,15 +32,14 @@ var start_planets = {
 	};
 
 	/**
-	 * Creates an array of boolean values indicating if each player has
-	 * completed the current phase
+	 * Populates a users-length array with all values set to the given value
 	 */
-	module.exports.initializePhaseDone = function( num_users ){
-		var phaseDone = [];
+	module.exports.initializeUserArray = function( num_users, value ){
+		var userArray = [];
 		for (var i = 0; i < num_users; i++) {
-			phaseDone.push(false);
+			userArray.push(value);
 		}
-		return phaseDone;
+		return userArray;
 	};
 
 	module.exports.initializePlayerPoints = function( num_users ) {
@@ -217,7 +216,7 @@ var initializeAgents = function(num_players) {
 				planetid: undefined,
 				used: false,
 				status: cons.AGT_STATUS_OFF, // AGT_STATUS_ON, AGT_STATUS_OFF, AGT_STATUS_DEAD
-				mission: undefined // { planetid, round_eta }
+				missionround: undefined // the round on which agent's mission was launched
 			};
 		}
 	}

@@ -109,7 +109,17 @@
         </div>
         <div id="missions-phase-div" class="phase-div" style="display: none">
             <div>Resolving Missions Phase</div>
-            <div>There are no missions to resolve this round</div>
+            <div id="missions-phase-info"></div>
+            <div id="missions-spy-menu">
+                <div>Block Mission?</div>
+                <input type="button" id="mission-block-button" value="Yes" onclick="javascript:blockMissionAction( true );"></input>
+                <input type="button" id="mission-allow-button" value="No" onclick="javascript:blockMissionAction( false );"></input>
+            </div>
+            <div id="missions-resolution-menu"></div>
+            <div id="missions-choice-menu">
+                <div id="missions-choice-message">Target your stuff or whatever</div>
+                <input type="button" value="Done" onclick="javascript:displayConfirmMenu();"/>
+            </div>
             <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
         </div>
         <div id="resource-phase-div" class="phase-div" style="display: none">
@@ -139,12 +149,12 @@
             </div>
         </div>
         <script src="/socket.io/socket.io.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
-        <script src="https://code.createjs.com/preloadjs-0.6.1.min.js"></script> 
-        <!-- <script src="easeljs-0.8.1.min.js"></script>
+        <script src="https://code.createjs.com/preloadjs-0.6.1.min.js"></script> -->
+        <script src="easeljs-0.8.1.min.js"></script>
         <script src="preloadjs-0.6.1.min.js"></script>
-        <script src="jquery.min.js"></script> -->
+        <script src="jquery.min.js"></script>
         <script src="jquery.transit.min.js"></script>
         <script src="constants.js"></script>
         <script src="script.js"></script>

@@ -237,6 +237,11 @@ var displayConfirmMessage = function() {
 			message = "Send your " + AGT_ENGLISH[agenttype] + " on a mission "
 						+ " to " + planetname + "?";
 			break;
+
+		case ACT_BLOCK_MISSION:
+			var choice = pendingAction.choice == true ? "Block" : "Allow";
+			message = choice + " this mission?";
+			break;
 	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
@@ -715,6 +720,7 @@ var updatePhaseMenus = function() {
 
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
+			updateMissionsMenu();
 			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
@@ -726,6 +732,94 @@ var updatePhaseMenus = function() {
 		default:
 			break;
 	}
+};
+
+/**
+ * Displays mission resolving information to each client based on which round
+ * and mission index we're on. 
+ */
+var updateMissionsMenu = function() {
+
+	var missionRound = clientGame.game.round - 2;
+	var missionindex = clientGame.game.missionindex;
+	var missions = clientGame.game.missions;
+	var innerHTML = '';
+
+	$('#missions-choice-menu')[0].style.visibility = "hidden";
+	$('#missions-spy-menu')[0].style.visibility = "hidden";
+	$('#missions-resolution-menu')[0].style.visibility = "hidden";
+
+	if ( missionRound <= 0 || missions[missionRound].length == 0) {
+		innerHTML += 'There are no missions to resolve this round';
+	}
+	else {
+		var mission = missions[ missionRound ][ missionindex ];
+		var player = mission.player;
+		var agenttype = mission.agenttype;
+		var userid = clientGame.game.players[player];
+		var name = player == clientTurn ? 'You' : all_users[userid].name;
+		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
+
+		// display basic mission information
+		// (eg. Bob sent an Explorer to Sector G!)
+		innerHTML += name + ' sent a ' 
+						+ AGT_ENGLISH[agenttype] 
+						+ ' to ' + planetname;
+
+		console.log(clientGame.game.missionSpied);
+
+		// if mission has been resolved
+		if ( mission.resolution.resolved == true ) {
+			// display mission resolution message (eg. no-fly zones placed on __)
+			$('#missions-resolution-menu')[0].style.visibility = "visible";
+
+			if ( mission.resolution.blocked ) {
+				var blocker = mission.resolution.blockedBy;
+				$('#missions-resolution-menu')[0].innerHTML = "Mission blocked by " + all_users[blocker].name;
+			}
+			else {
+				$('#missions-resolution-menu')[0].innerHTML = "mission is resolved";
+			}
+			// wait for a few seconds, send 'viewed mission' event back to server
+		}
+
+		// else if we can use a spy to block this mission
+		//     display spy block menu (block mission, allow)
+		else if ( clientGame.game.missionSpied[ clientTurn ] == undefined ) {
+
+			// automatically allow if this is client's own mission
+			if ( clientTurn == player ){
+				blockMissionAction( false );
+			} 
+			else {
+				$('#missions-spy-menu')[0].style.visibility = "visible";
+			}
+		}
+
+		// if all clients have responded with spy actions
+		else if ( clientGame.game.missionSpied.indexOf( null ) == -1 ) {
+			// and if this is actually this client's mission
+			if ( clientTurn == player ) {
+				// show resolution menu (with done button)
+				$('#missions-choice-menu')[0].style.visibility = "visible";
+			}
+		}
+		//     hide spy block menu
+		//     display which players whose actions we're waiting on
+
+		// 
+	}
+
+	$('#missions-phase-info')[0].innerHTML = innerHTML;
+
+};
+
+// sets pending action to ACT_BLOCK_MISSION and submits it to
+// the server with a decision (true or false)
+var blockMissionAction = function( value ){
+	setPendingAction( ACT_BLOCK_MISSION );
+	setPendingChoice( value );
+	submitAction();
 };
 
 /** 

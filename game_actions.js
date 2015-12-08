@@ -112,12 +112,16 @@ var applyAction = function( action, game ){
 			return applyRemoveAction( action, game );
 		case cons.ACT_MOVE_AGENT:
 			return applyMoveAgentAction( action, game );
+		case cons.ACT_LAUNCH_MISSION:
+			return applyLaunchMission( action, game );
 		case cons.ACT_COLLECT_RESOURCES:
 			return applyCollectResourcesAction( action, game );
 		case cons.ACT_PAY_UPKEEP:
 			return applyPayUpkeep( action, game );
 		case cons.ACT_VIEWED_MISSIONS:
 			return applyViewedMissions( action, game );
+		case cons.ACT_BLOCK_MISSION:
+			return applyBlockMission( action, game );
 		default:
 			return { 
 					isIllegal: true,
@@ -229,8 +233,9 @@ var applyBuildAction = function( action, game ) {
 		case cons.OBJ_BASE:
 
 			if ( !game.board.planets[planetid].settledBy[player] ) {
-				return { isIllegal: true,
-				 response: "Your base must be build on a planet you have settled"
+				return { 
+					isIllegal: true,
+				 	response: "Your base must be built on a planet you have settled"
 				};
 			}
 
@@ -655,6 +660,12 @@ var applyMoveAgentAction = function( action, game ){
 			};
 	}
 
+	if ( agent.missionround != undefined ) {
+		return { isIllegal: true,
+				 response: "This agent is on a pending mission"
+			};
+	}
+
 	if ( agent.used ) {
 		return { isIllegal: true,
 				 response: "This agent can only do one action per round"
@@ -670,6 +681,54 @@ var applyMoveAgentAction = function( action, game ){
 
 	return { isIllegal: false };
 
+};
+
+var applyLaunchMission = function( action, game ) {
+
+	var player = action.player;
+	var agenttype = action.agenttype;
+	var planetid = action.planetid;
+
+	var agentid = String(player) + String(agenttype);
+	var agent = game.board.agents[ agentid ];
+	var planets = game.board.planets;
+
+	if ( planetid != agent.planetid && !(planetid in planets[agent.planetid].borders ) ) {
+		return { isIllegal: true,
+				 response: "Choose a location within one space of your agent"
+			};
+	}
+
+	if ( agent.missionround != undefined ){
+		return { isIllegal: true,
+				 response: "This agent is on a pending mission"
+			};
+	}
+
+	if ( agent.used ) {
+		return { isIllegal: true,
+				 response: "This agent can only do one action per round"
+			};
+	}
+
+	// TODO: check for SMUGGLER and add an extra attribute for the agent he
+	// is smuggling in
+	game.missions[ game.round ].push( {
+		player: player,
+		agenttype: agenttype,
+		planetTo: planetid,
+		planetFrom: agent.planetid,
+		resolution: {
+			resolved: false,
+			blocked: undefined,
+			blockedBy: undefined
+		} // object with details of how mission was completed
+	});
+
+	agent.used = true;
+	agent.missionround = game.round;
+
+	return { isIllegal: false };
 };
 
 var applyViewedMissions = function( action, game) {
@@ -691,6 +750,36 @@ var applyViewedMissions = function( action, game) {
 	updatePhase( game );
 
 	return { isIllegal: false };
+};
+
+var applyBlockMission = function( action, game ){
+
+	var player = action.player;
+	var choice = action.choice;
+	var index = game.missionindex;
+	var round = game.round - 2;
+
+	if ( game.missionSpied[ player ] != undefined ){
+		return { isIllegal: true,
+				 response: "You have already done this action"
+			};
+	}
+
+	// TODO: add a check to make sure player actually has a spy
+	// TODO: if blocking the mission, make sure to actually remove a spy eye
+
+	if ( choice == true ){
+		game.missionSpied[ player ] = true;
+		game.missions[round][ index ].resolution.resolved = true;
+		game.missions[round][ index ].resolution.blocked = true;
+		game.missions[round][ index ].resolution.blockedBy = player;
+		console.log("mission blocked");
+	}
+	else {
+		game.missionSpied[ player ] = false;
+	}
+
+	return { isIllegal: false};
 };
 
 var collectPlayerResources = function( action, game){
@@ -734,6 +823,7 @@ var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
 	}
 };
 
+// Removes all fleets from the board for a given player
 var removeAllFleets = function( game, player ){
 
 	var fleets = game.board.fleets;
@@ -940,7 +1030,9 @@ var updatePhase = function( game ){
 
 var updateRound = function( game ){
 	game.round += 1;
-	resetAgentsUsed( game );
+	game.missionindex = 0; // reset mission index to resolve
+	updateAgentsUsed( game );
+	updateMissions( game, game.round );
 };
 
 var hasEnoughToBuild = function( player, objecttype, game ) {
@@ -967,13 +1059,18 @@ var payToBuild = function( player, objecttype, game) {
 
 // to be called on round updates, resets all agents used
 // attributes to false, if not on mission
-var resetAgentsUsed = function( game ) {
+var updateAgentsUsed = function( game ) {
 	var agents = game.board.agents;
 	for ( var id in agents ) {
-		if ( agents[id].mission == undefined ) {
+		if ( agents[id].missionround == undefined ) {
 			agents[id].used = false;
 		}
 	}
+};
+
+// adds a new array of missions for the new round
+var updateMissions = function( game, round ){
+	game.missions[round] = [];
 };
 
 /**

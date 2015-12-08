@@ -32,3 +32,7 @@ var setPendingAgent = function( agenttype ) {
 var setPendingTargetId = function( id ) {
 	pendingAction.targetid = id;
 };
+
+var setPendingChoice = function( value ){
+	pendingAction.choice = value;
+};
