@@ -42,9 +42,9 @@ var DOMimageMap = [
 ];
 
 $.fn.preload = function() {
-    this.each(function(){
-        $('<img/>')[0].src = this;
-    });
+	this.each(function(){
+		$('<img/>')[0].src = this;
+	});
 };
 
 $(document).ready(function () {
@@ -182,7 +182,7 @@ var displayConfirmMessage = function() {
 		var planetname = planet.name;
 	}
 
-	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET) {
+	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET && actiontype != ACT_MISSION_RESOLVE) {
 		var index = pendingAction.resourceid;
 		var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
 	}
@@ -242,6 +242,10 @@ var displayConfirmMessage = function() {
 			var choice = pendingAction.choice == true ? "Block" : "Allow";
 			message = choice + " this mission?";
 			break;
+
+		// case ACT_MISSION_RESOLVE:
+		// 	message = ""
+		// 	break;
 	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
@@ -261,44 +265,50 @@ var cancelPendingAction = function() {
 };
 
 var displayGameMessages = function() {
-    updateMessagesHtml( clientGame.messages, "game-messages-div");
+	updateMessagesHtml( clientGame.messages, "game-messages-div");
 };
 
 var displayStagingMessages = function() {
-    updateMessagesHtml( clientGame.messages, "staging-messages-div");
+	updateMessagesHtml( clientGame.messages, "staging-messages-div");
 };
 
 var updateMessagesHtml = function( messages, div_id ) {
 
-    var messagesHtml = '<table style="height:10px" class="message-table"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
-    var msg = null;
-    var combinedMessage;
+	var messagesHtml = '<table style="height:10px" class="message-table"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
+	var msg = null;
+	var combinedMessage;
+	var ignore = [ ACT_BLOCK_MISSION, 
+				   ACT_MISSION_RESOLVE, 
+				   ACT_MISSION_VIEWED];
 
-    for (var m = 0; m < messages.length; m++){
+	for (var m = 0; m < messages.length; m++){
 
-    	// combinedMessage = '';
-        msg = messages[m];
+		// combinedMessage = '';
+		msg = messages[m];
 
-        // if server message, message spans both columns and is centered
-        switch (msg.id) {
-	        case MSG_SERVER:
-	            messagesHtml += buildServerMessage( msg );
-	            break;
-	        case MSG_ACTION:
-	        	messagesHtml += buildActionMessage( msg.message );
-	            break;
-	        default:
-	        	var htmlAndM = buildChatMessage( msg, messages, m );
-	        	messagesHtml += htmlAndM.html;
-	        	m = htmlAndM.m;
-	        	break;
-    	}
-    }
-    messagesHtml += '</table>'
+		// if server message, message spans both columns and is centered
+		switch (msg.id) {
+			case MSG_SERVER:
+				messagesHtml += buildServerMessage( msg );
+				break;
+			case MSG_ACTION:
+				var actiontype = msg.message.actiontype;
+				if ( ignore.indexOf(actiontype) == -1 ) {
+					messagesHtml += buildActionMessage( msg.message );
+				}
+				break;
+			default:
+				var htmlAndM = buildChatMessage( msg, messages, m );
+				messagesHtml += htmlAndM.html;
+				m = htmlAndM.m;
+				break;
+		}
+	}
+	messagesHtml += '</table>'
 
-    var msgDiv = document.getElementById( div_id ); //different
-    msgDiv.innerHTML = messagesHtml;
-    msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
+	var msgDiv = document.getElementById( div_id ); //different
+	msgDiv.innerHTML = messagesHtml;
+	msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
 };
 
 // return a message spanning both columns
@@ -336,9 +346,6 @@ var buildActionMessage = function( actionMsg ){
 		case ACT_MOVE_AGENT:
 			message += AGT_ENGLISH[actionMsg.agenttype] 
 					+ ' to ' + clientGame.game.board.planets[actionMsg.planetid].name;
-			break;
-		case ACT_COLLECT_RESOURCES:
-			// no extra info needed for collecting resources
 			break;
 		default:
 			break;
@@ -426,7 +433,7 @@ var updateTurnHelpMessage = function() {
 								+ OBJ_ENGLISH[pendingAction.objecttype];
 				} else if (actiontype == ACT_RECRUIT) {
 					message = "Choose a planet to recruit your "
-						   		+ AGT_ENGLISH[pendingAction.agenttype];
+								+ AGT_ENGLISH[pendingAction.agenttype];
 				} else {
 					message = "Click a structure or agent to place on board"
 								+ " (or click End Turn)";
@@ -542,9 +549,9 @@ var createResourcesMenu = function() {
 	for ( var i = 0; i <= RES_FOOD; i++ ){
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
 				   + '<div class="gain-div"></div><div class="loss-div"></div>'
-        		   + '<table class="resource-table" cellspacing="0"></table>'
-        		   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
-        		   + '</div>';
+				   + '<table class="resource-table" cellspacing="0"></table>'
+				   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
+				   + '</div>';
 	}
 
 	innerHTML += '<input type="button" id="trade-button" value="Trade"></input>';
@@ -766,8 +773,6 @@ var updateMissionsMenu = function() {
 						+ AGT_ENGLISH[agenttype] 
 						+ ' to ' + planetname;
 
-		console.log(clientGame.game.missionSpied);
-
 		// if mission has been resolved
 		if ( mission.resolution.resolved == true ) {
 			// display mission resolution message (eg. no-fly zones placed on __)
@@ -777,14 +782,26 @@ var updateMissionsMenu = function() {
 				var blocker = mission.resolution.blockedBy;
 				$('#missions-resolution-menu')[0].innerHTML = "Mission blocked by " + all_users[blocker].name;
 			}
+			else if ( mission.resolution.agentmia ){
+				$('#missions-resolution-menu')[0].innerHTML = "Agent no longer on board to complete mission";
+			}
+			else if ( mission.resolution.noflyblocked ){
+				$('#missions-resolution-menu')[0].innerHTML = "Agent blocked by no fly zone";
+			}
 			else {
 				$('#missions-resolution-menu')[0].innerHTML = "mission is resolved";
 			}
-			// wait for a few seconds, send 'viewed mission' event back to server
+
+			if ( clientGame.game.missionViewed[clientTurn] == false ) {
+				// wait 5 seconds and move to next mission
+				setTimeout(function() {
+					viewMissionAction();
+				}, 5000);
+			}
 		}
 
-		// else if we can use a spy to block this mission
-		//     display spy block menu (block mission, allow)
+		// otherwise, if we can block this mission
+		// display spy block menu (block mission, allow)
 		else if ( clientGame.game.missionSpied[ clientTurn ] == undefined ) {
 
 			// automatically allow if this is client's own mission
@@ -800,14 +817,31 @@ var updateMissionsMenu = function() {
 		else if ( clientGame.game.missionSpied.indexOf( null ) == -1 ) {
 			// and if this is actually this client's mission
 			if ( clientTurn == player ) {
-				// show resolution menu (with done button)
-				$('#missions-choice-menu')[0].style.visibility = "visible";
+
+				// I think we need to set pending action stuff here, (like pending planet, etc)
+				// if we're going to have the 'Done' button display the Confirm Action dialog
+				//
+				// We'll need to define a new type of action, like ACT_MISSION_RESOLVE
+				// which passes a set of attributes that tell the server how to resolve the mission
+				// 
+				// We'll then need to define how the server handles these ACT_MISSION_RESOLVE actions
+
+				setPendingAction( ACT_MISSION_RESOLVE );
+				setPendingAgent( agenttype );
+				setPendingPlanet( mission.planetTo );
+
+				// if this is a mission type that requires no additional choices, 
+				// just submit a generic resolution to the server without waiting
+
+				if ( true ) { // for now, we'll just do this for all agents
+					submitAction();
+				}
+				else {
+					// show resolution menu (with done button)
+					$('#missions-choice-menu')[0].style.visibility = "visible";
+				}
 			}
 		}
-		//     hide spy block menu
-		//     display which players whose actions we're waiting on
-
-		// 
 	}
 
 	$('#missions-phase-info')[0].innerHTML = innerHTML;
@@ -819,6 +853,12 @@ var updateMissionsMenu = function() {
 var blockMissionAction = function( value ){
 	setPendingAction( ACT_BLOCK_MISSION );
 	setPendingChoice( value );
+	submitAction();
+};
+
+var viewMissionAction = function() {
+	setPendingAction( ACT_MISSION_VIEWED );
+	setPendingChoice( clientGame.game.missionindex );
 	submitAction();
 };
 

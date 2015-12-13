@@ -24,8 +24,8 @@ var actions = require('./game_actions');
 			turn: 0,
 			missions: {},
 			missionindex: 0,
-			missionSpied: board.initializeUserArray( num_users, undefined ),
-			missionViewed: board.initializeUserArray( num_users, undefined ),
+			missionSpied: board.initializeUserArray( num_users, null ),
+			missionViewed: board.initializeUserArray( num_users, false ),
 			secondmines: false,
 			board: board.initializeBoard( num_users )
 		};
@@ -52,6 +52,8 @@ var actions = require('./game_actions');
 			case cons.ACT_LAUNCH_MISSION:
 			case cons.ACT_COLLECT_RESOURCES:
 			case cons.ACT_PAY_UPKEEP:
+			case cons.ACT_MISSION_RESOLVE:
+			case cons.ACT_MISSION_VIEWED:
 				return actions.resolveGameAction( action, gameInfo.game );
 			default:
 				return false;

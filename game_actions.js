@@ -122,6 +122,10 @@ var applyAction = function( action, game ){
 			return applyViewedMissions( action, game );
 		case cons.ACT_BLOCK_MISSION:
 			return applyBlockMission( action, game );
+		case cons.ACT_MISSION_RESOLVE:
+			return applyMissionResolve( action, game );
+		case cons.ACT_MISSION_VIEWED:
+			return applyMissionViewed( action, game );
 		default:
 			return { 
 					isIllegal: true,
@@ -672,12 +676,8 @@ var applyMoveAgentAction = function( action, game ){
 			};
 	}
 
-	var index = planets[ agent.planetid ].agents.indexOf( agentid );
-	planets[ agent.planetid ].agents.splice( index, 1 );
-
+	moveAgent( agent, agentid, planetid, planets );
 	agent.used = true;
-	agent.planetid = planetid;
-	game.board.planets[planetid].agents.push( agentid );
 
 	return { isIllegal: false };
 
@@ -705,6 +705,12 @@ var applyLaunchMission = function( action, game ) {
 			};
 	}
 
+	if ( game.turn != player ) {
+		return { isIllegal: true,
+				 response: "You must launch missions during your turn"
+			};
+	}
+
 	if ( agent.used ) {
 		return { isIllegal: true,
 				 response: "This agent can only do one action per round"
@@ -721,7 +727,7 @@ var applyLaunchMission = function( action, game ) {
 		resolution: {
 			resolved: false,
 			blocked: undefined,
-			blockedBy: undefined
+			blockedBy: undefined,
 		} // object with details of how mission was completed
 	});
 
@@ -759,7 +765,7 @@ var applyBlockMission = function( action, game ){
 	var index = game.missionindex;
 	var round = game.round - 2;
 
-	if ( game.missionSpied[ player ] != undefined ){
+	if ( game.missionSpied[ player ] != null ){
 		return { isIllegal: true,
 				 response: "You have already done this action"
 			};
@@ -770,16 +776,110 @@ var applyBlockMission = function( action, game ){
 
 	if ( choice == true ){
 		game.missionSpied[ player ] = true;
-		game.missions[round][ index ].resolution.resolved = true;
 		game.missions[round][ index ].resolution.blocked = true;
 		game.missions[round][ index ].resolution.blockedBy = player;
-		console.log("mission blocked");
+		game.missions[round][ index ].resolution.resolved = true;
 	}
 	else {
 		game.missionSpied[ player ] = false;
 	}
 
 	return { isIllegal: false};
+};
+
+var applyMissionResolve = function( action, game ){
+
+	var player = action.player;
+	var choice = action.choice;
+	var agenttype = action.agenttype;
+	var agentid = String(player) + String(agenttype);
+	var planetid = action.planetid;
+	var index = game.missionindex;
+	var round = game.round - 2;
+	var mission = game.missions[ round ][ index ];
+
+	if ( mission.player != player ){
+		return { isIllegal: true,
+				 response: "This is not your mission to resolve"
+			};
+	}
+
+	if ( mission.planetTo != planetid ||  mission.agenttype != agenttype ){
+		return { isIllegal: true,
+				 response: "This is not the mission the server is trying to resolve"
+			};
+	}
+
+	if ( game.missionSpied.indexOf( null ) != -1 ) {
+		return { isIllegal: true,
+				 response: "Waiting to see if opponents will block this mission"
+			};
+	}
+
+	var agent = game.board.agents[ agentid ];
+	var planets = game.board.planets;
+	
+	// if agent is no longer on the board
+	if ( agent.status == cons.AGT_STATUS_OFF || agent.status == cons.AGT_STATUS_DEAD ) {
+		game.missions[round][ index ].resolution.resolved = true;
+		game.missions[round][ index ].resolution.agentmia = true;
+
+		agent.missionround = undefined;
+		agent.used = false;
+
+		return { isIllegal: false };
+	}
+
+	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
+		game.missions[round][ index ].resolution.resolved = true;
+		game.missions[round][ index ].resolution.noflyblocked = true;
+		
+		agent.missionround = undefined;
+		agent.used = false;
+
+		return { isIllegal: false };
+	}
+
+	// THIS is where we should actually apply the agent mission logic
+	// depending on the type of agent
+	// we may need to create a switch/case series here sending to 
+	// more granulated functions
+
+	moveAgent( agent, agentid, planetid, planets );
+
+	game.missions[round][ index ].resolution.resolved = true;
+	helpers.resetMissionSpied( game );
+
+	agent.missionround = undefined;
+	agent.used = false;
+
+	return { isIllegal: false };
+};
+
+var applyMissionViewed = function( action, game ){
+	var player = action.player;
+	var index = action.choice;
+	var round = game.round - 2;
+
+	if ( index != game.missionindex) {
+		return { isIllegal: true,
+				 response: "Server's on a different mission buddy"
+			};
+	}
+
+	game.missionViewed[ player ] = true;
+
+	// if all players have viewed missions, 
+	if ( game.missionViewed.indexOf( false ) == -1 ){
+
+		for ( var i = 0; i < game.missionViewed.length; i++ ){
+			game.missionViewed[i] = false;
+		}
+
+		updateMissionIndex( game, round );
+	}
+
+	return { isIllegal: false };
 };
 
 var collectPlayerResources = function( action, game){
@@ -798,6 +898,15 @@ var payPlayerUpkeep = function(action, game){
 	for ( var i = 0; i < toPay.length; i++) {
 		game.resources[action.player][i] -= toPay[i];
 	}
+};
+
+var moveAgent = function( agent, agentid, planetid, planets ) {
+
+	var index = planets[ agent.planetid ].agents.indexOf( agentid );
+	planets[ agent.planetid ].agents.splice( index, 1 );
+
+	agent.planetid = planetid;
+	planets[planetid].agents.push( agentid );
 };
 
 var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
@@ -1010,7 +1119,6 @@ var updatePhase = function( game ){
 		// including missions here is temporary. Eventually there should
 		// be extra logic to move to the next mission in the queue, and so on
 		// until all missions have been viewed, and THEN update the phase
-		case cons.PHS_MISSIONS:
 		case cons.PHS_RESOURCE:
 		case cons.PHS_UPKEEP:
 			if(game.phaseDone.indexOf(false) == -1){
@@ -1018,6 +1126,7 @@ var updatePhase = function( game ){
 				helpers.clearPhaseDone( game );
 			}
 			break;
+		case cons.PHS_MISSIONS:
 		case cons.PHS_BUILD:
 		case cons.PHS_ACTIONS:
 			game.phase = (game.phase +1) % 5;
@@ -1033,6 +1142,18 @@ var updateRound = function( game ){
 	game.missionindex = 0; // reset mission index to resolve
 	updateAgentsUsed( game );
 	updateMissions( game, game.round );
+};
+
+// Increment mission index. If we're out of missions,
+// set mission index to 0 and call updatePhase.
+var updateMissionIndex = function(game, round) {
+	game.missionindex += 1;
+	console.log('updated missionindex');
+	if ( game.missionindex >= game.missions[round].length ) {
+		game.missionindex = 0;
+		updatePhase( game );
+	}
+	console.log("mission index:", game.missionindex);
 };
 
 var hasEnoughToBuild = function( player, objecttype, game ) {

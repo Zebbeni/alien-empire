@@ -3,10 +3,10 @@ var sWid = 212;
 var agtWid = 100;
 var agtSpace = 5;
 
-// var offline = false; // checked by loader when creating settings for LoadQueue
-// var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
-var offline = true;
-var s3url = 'images/'; // set s3url to this if testing offline
+var offline = false; // checked by loader when creating settings for LoadQueue
+var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
+// var offline = true;
+// var s3url = 'images/'; // set s3url to this if testing offline
 
 var MOVE_DISTANCE = 5;
 var MENU_ON = 1;
@@ -69,6 +69,8 @@ var ACT_COLLECT_RESOURCES = 10;
 var ACT_PAY_UPKEEP = 11;
 var ACT_VIEWED_MISSIONS = 12;
 var ACT_BLOCK_MISSION = 13;
+var ACT_MISSION_RESOLVE = 14;
+var ACT_MISSION_VIEWED = 15;
 
 var PNT_STRUCTURES = 0;
 var PNT_EXPLORE = 1;
@@ -118,7 +120,10 @@ var ACT_ENGLISH_PAST = {
 					9: " launched a mission ",
 					10: " collected resources",
 					11: " paid upkeep",
-					12: " viewed missions"
+					12: " viewed missions",
+					13: " blocked a mission",
+					14: " resolved their mission",
+					15: " viewed the current mission"
 				};
 
 var RES_ENGLISH = { 

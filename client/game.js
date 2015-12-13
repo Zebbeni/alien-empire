@@ -91,6 +91,8 @@ var updateClientGame = function( content ) {
 	clientGame.game.missionSpied = content.game.missionSpied;
 	clientGame.game.missionindex = null;
 	clientGame.game.missionindex = content.game.missionindex;
+	clientGame.game.missionViewed = null;
+	clientGame.game.missionViewed = content.game.missionViewed;
 
 };
 
