@@ -796,7 +796,7 @@ var updateMissionsMenu = function() {
 				// wait 5 seconds and move to next mission
 				setTimeout(function() {
 					viewMissionAction();
-				}, 5000);
+				}, 3000);
 			}
 		}
 
@@ -814,7 +814,7 @@ var updateMissionsMenu = function() {
 		}
 
 		// if all clients have responded with spy actions
-		else if ( clientGame.game.missionSpied.indexOf( null ) == -1 ) {
+		else if ( mission.waitingOnResolve ) {
 			// and if this is actually this client's mission
 			if ( clientTurn == player ) {
 
@@ -832,12 +832,32 @@ var updateMissionsMenu = function() {
 
 				// if this is a mission type that requires no additional choices, 
 				// just submit a generic resolution to the server without waiting
-
-				if ( true ) { // for now, we'll just do this for all agents
+				if ( [AGT_SMUGGLER, AGT_SPY, AGT_ENVOY].indexOf(agenttype) != -1 ) {
 					submitAction();
 				}
+				// otherwise, show help message (with done button)
 				else {
-					// show resolution menu (with done button)
+					var messageHtml = '';
+					switch ( agenttype ) {
+						case AGT_EXPLORER:
+							messageHtml = 'Choose a resource to reserve';
+							break;
+						case AGT_MINER:
+							messageHtml = 'Choose a resource you occupy to collect 6';
+							break;
+						case AGT_SURVEYOR:
+							messageHtml = 'Choose up to 2 resources to increase';
+							break;
+						case AGT_AMBASSADOR:
+							messageHtml = 'Choose up to 2 planets to block borders';
+							break;
+						case AGT_SABATEUR:
+							messageHtml = 'Choose an opponent structure to destroy';
+							break;
+						default:
+							break;
+					}
+					$('#missions-choice-message')[0].innerHTML = messageHtml;
 					$('#missions-choice-menu')[0].style.visibility = "visible";
 				}
 			}

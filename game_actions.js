@@ -447,6 +447,8 @@ var applyRetireAction = function( action, game ){
 				 response: "This agent is already retired." };
 	}
 
+	findAndSetMissionResolved( game, player, agenttype );
+
 	// remove agent from planet
 	var index = game.board.planets[planetid].agents.indexOf(id);
 	game.board.planets[planetid].agents.splice( index, 1 );
@@ -782,6 +784,14 @@ var applyBlockMission = function( action, game ){
 	}
 	else {
 		game.missionSpied[ player ] = false;
+
+		if ( game.missionSpied.indexOf(true) == -1 && 
+			 game.missionSpied.indexOf(null) == -1) {
+
+			// set flag letting player know they need to resolve this mission
+			game.missions[round][ index ].waitingOnResolve = true;
+
+		}
 	}
 
 	return { isIllegal: false};
@@ -797,6 +807,9 @@ var applyMissionResolve = function( action, game ){
 	var index = game.missionindex;
 	var round = game.round - 2;
 	var mission = game.missions[ round ][ index ];
+
+	var agent = game.board.agents[ agentid ];
+	var planets = game.board.planets;
 
 	if ( mission.player != player ){
 		return { isIllegal: true,
@@ -815,29 +828,18 @@ var applyMissionResolve = function( action, game ){
 				 response: "Waiting to see if opponents will block this mission"
 			};
 	}
-
-	var agent = game.board.agents[ agentid ];
-	var planets = game.board.planets;
 	
-	// if agent is no longer on the board
-	if ( agent.status == cons.AGT_STATUS_OFF || agent.status == cons.AGT_STATUS_DEAD ) {
-		game.missions[round][ index ].resolution.resolved = true;
-		game.missions[round][ index ].resolution.agentmia = true;
+	// // if agent is no longer on the board
+	// if ( agent.status == cons.AGT_STATUS_OFF || agent.status == cons.AGT_STATUS_DEAD ) {
 
-		agent.missionround = undefined;
-		agent.used = false;
+	// 	game.missions[round][ index ].resolution.agentmia = true;
 
-		return { isIllegal: false };
-	}
+	// }
 
-	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
-		game.missions[round][ index ].resolution.resolved = true;
+	else if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
+
 		game.missions[round][ index ].resolution.noflyblocked = true;
-		
-		agent.missionround = undefined;
-		agent.used = false;
 
-		return { isIllegal: false };
 	}
 
 	// THIS is where we should actually apply the agent mission logic
@@ -845,11 +847,14 @@ var applyMissionResolve = function( action, game ){
 	// we may need to create a switch/case series here sending to 
 	// more granulated functions
 
-	moveAgent( agent, agentid, planetid, planets );
+	else {
 
+		moveAgent( agent, agentid, planetid, planets );
+
+	}
+	
 	game.missions[round][ index ].resolution.resolved = true;
 	helpers.resetMissionSpied( game );
-
 	agent.missionround = undefined;
 	agent.used = false;
 
@@ -907,6 +912,37 @@ var moveAgent = function( agent, agentid, planetid, planets ) {
 
 	agent.planetid = planetid;
 	planets[planetid].agents.push( agentid );
+};
+
+// checks if an agent being removed has a pending mission
+// if so, sets the mission as resolved with the appropriate reason
+var findAndSetMissionResolved = function( game, player, agenttype ){
+	
+	var mission;
+
+	for ( var r = game.round - 1; r >= 0; r-- ) {
+		
+		for ( var m = 0; m < game.missions[r].length; m++ )
+			
+			mission = game.missions[r][m];
+
+			console.log("checking mission......");
+			console.log(mission);
+
+			if ( mission.player == player && mission.agenttype == agenttype ){
+				
+				if ( mission.resolution.resolved == false ) {
+
+					mission.resolution.resolved = true;
+				
+					// TODO: this should eventually allow 
+					//       for different resolution reasons
+					mission.resolution.agentmia = true;
+				}
+
+				return;
+			}
+	}
 };
 
 var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
