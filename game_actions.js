@@ -836,7 +836,7 @@ var applyMissionResolve = function( action, game ){
 
 	// }
 
-	else if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
+	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
 
 		game.missions[round][ index ].resolution.noflyblocked = true;
 
@@ -847,7 +847,7 @@ var applyMissionResolve = function( action, game ){
 	// we may need to create a switch/case series here sending to 
 	// more granulated functions
 
-	else {
+	else if ( !game.missions[round][ index ].resolution.agentmia ) {
 
 		moveAgent( agent, agentid, planetid, planets );
 
@@ -920,14 +920,11 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
 	
 	var mission;
 
-	for ( var r = game.round - 1; r >= 0; r-- ) {
-		
-		for ( var m = 0; m < game.missions[r].length; m++ )
-			
-			mission = game.missions[r][m];
+	for ( var r = game.round - 1; r > 0; r-- ) {
 
-			console.log("checking mission......");
-			console.log(mission);
+		for ( var m = 0; m < game.missions[r].length; m++ ) {
+
+			mission = game.missions[r][m];
 
 			if ( mission.player == player && mission.agenttype == agenttype ){
 				
@@ -941,7 +938,8 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
 				}
 
 				return;
-			}
+			}	
+		}
 	}
 };
 
