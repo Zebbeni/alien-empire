@@ -179,7 +179,8 @@ var displayConfirmMessage = function() {
 	if ( actiontype != ACT_RETIRE ) {
 		var planets = clientGame.game.board.planets;
 		var planet = planets[ pendingAction.planetid ];
-		var planetname = planet.name;
+		var sectorname = sectors.charAt( pendingAction.planetid );
+		var planetname = planet.explored ? planet.name : "Sector " + sectorname;
 	}
 
 	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET && actiontype != ACT_MISSION_RESOLVE) {

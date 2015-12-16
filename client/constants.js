@@ -97,7 +97,7 @@ var AGT_STATUS_OFF = 0;
 var AGT_STATUS_ON = 1;
 var AGT_STATUS_DEAD = 2;
 
-var AGT_ENGLISH = {
+var AGT_IMG = {
 					1: "explorer",
 					2: "miner",
 					3: "surveyor",
@@ -106,6 +106,17 @@ var AGT_ENGLISH = {
 					6: "spy",
 					7: "smuggler",
 					8: "sabateur"
+};
+
+var AGT_ENGLISH = {
+					1: "Explorer",
+					2: "Miner",
+					3: "Surveyor",
+					4: "Ambassador",
+					5: "Envoy",
+					6: "Spy",
+					7: "Smuggler",
+					8: "Sabateur"
 };
 
 var ACT_ENGLISH_PAST = {

@@ -1,3 +1,4 @@
+
 /** Agents.js contains all methods for initializing and drawing agents
  * All agents are drawn once and then hidden or shown based on their 
  * current planetid (either a number or undefined). 
@@ -24,12 +25,16 @@ var initAgents = function() {
 		agentContainer.agenttype = agenttype;
 
 		var agentshape = new createjs.Shape();
-		var agentImg = loader.getResult( agentContainer.name );
+		var agentImg = loader.getResult( AGT_IMG[ agenttype ] + player );
 		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 103, 103);
 		agentshape.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
 
-		// var agentText = new createjs.Text();
-		// agentText
+		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 18px Play", "white");
+		agenttext.name = "agenttext";
+		agenttext.textAlign = "center";
+		agenttext.x = 51;
+		agenttext.y = 80;
+		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 2, 2, 1);
 
 		agentContainer.visible = false;
 		agentContainer.mouseEnabled = false;
@@ -47,7 +52,7 @@ var initAgents = function() {
 		});
 
 		agentContainer.addChild( agentshape );
-		// agentContainer.addChild( agentText );
+		agentContainer.addChild( agenttext );
 
 		agentsContainer.addChild(agentContainer);
 	}
