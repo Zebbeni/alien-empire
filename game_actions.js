@@ -828,13 +828,6 @@ var applyMissionResolve = function( action, game ){
 				 response: "Waiting to see if opponents will block this mission"
 			};
 	}
-	
-	// // if agent is no longer on the board
-	// if ( agent.status == cons.AGT_STATUS_OFF || agent.status == cons.AGT_STATUS_DEAD ) {
-
-	// 	game.missions[round][ index ].resolution.agentmia = true;
-
-	// }
 
 	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
 
@@ -842,14 +835,17 @@ var applyMissionResolve = function( action, game ){
 
 	}
 
-	// THIS is where we should actually apply the agent mission logic
-	// depending on the type of agent
-	// we may need to create a switch/case series here sending to 
-	// more granulated functions
-
 	else if ( !game.missions[round][ index ].resolution.agentmia ) {
 
 		moveAgent( agent, agentid, planetid, planets );
+
+		// THIS is where we should actually apply the agent mission logic
+		// depending on the type of agent
+		// we may need to create a switch/case series here sending to 
+		// more granulated functions
+		if ( agenttype == cons.AGT_EXPLORER ){
+			planets[planetid].explored = true;
+		}
 
 	}
 	

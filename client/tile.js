@@ -70,15 +70,15 @@ var drawTile = function(planetid) {
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
-	// drawOrbitStructures(planetid);
 	drawDarkScreen(planetid, img_width);
 };
 
 // This is a hack. Eventually drawTile should work for this, but it
 // currently screws everything up.
 var updateTileImage = function(planetid) {
+	drawPlanet(planetid);
+	drawNametext(planetid);
 	drawResources(planetid);
-	// drawOrbitStructures(planetid);
 };
 
 /**
@@ -172,6 +172,11 @@ var updateTileInteractivity = function(planetid) {
 
 			if ( actiontype == ACT_MOVE_AGENT || actiontype == ACT_LAUNCH_MISSION ){
 				mousePlanet( planetid, true );
+
+				if ( actiontype == ACT_LAUNCH_MISSION && agenttype == AGT_EXPLORER ){
+					hideDarkScreen(planetid);
+					tiles[planetid].mouseChildren = true;
+				}
 			}
 
 			break;
@@ -313,6 +318,8 @@ var drawPlanet = function( planetid ) {
 			offsetY = 25;
 		}
 
+		// clear before drawing, we call this function multiple times
+		picture.graphics.clear();
 		picture.graphics.beginBitmapFill(planetImg).drawRect(offsetX, offsetY, planetImg.width, planetImg.height);
 
 		switch ( planets[planetid].w ) {
