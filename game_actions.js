@@ -766,6 +766,7 @@ var applyBlockMission = function( action, game ){
 	var choice = action.choice;
 	var index = game.missionindex;
 	var round = game.round - 2;
+	var mission = game.missions[round][index];
 
 	if ( game.missionSpied[ player ] != null ){
 		return { isIllegal: true,
@@ -790,6 +791,12 @@ var applyBlockMission = function( action, game ){
 
 			// set flag letting player know they need to resolve this mission
 			game.missions[round][ index ].waitingOnResolve = true;
+
+			// apply planet explored here instead of in applyMissionsResolve, since
+			// player needs to be able to see planet in order to resolve mission.
+			if ( mission.agenttype == cons.AGT_EXPLORER ) {
+				game.board.planets[mission.planetTo].explored = true;
+			}
 
 		}
 	}
@@ -844,7 +851,7 @@ var applyMissionResolve = function( action, game ){
 		// we may need to create a switch/case series here sending to 
 		// more granulated functions
 		if ( agenttype == cons.AGT_EXPLORER ){
-			planets[planetid].explored = true;
+
 		}
 
 	}
