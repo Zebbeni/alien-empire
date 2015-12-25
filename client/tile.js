@@ -178,6 +178,24 @@ var updateTileInteractivity = function(planetid) {
 					tiles[planetid].mouseChildren = true;
 				}
 			}
+			break;
+
+		case PHS_MISSIONS:
+
+			var missionRound = clientGame.game.round - 2;
+			var missionindex = clientGame.game.missionindex;
+			var missions = clientGame.game.missions;
+
+			if (missions[ missionRound ] && missions[ missionRound ][ missionindex ]) {
+				var mission = missions[ missionRound ][ missionindex ];
+
+				var planetid = mission.planetTo;
+				var agenttype = mission.agenttype;
+
+				mouseTile( planetid, true);
+				mousePlanet( planetid, false);
+				mouseResources( planets, planetid, true, false, false);
+			}
 
 			break;
 	}
