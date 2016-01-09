@@ -169,7 +169,8 @@ var ACTION_REQUIREMENTS = {
 	5: ['actiontype', 'objecttype', 'planetid', 'targetid'],
 	6: ['actiontype', 'objecttype', 'planetid', 'resourceid'],
 	8: ['actiontype', 'agenttype', 'planetid'],
-	9: ['actiontype', 'agenttype', 'planetid']
+	9: ['actiontype', 'agenttype', 'planetid'],
+	14: ['actiontype', 'agenttype', 'planetid']
 };
 
 // var AGT_OBJTYPE = {
