@@ -441,6 +441,10 @@ var initResource = function( planetid, index ) {
 	icon.name = "icon";
 	resource.addChild(icon);
 
+	var flag = new createjs.Shape();
+	flag.name = "flag";
+	resource.addChild(flag);
+
 	var structure = new createjs.Shape();
 	structure.name = "structure";
 	resource.addChild(structure);
@@ -494,11 +498,19 @@ var drawResource = function( planetid, index, num_resources ) {
 
 	icon.x = index * (4 + iconW);
 
+	var flag = resource.getChildByName("flag");
+	flag.graphics.clear();
+	var reserved = planets[planetid].resources[index].reserved;
+	if ( reserved != undefined ) {
+		var flagImg = loader.getResult( "flag_color" + reserved);
+		flag.graphics.beginBitmapFill(flagImg, "no-repeat").drawRect(0, 0, flagImg.width, flagImg.height);
+		flag.x = icon.x + 44;
+		flag.y = icon.y;
+	}
+
 	var structure = resource.getChildByName("structure");
 	structure.graphics.clear();
-	
 	var struct = planets[planetid].resources[index].structure;
-	
 	if ( struct ) {
 		var player = struct.player;
 		var kind = struct.kind;
