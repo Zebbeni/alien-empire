@@ -35,11 +35,12 @@ var initTile = function( planetid ) {
 	initResources(planetid);
 	initDarkScreen(planetid);
 
+	// tiles[planetid].hitArea = tiles[planetid].getChildByName("stars");
+
 	tiles[planetid].on("mouseover", function() {
 		if (planets[planetid].explored) {
-
 			showLightscreen( planetid );
-
+			// setPlanetSelection( planetid );
 		}
 		stage.update();
 	});
@@ -47,6 +48,7 @@ var initTile = function( planetid ) {
 	tiles[planetid].on("mouseout", function() {
 
 		hideLightscreen( planetid );
+		// hidePlanetSelection( planetid );
 
 		stage.update();
 
@@ -268,6 +270,15 @@ var mouseResource = function( planets, planetid, index, empty, friendly, opponen
 var initStars = function( planetid) {
 	var stars = new createjs.Shape();
 	stars.name = "stars";
+
+	tiles[planetid].on("rollover", function() {
+		setPlanetSelection( planetid );
+	});
+
+	tiles[planetid].on("rollout", function() {
+		hidePlanetSelection( planetid );
+	});
+
 	tiles[planetid].addChild( stars );
 };
 

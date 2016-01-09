@@ -342,7 +342,7 @@ var applyBuildAction = function( action, game ) {
 			break;
 
 		case cons.OBJ_MINE:
-		
+
 			var resource = game.board.planets[planetid].resources[index];
 			
 			if (resource.reserved != undefined && resource.reserved != player){
@@ -868,6 +868,7 @@ var applyMissionResolve = function( action, game ){
 				}
 				else {
 					resource.reserved = player;
+					
 				}
 				break;
 			default:
