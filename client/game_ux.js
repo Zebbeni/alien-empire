@@ -181,11 +181,15 @@ var displayConfirmMessage = function() {
 		var planet = planets[ pendingAction.planetid ];
 		var sectorname = sectors.charAt( pendingAction.planetid );
 		var planetname = planet.explored ? planet.name : "Sector " + sectorname;
-	}
 
-	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET && actiontype != ACT_MISSION_RESOLVE) {
-		var index = pendingAction.resourceid;
-		var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
+		if ( actiontype != ACT_REMOVE_FLEET ) {
+			if ( actiontype != ACT_MISSION_RESOLVE || 
+					agenttype == AGT_EXPLORER ) {
+				var index = pendingAction.resourceid;
+				var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
+				console.log("agenttype:", agenttype, "resourcekind:", resourcekind);
+			}
+		}
 	}
 
 	switch (actiontype) {
@@ -244,9 +248,19 @@ var displayConfirmMessage = function() {
 			message = choice + " this mission?";
 			break;
 
-		// case ACT_MISSION_RESOLVE:
-		// 	message = ""
-		// 	break;
+		case ACT_MISSION_RESOLVE:
+			switch (agenttype) {
+				case AGT_EXPLORER:
+					message = "Reserve a " + RES_ENGLISH[resourcekind]
+								+ " resource on " + planetname + "?";
+				default:
+					break;
+			}
+			break;
+
+		default:
+			message = "";
+			break;
 	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
@@ -258,7 +272,7 @@ var confirmPendingAction = function() {
 };
 
 var cancelPendingAction = function() {
-	if(clientGame.game.round != 0) {
+	if(clientGame.game.round != 0 && clientGame.game.phase != PHS_MISSIONS) {
 		clearPendingAction();
 		updateBoardInteractivity();
 	}
