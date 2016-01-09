@@ -33,7 +33,6 @@ var initTile = function( planetid ) {
 	initPlanet(planetid);
 	initNametext(planetid);
 	initResources(planetid);
-	// initOrbitStructures(planetid);
 	initDarkScreen(planetid);
 
 	tiles[planetid].on("mouseover", function() {
@@ -174,8 +173,18 @@ var updateTileInteractivity = function(planetid) {
 				mousePlanet( planetid, true );
 
 				if ( actiontype == ACT_LAUNCH_MISSION && agenttype == AGT_EXPLORER ){
-					hideDarkScreen(planetid);
-					tiles[planetid].mouseChildren = true;
+					var agent = clientGame.game.board.agents[ 
+													String(clientTurn) + 
+													String(agenttype)];
+					var agentplanet = planets[agent.planetid];
+
+					if ( agentplanet.borders.hasOwnProperty(planetid) ) {
+						var border = agentplanet.borders[planetid];
+						if ( border != BRD_BLOCKED ) {
+							hideDarkScreen(planetid);
+							tiles[planetid].mouseChildren = true;
+						}
+					}
 				}
 			}
 			break;
