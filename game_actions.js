@@ -342,10 +342,19 @@ var applyBuildAction = function( action, game ) {
 			break;
 
 		case cons.OBJ_MINE:
-			game.board.planets[planetid].resources[index].structure = {
-												player: player,
-												kind: objecttype
-											};
+		
+			var resource = game.board.planets[planetid].resources[index];
+			
+			if (resource.reserved != undefined && resource.reserved != player){
+				return { isIllegal: true,
+					 	 response: "This resource is reserved by another player"
+					};
+			}
+			
+			resource.structure = {
+									player: player,
+									kind: objecttype
+								};
 			payToBuild( player, objecttype, game);
 			game.structures[player][cons.OBJ_MINE] -= 1;
 
@@ -844,16 +853,29 @@ var applyMissionResolve = function( action, game ){
 
 	else if ( !game.missions[round][ index ].resolution.agentmia ) {
 
-		moveAgent( agent, agentid, planetid, planets );
-
 		// THIS is where we should actually apply the agent mission logic
 		// depending on the type of agent
 		// we may need to create a switch/case series here sending to 
 		// more granulated functions
-		if ( agenttype == cons.AGT_EXPLORER ){
+		switch (agenttype) {
+			case cons.AGT_EXPLORER:
+				var resid = action.resourceid;
+				var resource = game.board.planets[planetid].resources[resid];
+				if ( resource.reserved != undefined) {
+					return { isIllegal: true,
+						 	 response: "This resource is already reserved"
+					};
+				}
+				else {
+					resource.reserved = player;
+				}
+				break;
+			default:
+				break;
 
 		}
 
+		moveAgent( agent, agentid, planetid, planets );
 	}
 	
 	game.missions[round][ index ].resolution.resolved = true;
