@@ -185,10 +185,10 @@ var displayConfirmMessage = function() {
 
 		if ( actiontype != ACT_REMOVE_FLEET ) {
 			if ( actiontype != ACT_MISSION_RESOLVE || 
-					agenttype == AGT_EXPLORER ) {
+					agenttype == AGT_EXPLORER ||
+					agenttype == AGT_MINER ) {
 				var index = pendingAction.resourceid;
 				var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
-				console.log("agenttype:", agenttype, "resourcekind:", resourcekind);
 			}
 		}
 	}
@@ -254,6 +254,9 @@ var displayConfirmMessage = function() {
 				case AGT_EXPLORER:
 					message = "Reserve a " + RES_ENGLISH[resourcekind]
 								+ " resource on " + planetname + "?";
+					break;
+				case AGT_MINER:
+					message = "Collect 6 " + RES_ENGLISH[resourcekind] + "?";
 				default:
 					break;
 			}
@@ -789,6 +792,7 @@ var updateMissionsMenu = function() {
 		var userid = clientGame.game.players[player];
 		var name = player == clientTurn ? 'You' : all_users[userid].name;
 		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
+		var message = "";
 
 		// display basic mission information
 		// (eg. Bob sent an Explorer to Sector G!)
@@ -803,17 +807,34 @@ var updateMissionsMenu = function() {
 
 			if ( mission.resolution.blocked ) {
 				var blocker = mission.resolution.blockedBy;
-				$('#missions-resolution-menu')[0].innerHTML = "Mission blocked by " + all_users[blocker].name;
+				message = "Mission blocked by " + all_users[blocker].name;
 			}
 			else if ( mission.resolution.agentmia ){
-				$('#missions-resolution-menu')[0].innerHTML = "Agent no longer on board to complete mission";
+				message = "Agent no longer on board to complete mission";
 			}
 			else if ( mission.resolution.noflyblocked ){
-				$('#missions-resolution-menu')[0].innerHTML = "Agent blocked by no fly zone";
+				message = "Agent blocked by no fly zone";
+			}
+			else if ( mission.resolution.nochoice ){
+				switch ( agenttype ){
+					case AGT_EXPLORER:
+						message = "Mission resolved,"
+									+ " no more resources to reserve here";
+						break;
+					case AGT_MINER:
+						message = "Mission resolved,"
+									+ " no occupied resources to collect here";
+						break;
+					default:
+						message = "Mission resolved";
+						break;
+				}
 			}
 			else {
-				$('#missions-resolution-menu')[0].innerHTML = "mission is resolved";
+				message = "Mission is resolved";
 			}
+
+			$('#missions-resolution-menu')[0].innerHTML = message;
 
 			if ( clientGame.game.missionViewed[clientTurn] == false ) {
 				// wait 5 seconds and move to next mission
@@ -856,6 +877,12 @@ var updateMissionsMenu = function() {
 				// if this is a mission type that requires no additional choices, 
 				// just submit a generic resolution to the server without waiting
 				if ( [AGT_SMUGGLER, AGT_SPY, AGT_ENVOY].indexOf(agenttype) != -1 ) {
+					submitAction();
+				}
+				// if mission type would normally require some extra decision
+				// (eg. select resource) and no remaining legal options exist
+				// just submit a generic resolution to the server
+				else if ( mission.resolution.nochoice ) {
 					submitAction();
 				}
 				// otherwise, show help message (with done button)

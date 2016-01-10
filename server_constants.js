@@ -120,6 +120,13 @@
 							5: "fleet"
 						},
 
+		RES_ENGLISH : {
+							0: "metal", 
+							1: "water", 
+							2: "fuel", 
+							3: "food",
+						},
+
 		// agent : structure mappings
 		AGT_OBJTYPE : {
 			1: 2,

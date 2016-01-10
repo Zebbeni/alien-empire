@@ -205,7 +205,17 @@ var updateTileInteractivity = function(planetid) {
 
 				mouseTile( planetid, true);
 				mousePlanet( planetid, false);
-				mouseResources( planets, planetid, true, false, false);
+
+				switch (agenttype) {
+					case AGT_EXPLORER:
+						mouseResources( planets, planetid, true, false, false);
+						break;
+					case AGT_MINER:
+						mouseResources( planets, planetid, false, true, false);
+						break;
+					default:
+						break;
+				}
 			}
 
 			break;

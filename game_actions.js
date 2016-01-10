@@ -781,6 +781,7 @@ var applyBlockMission = function( action, game ){
 	var index = game.missionindex;
 	var round = game.round - 2;
 	var mission = game.missions[round][index];
+	var planetid = mission.planetTo;
 
 	if ( game.missionSpied[ player ] != null ){
 		return { isIllegal: true,
@@ -800,18 +801,49 @@ var applyBlockMission = function( action, game ){
 	else {
 		game.missionSpied[ player ] = false;
 
-		if ( game.missionSpied.indexOf(true) == -1 && 
-			 game.missionSpied.indexOf(null) == -1) {
+		if ( game.missionSpied.indexOf(true) == -1 && game.missionSpied.indexOf(null) == -1) {
 
 			// set flag letting player know they need to resolve this mission
 			game.missions[round][ index ].waitingOnResolve = true;
 
-			// apply planet explored here instead of in applyMissionsResolve, since
-			// player needs to be able to see planet in order to resolve mission.
-			if ( mission.agenttype == cons.AGT_EXPLORER ) {
-				game.board.planets[mission.planetTo].explored = true;
-			}
+			switch (mission.agenttype) {
+				
+				case cons.AGT_EXPLORER:
+					
+					// apply planet explored here, not in applyMissionsResolve, 
+					// since player needs to be able to see planet to resolve.
+					
+					if ( game.board.planets[planetid].explored == false ){
+						addPointsForExploration(player, planetid, game);
+						game.board.planets[planetid].explored = true;
+					}
 
+					var is_unreserved = false;
+					var resources = game.board.planets[planetid].resources;
+
+					for ( var i = 0; i < resources.length; i++ ) {
+						if ( resources[i].reserved == undefined ) {
+							is_unreserved = true;
+						}
+					}
+
+					// Add flag if player has no remaining options 
+					if ( !is_unreserved ) {
+						game.missions[round][index].resolution.nochoice = true;
+					}
+					break;
+
+				case cons.AGT_MINER:
+
+					// Add flag if player has no remaining options 
+					if ( !game.board.planets[planetid].settledBy[player] ) {
+						game.missions[round][index].resolution.nochoice = true;
+					}
+					break;
+
+				default:
+					break;
+			}
 		}
 	}
 
@@ -856,6 +888,10 @@ var applyMissionResolve = function( action, game ){
 
 	}
 
+	else if ( game.missions[round][index].resolution.nochoice ) {
+		moveAgent( agent, agentid, planetid, planets );
+	}
+
 	else if ( !game.missions[round][ index ].resolution.agentmia ) {
 
 		// THIS is where we should actually apply the agent mission logic
@@ -863,19 +899,45 @@ var applyMissionResolve = function( action, game ){
 		// we may need to create a switch/case series here sending to 
 		// more granulated functions
 		switch (agenttype) {
+			
 			case cons.AGT_EXPLORER:
+				
 				var resid = action.resourceid;
 				var resource = game.board.planets[planetid].resources[resid];
+				
 				if ( resource.reserved != undefined) {
 					return { isIllegal: true,
 						 	 response: "This resource is already reserved"
 					};
 				}
-				else {
-					addPointsForExploration(player, planetid, game);
-					resource.reserved = player;
-				}
+				
+				resource.reserved = player;
 				break;
+
+			case cons.AGT_MINER:
+				
+				var resid = action.resourceid;
+				var resource = game.board.planets[planetid].resources[resid];
+				var resource_kind = resource.kind;
+				var player_resources = game.resources[player][resource_kind];
+				
+				if (resource.structure || resource.structure.player != player) {
+					return { isIllegal: true,
+						 	 response: "You must choose a resource you occupy"
+					};
+				}
+
+				if ( player_resources + 6 > 10 ) {
+					return { isIllegal: true,
+						 	 response: "You must trade or 4 to 1"
+						 	 			+ " before collecting 6 more " 
+						 	 			+ cons.RES_ENGLISH[resource_kind]
+					};
+				}
+
+				game.resources[player][resource_kind] += 6;
+				break;
+
 			default:
 				break;
 
