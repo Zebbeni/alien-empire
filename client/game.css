@@ -320,7 +320,37 @@
 	width: 100%;
 	height: 162px;
 	opacity: 0.0;
-	/*pointer-events: none;*/
+	pointer-events: none;
+}
+
+#points-remaining {
+	position: absolute;
+	right: 0px;
+	top: 50px;
+	width: 84px;
+	height: 142px;
+}
+
+#points-remaining-explore, #points-remaining-envoy, #points-remaining-destroy {
+	position: absolute;
+	width: 35px;
+	height: 30px;
+	right: 3px;
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#points-remaining-explore {
+	top: 13px;
+}
+
+#points-remaining-envoy {
+	top: 58px;
+}
+
+#points-remaining-destroy {
+	top: 103px;
 }
 
 #resources-menu-div, #structures-menu-div, #agents-menu-div {

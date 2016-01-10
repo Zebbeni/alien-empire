@@ -12,6 +12,7 @@ var DOMimageMap = [
 	{ elmt: '.staging-pointnum-selected', path: 'staging/', img: 'point_button' },
 	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
 	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
+	{ elmt: '#points-remaining', path: 'interface/', img: 'points_remaining'},
 	{ elmt: '#player-div0', path: 'interface/', img: 'player_menu_p0'},
 	{ elmt: '#player-div1', path: 'interface/', img: 'player_menu_p1'},
 	{ elmt: '#player-div2', path: 'interface/', img: 'player_menu_p2'},
@@ -85,7 +86,7 @@ var updateInterface = function() {
 		updateBoard();
 
 	}
-
+	updatePointsRemainingMenu();
 	updatePlayerStatsMenus();
 	updateBottomBarMenus();
 	updateRoundMenu();
@@ -478,6 +479,13 @@ var updateTurnHelpMessage = function() {
 	}
 
 	$('#pending-action-div')[0].innerHTML = message;
+};
+
+var updatePointsRemainingMenu = function() {
+	var points_remaining = clientGame.game.points_remaining;
+	$('#points-remaining-explore')[0].innerHTML = points_remaining[PNT_EXPLORE];
+	$('#points-remaining-envoy')[0].innerHTML = points_remaining[PNT_ENVOY];
+	$('#points-remaining-destroy')[0].innerHTML = points_remaining[PNT_DESTROY];
 };
 
 /**

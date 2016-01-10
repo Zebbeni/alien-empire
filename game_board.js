@@ -59,6 +59,16 @@ var start_planets = {
 		return points;
 	};
 
+	module.exports.initializePoints = function() {
+		var points = {};
+
+		points[cons.PNT_EXPLORE] = 7;
+		points[cons.PNT_ENVOY] = 3;
+		points[cons.PNT_DESTROY] = 3;
+
+		return points;
+	};
+
 	module.exports.initializePlayerStructures = function( num_users ) {
 		var structures = [];
 

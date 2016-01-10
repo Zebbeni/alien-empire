@@ -17,6 +17,7 @@ var actions = require('./game_actions');
 			resourceUpkeep: initResourceUpkeep( num_users ),
 
 			points: board.initializePlayerPoints( num_users ),
+			points_remaining: board.initializePoints(),
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
 			phase: cons.PHS_PLACING,

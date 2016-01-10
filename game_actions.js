@@ -266,6 +266,7 @@ var applyBuildAction = function( action, game ) {
 									   objecttype, 
 									   planetid, 
 									   game);
+
 			}
 			else {
 				return { 
@@ -302,7 +303,7 @@ var applyBuildAction = function( action, game ) {
 											   objecttype, 
 											   planetid, 
 											   game);
-						
+
 						break;
 					}
 				}
@@ -503,6 +504,8 @@ var applyRemoveFleet = function( action, game ) {
 
 	game.board.planets[planetid].fleets.splice( index, 1 );
 
+	removePointsForStructure( player, cons.OBJ_FLEET, game );
+
 	game.structures[player][cons.OBJ_FLEET] += 1;
 	fleet.planetid = undefined;
 	fleet.used = false;
@@ -557,6 +560,7 @@ var applyRemoveAction = function( action, game ) {
 												};
 			game.structures[player][cons.OBJ_MINE] -= 1;
 		}
+
 	}
 
 	checkAndRemoveAllAgentsFor( game, 
@@ -571,6 +575,7 @@ var applyRemoveAction = function( action, game ) {
 					   planetid,
 					   game );
 
+	removePointsForStructure( player, objecttype, game );
 	calcResourcesToCollect( game, player );
 	calcResourceUpkeep( game, player );
 
@@ -867,8 +872,8 @@ var applyMissionResolve = function( action, game ){
 					};
 				}
 				else {
+					addPointsForExploration(player, planetid, game);
 					resource.reserved = player;
-					
 				}
 				break;
 			default:
@@ -1013,6 +1018,7 @@ var removeAllFleets = function( game, player ){
 
 				game.structures[player][cons.OBJ_FLEET] += 1;
 
+				removePointsForStructure( player, cons.OBJ_FLEET, game );
 			}
 		}
 	}
@@ -1263,6 +1269,37 @@ var updateMissions = function( game, round ){
 var addPointsForStructure = function( player, objecttype, planetid, game) {
 	var value = cons.OBJ_VALUE[objecttype];
 	game.points[player][cons.PNT_STRUCTURES] += value;
+
+	calcPoints(game, player);
+};
+
+// this is also dumb. We should eventually replace both the add and remove
+// points functions with one that searches all planets and returns the definitive
+// point total for all structures, considering blocked borders
+var removePointsForStructure = function( player, objecttype, game ){
+	var value = cons.OBJ_VALUE[objecttype];
+	game.points[player][cons.PNT_STRUCTURES] -= value;
+	calcPoints(game, player);
+};
+
+var addPointsForExploration = function( player, planetid, game ){
+	var value = game.board.planets[planetid].w; // point value is same as width
+	var points_remaining = game.points_remaining[cons.PNT_EXPLORE];
+	var points_to_add = Math.min(value, points_remaining);
+	game.points[player][cons.PNT_EXPLORE] += points_to_add;
+	game.points_remaining[cons.PNT_EXPLORE] -= points_to_add;
+
+	calcPoints(game, player);
+};
+
+var calcPoints = function( game, player ) {
+	var points = game.points[player];
+	var total = 0;
+	total += points[cons.PNT_STRUCTURES];
+	total += points[cons.PNT_EXPLORE];
+	total += points[cons.PNT_ENVOY];
+	total += points[cons.PNT_DESTROY];
+	game.points[player][cons.PNT_TOTAL] = total;
 };
 
 /**
