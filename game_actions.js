@@ -789,16 +789,19 @@ var applyBlockMission = function( action, game ){
 			};
 	}
 
-	// TODO: add a check to make sure player actually has a spy
-	// TODO: if blocking the mission, make sure to actually remove a spy eye
+	if ( choice == true && game.board.planets[planetid].spyeyes[player] > 0 ){
 
-	if ( choice == true ){
 		game.missionSpied[ player ] = true;
+
 		game.missions[round][ index ].resolution.blocked = true;
 		game.missions[round][ index ].resolution.blockedBy = player;
 		game.missions[round][ index ].resolution.resolved = true;
+
+		game.board.planets[planetid].spyeyes[player] -= 1;
 	}
+
 	else {
+
 		game.missionSpied[ player ] = false;
 
 		if ( game.missionSpied.indexOf(true) == -1 && game.missionSpied.indexOf(null) == -1) {
@@ -812,7 +815,7 @@ var applyBlockMission = function( action, game ){
 					
 					// apply planet explored here, not in applyMissionsResolve, 
 					// since player needs to be able to see planet to resolve.
-					
+
 					if ( game.board.planets[planetid].explored == false ){
 						addPointsForExploration(player, planetid, game);
 						game.board.planets[planetid].explored = true;
@@ -845,6 +848,12 @@ var applyBlockMission = function( action, game ){
 					break;
 			}
 		}
+
+		if (choice == true) {
+			return { isIllegal: true,
+				 response: "You have no spy markers to block a mission here"
+			};
+		}
 	}
 
 	return { isIllegal: false};
@@ -872,7 +881,7 @@ var applyMissionResolve = function( action, game ){
 
 	if ( mission.planetTo != planetid ||  mission.agenttype != agenttype ){
 		return { isIllegal: true,
-				 response: "This is not the mission the server is trying to resolve"
+				 response: "This is not the mission the server is resolving"
 			};
 	}
 
@@ -936,6 +945,12 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				game.resources[player][resource_kind] += 6;
+				break;
+
+			case cons.AGT_SPY:
+
+				game.board.planets[mission.planetTo].spyeyes[player] += 1;
+				game.board.planets[mission.planetFrom].spyeyes[player] += 1;
 				break;
 
 			default:
@@ -1276,12 +1291,10 @@ var updateRound = function( game ){
 // set mission index to 0 and call updatePhase.
 var updateMissionIndex = function(game, round) {
 	game.missionindex += 1;
-	console.log('updated missionindex');
 	if ( game.missionindex >= game.missions[round].length ) {
 		game.missionindex = 0;
 		updatePhase( game );
 	}
-	console.log("mission index:", game.missionindex);
 };
 
 var hasEnoughToBuild = function( player, objecttype, game ) {

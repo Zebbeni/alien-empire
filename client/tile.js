@@ -6,7 +6,7 @@
  *		planet
  *		nametext
  *		resources
- *		orbitstructures
+ *		spy eyes
  *		darkscreen
  */
 
@@ -33,6 +33,7 @@ var initTile = function( planetid ) {
 	initPlanet(planetid);
 	initNametext(planetid);
 	initResources(planetid);
+	initSpyEyes(planetid);
 	initDarkScreen(planetid);
 
 	// tiles[planetid].hitArea = tiles[planetid].getChildByName("stars");
@@ -71,6 +72,7 @@ var drawTile = function(planetid) {
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
+	drawSpyEyes(planetid);
 	drawDarkScreen(planetid, img_width);
 };
 
@@ -80,6 +82,7 @@ var updateTileImage = function(planetid) {
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
+	drawSpyEyes(planetid);
 };
 
 /**
@@ -574,6 +577,72 @@ var selectResource = function(planetid, index) {
 	var y = tile.y + resource.y + icon.y - 32;
 
 	setSelection(x, y);
+};
+
+/**
+ * Initialize planet shape, add to tile container
+ */
+var initSpyEyes = function ( planetid ) {
+
+	var spyeyes = new createjs.Container();
+	spyeyes.name = "spyeyes";
+
+	spyeyes.mouseEnabled = false;
+
+	switch( clientGame.game.board.planets[planetid].w ) {
+		case 2:
+			spyeyes.x = 22;
+			spyeyes.y = 340;
+			break;
+		case 1:
+			spyeyes.x = 12;
+			spyeyes.y = 148;
+			break;
+		default:
+			break;
+	}
+
+	tiles[planetid].addChild( spyeyes );
+};
+
+/**
+ * Draws a planet if it has been explored
+ */
+var drawSpyEyes = function( planetid ) {
+	
+	var planet =  clientGame.game.board.planets[planetid];
+
+	if (planet.explored ) {
+
+		// clear before drawing, we call this function multiple times
+		var spyeyes = tiles[planetid].getChildByName("spyeyes");
+		var num_eyes = spyeyes.getNumChildren();
+
+		for( var e = 0; e < num_eyes; e++ ) {
+			spyeyes.removeChildAt( e );
+		} 
+
+		var yOffset = 0;
+
+		for ( var i = 0; i < clientGame.game.num_players; i++ ) {
+
+			if ( planet.spyeyes[i] > 0 ) {
+				var spyEyeImg = loader.getResult("spy_eye_color" + i);
+
+				for ( var s = 0; s < planet.spyeyes[i]; s++ ){
+					
+					var spyEyeShape = new createjs.Bitmap(spyEyeImg);
+
+					yOffset -= 44;
+
+					spyEyeShape.x = 0;
+					spyEyeShape.y = yOffset;
+
+					spyeyes.addChild( spyEyeShape );
+				}
+			}
+		}
+	}
 };
 
 var initDarkScreen = function(planetid) {

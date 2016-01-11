@@ -155,6 +155,7 @@ var start_planets = {
 			board.planets[i].base = undefined;
 			board.planets[i].fleets = [];
 			board.planets[i].agents = [];
+			board.planets[i].spyeyes = initializeSpyEyes(num_players);
 
 			board.planets[i].borders = {};
 			board.planets[i].settledBy = [false, false, false, false];
@@ -232,6 +233,18 @@ var initializeAgents = function(num_players) {
 	}
 
 	return agents;
+};
+
+/*
+ * Initializes an n-length array of 0s. I'm sure there's 
+ * a smarter way to do this in the future
+ */ 
+var initializeSpyEyes = function(num_players){
+	var spyeyes = [];
+	for ( var i = 0; i < num_players; i++ ){
+		spyeyes.push(0);
+	}
+	return spyeyes;
 };
 
 var initializeBorders = function(board) {

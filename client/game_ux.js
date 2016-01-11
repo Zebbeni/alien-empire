@@ -852,6 +852,9 @@ var updateMissionsMenu = function() {
 			if ( clientTurn == player ){
 				blockMissionAction( false );
 			} 
+			else if ( clientGame.game.board.planets[mission.planetTo].spyeyes[clientTurn] <= 0 ) {
+				blockMissionAction( false );
+			}
 			else {
 				$('#missions-spy-menu')[0].style.visibility = "visible";
 			}
