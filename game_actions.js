@@ -930,7 +930,7 @@ var applyMissionResolve = function( action, game ){
 				var resource_kind = resource.kind;
 				var player_resources = game.resources[player][resource_kind];
 				
-				if (resource.structure || resource.structure.player != player) {
+				if (resource.structure == undefined || resource.structure.player != player) {
 					return { isIllegal: true,
 						 	 response: "You must choose a resource you occupy"
 					};
