@@ -1290,7 +1290,9 @@ var updatePhase = function( game ){
 };
 
 var updateRound = function( game ){
-	game.playerOffset = ( game.playerOffset + 1 ) % game.num_players;
+	if ( game.phase != cons.PHS_PLACING ){
+		game.playerOffset = ( game.playerOffset + 1 ) % game.num_players;
+	}
 	game.round += 1;
 	game.missionindex = 0; // reset mission index to resolve
 	updateAgentsUsed( game );
