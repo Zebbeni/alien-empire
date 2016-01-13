@@ -85,6 +85,15 @@ var updateClientGame = function( content ) {
 	// 		 to the client's version
 	clientGame.game.board = null;
 	clientGame.game.board = content.game.board;
+	clientGame.game.missions = null;
+	clientGame.game.missions = content.game.missions;
+	clientGame.game.missionSpied = null;
+	clientGame.game.missionSpied = content.game.missionSpied;
+	clientGame.game.missionindex = null;
+	clientGame.game.missionindex = content.game.missionindex;
+	clientGame.game.missionViewed = null;
+	clientGame.game.missionViewed = content.game.missionViewed;
+
 };
 
 var updateGameMessages = function( newMsg ) {

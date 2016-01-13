@@ -17,11 +17,16 @@ var actions = require('./game_actions');
 			resourceUpkeep: initResourceUpkeep( num_users ),
 
 			points: board.initializePlayerPoints( num_users ),
+			points_remaining: board.initializePoints(),
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
 			phase: cons.PHS_PLACING,
-			phaseDone: board.initializePhaseDone( num_users ),
+			phaseDone: board.initializeUserArray( num_users, false ),
 			turn: 0,
+			missions: {},
+			missionindex: 0,
+			missionSpied: board.initializeUserArray( num_users, null ),
+			missionViewed: board.initializeUserArray( num_users, false ),
 			secondmines: false,
 			board: board.initializeBoard( num_users )
 		};
@@ -38,6 +43,7 @@ var actions = require('./game_actions');
 				return actions.resolveTurnDone( action, gameInfo.game );
 			case cons.ACT_PLACE:
 			case cons.ACT_VIEWED_MISSIONS:
+			case cons.ACT_BLOCK_MISSION:
 			case cons.ACT_BUILD:
 			case cons.ACT_RECRUIT:
 			case cons.ACT_RETIRE:
@@ -47,6 +53,8 @@ var actions = require('./game_actions');
 			case cons.ACT_LAUNCH_MISSION:
 			case cons.ACT_COLLECT_RESOURCES:
 			case cons.ACT_PAY_UPKEEP:
+			case cons.ACT_MISSION_RESOLVE:
+			case cons.ACT_MISSION_VIEWED:
 				return actions.resolveGameAction( action, gameInfo.game );
 			default:
 				return false;
@@ -62,10 +70,10 @@ var initPlayerResources = function( num_users ) {
 
 		resources.push( {} );
 
-		resources[i][cons.RES_METAL] = 7;
-		resources[i][cons.RES_WATER] = 7;
-		resources[i][cons.RES_FUEL] = 7;
-		resources[i][cons.RES_FOOD] = 7;
+		resources[i][cons.RES_METAL] = 5;
+		resources[i][cons.RES_WATER] = 5;
+		resources[i][cons.RES_FUEL] = 5;
+		resources[i][cons.RES_FOOD] = 5;
 	}
 	
 	return resources;

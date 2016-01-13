@@ -6,7 +6,7 @@
  *		planet
  *		nametext
  *		resources
- *		orbitstructures
+ *		spy eyes
  *		darkscreen
  */
 
@@ -33,14 +33,15 @@ var initTile = function( planetid ) {
 	initPlanet(planetid);
 	initNametext(planetid);
 	initResources(planetid);
-	// initOrbitStructures(planetid);
+	initSpyEyes(planetid);
 	initDarkScreen(planetid);
+
+	// tiles[planetid].hitArea = tiles[planetid].getChildByName("stars");
 
 	tiles[planetid].on("mouseover", function() {
 		if (planets[planetid].explored) {
-
 			showLightscreen( planetid );
-
+			// setPlanetSelection( planetid );
 		}
 		stage.update();
 	});
@@ -48,6 +49,7 @@ var initTile = function( planetid ) {
 	tiles[planetid].on("mouseout", function() {
 
 		hideLightscreen( planetid );
+		// hidePlanetSelection( planetid );
 
 		stage.update();
 
@@ -70,15 +72,17 @@ var drawTile = function(planetid) {
 	drawPlanet(planetid);
 	drawNametext(planetid);
 	drawResources(planetid);
-	// drawOrbitStructures(planetid);
+	drawSpyEyes(planetid);
 	drawDarkScreen(planetid, img_width);
 };
 
 // This is a hack. Eventually drawTile should work for this, but it
 // currently screws everything up.
 var updateTileImage = function(planetid) {
+	drawPlanet(planetid);
+	drawNametext(planetid);
 	drawResources(planetid);
-	// drawOrbitStructures(planetid);
+	drawSpyEyes(planetid);
 };
 
 /**
@@ -172,6 +176,49 @@ var updateTileInteractivity = function(planetid) {
 
 			if ( actiontype == ACT_MOVE_AGENT || actiontype == ACT_LAUNCH_MISSION ){
 				mousePlanet( planetid, true );
+
+				if ( actiontype == ACT_LAUNCH_MISSION && agenttype == AGT_EXPLORER ){
+					var agent = clientGame.game.board.agents[ 
+													String(clientTurn) + 
+													String(agenttype)];
+					var agentplanet = planets[agent.planetid];
+
+					if ( agentplanet.borders.hasOwnProperty(planetid) ) {
+						var border = agentplanet.borders[planetid];
+						if ( border != BRD_BLOCKED ) {
+							hideDarkScreen(planetid);
+							tiles[planetid].mouseChildren = true;
+						}
+					}
+				}
+			}
+			break;
+
+		case PHS_MISSIONS:
+
+			var missionRound = clientGame.game.round - 2;
+			var missionindex = clientGame.game.missionindex;
+			var missions = clientGame.game.missions;
+
+			if (missions[ missionRound ] && missions[ missionRound ][ missionindex ]) {
+				var mission = missions[ missionRound ][ missionindex ];
+
+				var planetid = mission.planetTo;
+				var agenttype = mission.agenttype;
+
+				mouseTile( planetid, true);
+				mousePlanet( planetid, false);
+
+				switch (agenttype) {
+					case AGT_EXPLORER:
+						mouseResources( planets, planetid, true, false, false);
+						break;
+					case AGT_MINER:
+						mouseResources( planets, planetid, false, true, false);
+						break;
+					default:
+						break;
+				}
 			}
 
 			break;
@@ -236,6 +283,15 @@ var mouseResource = function( planets, planetid, index, empty, friendly, opponen
 var initStars = function( planetid) {
 	var stars = new createjs.Shape();
 	stars.name = "stars";
+
+	tiles[planetid].on("rollover", function() {
+		setPlanetSelection( planetid );
+	});
+
+	tiles[planetid].on("rollout", function() {
+		hidePlanetSelection( planetid );
+	});
+
 	tiles[planetid].addChild( stars );
 };
 
@@ -313,6 +369,8 @@ var drawPlanet = function( planetid ) {
 			offsetY = 25;
 		}
 
+		// clear before drawing, we call this function multiple times
+		picture.graphics.clear();
 		picture.graphics.beginBitmapFill(planetImg).drawRect(offsetX, offsetY, planetImg.width, planetImg.height);
 
 		switch ( planets[planetid].w ) {
@@ -416,6 +474,10 @@ var initResource = function( planetid, index ) {
 	icon.name = "icon";
 	resource.addChild(icon);
 
+	var flag = new createjs.Shape();
+	flag.name = "flag";
+	resource.addChild(flag);
+
 	var structure = new createjs.Shape();
 	structure.name = "structure";
 	resource.addChild(structure);
@@ -469,11 +531,19 @@ var drawResource = function( planetid, index, num_resources ) {
 
 	icon.x = index * (4 + iconW);
 
+	var flag = resource.getChildByName("flag");
+	flag.graphics.clear();
+	var reserved = planets[planetid].resources[index].reserved;
+	if ( reserved != undefined ) {
+		var flagImg = loader.getResult( "flag_color" + reserved);
+		flag.graphics.beginBitmapFill(flagImg, "no-repeat").drawRect(0, 0, flagImg.width, flagImg.height);
+		flag.x = icon.x + 44;
+		flag.y = icon.y;
+	}
+
 	var structure = resource.getChildByName("structure");
 	structure.graphics.clear();
-	
 	var struct = planets[planetid].resources[index].structure;
-	
 	if ( struct ) {
 		var player = struct.player;
 		var kind = struct.kind;
@@ -507,6 +577,72 @@ var selectResource = function(planetid, index) {
 	var y = tile.y + resource.y + icon.y - 32;
 
 	setSelection(x, y);
+};
+
+/**
+ * Initialize planet shape, add to tile container
+ */
+var initSpyEyes = function ( planetid ) {
+
+	var spyeyes = new createjs.Container();
+	spyeyes.name = "spyeyes";
+
+	spyeyes.mouseEnabled = false;
+
+	switch( clientGame.game.board.planets[planetid].w ) {
+		case 2:
+			spyeyes.x = 22;
+			spyeyes.y = 340;
+			break;
+		case 1:
+			spyeyes.x = 12;
+			spyeyes.y = 148;
+			break;
+		default:
+			break;
+	}
+
+	tiles[planetid].addChild( spyeyes );
+};
+
+/**
+ * Draws a planet if it has been explored
+ */
+var drawSpyEyes = function( planetid ) {
+	
+	var planet =  clientGame.game.board.planets[planetid];
+
+	if (planet.explored ) {
+
+		// clear before drawing, we call this function multiple times
+		var spyeyes = tiles[planetid].getChildByName("spyeyes");
+		var num_eyes = spyeyes.getNumChildren();
+
+		for( var e = 0; e < num_eyes; e++ ) {
+			spyeyes.removeChildAt( e );
+		} 
+
+		var yOffset = 0;
+
+		for ( var i = 0; i < clientGame.game.num_players; i++ ) {
+
+			if ( planet.spyeyes[i] > 0 ) {
+				var spyEyeImg = loader.getResult("spy_eye_color" + i);
+
+				for ( var s = 0; s < planet.spyeyes[i]; s++ ){
+					
+					var spyEyeShape = new createjs.Bitmap(spyEyeImg);
+
+					yOffset -= 44;
+
+					spyEyeShape.x = 0;
+					spyEyeShape.y = yOffset;
+
+					spyeyes.addChild( spyEyeShape );
+				}
+			}
+		}
+	}
 };
 
 var initDarkScreen = function(planetid) {

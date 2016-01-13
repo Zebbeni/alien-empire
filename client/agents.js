@@ -1,3 +1,4 @@
+
 /** Agents.js contains all methods for initializing and drawing agents
  * All agents are drawn once and then hidden or shown based on their 
  * current planetid (either a number or undefined). 
@@ -18,29 +19,42 @@ var initAgents = function() {
 		var agenttype = agent.agenttype;
 		var player = agent.player;
 
-		var agentshape = new createjs.Shape();
-		agentshape.name = AGT_ENGLISH[ agenttype ] + player;
-		agentshape.agenttype = agenttype;
+		var agentContainer = new createjs.Container();
 
-		var agentImg = loader.getResult( agentshape.name );
+		agentContainer.name = AGT_ENGLISH[ agenttype ] + player;
+		agentContainer.agenttype = agenttype;
+
+		var agentshape = new createjs.Shape();
+		var agentImg = loader.getResult( AGT_IMG[ agenttype ] + player );
 		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 103, 103);
 		agentshape.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
-		agentshape.visible = false;
-		agentshape.mouseEnabled = false;
 
-		agentshape.on("mouseover", function() {
+		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 18px Play", "white");
+		agenttext.name = "agenttext";
+		agenttext.textAlign = "center";
+		agenttext.x = 51;
+		agenttext.y = 80;
+		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 2, 2, 1);
+
+		agentContainer.visible = false;
+		agentContainer.mouseEnabled = false;
+
+		agentContainer.on("mouseover", function() {
 			selectAgent( this.name );
 		});
 
-		agentshape.on("mouseout", function() {
+		agentContainer.on("mouseout", function() {
 			hideSelection();
 		});
 
-		agentshape.on("click", function() {
+		agentContainer.on("click", function() {
 			handleClickAgent( this.agenttype )
 		});
 
-		agentsContainer.addChild(agentshape);
+		agentContainer.addChild( agentshape );
+		agentContainer.addChild( agenttext );
+
+		agentsContainer.addChild(agentContainer);
 	}
 
 	board.addChild(agentsContainer);
@@ -64,10 +78,6 @@ var updateAgents = function(planetid) {
 	var agentsX = ((planet.w * sWid) / 2.0) - ( agtWidAll / 2.0);
 	var agentsY = planet.w == 1 ? 15 : 155 ;
 
-	if (num_agents > 0){
-		console.log(planet.agents);
-	}
-
 	for (var i = 0; i < num_agents; i++) {
 
 		var id = planet.agents[i];
@@ -75,15 +85,15 @@ var updateAgents = function(planetid) {
 		var player = agent.player;
 		var agenttype = agent.agenttype;
 
-		var agentshape = agentsContainer.getChildByName(AGT_ENGLISH[agenttype] + player);
+		var agentContainer = agentsContainer.getChildByName(AGT_ENGLISH[agenttype] + player);
 		
-		agentsContainer.setChildIndex( agentshape, 
+		agentsContainer.setChildIndex( agentContainer, 
 									   agentsContainer.getNumChildren() - 1);
 
-		agentshape.visible = true;
+		agentContainer.visible = true;
 
-		agentshape.x = tiles[planetid].x + agentsX;
-		agentshape.y = tiles[planetid].y + agentsY;
+		agentContainer.x = tiles[planetid].x + agentsX;
+		agentContainer.y = tiles[planetid].y + agentsY;
 
 		agentsX += agtWid + space;
 	}
@@ -101,9 +111,9 @@ var updateDeadAgents = function() {
 			var player = agents[key].player;
 			var agenttype = agents[key].agenttype;
 
-			var agentshape = agentsContainer.getChildByName( AGT_ENGLISH[agenttype] + player );
+			var agentContainer = agentsContainer.getChildByName( AGT_ENGLISH[agenttype] + player );
 
-			agentshape.visible = false;
+			agentContainer.visible = false;
 		}
 	}
 };
@@ -131,9 +141,9 @@ var mouseOnAgents = function( on ) {
 	var agentsContainer = board.getChildByName('agentsContainer');
 
 	for ( var i = AGT_EXPLORER; i <= AGT_SABATEUR; i++ ){
-		var agentshape = agentsContainer.getChildByName( AGT_ENGLISH[i] 
+		var agentContainer = agentsContainer.getChildByName( AGT_ENGLISH[i] 
 														+ clientTurn );
-		agentshape.mouseEnabled = on;
+		agentContainer.mouseEnabled = on;
 	}
 };
 
@@ -198,6 +208,6 @@ var updateAgentActionMenu = function( agenttype ){
 
 var selectAgent = function( agentname) {
 	var agentsContainer = board.getChildByName('agentsContainer');
-	var agentshape = agentsContainer.getChildByName( agentname );
-	setSelection(agentshape.x + 27, agentshape.y - 28);
+	var agentContainer = agentsContainer.getChildByName( agentname );
+	setSelection(agentContainer.x + 27, agentContainer.y - 28);
 };

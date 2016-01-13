@@ -70,10 +70,16 @@ var playerHasResourceStruct = function( player, planetid, objecttype, game ) {
 };
 
 var clearPhaseDone = function( game ){
-		for (var i = 0; i < game.phaseDone.length; i++) {
-			game.phaseDone[i] = false;
-		}
-	};
+	for (var i = 0; i < game.phaseDone.length; i++) {
+		game.phaseDone[i] = false;
+	}
+};
+
+var resetMissionSpied = function( game ) {
+	for ( var i = 0; i < game.missionSpied.length; i++ ){
+		game.missionSpied[i] = null;
+	}
+};
 
 (function() {
 	module.exports = {
@@ -82,5 +88,6 @@ var clearPhaseDone = function( game ){
 		addGameActionMessage: addGameActionMessage,
 		addLobbyMessage: addLobbyMessage,
 		clearPhaseDone: clearPhaseDone,
+		resetMissionSpied: resetMissionSpied,
 	}
 }());

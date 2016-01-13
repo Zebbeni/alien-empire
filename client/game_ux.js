@@ -12,6 +12,7 @@ var DOMimageMap = [
 	{ elmt: '.staging-pointnum-selected', path: 'staging/', img: 'point_button' },
 	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
 	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
+	{ elmt: '#points-remaining', path: 'interface/', img: 'points_remaining'},
 	{ elmt: '#player-div0', path: 'interface/', img: 'player_menu_p0'},
 	{ elmt: '#player-div1', path: 'interface/', img: 'player_menu_p1'},
 	{ elmt: '#player-div2', path: 'interface/', img: 'player_menu_p2'},
@@ -42,9 +43,9 @@ var DOMimageMap = [
 ];
 
 $.fn.preload = function() {
-    this.each(function(){
-        $('<img/>')[0].src = this;
-    });
+	this.each(function(){
+		$('<img/>')[0].src = this;
+	});
 };
 
 $(document).ready(function () {
@@ -85,7 +86,7 @@ var updateInterface = function() {
 		updateBoard();
 
 	}
-
+	updatePointsRemainingMenu();
 	updatePlayerStatsMenus();
 	updateBottomBarMenus();
 	updateRoundMenu();
@@ -179,12 +180,17 @@ var displayConfirmMessage = function() {
 	if ( actiontype != ACT_RETIRE ) {
 		var planets = clientGame.game.board.planets;
 		var planet = planets[ pendingAction.planetid ];
-		var planetname = planet.name;
-	}
+		var sectorname = sectors.charAt( pendingAction.planetid );
+		var planetname = planet.explored ? planet.name : "Sector " + sectorname;
 
-	if ( actiontype != ACT_RETIRE && actiontype != ACT_REMOVE_FLEET) {
-		var index = pendingAction.resourceid;
-		var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
+		if ( actiontype != ACT_REMOVE_FLEET ) {
+			if ( actiontype != ACT_MISSION_RESOLVE || 
+					agenttype == AGT_EXPLORER ||
+					agenttype == AGT_MINER ) {
+				var index = pendingAction.resourceid;
+				var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
+			}
+		}
 	}
 
 	switch (actiontype) {
@@ -237,6 +243,28 @@ var displayConfirmMessage = function() {
 			message = "Send your " + AGT_ENGLISH[agenttype] + " on a mission "
 						+ " to " + planetname + "?";
 			break;
+
+		case ACT_BLOCK_MISSION:
+			var choice = pendingAction.choice == true ? "Block" : "Allow";
+			message = choice + " this mission?";
+			break;
+
+		case ACT_MISSION_RESOLVE:
+			switch (agenttype) {
+				case AGT_EXPLORER:
+					message = "Reserve a " + RES_ENGLISH[resourcekind]
+								+ " resource on " + planetname + "?";
+					break;
+				case AGT_MINER:
+					message = "Collect 6 " + RES_ENGLISH[resourcekind] + "?";
+				default:
+					break;
+			}
+			break;
+
+		default:
+			message = "";
+			break;
 	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
@@ -248,7 +276,7 @@ var confirmPendingAction = function() {
 };
 
 var cancelPendingAction = function() {
-	if(clientGame.game.round != 0) {
+	if(clientGame.game.round != 0 && clientGame.game.phase != PHS_MISSIONS) {
 		clearPendingAction();
 		updateBoardInteractivity();
 	}
@@ -256,44 +284,50 @@ var cancelPendingAction = function() {
 };
 
 var displayGameMessages = function() {
-    updateMessagesHtml( clientGame.messages, "game-messages-div");
+	updateMessagesHtml( clientGame.messages, "game-messages-div");
 };
 
 var displayStagingMessages = function() {
-    updateMessagesHtml( clientGame.messages, "staging-messages-div");
+	updateMessagesHtml( clientGame.messages, "staging-messages-div");
 };
 
 var updateMessagesHtml = function( messages, div_id ) {
 
-    var messagesHtml = '<table style="height:10px" class="message-table"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
-    var msg = null;
-    var combinedMessage;
+	var messagesHtml = '<table style="height:10px" class="message-table"><tr><td class="msg-self-td"></td><td class="msg-content-td"></td></tr>';
+	var msg = null;
+	var combinedMessage;
+	var ignore = [ ACT_BLOCK_MISSION, 
+				   ACT_MISSION_RESOLVE, 
+				   ACT_MISSION_VIEWED];
 
-    for (var m = 0; m < messages.length; m++){
+	for (var m = 0; m < messages.length; m++){
 
-    	// combinedMessage = '';
-        msg = messages[m];
+		// combinedMessage = '';
+		msg = messages[m];
 
-        // if server message, message spans both columns and is centered
-        switch (msg.id) {
-	        case MSG_SERVER:
-	            messagesHtml += buildServerMessage( msg );
-	            break;
-	        case MSG_ACTION:
-	        	messagesHtml += buildActionMessage( msg.message );
-	            break;
-	        default:
-	        	var htmlAndM = buildChatMessage( msg, messages, m );
-	        	messagesHtml += htmlAndM.html;
-	        	m = htmlAndM.m;
-	        	break;
-    	}
-    }
-    messagesHtml += '</table>'
+		// if server message, message spans both columns and is centered
+		switch (msg.id) {
+			case MSG_SERVER:
+				messagesHtml += buildServerMessage( msg );
+				break;
+			case MSG_ACTION:
+				var actiontype = msg.message.actiontype;
+				if ( ignore.indexOf(actiontype) == -1 ) {
+					messagesHtml += buildActionMessage( msg.message );
+				}
+				break;
+			default:
+				var htmlAndM = buildChatMessage( msg, messages, m );
+				messagesHtml += htmlAndM.html;
+				m = htmlAndM.m;
+				break;
+		}
+	}
+	messagesHtml += '</table>'
 
-    var msgDiv = document.getElementById( div_id ); //different
-    msgDiv.innerHTML = messagesHtml;
-    msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
+	var msgDiv = document.getElementById( div_id ); //different
+	msgDiv.innerHTML = messagesHtml;
+	msgDiv.scrollTop = msgDiv.scrollHeight; // scroll to bottom
 };
 
 // return a message spanning both columns
@@ -331,9 +365,6 @@ var buildActionMessage = function( actionMsg ){
 		case ACT_MOVE_AGENT:
 			message += AGT_ENGLISH[actionMsg.agenttype] 
 					+ ' to ' + clientGame.game.board.planets[actionMsg.planetid].name;
-			break;
-		case ACT_COLLECT_RESOURCES:
-			// no extra info needed for collecting resources
 			break;
 		default:
 			break;
@@ -421,7 +452,7 @@ var updateTurnHelpMessage = function() {
 								+ OBJ_ENGLISH[pendingAction.objecttype];
 				} else if (actiontype == ACT_RECRUIT) {
 					message = "Choose a planet to recruit your "
-						   		+ AGT_ENGLISH[pendingAction.agenttype];
+								+ AGT_ENGLISH[pendingAction.agenttype];
 				} else {
 					message = "Click a structure or agent to place on board"
 								+ " (or click End Turn)";
@@ -451,6 +482,13 @@ var updateTurnHelpMessage = function() {
 	}
 
 	$('#pending-action-div')[0].innerHTML = message;
+};
+
+var updatePointsRemainingMenu = function() {
+	var points_remaining = clientGame.game.points_remaining;
+	$('#points-remaining-explore')[0].innerHTML = points_remaining[PNT_EXPLORE];
+	$('#points-remaining-envoy')[0].innerHTML = points_remaining[PNT_ENVOY];
+	$('#points-remaining-destroy')[0].innerHTML = points_remaining[PNT_DESTROY];
 };
 
 /**
@@ -537,9 +575,9 @@ var createResourcesMenu = function() {
 	for ( var i = 0; i <= RES_FOOD; i++ ){
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
 				   + '<div class="gain-div"></div><div class="loss-div"></div>'
-        		   + '<table class="resource-table" cellspacing="0"></table>'
-        		   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
-        		   + '</div>';
+				   + '<table class="resource-table" cellspacing="0"></table>'
+				   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
+				   + '</div>';
 	}
 
 	innerHTML += '<input type="button" id="trade-button" value="Trade"></input>';
@@ -715,6 +753,7 @@ var updatePhaseMenus = function() {
 
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
+			updateMissionsMenu();
 			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
@@ -726,6 +765,174 @@ var updatePhaseMenus = function() {
 		default:
 			break;
 	}
+};
+
+/**
+ * Displays mission resolving information to each client based on which round
+ * and mission index we're on. 
+ */
+var updateMissionsMenu = function() {
+
+	var missionRound = clientGame.game.round - 2;
+	var missionindex = clientGame.game.missionindex;
+	var missions = clientGame.game.missions;
+	var innerHTML = '';
+
+	$('#missions-choice-menu')[0].style.visibility = "hidden";
+	$('#missions-spy-menu')[0].style.visibility = "hidden";
+	$('#missions-resolution-menu')[0].style.visibility = "hidden";
+
+	if ( missionRound <= 0 || missions[missionRound].length == 0) {
+		innerHTML += 'There are no missions to resolve this round';
+	}
+	else {
+		var mission = missions[ missionRound ][ missionindex ];
+		var player = mission.player;
+		var agenttype = mission.agenttype;
+		var userid = clientGame.game.players[player];
+		var name = player == clientTurn ? 'You' : all_users[userid].name;
+		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
+		var message = "";
+
+		// display basic mission information
+		// (eg. Bob sent an Explorer to Sector G!)
+		innerHTML += name + ' sent a ' 
+						+ AGT_ENGLISH[agenttype] 
+						+ ' to ' + planetname;
+
+		// if mission has been resolved
+		if ( mission.resolution.resolved == true ) {
+			// display mission resolution message (eg. no-fly zones placed on __)
+			$('#missions-resolution-menu')[0].style.visibility = "visible";
+
+			if ( mission.resolution.blocked ) {
+				var blocker = mission.resolution.blockedBy;
+				message = "Mission blocked by " + all_users[blocker].name;
+			}
+			else if ( mission.resolution.agentmia ){
+				message = "Agent no longer on board to complete mission";
+			}
+			else if ( mission.resolution.noflyblocked ){
+				message = "Agent blocked by no fly zone";
+			}
+			else if ( mission.resolution.nochoice ){
+				switch ( agenttype ){
+					case AGT_EXPLORER:
+						message = "Mission resolved,"
+									+ " no more resources to reserve here";
+						break;
+					case AGT_MINER:
+						message = "Mission resolved,"
+									+ " no occupied resources to collect here";
+						break;
+					default:
+						message = "Mission resolved";
+						break;
+				}
+			}
+			else {
+				message = "Mission is resolved";
+			}
+
+			$('#missions-resolution-menu')[0].innerHTML = message;
+
+			if ( clientGame.game.missionViewed[clientTurn] == false ) {
+				// wait 5 seconds and move to next mission
+				setTimeout(function() {
+					viewMissionAction();
+				}, 3000);
+			}
+		}
+
+		// otherwise, if we can block this mission
+		// display spy block menu (block mission, allow)
+		else if ( clientGame.game.missionSpied[ clientTurn ] == undefined ) {
+
+			// automatically allow if this is client's own mission
+			if ( clientTurn == player ){
+				blockMissionAction( false );
+			} 
+			else if ( clientGame.game.board.planets[mission.planetTo].spyeyes[clientTurn] <= 0 ) {
+				blockMissionAction( false );
+			}
+			else {
+				$('#missions-spy-menu')[0].style.visibility = "visible";
+			}
+		}
+
+		// if all clients have responded with spy actions
+		else if ( mission.waitingOnResolve ) {
+			// and if this is actually this client's mission
+			if ( clientTurn == player ) {
+
+				// I think we need to set pending action stuff here, (like pending planet, etc)
+				// if we're going to have the 'Done' button display the Confirm Action dialog
+				//
+				// We'll need to define a new type of action, like ACT_MISSION_RESOLVE
+				// which passes a set of attributes that tell the server how to resolve the mission
+				// 
+				// We'll then need to define how the server handles these ACT_MISSION_RESOLVE actions
+
+				setPendingAction( ACT_MISSION_RESOLVE );
+				setPendingAgent( agenttype );
+				setPendingPlanet( mission.planetTo );
+
+				// if this is a mission type that requires no additional choices, 
+				// just submit a generic resolution to the server without waiting
+				if ( [AGT_SMUGGLER, AGT_SPY, AGT_ENVOY].indexOf(agenttype) != -1 ) {
+					submitAction();
+				}
+				// if mission type would normally require some extra decision
+				// (eg. select resource) and no remaining legal options exist
+				// just submit a generic resolution to the server
+				else if ( mission.resolution.nochoice ) {
+					submitAction();
+				}
+				// otherwise, show help message (with done button)
+				else {
+					var messageHtml = '';
+					switch ( agenttype ) {
+						case AGT_EXPLORER:
+							messageHtml = 'Choose a resource to reserve';
+							break;
+						case AGT_MINER:
+							messageHtml = 'Choose a resource you occupy to collect 6';
+							break;
+						case AGT_SURVEYOR:
+							messageHtml = 'Choose up to 2 resources to increase';
+							break;
+						case AGT_AMBASSADOR:
+							messageHtml = 'Choose up to 2 planets to block borders';
+							break;
+						case AGT_SABATEUR:
+							messageHtml = 'Choose an opponent structure to destroy';
+							break;
+						default:
+							break;
+					}
+					$('#missions-choice-message')[0].innerHTML = messageHtml;
+					$('#missions-choice-menu')[0].style.visibility = "visible";
+				}
+			}
+		}
+	}
+
+	$('#missions-phase-info')[0].innerHTML = innerHTML;
+
+};
+
+// sets pending action to ACT_BLOCK_MISSION and submits it to
+// the server with a decision (true or false)
+var blockMissionAction = function( value ){
+	setPendingAction( ACT_BLOCK_MISSION );
+	setPendingChoice( value );
+	submitAction();
+};
+
+var viewMissionAction = function() {
+	setPendingAction( ACT_MISSION_VIEWED );
+	setPendingChoice( clientGame.game.missionindex );
+	submitAction();
 };
 
 /** 

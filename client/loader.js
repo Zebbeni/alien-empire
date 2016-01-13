@@ -21,6 +21,16 @@ var load_assets = function() {
 			{src: s3url + "game/arrow_green.png", id: "arrow_color2"},
 			{src: s3url + "game/arrow_yellow.png", id: "arrow_color3"},
 
+			{src: s3url + "game/flag_red.png", id: "flag_color0"},
+			{src: s3url + "game/flag_blue.png", id: "flag_color1"},
+			{src: s3url + "game/flag_green.png", id: "flag_color2"},
+			{src: s3url + "game/flag_yellow.png", id: "flag_color3"},
+
+			{src: s3url + "game/spy_eye_red.png", id: "spy_eye_color0"},
+			{src: s3url + "game/spy_eye_blue.png", id: "spy_eye_color1"},
+			{src: s3url + "game/spy_eye_green.png", id: "spy_eye_color2"},
+			{src: s3url + "game/spy_eye_yellow.png", id: "spy_eye_color3"},
+
 			{src: s3url + "game/mine_red.png", id: "mine0"},
 			{src: s3url + "game/mine_blue.png", id: "mine1"},
 			{src: s3url + "game/mine_green.png", id: "mine2"},

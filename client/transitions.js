@@ -65,6 +65,7 @@ var hideGameStage = function() {
 var moveToGameInterface = function() {
     $('#game-messages-wrapper-div')[0].style.visibility = "visible";
     $('#bottom-bar-div')[0].style.visibility = "visible";
+    $('#points-remaining')[0].style.visibility = "visible";
     $('#round-div')[0].style.visibility = "visible";
     $('#bottom-bar-div').transition({ opacity: 1.0}, 1000);
     $('#round-div').transition({ opacity: 1.0}, 1000);
@@ -80,6 +81,7 @@ var leaveGameInterface = function() {
     $('#bottom-bar-div').transition({ opacity: 0.0}, 1000, function() {
         $('#bottom-bar-div')[0].style.visibility = "hidden";
     });
+    $('#points-remaining')[0].style.visibility = "hidden";
     $('#round-div').transition({opacity: 0.0}, 1000, function() {
         $('#round-div')[0].style.visibility = "hidden";
     });

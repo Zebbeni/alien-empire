@@ -55,6 +55,9 @@
 		ACT_COLLECT_RESOURCES : 10,
 		ACT_PAY_UPKEEP : 11,
 		ACT_VIEWED_MISSIONS : 12,
+		ACT_BLOCK_MISSION: 13,
+		ACT_MISSION_RESOLVE : 14,
+		ACT_MISSION_VIEWED : 15,
 
 		PNT_STRUCTURES : 0,
 		PNT_EXPLORE : 1,
@@ -115,6 +118,13 @@
 							3: "embassy",
 							4: "base",
 							5: "fleet"
+						},
+
+		RES_ENGLISH : {
+							0: "metal", 
+							1: "water", 
+							2: "fuel", 
+							3: "food",
 						},
 
 		// agent : structure mappings
