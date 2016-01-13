@@ -784,9 +784,8 @@ var applyBlockMission = function( action, game ){
 	var planetid = mission.planetTo;
 
 	if ( game.missionSpied[ player ] != null ){
-		return { isIllegal: true,
-				 response: "You have already done this action"
-			};
+		// Do not return illegal, but also do not change game state
+		return { isIllegal: false }; 
 	}
 
 	if ( choice == true && game.board.planets[planetid].spyeyes[player] > 0 ){
@@ -886,9 +885,9 @@ var applyMissionResolve = function( action, game ){
 	}
 
 	if ( game.missionSpied.indexOf( null ) != -1 ) {
-		return { isIllegal: true,
-				 response: "Waiting to see if opponents will block this mission"
-			};
+		// Do not return illegal if not all spies have come in yet
+		// but do not update the game state
+		return { isIllegal: false };
 	}
 
 	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
