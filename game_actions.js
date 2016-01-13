@@ -28,7 +28,7 @@ var helpers = require('./game_helpers');
 					content: {}
 				};
 		}
-		else if ( game.turn != action.player ){
+		else if ( game.playerTurn != action.player ){
 			return {
 					to: cons.EVENT_ONE,
 					evnt: 'illegal action',
@@ -191,7 +191,7 @@ var applyBuildAction = function( action, game ) {
 				 response: "This action must be done during the build phase" };
 	}
 
-	if ( game.turn != player ) {
+	if ( game.playerTurn != player ) {
 		return { isIllegal: true,
 				 response: "This action must be done during your turn" };
 	}
@@ -397,7 +397,7 @@ var applyRecruitAction = function( action, game ) {
 				 response: "You must recruit new agents during the build phase" };
 	}
 
-	if ( game.turn != player ) {
+	if ( game.playerTurn != player ) {
 		return { isIllegal: true,
 				 response: "You must recruit agents during your turn" };
 	}
@@ -721,7 +721,7 @@ var applyLaunchMission = function( action, game ) {
 			};
 	}
 
-	if ( game.turn != player ) {
+	if ( game.playerTurn != player ) {
 		return { isIllegal: true,
 				 response: "You must launch missions during your turn"
 			};
@@ -1215,12 +1215,16 @@ var updateTurn = function( game ){
 		case cons.PHS_PLACING:
 
 			if(game.secondmines) {
+				
 				game.turn -= 1;
+
 				if (game.turn < 0) {
 					updatePhase( game );
 				}
 			} else {
+				
 				game.turn += 1;
+
 				if (game.turn >= game.players.length) {
 					game.turn = game.players.length - 1;
 					game.secondmines = true;
@@ -1244,6 +1248,12 @@ var updateTurn = function( game ){
 			}
 			break;
 	}
+
+	updatePlayerTurn( game );
+};
+
+var updatePlayerTurn = function( game ) {
+	game.playerTurn = ( game.turn + game.playerOffset ) % game.num_players;
 };
 
 var updatePhase = function( game ){
@@ -1280,6 +1290,7 @@ var updatePhase = function( game ){
 };
 
 var updateRound = function( game ){
+	game.playerOffset = ( game.playerOffset + 1 ) % game.num_players;
 	game.round += 1;
 	game.missionindex = 0; // reset mission index to resolve
 	updateAgentsUsed( game );
