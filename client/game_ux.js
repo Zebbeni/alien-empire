@@ -70,7 +70,7 @@ var updateInterface = function() {
 
 	clearPendingAction();
 
-	if( clientGame.game.turn == clientTurn ) {
+	if( clientGame.game.playerTurn == clientTurn ) {
 
 		if( clientGame.game.round == 0){
 			setPendingObject( OBJ_MINE );
@@ -424,7 +424,7 @@ var updateTurnHelpMessage = function() {
 
 		case PHS_PLACING:
 
-			if (clientTurn == clientGame.game.turn){
+			if (clientTurn == clientGame.game.playerTurn){
 				if ( clientGame.game.secondmines ){
 					message = "Choose an empty resource to place"
 								+ " your last free mine";
@@ -446,7 +446,7 @@ var updateTurnHelpMessage = function() {
 
 		case PHS_BUILD:
 
-			if (clientTurn == clientGame.game.turn){
+			if (clientTurn == clientGame.game.playerTurn){
 				if (actiontype == ACT_BUILD){
 					message = "Choose a location to place your "
 								+ OBJ_ENGLISH[pendingAction.objecttype];
@@ -462,7 +462,7 @@ var updateTurnHelpMessage = function() {
 
 		case PHS_ACTIONS:
 
-			if ( clientTurn == clientGame.game.turn ){
+			if ( clientTurn == clientGame.game.playerTurn ){
 				if ( actiontype == ACT_MOVE_AGENT ){
 					message = "Click a location to move your "
 								+ AGT_ENGLISH[pendingAction.agenttype];

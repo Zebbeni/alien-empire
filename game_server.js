@@ -23,6 +23,8 @@ var actions = require('./game_actions');
 			phase: cons.PHS_PLACING,
 			phaseDone: board.initializeUserArray( num_users, false ),
 			turn: 0,
+			playerTurn: 0,
+			playerOffset: 0,
 			missions: {},
 			missionindex: 0,
 			missionSpied: board.initializeUserArray( num_users, null ),
