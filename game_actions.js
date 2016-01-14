@@ -879,9 +879,8 @@ var applyMissionResolve = function( action, game ){
 	}
 
 	if ( mission.planetTo != planetid ||  mission.agenttype != agenttype ){
-		return { isIllegal: true,
-				 response: "This is not the mission the server is resolving"
-			};
+		// don't return illegal if on a different mission but do not proceed either
+		return { isIllegal: false};
 	}
 
 	if ( game.missionSpied.indexOf( null ) != -1 ) {
@@ -974,9 +973,9 @@ var applyMissionViewed = function( action, game ){
 	var round = game.round - 2;
 
 	if ( index != game.missionindex) {
-		return { isIllegal: true,
-				 response: "Server's on a different mission buddy"
-			};
+		// don't return illegal if on a different mission
+		// but do not proceed either
+		return { isIllegal: false };
 	}
 
 	game.missionViewed[ player ] = true;
