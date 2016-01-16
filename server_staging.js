@@ -48,7 +48,7 @@ var removePlayerFromReady = function(gameInfo, userid) {
 var allPlayersReady = function(gameInfo) {
 	var players = gameInfo.players;
 	var ready = gameInfo.ready;
-	// TODO: add a num_players option that the host
+	// TODO: add a requestedPlayers option that the host
 	// of the game can set. Only return true if
 	// all players ready and all slots are filled
 	return (players.length == ready.length);
@@ -63,7 +63,8 @@ var userCreateGame = function(socket, io, users, gamesInfo) {
 					players: [],
 					ready: [],
 					room: roomId,
-					messages: []
+					messages: [],
+					requestedPlayers: 4 // 4 is default
 				};
 
 	gamesInfo.push(gameInfo);

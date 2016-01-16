@@ -38,7 +38,21 @@ var updateGameStage = function(users, newMsg, ready) {
     displayGameStage();
 };
 
+var displayGameOptions = function() {
+    $('.staging-playernum-selected').each(function() {
+        if ( $( this ).val() != clientGame.requestedPlayers ){
+            $( this ).removeClass('staging-playernum-selected');
+        }
+    });
+    $('.staging-playernum-button').each(function() {
+        if ( $( this ).val() == clientGame.requestedPlayers ){
+            $( this ).addClass('staging-playernum-selected');
+        }
+    });
+};
+
 var displayGameStage = function() {
     displayStagingPlayers();
     displayStagingMessages();
+    displayGameOptions();
 };

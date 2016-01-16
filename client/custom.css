@@ -236,7 +236,7 @@ button {
 	height: 37px;
 }
 
-.staging-playernum-button, .staging-playernum-selected {
+.staging-playernum-button {
 	float: right;
 	width: 28px;
 	height: 33px;
@@ -250,6 +250,10 @@ button {
 }
 
 .staging-playernum-selected {
+	background-position: -56px 0;
+}
+
+.staging-playernum-selected:hover {
 	background-position: -56px 0;
 }
 

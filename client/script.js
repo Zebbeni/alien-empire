@@ -39,7 +39,11 @@ var displayGames = function() {
             gamesHtml += '<input type="button" class="game-button" ';
 
             hostid = all_games[g].players[0];
-            gamesHtml += 'value="Join Game | Host: ' + all_users[hostid].name + '"';
+            var num_joined = all_games[g].players.length;
+            var num_requested = all_games[g].requestedPlayers;
+            gamesHtml += 'value="Join Game | Host: ' 
+                        + all_users[hostid].name + ' | ' 
+                        + num_joined + '/' + num_requested + '"';
 
             gamesHtml += ' onclick="javascript:submitJoinGame(' + g + ')"></input>';
         }
