@@ -82,7 +82,8 @@ var userCreateGame = function(socket, io, users, gamesInfo) {
 var userJoinGame = function(socket, users, gamesInfo, gameid, fn) {
 	var gameInfo = gamesInfo[gameid];
 
-	if ( gameInfo.players.indexOf(socket.userid) === -1 && gameInfo.players.length < 4)
+	if ( gameInfo.players.indexOf(socket.userid) === -1 
+		 && gameInfo.players.length < gameInfo.requestedPlayers )
 	{
 		addUserToGame( gamesInfo[gameid], users[socket.userid] );
 
@@ -154,6 +155,28 @@ var userLeaveStaging = function(socket, io, users, gamesInfo, gameid) {
 	io.in('lobby').emit('user left game', gameInfo);
 };
 
+var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gameid, num ) {
+	var gameInfo = gamesInfo[gameid];
+
+	if (gameInfo.players.indexOf(socket.userid) == 0
+		&& gameInfo.players.length <= num
+		&& gameInfo.requestedPlayers != num ) {
+
+		gameInfo.requestedPlayers = num;
+
+		var username = users[socket.userid].name;
+		var newMsg = helpers.addGameMessage( gamesInfo[gameid],
+											 cons.MSG_SERVER,
+											 username 
+											 + " changed player count to " 
+											 + num);
+		io.in(gamesInfo[gameid].room).emit('room requested players changed', 
+											newMsg, 
+											gamesInfo[gameid].requestedPlayers);
+		io.in('lobby').emit('requested players changed', gameInfo);
+	}
+};
+
 (function() {
 
 	module.exports = {
@@ -165,7 +188,8 @@ var userLeaveStaging = function(socket, io, users, gamesInfo, gameid) {
 		userCreateGame: userCreateGame,
 		userJoinGame: userJoinGame,
 		setUserReady: setUserReady,
-		userLeaveStaging: userLeaveStaging
+		userLeaveStaging: userLeaveStaging,
+		userRequestNumPlayersStaging: userRequestNumPlayersStaging
 	};
 
 }());

@@ -43,3 +43,9 @@ var socket_leaveStaging = function() {
     socket.emit('leave game staging', clientGame.gameid);
     console.log('you are leaving staging area');
 };
+
+var socket_requestNumPlayersStaging = function( num ) {
+    socket.emit('request num players staging', clientGame.gameid, num, function(data) {
+        console.log('recieved players requested confirmation', data);
+    });
+};

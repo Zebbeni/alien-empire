@@ -66,6 +66,11 @@ socket.on('room user ready staging', function(ready) {
     updateGameStage(false, false, ready);
 });
 
+socket.on('room requested players changed', function(newMsg, requested, ready) {
+    clientGame.requestedPlayers = requested;
+    updateGameStage(false, newMsg, false);
+});
+
 socket.on('self left game staging', function(game) {
     status = USR_ONLINE;
     clientGame = null;
@@ -84,6 +89,11 @@ socket.on('game starting', function(game) {
 });
 
 socket.on('user left game', function(game) {
+    all_games[ game.gameid ] = game;
+    updateLobby(false, false, game);
+});
+
+socket.on('requested players changed', function(game) {
     all_games[ game.gameid ] = game;
     updateLobby(false, false, game);
 });
