@@ -15,6 +15,7 @@ var actions = require('./game_actions');
 			resources: initPlayerResources( num_users ),
 			resourceCollect: initResourceCollect( num_users ),
 			resourceUpkeep: initResourceUpkeep( num_users ),
+			resourcePackages: initResourcePackages( num_users ),
 
 			points: board.initializePlayerPoints( num_users ),
 			points_remaining: board.initializePoints(),
@@ -79,6 +80,13 @@ var initPlayerResources = function( num_users ) {
 	}
 	
 	return resources;
+};
+
+var initResourcePackages = function( num_players ){
+	var resourcePackages = {};
+	for ( var i = 0; i < num_players; i++ ){
+		resourcePackages[i] = [];
+	}
 };
 
 var initResourceCollect = function( num_users ){
