@@ -536,13 +536,22 @@ var createPlayerStatsMenus = function() {
 
 var updatePlayerStatsMenus = function() {
 
-	var inc = (100.0 / clientGame.players.length) / 2.0;
+	var numPlayers = clientGame.players.length;
+	var inc = (100.0 / numPlayers) / 2.0;
+	
+	var spacing = 5;
+	var playerDivWid = 250 + spacing;
+
+	var wrapperWid = ( numPlayers * playerDivWid ) - spacing;
+	var wrapperMargin = -1 * (wrapperWid / 2);
+
+	$('#players-wrapper-div').css({ width: wrapperWid, 
+									'margin-left': wrapperMargin });
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
-		// some math to evenly space player stats menus evenly along top
-		var leftPercent = String(inc * ((i * 2) + 1)) + "%";
+		var left = playerDivWid * i + "px";
 
-		$('#player-div' + i).css({left: leftPercent });
+		$('#player-div' + i).css({left: left });
 
 		var playerDiv = '#player-div' + i;
 		var resources = clientGame.game.resources[i];

@@ -160,8 +160,8 @@
 #players-wrapper-div {
 	position: absolute;
 	top: 0px;
+	left: 50%;
 	height: 43px;
-	width: 100%;
 }
 
 .player-div {
@@ -169,7 +169,6 @@
 	top: 0px;
 	width: 250px;
 	height: 43px;
-	margin-left: -125px;
 	color: black;
 }
 
