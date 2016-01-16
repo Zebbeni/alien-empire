@@ -20,17 +20,17 @@ var setGlobals = function() {
 	board = new createjs.Container();
 	tiles = [];
 	fleetshapes = {};
-	scale = 0.8;
+	scale = 0.75;
 	stage.update();
 };
 
 var handleKeyUp = function( e ) {
 	switch (e.keyCode) {
 		case 189: // dash
-			zoomBoard(0.9);
+			zoomBoard(0.5);
 			break;
 		case 187: // equals (plus sign)
-			zoomBoard(1.1111);
+			zoomBoard(0.75);
 			break;
 		default:
 			break;
@@ -106,7 +106,7 @@ var createBoard = function() {
 
 		stage.addChild( board );
 		
-		zoomBoard(1); 
+		zoomBoard(0.75); 
 	}
 };
 

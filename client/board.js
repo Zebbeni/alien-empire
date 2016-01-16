@@ -3,9 +3,10 @@
  * Updates board when done
  */
 var zoomBoard = function(magnify) {
-	scale *= magnify;
-	scale = Math.min(scale, 1);
-	scale = Math.max(scale, 0.6);
+	// scale *= magnify;
+	scale = magnify;
+	// scale = Math.min(scale, 1);
+	// scale = Math.max(scale, 0.6);
 
 	board.scaleX = scale;
 	board.scaleY = scale;
