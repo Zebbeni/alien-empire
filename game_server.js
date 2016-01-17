@@ -87,6 +87,7 @@ var initResourcePackages = function( num_players ){
 	for ( var i = 0; i < num_players; i++ ){
 		resourcePackages[i] = [];
 	}
+	return resourcePackages;
 };
 
 var initResourceCollect = function( num_users ){

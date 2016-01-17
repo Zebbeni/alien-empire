@@ -84,6 +84,13 @@
 		AGT_STATUS_ON : 1,
 		AGT_STATUS_DEAD : 2,
 
+		PKG_COLLECT : 1,
+		PKG_TRADE : 2,
+		PKG_SPY : 3,
+		PKG_ENVOY : 4,
+		PKG_MINER : 5,
+		PKG_SMUGGLER : 6,
+
 		OBJ_VALUE : {
 			1: 0,
 			2: 1,

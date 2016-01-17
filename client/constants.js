@@ -48,6 +48,13 @@ var RES_FUEL = 2;
 var RES_FOOD = 3;
 var RES_NONE = 4;
 
+var PKG_COLLECT = 1;
+var PKG_TRADE = 2;
+var PKG_SPY = 3;
+var PKG_ENVOY = 4;
+var PKG_MINER = 5;
+var PKG_SMUGGLER = 6;
+
 // Border status constants
 var BRD_UNEXPLORED = 0;
 var BRD_OPEN = 1;

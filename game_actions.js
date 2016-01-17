@@ -1286,6 +1286,10 @@ var updatePhase = function( game ){
 		default:
 			break;
 	}
+
+	if ( game.phase == cons.PHS_RESOURCE ){
+		addCollectionPhaseResourcePackages(game);
+	}
 };
 
 var updateRound = function( game ){
@@ -1376,6 +1380,15 @@ var addPointsForExploration = function( player, planetid, game ){
 	game.points_remaining[cons.PNT_EXPLORE] -= points_to_add;
 
 	calcPoints(game, player);
+};
+
+var addCollectionPhaseResourcePackages = function(game) {
+	for ( var player = 0; player < game.num_players; player++ ){
+		
+		calcResourcesToCollect( game, player );
+		var resources = game.resourceCollect[player];
+		helpers.addResourcePackage(game, player, cons.PKG_COLLECT, resources);
+	}
 };
 
 var calcPoints = function( game, player ) {

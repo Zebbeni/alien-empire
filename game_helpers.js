@@ -31,11 +31,25 @@ var playerHasStruct = function( player, planetid, objecttype, game ) {
 var addGameMessage = function(gameInfo, userid, msg) {
     var newMsg = {
                     id: userid, // when userid is MSG_ACTION...
-                    message: msg // msg is an action, client will turn it to english
+                    message: msg // msg is an action, client will show in english
                 };
 
     gameInfo.messages.push(newMsg);
     return newMsg;
+};
+
+/**
+ * addResourcePackage appends a new resourcePackage object to the game
+ * resourcePackages object for the corect player, defaults collected status
+ * to false. Expects array of all resource types with numbers to add
+ */
+var addResourcePackage = function(game, player, type, resources) {
+	var resourcePackage = {
+							type: type,
+							collected: false,
+							resources: resources
+						};
+	game.resourcePackages[player].push( resourcePackage );
 };
 
 var addGameActionMessage = function(gameInfo, userid, action) {
@@ -86,6 +100,7 @@ var resetMissionSpied = function( game ) {
 		playerHasStruct: playerHasStruct,
 		addGameMessage: addGameMessage,
 		addGameActionMessage: addGameActionMessage,
+		addResourcePackage: addResourcePackage,
 		addLobbyMessage: addLobbyMessage,
 		clearPhaseDone: clearPhaseDone,
 		resetMissionSpied: resetMissionSpied,
