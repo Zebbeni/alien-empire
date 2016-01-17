@@ -584,37 +584,51 @@ var applyRemoveAction = function( action, game ) {
 
 var applyCollectResourcesAction = function( action, game ){
 	var player = action.player;
-	
-	if ( game.phase != cons.PHS_RESOURCE ) {
+	var pkgindex = action.pkgindex;
+	var resource_pkg = game.resourcePackages[player][pkgindex];
+
+	// if ( game.phase != cons.PHS_RESOURCE ) {
+	// 	return { isIllegal: true,
+	// 			 response: "The resource phase is complete"
+	// 		};
+	// }
+
+	if ( resource_pkg.collected ) {
 		return { isIllegal: true,
-				 response: "The resource phase is complete"
+				 response: "You have already collected these resources"
 			};
 	}
 
-	if ( game.phaseDone[player] ) {
-		return { isIllegal: true,
-				 response: "You have already collected resources"
-			};
-	}
+	// if ( game.phaseDone[player] ) {
+	// 	return { isIllegal: true,
+	// 			 response: "You have already collected resources"
+	// 		};
+	// }
 
-	calcResourcesToCollect( game, player );
+	// calcResourcesToCollect( game, player );
 
-	var collect = game.resourceCollect[player];
+	// var collect = game.resourceCollect[player];
+
+	var resources =  resource_pkg.resources;
+	var pkgtype = resource_pkg.pkgtype;
 
 	// Check here if the user has too many resources and reject until
 	// they've 4:1'd their extras before allowing them to collect new resources
 	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
-		if (game.resources[player][i] + collect[i] > 10){
+		if (game.resources[player][i] + resources[i] > 10){
 			return { isIllegal: true,
 				 response: "You must trade or 4 to 1 before collecting more"
 			};
 		}
 	}
 
-	collectPlayerResources(action, game);
+	collectPlayerResources(player, resources, game);
+	game.resourcePackages[player][pkgindex].collected = true;
 
-	game.phaseDone[player] = true;
-	updatePhase( game );
+	if ( pkgtype == cons.PKG_COLLECT && game.phase == cons.PHS_RESOURCE ){
+		game.phaseDone[player] = true;
+		updatePhase( game );
+	}
 
 	return { isIllegal: false};
 };
@@ -993,12 +1007,10 @@ var applyMissionViewed = function( action, game ){
 	return { isIllegal: false };
 };
 
-var collectPlayerResources = function( action, game){
+var collectPlayerResources = function( player, resources, game){
 
-	var toCollect = game.resourceCollect[action.player];
-
-	for ( var i = 0; i < toCollect.length; i++){
-		game.resources[action.player][i] += toCollect[i];
+	for ( var i = 0; i < resources.length; i++){
+		game.resources[player][i] += resources[i];
 	}
 };
 

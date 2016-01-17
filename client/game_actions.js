@@ -16,8 +16,8 @@ var submitGameMessage = function(divid) {
     socket_sendGameMessage(msg);
 };
 
-var submitCollectResources = function() {
-	socket_submitCollectResources();
+var submitCollectResources = function(pkg_index) {
+	socket_submitCollectResources(pkg_index);
 };
 
 var submitPayUpkeep = function() {

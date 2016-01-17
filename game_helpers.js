@@ -43,9 +43,9 @@ var addGameMessage = function(gameInfo, userid, msg) {
  * resourcePackages object for the corect player, defaults collected status
  * to false. Expects array of all resource types with numbers to add
  */
-var addResourcePackage = function(game, player, type, resources) {
+var addResourcePackage = function(game, player, pkgtype, resources) {
 	var resourcePackage = {
-							type: type,
+							pkgtype: pkgtype,
 							collected: false,
 							resources: resources
 						};

@@ -275,22 +275,6 @@
 	pointer-events: auto;
 }
 
-/*#player-turn-div0 {
-	background: rgba(255, 84, 84, .8);
-}
-
-#player-turn-div1 {
-	background: rgba(84, 120, 255, .8);
-}
-
-#player-turn-div2 {
-	background: rgba(90, 228, 97, .8);
-}
-
-#player-turn-div3 {
-	background: rgba(253, 255, 58, .8);
-}*/
-
 #action-confirm-button, #action-cancel-button {
 	position: relative;
 	float: left;
@@ -303,14 +287,6 @@
 	font-weight: bold;
 	color: black;
 }
-
-/*#button-bar-div {
-	position: fixed;
-	bottom: 100px;
-	left: 50%;
-	width: 510px;
-	margin-left: -205px;
-}*/
 
 #bottom-bar-div {
 	position: absolute;
@@ -572,70 +548,33 @@
 	background-position: -54px 0;
 }
 
-/*#build-recruit-buttons-div {
+#resourcepkg-div {
 	position: absolute;
-	bottom: 100px;
-	left: 50%;
-	width: 650px;
-	margin-left: -325px;
-}*/
-
-/*#build-buttons-div, #recruit-buttons-div {
-	position: absolute;
-	top: 0px;
-	width: 650px;
+	top: 200px;
+	width: 400px;
 	height: 100px;
-}*/
+	background-color: red;
+}
 
-/*#recruit-agents-table {
-	padding: 0px;
-	margin-left: 10px;
-	width: 627px;
-	table-layout: fixed;
-}*/
-
-/*.create-button {
-	position: relative;
-	float: left;
-	height: 25px;
-	width: 200px;
+#resourcepkg-resources-div {
+	position: absolute;
+	left: 0px;
 	top: 0px;
-	margin: 3px;
-	background: rgba(131, 203, 180, .8);
-	font-size: 15px;
-	font-weight: bold;
+	width: 400px;
+	height: 50px;
 	color: black;
-}*/
+	background-color: white;
+}
 
-/*.build-structure-button {
-	position: relative;
-	float: left;
-	top: 0px;
-	margin: 3px;
-	background: rgba(131, 203, 180, .8);
-	font-size: 15px;
-	font-weight: bold;
+#resourcepkg-collect-button {
+	position: absolute;
+	left: 0px;
+	top: 50px;
+	width: 100px;
+	height: 50px;
 	color: black;
-}*/
-
-/*.recruit-agent-button {
-	background: none;
-	margin: 0px;
-	padding:;
-}*/
-
-/*.recruit-agent-button:hover {
-
-}*/
-
-/*.build-structure-button {
-	height: 110px;
-	width: 110px;
-}*/
-
-/*.create-button:hover, .build-structure-button:hover {
-	background: rgba(161, 233, 210, .8);
-}*/
+	background-color: white;
+}
 
 #game-chat-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    rgba(255, 255, 255, 0.5);

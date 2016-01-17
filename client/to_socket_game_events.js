@@ -32,8 +32,9 @@ var socket_submitTurnDone = function() {
     });
 };
 
-var socket_submitCollectResources = function() {
-	var action = {
+var socket_submitCollectResources = function(pkgindex) {
+	var action = {	
+					pkgindex: pkgindex,
 					player: clientTurn,
 					actiontype: ACT_COLLECT_RESOURCES
 				 };

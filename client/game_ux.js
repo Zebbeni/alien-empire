@@ -92,6 +92,7 @@ var updateInterface = function() {
 	updateRoundMenu();
 	updatePhaseMenus();
 	updateTurnHelpMessage();
+	updateResourcePkgMenu();
 
 	setInterfaceImages();
 };
@@ -942,6 +943,41 @@ var viewMissionAction = function() {
 	setPendingAction( ACT_MISSION_VIEWED );
 	setPendingChoice( clientGame.game.missionindex );
 	submitAction();
+};
+
+var updateResourcePkgMenu = function() {
+	var packages = clientGame.game.resourcePackages[clientTurn];
+	var doDisplay = false;
+	for (var p = 0; p < packages.length; p++){
+		if (packages[p].collected == false){
+			displayResourcePkgMenu(packages[p], p);
+			doDisplay = true;
+			break;
+		} 
+	}
+	if ( !doDisplay ){
+		hideResourcePkgMenu();
+	}
+};
+
+var displayResourcePkgMenu= function(pkg, p){
+	var html = '';
+	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+		html += RES_ENGLISH[i] + ': ' + pkg.resources[i] + ' ';
+	}
+	$('#resourcepkg-resources-div')[0].innerHTML = html;
+	$('#resourcepkg-collect-button').click( function(){
+		collectResourcePackage(p);
+	});
+	$('#resourcepkg-div')[0].style.visibility = "visible";
+};
+
+var hideResourcePkgMenu = function() {
+	$('#resourcepkg-div')[0].style.visibility = "hidden";
+};
+
+var collectResourcePackage = function( pkgindex ){
+	submitCollectResources( pkgindex );
 };
 
 /** 
