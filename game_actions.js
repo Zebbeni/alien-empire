@@ -587,6 +587,8 @@ var applyCollectResourcesAction = function( action, game ){
 	var pkgindex = action.pkgindex;
 	var resource_pkg = game.resourcePackages[player][pkgindex];
 
+	console.log("collecting resources");
+	console.log(action);
 	// if ( game.phase != cons.PHS_RESOURCE ) {
 	// 	return { isIllegal: true,
 	// 			 response: "The resource phase is complete"
@@ -1278,29 +1280,39 @@ var updatePhase = function( game ){
 	switch (game.phase) {
 		case cons.PHS_PLACING:
 			game.phase = cons.PHS_RESOURCE;
+			addCollectionPhaseResourcePackages(game);
 			break;
 		// including missions here is temporary. Eventually there should
 		// be extra logic to move to the next mission in the queue, and so on
 		// until all missions have been viewed, and THEN update the phase
 		case cons.PHS_RESOURCE:
 		case cons.PHS_UPKEEP:
+			
 			if(game.phaseDone.indexOf(false) == -1){
+
 				game.phase = (game.phase + 1) % 5;
 				helpers.clearPhaseDone( game );
+
+				// if we've just switched to the resource phase
+				// add resource collection packages for each player
+				if ( game.phase == cons.PHS_RESOURCE ){
+					addCollectionPhaseResourcePackages(game);
+				}
 			}
 			break;
+
 		case cons.PHS_MISSIONS:
 		case cons.PHS_BUILD:
 		case cons.PHS_ACTIONS:
 			game.phase = (game.phase +1) % 5;
 			helpers.clearPhaseDone( game );
+
+			if ( game.phase == cons.PHS_RESOURCE ){
+				addCollectionPhaseResourcePackages(game);
+			}
 			break;
 		default:
 			break;
-	}
-
-	if ( game.phase == cons.PHS_RESOURCE ){
-		addCollectionPhaseResourcePackages(game);
 	}
 };
 

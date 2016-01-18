@@ -90,6 +90,7 @@
 		PKG_ENVOY : 4,
 		PKG_MINER : 5,
 		PKG_SMUGGLER : 6,
+		PKG_UPKEEP : 7,
 
 		OBJ_VALUE : {
 			1: 0,

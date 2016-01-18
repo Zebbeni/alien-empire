@@ -27,6 +27,9 @@ var DOMimageMap = [
 	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
 	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
+	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
+	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
+	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
 	{ elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
 	{ elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
 	{ elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
@@ -582,7 +585,7 @@ var createResourcesMenu = function() {
 	
 	var innerHTML = '';	
 
-	for ( var i = 0; i <= RES_FOOD; i++ ){
+	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
 				   + '<div class="gain-div"></div><div class="loss-div"></div>'
 				   + '<table class="resource-table" cellspacing="0"></table>'
@@ -946,34 +949,64 @@ var viewMissionAction = function() {
 };
 
 var updateResourcePkgMenu = function() {
+	
 	var packages = clientGame.game.resourcePackages[clientTurn];
-	var doDisplay = false;
-	for (var p = 0; p < packages.length; p++){
-		if (packages[p].collected == false){
-			displayResourcePkgMenu(packages[p], p);
-			doDisplay = true;
-			break;
-		} 
-	}
-	if ( !doDisplay ){
-		hideResourcePkgMenu();
-	}
-};
-
-var displayResourcePkgMenu= function(pkg, p){
+	var count = 0;
+	var pkg;
+	var pkg_class;
+	var td_class;
+	var sign;
 	var html = '';
-	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-		html += RES_ENGLISH[i] + ': ' + pkg.resources[i] + ' ';
-	}
-	$('#resourcepkg-resources-div')[0].innerHTML = html;
-	$('#resourcepkg-collect-button').click( function(){
-		collectResourcePackage(p);
-	});
-	$('#resourcepkg-div')[0].style.visibility = "visible";
-};
 
-var hideResourcePkgMenu = function() {
-	$('#resourcepkg-div')[0].style.visibility = "hidden";
+	for (var p = 0; p < packages.length; p++){
+
+		if (packages[p].collected == false){
+
+			pkg = packages[p];
+
+			if (pkg.pkgtype == PKG_UPKEEP) {
+				pkg_class = 'respkg-upkeep-div';
+				td_class = 'respkg-upkeep-td';
+				sign = '-';
+			}
+			else {
+				pkg_class = 'respkg-collect-div';
+				td_class = 'respkg-collect-td';
+				sign = '+';
+			}
+
+			html += '<div class="respkg-div ' + pkg_class + '">'
+					+ '<div class="respkg-notification-div">'
+					+ '<div class="respkg-message-div">Click to Collect</div>'
+					+ '<div class="respkg-arrow-div"></div>'
+					+ '</div>';
+			
+			html += '<div class="respkg-clickable-div" '
+					+ 'onclick="javascript:collectResourcePackage(' + p + ')">'
+					+ '<div class="respkg-title-div">Collect</div>'
+					+ '<div class="respkg-resources-div">'
+					+ '<table class="respkg-resources-table">';
+
+			for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+				var icon_class = RES_ENGLISH[i] + '-icon';
+
+				html += '<tr class="respkg-num-tr">'
+						+ '<td class="respkg-num-td ' + td_class + '">' 
+						+ sign + String(Math.abs(pkg.resources[i])) 
+						+ '</td>'
+						+ '<td class="' + icon_class + '" ></td>'
+						+ '</tr>';
+			}
+
+			html += '</table></div></div></div>';
+
+			count += 1;
+		}
+	}
+
+	$('#resourcepackages-div')[0].innerHTML = html;
+	$('#resourcepackages-div')[0].style.visibility = "visible";
+
 };
 
 var collectResourcePackage = function( pkgindex ){
@@ -996,7 +1029,7 @@ var setInterfaceImages = function() {
 		var name = element.elmt;
 		var img = element.img;
 		var path = s3url + element.path + px + img;
-
-		$( name ).css("background-image", 'url(' + path + '.png)');
+		var ext = element.ext == undefined ? '.png' : element.ext;
+		$( name ).css("background-image", 'url(' + path + ext + ')');
 	}
 };

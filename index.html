@@ -153,9 +153,28 @@
                 <input type="button" id="action-cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
             </div>
         </div>
-        <div id="resourcepkg-div" style="visibility: hidden">
-            <div id="resourcepkg-resources-div"></div>
-            <input type="button" id="resourcepkg-collect-button" value="Collect"></input>
+        <div id="resourcepackages-div" style="visibility: hidden">
+<!--             <div class="respkg-div respkg-upkeep-div">
+                <div class="respkg-notification-div">
+                    <div class="respkg-message-div"></div>
+                    <div class="respkg-arrow-div"></div>
+                </div>
+                <div class="respkg-clickable-div" onclick="javascript:doThing(p)">
+                    <div class="respkg-title-div"></div>
+                    <div class="respkg-resources-div">
+                        <table class="respkg-resources-table">
+                            <tr>
+                            <td></td>
+                            <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div> -->
+            <div class="respkg-arrow-div"></div>
+            <div class="respkg-upkeep-div"></div>
+            <div class="respkg-collect-div"></div>
+            <!-- <input type="button" id="resourcepkg-collect-button" value="Collect"></input> -->
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

@@ -54,6 +54,7 @@ var PKG_SPY = 3;
 var PKG_ENVOY = 4;
 var PKG_MINER = 5;
 var PKG_SMUGGLER = 6;
+var PKG_UPKEEP = 7;
 
 // Border status constants
 var BRD_UNEXPLORED = 0;
@@ -144,6 +145,7 @@ var ACT_ENGLISH_PAST = {
 					15: " viewed the current mission"
 				};
 
+// DON'T CAPITALIZE THESE. USED FOR DOM CLASS NAMES
 var RES_ENGLISH = { 
 					0: "metal", 
 					1: "water", 
