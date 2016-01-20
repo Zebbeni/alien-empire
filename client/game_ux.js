@@ -957,12 +957,15 @@ var updateResourcePkgMenu = function() {
 	var td_class;
 	var sign;
 	var html = '';
+	var pkg_id;
 
 	for (var p = 0; p < packages.length; p++){
 
 		if (packages[p].collected == false){
 
 			pkg = packages[p];
+
+			pkg_id = 'respk-collect-id' + count;
 
 			if (pkg.pkgtype == PKG_UPKEEP) {
 				pkg_class = 'respkg-upkeep-div';
@@ -975,7 +978,8 @@ var updateResourcePkgMenu = function() {
 				sign = '+';
 			}
 
-			html += '<div class="respkg-div ' + pkg_class + '">'
+			html += '<div class="respkg-div ' + pkg_class + '"'
+					+ 'id="' + pkg_id + '"' + '>'
 					+ '<div class="respkg-notification-div">'
 					+ '<div class="respkg-message-div">Click to Collect</div>'
 					+ '<div class="respkg-arrow-div"></div>'
@@ -1005,6 +1009,12 @@ var updateResourcePkgMenu = function() {
 	}
 
 	$('#resourcepackages-div')[0].innerHTML = html;
+
+	for ( var c = 0; c < count; c++ ){
+		var xpos = c * 70;
+		$('#respk-collect-id' + c).css({left: xpos});
+	}
+
 	$('#resourcepackages-div')[0].style.visibility = "visible";
 
 };

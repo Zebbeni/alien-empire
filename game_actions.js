@@ -950,15 +950,10 @@ var applyMissionResolve = function( action, game ){
 					};
 				}
 
-				if ( player_resources + 6 > 10 ) {
-					return { isIllegal: true,
-						 	 response: "You must trade or 4 to 1"
-						 	 			+ " before collecting 6 more " 
-						 	 			+ cons.RES_ENGLISH[resource_kind]
-					};
-				}
+				var resources = [0,0,0,0];
+				resources[resource_kind] = 6;
+				helpers.addResourcePackage(game, player, cons.PKG_MINER, resources);
 
-				game.resources[player][resource_kind] += 6;
 				break;
 
 			case cons.AGT_SPY:
