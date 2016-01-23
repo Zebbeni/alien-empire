@@ -81,6 +81,13 @@ var helpers = require('./game_helpers');
 					content: applyResult.response
 				};
 		} 
+		else if ( applyResult.isDuplicate ) {
+			return {
+					to: cons.EVENT_ONE,
+					evnt: 'duplicate',
+					content: applyResult.response
+				};
+		}
 		else {
 			return {
 					to: cons.EVENT_ALL,
@@ -465,7 +472,13 @@ var applyRetireAction = function( action, game ){
 
 	agent.status = cons.AGT_STATUS_DEAD;
 	
-	calcResourceUpkeep( game, player );
+	// create a different upkeep package if removing during upkeep phase
+	if ( game.phase == cons.PHS_UPKEEP ){
+		replaceUpkeepPackage(game, player);
+	} 
+	else { // either way we recalculate resource upkeep
+		calcResourceUpkeep( game, player );
+	}
 
 	return { isIllegal: false};
 };
@@ -510,7 +523,13 @@ var applyRemoveFleet = function( action, game ) {
 	fleet.planetid = undefined;
 	fleet.used = false;
 
-	calcResourceUpkeep( game, player );
+	// create a different upkeep package if removing during upkeep phase
+	if ( game.phase == cons.PHS_UPKEEP ){
+		replaceUpkeepPackage(game, player);
+	} 
+	else { // either way we recalculate resource upkeep
+		calcResourceUpkeep( game, player );
+	}
 
 	return { isIllegal: false};
 };
@@ -577,44 +596,49 @@ var applyRemoveAction = function( action, game ) {
 
 	removePointsForStructure( player, objecttype, game );
 	calcResourcesToCollect( game, player );
-	calcResourceUpkeep( game, player );
+
+	// create a different upkeep package if removing during upkeep phase
+	if ( game.phase == cons.PHS_UPKEEP ){
+		replaceUpkeepPackage(game, player);
+	} 
+	else { // either way we recalculate resource upkeep
+		calcResourceUpkeep( game, player );
+	}
 
 	return { isIllegal: false};
 };
 
 var applyCollectResourcesAction = function( action, game ){
 	var player = action.player;
-	
-	if ( game.phase != cons.PHS_RESOURCE ) {
-		return { isIllegal: true,
-				 response: "The resource phase is complete"
-			};
+	var pkgindex = action.pkgindex;
+	var resource_pkg = game.resourcePackages[player][pkgindex];
+
+	game.resourcePackages[player][pkgindex].isnew = false;
+
+	if ( resource_pkg.collected ) {
+		return { isDuplicate: true };
 	}
 
-	if ( game.phaseDone[player] ) {
-		return { isIllegal: true,
-				 response: "You have already collected resources"
-			};
-	}
-
-	calcResourcesToCollect( game, player );
-
-	var collect = game.resourceCollect[player];
+	var resources =  resource_pkg.resources;
+	var pkgtype = resource_pkg.pkgtype;
 
 	// Check here if the user has too many resources and reject until
 	// they've 4:1'd their extras before allowing them to collect new resources
 	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
-		if (game.resources[player][i] + collect[i] > 10){
+		if (game.resources[player][i] + resources[i] > 10){
 			return { isIllegal: true,
 				 response: "You must trade or 4 to 1 before collecting more"
 			};
 		}
 	}
 
-	collectPlayerResources(action, game);
+	collectPlayerResources(player, resources, game);
+	game.resourcePackages[player][pkgindex].collected = true;
 
-	game.phaseDone[player] = true;
-	updatePhase( game );
+	if ( pkgtype == cons.PKG_COLLECT && game.phase == cons.PHS_RESOURCE ){
+		game.phaseDone[player] = true;
+		updatePhase( game );
+	}
 
 	return { isIllegal: false};
 };
@@ -622,38 +646,33 @@ var applyCollectResourcesAction = function( action, game ){
 var applyPayUpkeep = function( action, game ){
 
 	var player = action.player;
+	var pkgindex = action.pkgindex;
+	var resource_pkg = game.resourcePackages[player][pkgindex];
 
-	if ( game.phase != cons.PHS_UPKEEP ){
-		return { isIllegal: true,
-				 response: "The upkeep phase is complete"
-			};
+	game.resourcePackages[player][pkgindex].isnew = false;
+
+	if ( resource_pkg.collected || resource_pkg.cancelled ) {
+		return { isDuplicate: true };
 	}
 
-	if ( game.phaseDone[player] ) {
-		return { isIllegal: true,
-				 response: "You have already paid upkeep"
-			};
-	}
-
-	calcResourceUpkeep( game, player );
-	
-	var upkeep = game.resourceUpkeep[player];
+	resources = resource_pkg.resources;
+	pkgtype = resource_pkg.pkgtype;
 
 	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
-		if ( game.resources[player][i] - upkeep[i] < 0){
+		if ( game.resources[player][i] - resources[i] < 0){
 			return { isIllegal: true,
-				 response: "You do not have enough resources to pay upkeep"
+				 	 response: "You do not have enough resources to pay upkeep"
 			};
 		}
 	}
 
-	// Check here if the user has too few resources and return illegal message if so
-	// They will need to remove some stuff and re-submit an upkeep action
+	payPlayerUpkeep(player, resources, game);
+	game.resourcePackages[player][pkgindex].collected = true;
 
-	payPlayerUpkeep(action, game);
-
-	game.phaseDone[player] = true;
-	updatePhase( game );
+	if ( pkgtype == cons.PKG_UPKEEP && game.phase == cons.PHS_UPKEEP ){
+		game.phaseDone[player] = true;
+		updatePhase( game );
+	}
 
 	return { isIllegal: false };
 };
@@ -785,7 +804,7 @@ var applyBlockMission = function( action, game ){
 
 	if ( game.missionSpied[ player ] != null ){
 		// Do not return illegal, but also do not change game state
-		return { isIllegal: false }; 
+		return { isDuplicate: false }; 
 	}
 
 	if ( choice == true && game.board.planets[planetid].spyeyes[player] > 0 ){
@@ -880,13 +899,13 @@ var applyMissionResolve = function( action, game ){
 
 	if ( mission.planetTo != planetid ||  mission.agenttype != agenttype ){
 		// don't return illegal if on a different mission but do not proceed either
-		return { isIllegal: false};
+		return { isDuplicate: false };
 	}
 
 	if ( game.missionSpied.indexOf( null ) != -1 ) {
 		// Do not return illegal if not all spies have come in yet
 		// but do not update the game state
-		return { isIllegal: false };
+		return { isDuplicate: false };
 	}
 
 	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
@@ -934,15 +953,14 @@ var applyMissionResolve = function( action, game ){
 					};
 				}
 
-				if ( player_resources + 6 > 10 ) {
-					return { isIllegal: true,
-						 	 response: "You must trade or 4 to 1"
-						 	 			+ " before collecting 6 more " 
-						 	 			+ cons.RES_ENGLISH[resource_kind]
-					};
-				}
+				var resources = [0,0,0,0];
+				resources[resource_kind] = 6;
+				helpers.addResourcePackage( game, 
+											player, 
+											cons.PKG_MINER, 
+											resources, 
+											'From Miner' );
 
-				game.resources[player][resource_kind] += 6;
 				break;
 
 			case cons.AGT_SPY:
@@ -975,7 +993,7 @@ var applyMissionViewed = function( action, game ){
 	if ( index != game.missionindex) {
 		// don't return illegal if on a different mission
 		// but do not proceed either
-		return { isIllegal: false };
+		return { isDuplicate: false };
 	}
 
 	game.missionViewed[ player ] = true;
@@ -993,21 +1011,17 @@ var applyMissionViewed = function( action, game ){
 	return { isIllegal: false };
 };
 
-var collectPlayerResources = function( action, game){
+var collectPlayerResources = function( player, resources, game){
 
-	var toCollect = game.resourceCollect[action.player];
-
-	for ( var i = 0; i < toCollect.length; i++){
-		game.resources[action.player][i] += toCollect[i];
+	for ( var i = 0; i < resources.length; i++){
+		game.resources[player][i] += resources[i];
 	}
 };
 
-var payPlayerUpkeep = function(action, game){
+var payPlayerUpkeep = function(player, resources, game){
 
-	var toPay = game.resourceUpkeep[action.player];
-
-	for ( var i = 0; i < toPay.length; i++) {
-		game.resources[action.player][i] -= toPay[i];
+	for ( var i = 0; i < resources.length; i++) {
+		game.resources[player][i] -= resources[i];
 	}
 };
 
@@ -1061,9 +1075,10 @@ var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
 					var agent = game.board.agents[ String(player) + String(a)];
 					
 					if ( agent.status == cons.AGT_STATUS_ON ) {
-						
+
+						findAndSetMissionResolved( game, player, a );
+
 						agent.status = cons.AGT_STATUS_OFF;
-						agent.planetid = undefined;
 						agent.used = false;
 					}
 				}
@@ -1266,22 +1281,39 @@ var updatePhase = function( game ){
 	switch (game.phase) {
 		case cons.PHS_PLACING:
 			game.phase = cons.PHS_RESOURCE;
+			addCollectionPhaseResourcePackages(game);
 			break;
 		// including missions here is temporary. Eventually there should
 		// be extra logic to move to the next mission in the queue, and so on
 		// until all missions have been viewed, and THEN update the phase
 		case cons.PHS_RESOURCE:
 		case cons.PHS_UPKEEP:
+			
 			if(game.phaseDone.indexOf(false) == -1){
+
 				game.phase = (game.phase + 1) % 5;
 				helpers.clearPhaseDone( game );
+
+				// if we've just switched to the resource phase
+				// add resource collection packages for each player
+				if ( game.phase == cons.PHS_RESOURCE ){
+					addCollectionPhaseResourcePackages(game);
+				}
+				else if  ( game.phase == cons.PHS_UPKEEP ){
+					addUpkeepPhaseResourcePackages(game);
+				}
 			}
 			break;
+
 		case cons.PHS_MISSIONS:
 		case cons.PHS_BUILD:
 		case cons.PHS_ACTIONS:
 			game.phase = (game.phase +1) % 5;
 			helpers.clearPhaseDone( game );
+
+			if ( game.phase == cons.PHS_RESOURCE ){
+				addCollectionPhaseResourcePackages(game);
+			}
 			break;
 		default:
 			break;
@@ -1376,6 +1408,47 @@ var addPointsForExploration = function( player, planetid, game ){
 	game.points_remaining[cons.PNT_EXPLORE] -= points_to_add;
 
 	calcPoints(game, player);
+};
+
+var addCollectionPhaseResourcePackages = function(game) {
+	for ( var player = 0; player < game.num_players; player++ ){
+		
+		calcResourcesToCollect( game, player );
+		var resources = game.resourceCollect[player];
+		helpers.addResourcePackage( game, 
+									player, 
+									cons.PKG_COLLECT, 
+									resources, 
+									'Resource phase' );
+	}
+};
+
+var addUpkeepPhaseResourcePackages = function( game ) {
+	for ( var player = 0; player < game.num_players; player++ ){
+		addUpkeepPhaseResourcePackage( game, player );
+	}
+};
+
+var addUpkeepPhaseResourcePackage = function( game, player ) {
+	calcResourceUpkeep( game, player );
+	var resources = game.resourceUpkeep[player];
+	helpers.addResourcePackage( game, 
+								player,
+								cons.PKG_UPKEEP, 
+								resources,
+								'Upkeep phase' );
+};
+
+var replaceUpkeepPackage = function(game, player){
+	var respkgs = game.resourcePackages[player];
+	for ( var r = 0; r < respkgs.length; r++ ){
+		if ( respkgs[r].collected == false && !respkgs[r].cancelled
+			&& respkgs[r].pkgtype == cons.PKG_UPKEEP ) {
+			game.resourcePackages[player][r].cancelled = true;
+			addUpkeepPhaseResourcePackage( game, player);
+			break;
+		}
+	}
 };
 
 var calcPoints = function( game, player ) {

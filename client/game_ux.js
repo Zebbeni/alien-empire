@@ -27,6 +27,9 @@ var DOMimageMap = [
 	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
 	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
+	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
+	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
+	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
 	{ elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
 	{ elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
 	{ elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
@@ -92,6 +95,8 @@ var updateInterface = function() {
 	updateRoundMenu();
 	updatePhaseMenus();
 	updateTurnHelpMessage();
+	updateResourcePkgMenu();
+	updateResourceAnimations();
 
 	setInterfaceImages();
 };
@@ -498,11 +503,6 @@ var updatePointsRemainingMenu = function() {
  */
 var createPlayerStatsMenus = function() {
 
-	// var wrapperWidth = (256 * clientGame.players.length);
-	// $('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
-
-	// var marginleft = Math.round(wrapperWidth / -2) + "px";
-	// $('#players-wrapper-div')[0].style.marginLeft = marginleft;
 	var innerHTML = "";
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
@@ -575,51 +575,6 @@ var updateBottomBarMenus = function() {
 	updateResourcesMenu();
 	updateStructuresMenu();
 	updateAgentsMenu();
-};
-
-var createResourcesMenu = function() {
-	
-	var innerHTML = '';	
-
-	for ( var i = 0; i <= RES_FOOD; i++ ){
-		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
-				   + '<div class="gain-div"></div><div class="loss-div"></div>'
-				   + '<table class="resource-table" cellspacing="0"></table>'
-				   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
-				   + '</div>';
-	}
-
-	innerHTML += '<input type="button" id="trade-button" value="Trade"></input>';
-
-	$('#resources-menu-div')[0].innerHTML = innerHTML;
-
-	updateResourcesMenu();
-};
-
-var updateResourcesMenu = function() {
-
-	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
-	var collect = clientGame.game.resourceCollect[clientTurn];
-	var upkeep = clientGame.game.resourceUpkeep[clientTurn];
-
-	for ( var i = 0; i <= RES_FOOD; i++ ){
-
-		var resourceDiv = '#resource-div' + i;
-		$(resourceDiv).find('.gain-div')[0].innerHTML = '+' + collect[i];
-		$(resourceDiv).find('.loss-div')[0].innerHTML = '-' + upkeep[i];
-
-		var resources = clientGame.game.resources[clientTurn];
-		var innerHTML = '<tr>';
-		for ( var n = 0; n < 10; n++ ) {
-			innerHTML += (n < resources[i] ? 
-						  '<td class="' + icons[i] + '"></td>':
-						  '<td width="25px" height="25px"></td>');
-
-		}
-		innerHTML += '</tr>';
-
-		$(resourceDiv).find('.resource-table').html(innerHTML);
-	}
 };
 
 var createStructuresMenu = function() {
@@ -816,7 +771,8 @@ var updateMissionsMenu = function() {
 
 			if ( mission.resolution.blocked ) {
 				var blocker = mission.resolution.blockedBy;
-				message = "Mission blocked by " + all_users[blocker].name;
+				var blockerid = clientGame.game.players[blocker];
+				message = "Mission blocked by " + all_users[blockerid].name;
 			}
 			else if ( mission.resolution.agentmia ){
 				message = "Agent no longer on board to complete mission";
@@ -960,7 +916,7 @@ var setInterfaceImages = function() {
 		var name = element.elmt;
 		var img = element.img;
 		var path = s3url + element.path + px + img;
-
-		$( name ).css("background-image", 'url(' + path + '.png)');
+		var ext = element.ext == undefined ? '.png' : element.ext;
+		$( name ).css("background-image", 'url(' + path + ext + ')');
 	}
 };

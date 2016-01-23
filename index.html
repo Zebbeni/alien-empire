@@ -130,10 +130,10 @@
             <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
         </div>
         <div id="resource-phase-div" class="phase-div" style="display: none">
-            <input type="button" value="Collect" onclick="javascript:submitCollectResources();"/>
+            <input type="button" value="Collect"/>
         </div>
         <div id="upkeep-phase-div" class="phase-div" style="display: none">
-            <input type="button" value="Pay Upkeep" onclick="javascript:submitPayUpkeep();"/>
+            <input type="button" value="Pay Upkeep"/>
         </div>
         <div id="agent-retire-div" style="visibility: hidden">
             <div id="agent-retire-name"></div>
@@ -152,6 +152,11 @@
                 <input type="button" id="action-confirm-button" value="✓" onclick="javascript:confirmPendingAction();"></input>
                 <input type="button" id="action-cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
             </div>
+        </div>
+        <div id="resourcepackages-div" style="visibility: hidden">
+            <div class="respkg-arrow-div"></div>
+            <div class="respkg-upkeep-div"></div>
+            <div class="respkg-collect-div"></div>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -181,6 +186,7 @@
         <script src="selection.js"></script>
         <script src="game_actions.js"></script>
         <script src="game_board.js"></script>
+        <script src="resources_ux.js"></script>
         <script src="game_ux.js"></script>
         <script src="transitions.js"></script>
         <script src="game.js"></script>

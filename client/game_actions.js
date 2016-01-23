@@ -16,12 +16,12 @@ var submitGameMessage = function(divid) {
     socket_sendGameMessage(msg);
 };
 
-var submitCollectResources = function() {
-	socket_submitCollectResources();
+var submitCollectResources = function(pkg_index) {
+	socket_submitCollectResources(pkg_index);
 };
 
-var submitPayUpkeep = function() {
-	socket_submitPayUpkeep();
+var submitPayUpkeep = function(pkg_index) {
+	socket_submitPayUpkeep(pkg_index);
 };
 
 var submitMissionsViewed = function() {

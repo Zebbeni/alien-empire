@@ -32,8 +32,11 @@ var socket_submitTurnDone = function() {
     });
 };
 
-var socket_submitCollectResources = function() {
-	var action = {
+var socket_submitCollectResources = function(pkgindex) {
+	console.log("submiting collect resources action");
+
+	var action = {	
+					pkgindex: pkgindex,
 					player: clientTurn,
 					actiontype: ACT_COLLECT_RESOURCES
 				 };
@@ -43,8 +46,9 @@ var socket_submitCollectResources = function() {
 	});
 }
 
-var socket_submitPayUpkeep = function() {
-	var action = {
+var socket_submitPayUpkeep = function(pkgindex) {
+	var action = {	
+					pkgindex: pkgindex,
 					player: clientTurn,
 					actiontype: ACT_PAY_UPKEEP
 				};

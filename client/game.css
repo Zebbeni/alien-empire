@@ -221,36 +221,13 @@
 	font-weight: bold;
 }
 
-/*.player-stats-div, .player-turn-div {
-	display: table;
-	padding: 5px;
-	margin: 5px;
-	width: 200px;
-	text-align: center;
-	position: relative;
-	width: 190px;
-}*/
-
-/*.player-stats-div {
-	color: black;
-	font-weight: bold;
-	background: rgba(131, 203, 180, .8);
-}*/
-
-/*.player-turn-div {
-	height: 30px;
-	overflow-y: hidden;
-	font-size: 20px;
-	color: white;
-}*/
-
 #game-messages-wrapper-div {
 	position: absolute;
 	width: 350px;
 	height: 130px;
 	bottom: 160px;
 	left: 0px;
-	/*pointer-events: none;*/
+	pointer-events: auto;
 }
 
 #game-messages-div, #game-chat-input {
@@ -265,7 +242,7 @@
 	height: 90px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	/*pointer-events: none;*/
+	pointer-events: auto;
 }
 
 #game-chat-input {
@@ -274,22 +251,6 @@
 	color: rgba(255, 255, 255, .9);
 	pointer-events: auto;
 }
-
-/*#player-turn-div0 {
-	background: rgba(255, 84, 84, .8);
-}
-
-#player-turn-div1 {
-	background: rgba(84, 120, 255, .8);
-}
-
-#player-turn-div2 {
-	background: rgba(90, 228, 97, .8);
-}
-
-#player-turn-div3 {
-	background: rgba(253, 255, 58, .8);
-}*/
 
 #action-confirm-button, #action-cancel-button {
 	position: relative;
@@ -303,14 +264,6 @@
 	font-weight: bold;
 	color: black;
 }
-
-/*#button-bar-div {
-	position: fixed;
-	bottom: 100px;
-	left: 50%;
-	width: 510px;
-	margin-left: -205px;
-}*/
 
 #bottom-bar-div {
 	position: absolute;
@@ -572,70 +525,115 @@
 	background-position: -54px 0;
 }
 
-/*#build-recruit-buttons-div {
+#resourcepackages-div {
 	position: absolute;
-	bottom: 100px;
-	left: 50%;
-	width: 650px;
-	margin-left: -325px;
-}*/
+	bottom: 0px;
+	left: 391px;
+	height: 157px;
+	width: 0px;
+}
 
-/*#build-buttons-div, #recruit-buttons-div {
+.respkg-div {
 	position: absolute;
-	top: 0px;
-	width: 650px;
+	width: 68px;
+	height: 150px;
+	cursor: pointer;
+}
+
+.respkg-div:hover {
+	background-position: -68px 0;
+}
+
+.respkg-notification-div {
+	position: absolute;
+	left: 0px;
+	top: -75px;
+	width: 68px;
+	height: 70px;
+}
+
+.respkg-message-div {
+	position: absolute;
+	bottom: 40px;
+	left: 0px;
+	width: 68px;
+	height: 36px;
+	color: #fff094;
+	font-size: 10pt;
+	font-weight: bold;
+	text-align: center;
+}
+
+.respkg-arrow-div {
+	position: absolute;
+	left: 16px;
+	bottom: 0px;
+	width: 33px;
+	height: 40px;
+}
+
+.respkg-clickable-div {
+	width: 68px;
+	height: 150px;
+}
+
+.respkg-title-div {
+	position: absolute;
+	top: 8px;
+	width: 68px;
+	color: black;
+	text-align: center;
+	font-size: 11pt;
+	font-weight: bold;
+}
+
+.respkg-resources-div {
+	position: absolute;
+	left: 7px;
+	top: 38px;
+	width: 52px;
+	height: 105px;
+	color: black;
+}
+
+.respkg-resources-table {
+	width: 53px;
 	height: 100px;
-}*/
+}
 
-/*#recruit-agents-table {
-	padding: 0px;
-	margin-left: 10px;
-	width: 627px;
-	table-layout: fixed;
-}*/
+.respkg-num-td {
+	color: white;
+	font-size: 13pt;
+	text-align: center;
+	font-weight: bold;
+}
 
-/*.create-button {
-	position: relative;
-	float: left;
+.respkg-collect-td {
+	color: #8ae0fa;
+}
+
+.respkg-upkeep-td {
+	color: #ff9191;
+}
+
+.res-change {
+	position: absolute;
+	text-align: center;
+	font-size: 13pt;
+	font-weight: bold;
+	width: 25px;
 	height: 25px;
-	width: 200px;
+	left: 60px;
 	top: 0px;
-	margin: 3px;
-	background: rgba(131, 203, 180, .8);
-	font-size: 15px;
-	font-weight: bold;
-	color: black;
-}*/
+}
 
-/*.build-structure-button {
-	position: relative;
-	float: left;
-	top: 0px;
-	margin: 3px;
-	background: rgba(131, 203, 180, .8);
-	font-size: 15px;
-	font-weight: bold;
-	color: black;
-}*/
+.res-change-up {
+	color: #8ae0fa;
+}
 
-/*.recruit-agent-button {
-	background: none;
-	margin: 0px;
-	padding:;
-}*/
-
-/*.recruit-agent-button:hover {
-
-}*/
-
-/*.build-structure-button {
-	height: 110px;
-	width: 110px;
-}*/
-
-/*.create-button:hover, .build-structure-button:hover {
-	background: rgba(161, 233, 210, .8);
-}*/
+.res-change-down {
+	color: #ff9191;
+}
 
 #game-chat-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
     color:    rgba(255, 255, 255, 0.5);

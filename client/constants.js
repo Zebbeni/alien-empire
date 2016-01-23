@@ -48,6 +48,14 @@ var RES_FUEL = 2;
 var RES_FOOD = 3;
 var RES_NONE = 4;
 
+var PKG_COLLECT = 1;
+var PKG_TRADE = 2;
+var PKG_SPY = 3;
+var PKG_ENVOY = 4;
+var PKG_MINER = 5;
+var PKG_SMUGGLER = 6;
+var PKG_UPKEEP = 7;
+
 // Border status constants
 var BRD_UNEXPLORED = 0;
 var BRD_OPEN = 1;
@@ -137,6 +145,7 @@ var ACT_ENGLISH_PAST = {
 					15: " viewed the current mission"
 				};
 
+// DON'T CAPITALIZE THESE. USED FOR DOM CLASS NAMES
 var RES_ENGLISH = { 
 					0: "metal", 
 					1: "water", 
