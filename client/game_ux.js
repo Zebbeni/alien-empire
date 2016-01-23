@@ -959,12 +959,14 @@ var updateResourcePkgMenu = function() {
 	var onclick;
 	var html = '';
 	var pkg_id;
+	var message;
 
 	for (var p = 0; p < packages.length; p++){
 
 		if (packages[p].collected == false && !packages[p].cancelled){
 
 			pkg = packages[p];
+			message = pkg.message;
 
 			pkg_id = 'respk-collect-id' + count;
 
@@ -972,25 +974,33 @@ var updateResourcePkgMenu = function() {
 				pkg_class = 'respkg-upkeep-div';
 				td_class = 'respkg-upkeep-td';
 				sign = '-';
+				title = 'Upkeep';
 				onclick = 'javascript:payUpkeepPackage(' + p + ')';
 			}
 			else {
 				pkg_class = 'respkg-collect-div';
 				td_class = 'respkg-collect-td';
 				sign = '+';
+				title = 'Collect';
 				onclick = 'javascript:collectResourcePackage(' + p + ')';
 			}
 
-			html += '<div class="respkg-div ' + pkg_class + '"'
+			html += '<div class="respkg-div ' + pkg_class + '" '
 					+ 'id="' + pkg_id + '"' + '>'
 					+ '<div class="respkg-notification-div">'
-					+ '<div class="respkg-message-div">Click to Collect</div>'
+					+ '<div class="respkg-message-div">' + message + '</div>'
 					+ '<div class="respkg-arrow-div"></div>'
 					+ '</div>';
 			
-			html += '<div class="respkg-clickable-div" '
+			html += '<div class="respkg-clickable-div';
+
+			if ( pkg.isnew && pkg.pkgtype != PKG_UPKEEP ) {
+				html += ' isnew';
+			}
+
+			html += '" '
 					+ 'onclick="' + onclick + '">'
-					+ '<div class="respkg-title-div">Collect</div>'
+					+ '<div class="respkg-title-div">' + title + '</div>'
 					+ '<div class="respkg-resources-div">'
 					+ '<table class="respkg-resources-table">';
 
@@ -1017,6 +1027,10 @@ var updateResourcePkgMenu = function() {
 		var xpos = c * 70;
 		$('#respk-collect-id' + c).css({left: xpos});
 	}
+
+	$( ".isnew" ).each(function() {
+		$( this ).click();
+	});
 
 	$('#resourcepackages-div')[0].style.visibility = "visible";
 

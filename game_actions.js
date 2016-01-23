@@ -606,6 +606,8 @@ var applyCollectResourcesAction = function( action, game ){
 	var pkgindex = action.pkgindex;
 	var resource_pkg = game.resourcePackages[player][pkgindex];
 
+	game.resourcePackages[player][pkgindex].isnew = false;
+
 	if ( resource_pkg.collected ) {
 		return { isIllegal: true,
 				 response: "You have already collected these resources"
@@ -948,7 +950,11 @@ var applyMissionResolve = function( action, game ){
 
 				var resources = [0,0,0,0];
 				resources[resource_kind] = 6;
-				helpers.addResourcePackage(game, player, cons.PKG_MINER, resources);
+				helpers.addResourcePackage( game, 
+											player, 
+											cons.PKG_MINER, 
+											resources, 
+											'From Miner' );
 
 				break;
 
@@ -1404,7 +1410,11 @@ var addCollectionPhaseResourcePackages = function(game) {
 		
 		calcResourcesToCollect( game, player );
 		var resources = game.resourceCollect[player];
-		helpers.addResourcePackage(game, player, cons.PKG_COLLECT, resources);
+		helpers.addResourcePackage( game, 
+									player, 
+									cons.PKG_COLLECT, 
+									resources, 
+									'Resource phase' );
 	}
 };
 
@@ -1417,7 +1427,11 @@ var addUpkeepPhaseResourcePackages = function( game ) {
 var addUpkeepPhaseResourcePackage = function( game, player ) {
 	calcResourceUpkeep( game, player );
 	var resources = game.resourceUpkeep[player];
-	helpers.addResourcePackage(game, player, cons.PKG_UPKEEP, resources);
+	helpers.addResourcePackage( game, 
+								player,
+								cons.PKG_UPKEEP, 
+								resources,
+								'Upkeep phase' );
 };
 
 var replaceUpkeepPackage = function(game, player){
