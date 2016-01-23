@@ -54,3 +54,7 @@ socket.on('game end', function(content) {
 socket.on('illegal action', function(response) {
     toggleIllegalActionMenu(response);
 });
+
+socket.on('duplicate', function(response) {
+    console.log("duplicate action received by server");
+});

@@ -89,7 +89,6 @@ io.sockets.on('connection', function(socket) {
 			socket.emit(response.evnt, response.content);
 		}
 		else if ( response.to == cons.EVENT_ALL ) {
-
 			var newMsg = helpers.addGameActionMessage( gamesInfo[gameid],
 													   socket.userid,
 													   action );

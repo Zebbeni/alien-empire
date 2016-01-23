@@ -221,36 +221,13 @@
 	font-weight: bold;
 }
 
-/*.player-stats-div, .player-turn-div {
-	display: table;
-	padding: 5px;
-	margin: 5px;
-	width: 200px;
-	text-align: center;
-	position: relative;
-	width: 190px;
-}*/
-
-/*.player-stats-div {
-	color: black;
-	font-weight: bold;
-	background: rgba(131, 203, 180, .8);
-}*/
-
-/*.player-turn-div {
-	height: 30px;
-	overflow-y: hidden;
-	font-size: 20px;
-	color: white;
-}*/
-
 #game-messages-wrapper-div {
 	position: absolute;
 	width: 350px;
 	height: 130px;
 	bottom: 160px;
 	left: 0px;
-	/*pointer-events: none;*/
+	pointer-events: auto;
 }
 
 #game-messages-div, #game-chat-input {
@@ -265,7 +242,7 @@
 	height: 90px;
 	overflow-y: auto;
 	overflow-x: hidden;
-	/*pointer-events: none;*/
+	pointer-events: auto;
 }
 
 #game-chat-input {
@@ -636,6 +613,25 @@
 }
 
 .respkg-upkeep-td {
+	color: #ff9191;
+}
+
+.res-change {
+	position: absolute;
+	text-align: center;
+	font-size: 13pt;
+	font-weight: bold;
+	width: 25px;
+	height: 25px;
+	left: 60px;
+	top: 0px;
+}
+
+.res-change-up {
+	color: #8ae0fa;
+}
+
+.res-change-down {
 	color: #ff9191;
 }
 

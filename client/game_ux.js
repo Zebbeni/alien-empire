@@ -96,6 +96,7 @@ var updateInterface = function() {
 	updatePhaseMenus();
 	updateTurnHelpMessage();
 	updateResourcePkgMenu();
+	updateResourceAnimations();
 
 	setInterfaceImages();
 };
@@ -502,11 +503,6 @@ var updatePointsRemainingMenu = function() {
  */
 var createPlayerStatsMenus = function() {
 
-	// var wrapperWidth = (256 * clientGame.players.length);
-	// $('#players-wrapper-div')[0].style.width = wrapperWidth + "px";
-
-	// var marginleft = Math.round(wrapperWidth / -2) + "px";
-	// $('#players-wrapper-div')[0].style.marginLeft = marginleft;
 	var innerHTML = "";
 
 	for ( var i = 0; i < clientGame.players.length; i++ ) {
@@ -579,51 +575,6 @@ var updateBottomBarMenus = function() {
 	updateResourcesMenu();
 	updateStructuresMenu();
 	updateAgentsMenu();
-};
-
-var createResourcesMenu = function() {
-	
-	var innerHTML = '';	
-
-	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
-				   + '<div class="gain-div"></div><div class="loss-div"></div>'
-				   + '<table class="resource-table" cellspacing="0"></table>'
-				   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
-				   + '</div>';
-	}
-
-	innerHTML += '<input type="button" id="trade-button" value="Trade"></input>';
-
-	$('#resources-menu-div')[0].innerHTML = innerHTML;
-
-	updateResourcesMenu();
-};
-
-var updateResourcesMenu = function() {
-
-	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
-	var collect = clientGame.game.resourceCollect[clientTurn];
-	var upkeep = clientGame.game.resourceUpkeep[clientTurn];
-
-	for ( var i = 0; i <= RES_FOOD; i++ ){
-
-		var resourceDiv = '#resource-div' + i;
-		$(resourceDiv).find('.gain-div')[0].innerHTML = '+' + collect[i];
-		$(resourceDiv).find('.loss-div')[0].innerHTML = '-' + upkeep[i];
-
-		var resources = clientGame.game.resources[clientTurn];
-		var innerHTML = '<tr>';
-		for ( var n = 0; n < 10; n++ ) {
-			innerHTML += (n < resources[i] ? 
-						  '<td class="' + icons[i] + '"></td>':
-						  '<td width="25px" height="25px"></td>');
-
-		}
-		innerHTML += '</tr>';
-
-		$(resourceDiv).find('.resource-table').html(innerHTML);
-	}
 };
 
 var createStructuresMenu = function() {
@@ -820,7 +771,8 @@ var updateMissionsMenu = function() {
 
 			if ( mission.resolution.blocked ) {
 				var blocker = mission.resolution.blockedBy;
-				message = "Mission blocked by " + all_users[blocker].name;
+				var blockerid = clientGame.game.players[blocker];
+				message = "Mission blocked by " + all_users[blockerid].name;
 			}
 			else if ( mission.resolution.agentmia ){
 				message = "Agent no longer on board to complete mission";
@@ -946,102 +898,6 @@ var viewMissionAction = function() {
 	setPendingAction( ACT_MISSION_VIEWED );
 	setPendingChoice( clientGame.game.missionindex );
 	submitAction();
-};
-
-var updateResourcePkgMenu = function() {
-	
-	var packages = clientGame.game.resourcePackages[clientTurn];
-	var count = 0;
-	var pkg;
-	var pkg_class;
-	var td_class;
-	var sign;
-	var onclick;
-	var html = '';
-	var pkg_id;
-	var message;
-
-	for (var p = 0; p < packages.length; p++){
-
-		if (packages[p].collected == false && !packages[p].cancelled){
-
-			pkg = packages[p];
-			message = pkg.message;
-
-			pkg_id = 'respk-collect-id' + count;
-
-			if (pkg.pkgtype == PKG_UPKEEP) {
-				pkg_class = 'respkg-upkeep-div';
-				td_class = 'respkg-upkeep-td';
-				sign = '-';
-				title = 'Upkeep';
-				onclick = 'javascript:payUpkeepPackage(' + p + ')';
-			}
-			else {
-				pkg_class = 'respkg-collect-div';
-				td_class = 'respkg-collect-td';
-				sign = '+';
-				title = 'Collect';
-				onclick = 'javascript:collectResourcePackage(' + p + ')';
-			}
-
-			html += '<div class="respkg-div ' + pkg_class + '" '
-					+ 'id="' + pkg_id + '"' + '>'
-					+ '<div class="respkg-notification-div">'
-					+ '<div class="respkg-message-div">' + message + '</div>'
-					+ '<div class="respkg-arrow-div"></div>'
-					+ '</div>';
-			
-			html += '<div class="respkg-clickable-div';
-
-			if ( pkg.isnew && pkg.pkgtype != PKG_UPKEEP ) {
-				html += ' isnew';
-			}
-
-			html += '" '
-					+ 'onclick="' + onclick + '">'
-					+ '<div class="respkg-title-div">' + title + '</div>'
-					+ '<div class="respkg-resources-div">'
-					+ '<table class="respkg-resources-table">';
-
-			for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-				var icon_class = RES_ENGLISH[i] + '-icon';
-
-				html += '<tr class="respkg-num-tr">'
-						+ '<td class="respkg-num-td ' + td_class + '">' 
-						+ sign + String(Math.abs(pkg.resources[i])) 
-						+ '</td>'
-						+ '<td class="' + icon_class + '" ></td>'
-						+ '</tr>';
-			}
-
-			html += '</table></div></div></div>';
-
-			count += 1;
-		}
-	}
-
-	$('#resourcepackages-div')[0].innerHTML = html;
-
-	for ( var c = 0; c < count; c++ ){
-		var xpos = c * 70;
-		$('#respk-collect-id' + c).css({left: xpos});
-	}
-
-	$( ".isnew" ).each(function() {
-		$( this ).click();
-	});
-
-	$('#resourcepackages-div')[0].style.visibility = "visible";
-
-};
-
-var collectResourcePackage = function( pkgindex ){
-	submitCollectResources( pkgindex );
-};
-
-var payUpkeepPackage = function( pkgindex ){
-	submitPayUpkeep( pkgindex );
 };
 
 /** 

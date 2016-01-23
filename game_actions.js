@@ -81,6 +81,13 @@ var helpers = require('./game_helpers');
 					content: applyResult.response
 				};
 		} 
+		else if ( applyResult.isDuplicate ) {
+			return {
+					to: cons.EVENT_ONE,
+					evnt: 'duplicate',
+					content: applyResult.response
+				};
+		}
 		else {
 			return {
 					to: cons.EVENT_ALL,
@@ -609,9 +616,7 @@ var applyCollectResourcesAction = function( action, game ){
 	game.resourcePackages[player][pkgindex].isnew = false;
 
 	if ( resource_pkg.collected ) {
-		return { isIllegal: true,
-				 response: "You have already collected these resources"
-			};
+		return { isDuplicate: true };
 	}
 
 	var resources =  resource_pkg.resources;
@@ -644,10 +649,10 @@ var applyPayUpkeep = function( action, game ){
 	var pkgindex = action.pkgindex;
 	var resource_pkg = game.resourcePackages[player][pkgindex];
 
-	if ( resource_pkg.collected ) {
-		return { isIllegal: true,
-				 response: "You have already collected these resources"
-			};
+	game.resourcePackages[player][pkgindex].isnew = false;
+
+	if ( resource_pkg.collected || resource_pkg.cancelled ) {
+		return { isDuplicate: true };
 	}
 
 	resources = resource_pkg.resources;
@@ -799,7 +804,7 @@ var applyBlockMission = function( action, game ){
 
 	if ( game.missionSpied[ player ] != null ){
 		// Do not return illegal, but also do not change game state
-		return { isIllegal: false }; 
+		return { isDuplicate: false }; 
 	}
 
 	if ( choice == true && game.board.planets[planetid].spyeyes[player] > 0 ){
@@ -894,13 +899,13 @@ var applyMissionResolve = function( action, game ){
 
 	if ( mission.planetTo != planetid ||  mission.agenttype != agenttype ){
 		// don't return illegal if on a different mission but do not proceed either
-		return { isIllegal: false};
+		return { isDuplicate: false };
 	}
 
 	if ( game.missionSpied.indexOf( null ) != -1 ) {
 		// Do not return illegal if not all spies have come in yet
 		// but do not update the game state
-		return { isIllegal: false };
+		return { isDuplicate: false };
 	}
 
 	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
@@ -988,7 +993,7 @@ var applyMissionViewed = function( action, game ){
 	if ( index != game.missionindex) {
 		// don't return illegal if on a different mission
 		// but do not proceed either
-		return { isIllegal: false };
+		return { isDuplicate: false };
 	}
 
 	game.missionViewed[ player ] = true;
