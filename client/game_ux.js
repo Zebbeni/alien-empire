@@ -956,12 +956,13 @@ var updateResourcePkgMenu = function() {
 	var pkg_class;
 	var td_class;
 	var sign;
+	var onclick;
 	var html = '';
 	var pkg_id;
 
 	for (var p = 0; p < packages.length; p++){
 
-		if (packages[p].collected == false){
+		if (packages[p].collected == false && !packages[p].cancelled){
 
 			pkg = packages[p];
 
@@ -971,11 +972,13 @@ var updateResourcePkgMenu = function() {
 				pkg_class = 'respkg-upkeep-div';
 				td_class = 'respkg-upkeep-td';
 				sign = '-';
+				onclick = 'javascript:payUpkeepPackage(' + p + ')';
 			}
 			else {
 				pkg_class = 'respkg-collect-div';
 				td_class = 'respkg-collect-td';
 				sign = '+';
+				onclick = 'javascript:collectResourcePackage(' + p + ')';
 			}
 
 			html += '<div class="respkg-div ' + pkg_class + '"'
@@ -986,7 +989,7 @@ var updateResourcePkgMenu = function() {
 					+ '</div>';
 			
 			html += '<div class="respkg-clickable-div" '
-					+ 'onclick="javascript:collectResourcePackage(' + p + ')">'
+					+ 'onclick="' + onclick + '">'
 					+ '<div class="respkg-title-div">Collect</div>'
 					+ '<div class="respkg-resources-div">'
 					+ '<table class="respkg-resources-table">';
@@ -1021,6 +1024,10 @@ var updateResourcePkgMenu = function() {
 
 var collectResourcePackage = function( pkgindex ){
 	submitCollectResources( pkgindex );
+};
+
+var payUpkeepPackage = function( pkgindex ){
+	submitPayUpkeep( pkgindex );
 };
 
 /** 

@@ -46,8 +46,9 @@ var socket_submitCollectResources = function(pkgindex) {
 	});
 }
 
-var socket_submitPayUpkeep = function() {
-	var action = {
+var socket_submitPayUpkeep = function(pkgindex) {
+	var action = {	
+					pkgindex: pkgindex,
 					player: clientTurn,
 					actiontype: ACT_PAY_UPKEEP
 				};
