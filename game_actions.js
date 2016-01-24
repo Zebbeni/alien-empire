@@ -836,7 +836,7 @@ var applyBlockMission = function( action, game ){
 					// since player needs to be able to see planet to resolve.
 
 					if ( game.board.planets[planetid].explored == false ){
-						addPointsForExploration(player, planetid, game);
+						addPointsForExploration(mission.player, planetid, game);
 						game.board.planets[planetid].explored = true;
 					}
 
