@@ -814,6 +814,8 @@ var applyBlockMission = function( action, game ){
 	}
 
 	// choice is null if spying player wants to collect resources from mission
+	// this should update their spy eyes and opponent's mission info before
+	// falling through to resolve as a non-blocked mission
 	if ( choice == null && game.board.planets[planetid].spyeyes[player] > 0 ) {
 
 		game.board.planets[planetid].spyeyes[player] -= 1;
@@ -837,7 +839,8 @@ var applyBlockMission = function( action, game ){
 
 		game.missionSpied[ player ] = false;
 
-		if ( game.missionSpied.indexOf(true) == -1 && game.missionSpied.indexOf(null) == -1) {
+		if ( game.missionSpied.indexOf(true) == -1 
+			 && game.missionSpied.indexOf(null) == -1) {
 
 			// set flag letting player know they need to resolve this mission
 			game.missions[round][ index ].waitingOnResolve = true;
@@ -850,7 +853,10 @@ var applyBlockMission = function( action, game ){
 					// since player needs to be able to see planet to resolve.
 
 					if ( game.board.planets[planetid].explored == false ){
-						addPointsForExploration(mission.player, planetid, game);
+						addPointsLimited( mission.player, 
+										  planetid, 
+										  cons.PNT_EXPLORE, 
+										  game );
 						game.board.planets[planetid].explored = true;
 					}
 
@@ -871,10 +877,32 @@ var applyBlockMission = function( action, game ){
 
 				case cons.AGT_MINER:
 
+					var planet = game.board.planets[planetid];
 					// Add flag if player has no remaining options
-					var missionplayer = mission.player;
+					if ( !planet.settledBy[mission.player] ) {
+						game.missions[round][index].resolution.nochoice = true;
+					}
+					break;
 
-					if ( !game.board.planets[planetid].settledBy[missionplayer] ) {
+				case cons.AGT_ENVOY:
+
+					var planet = game.board.planets[planetid];
+					var hasEmbassy = false;
+
+					for ( var r = 0; r < planet.resources.length; r++ ){
+						
+						var res = planet.resources[r];
+						
+						if ( res.structure != undefined 
+								&& res.structure.kind == cons.OBJ_EMBASSY
+							 	&& res.structure.player == mission.player ) {
+						
+							hasEmbassy = true;
+							break;
+						}
+					}	
+
+					if ( !hasEmbassy ) {
 						game.missions[round][index].resolution.nochoice = true;
 					}
 					break;
@@ -962,7 +990,6 @@ var applyMissionResolve = function( action, game ){
 				var resid = action.resourceid;
 				var resource = game.board.planets[planetid].resources[resid];
 				var resource_kind = resource.kind;
-				var player_resources = game.resources[player][resource_kind];
 				
 				if (resource.structure == undefined || resource.structure.player != player) {
 					return { isIllegal: true,
@@ -987,6 +1014,33 @@ var applyMissionResolve = function( action, game ){
 
 				game.board.planets[mission.planetTo].spyeyes[player] += 1;
 				game.board.planets[mission.planetFrom].spyeyes[player] += 1;
+				break;
+
+			case cons.AGT_ENVOY:
+
+				var planet_resources = game.board.planets[planetid].resources;
+				var resources = [0, 0, 0, 0];
+				
+				for ( var r = 0; r < planet_resources.length; r++ ){
+					var res = planet_resources[r];
+					var struct = res.structure;
+					if (struct != undefined && struct.player != mission.player){
+						resources[res.kind] += 1;
+					}
+				}
+
+				for ( var i = 0; i < mission.collectors.length; i++ ) {
+					helpers.addResourcePackage( game, 
+							mission.collectors[i], 
+							cons.PKG_ENVOY, 
+							resources, 
+							'From Envoy' );
+				}
+
+				addPointsLimited( mission.player, 
+								  planetid, 
+								  cons.PNT_ENVOY, 
+								  game );
 				break;
 
 			default:
@@ -1420,12 +1474,24 @@ var removePointsForStructure = function( player, objecttype, game ){
 	calcPoints(game, player);
 };
 
-var addPointsForExploration = function( player, planetid, game ){
-	var value = game.board.planets[planetid].w; // point value is same as width
-	var points_remaining = game.points_remaining[cons.PNT_EXPLORE];
+var addPointsLimited = function( player, planetid, pointtype, game ){
+	var value = 0;
+
+	switch ( pointtype ){
+		case cons.PNT_EXPLORE:
+			value = game.board.planets[planetid].w; // point value is same as w
+			break;
+		case cons.PNT_ENVOY:
+			value = 1;
+			break;
+		default:
+			break;
+	}
+
+	var points_remaining = game.points_remaining[pointtype];
 	var points_to_add = Math.min(value, points_remaining);
-	game.points[player][cons.PNT_EXPLORE] += points_to_add;
-	game.points_remaining[cons.PNT_EXPLORE] -= points_to_add;
+	game.points[player][pointtype] += points_to_add;
+	game.points_remaining[pointtype] -= points_to_add;
 
 	calcPoints(game, player);
 };

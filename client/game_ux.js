@@ -791,6 +791,10 @@ var updateMissionsMenu = function() {
 						message = "Mission resolved,"
 									+ " no occupied resources to collect here";
 						break;
+					case AGT_ENVOY:
+						message = "Mission resolved,"
+									+ name + " has no embassy on this planet";
+						break;
 					default:
 						message = "Mission resolved";
 						break;
