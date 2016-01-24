@@ -814,8 +814,9 @@ var applyBlockMission = function( action, game ){
 		game.missions[round][ index ].resolution.blocked = true;
 		game.missions[round][ index ].resolution.blockedBy = player;
 		game.missions[round][ index ].resolution.resolved = true;
-
 		game.board.planets[planetid].spyeyes[player] -= 1;
+
+		helpers.resetMissionSpied(game);
 	}
 
 	else {
@@ -856,8 +857,10 @@ var applyBlockMission = function( action, game ){
 
 				case cons.AGT_MINER:
 
-					// Add flag if player has no remaining options 
-					if ( !game.board.planets[planetid].settledBy[player] ) {
+					// Add flag if player has no remaining options
+					var missionplayer = mission.player;
+
+					if ( !game.board.planets[planetid].settledBy[missionplayer] ) {
 						game.missions[round][index].resolution.nochoice = true;
 					}
 					break;

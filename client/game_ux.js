@@ -758,6 +758,11 @@ var updateMissionsMenu = function() {
 		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
 		var message = "";
 
+		console.log("mission info");
+		console.log(mission);
+		console.log("missionSpied");
+		console.log(clientGame.game.missionSpied);
+
 		// display basic mission information
 		// (eg. Bob sent an Explorer to Sector G!)
 		innerHTML += name + ' sent a ' 
@@ -805,7 +810,7 @@ var updateMissionsMenu = function() {
 				// wait 5 seconds and move to next mission
 				setTimeout(function() {
 					viewMissionAction();
-				}, 3000);
+				}, 2000);
 			}
 		}
 
