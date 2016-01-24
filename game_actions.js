@@ -752,19 +752,25 @@ var applyLaunchMission = function( action, game ) {
 			};
 	}
 
+	var newMission = {
+						player: player,
+						agenttype: agenttype,
+						planetTo: planetid,
+						planetFrom: agent.planetid,
+						resolution: {
+							resolved: false,
+							blocked: undefined,
+							blockedBy: undefined,
+						} // object with details of how mission was completed
+					};
+
+	if ( agenttype == cons.AGT_MINER || agenttype == cons.AGT_ENVOY ){
+		newMission.collectors = [player];
+	}
+
 	// TODO: check for SMUGGLER and add an extra attribute for the agent he
 	// is smuggling in
-	game.missions[ game.round ].push( {
-		player: player,
-		agenttype: agenttype,
-		planetTo: planetid,
-		planetFrom: agent.planetid,
-		resolution: {
-			resolved: false,
-			blocked: undefined,
-			blockedBy: undefined,
-		} // object with details of how mission was completed
-	});
+	game.missions[ game.round ].push( newMission );
 
 	agent.used = true;
 	agent.missionround = game.round;
@@ -807,6 +813,14 @@ var applyBlockMission = function( action, game ){
 		return { isDuplicate: false }; 
 	}
 
+	// choice is null if spying player wants to collect resources from mission
+	if ( choice == null && game.board.planets[planetid].spyeyes[player] > 0 ) {
+
+		game.board.planets[planetid].spyeyes[player] -= 1;
+		game.missions[round][ index ].collectors.push( player );
+	}
+
+	// choice is true if player has chosen to block the mission
 	if ( choice == true && game.board.planets[planetid].spyeyes[player] > 0 ){
 
 		game.missionSpied[ player ] = true;
@@ -958,11 +972,14 @@ var applyMissionResolve = function( action, game ){
 
 				var resources = [0,0,0,0];
 				resources[resource_kind] = 6;
-				helpers.addResourcePackage( game, 
-											player, 
-											cons.PKG_MINER, 
-											resources, 
-											'From Miner' );
+
+				for ( var i = 0; i < mission.collectors.length; i++ ) {
+					helpers.addResourcePackage( game, 
+							mission.collectors[i], 
+							cons.PKG_MINER, 
+							resources, 
+							'From Miner' );
+				}
 
 				break;
 

@@ -744,6 +744,7 @@ var updateMissionsMenu = function() {
 
 	$('#missions-choice-menu')[0].style.visibility = "hidden";
 	$('#missions-spy-menu')[0].style.visibility = "hidden";
+	$('#mission-collect-button')[0].style.visibility = "hidden";
 	$('#missions-resolution-menu')[0].style.visibility = "hidden";
 
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
@@ -757,11 +758,6 @@ var updateMissionsMenu = function() {
 		var name = player == clientTurn ? 'You' : all_users[userid].name;
 		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
 		var message = "";
-
-		console.log("mission info");
-		console.log(mission);
-		console.log("missionSpied");
-		console.log(clientGame.game.missionSpied);
 
 		// display basic mission information
 		// (eg. Bob sent an Explorer to Sector G!)
@@ -827,6 +823,9 @@ var updateMissionsMenu = function() {
 			}
 			else {
 				$('#missions-spy-menu')[0].style.visibility = "visible";
+				if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
+					$('#mission-collect-button')[0].style.visibility = "visible";
+				}
 			}
 		}
 
@@ -892,7 +891,8 @@ var updateMissionsMenu = function() {
 };
 
 // sets pending action to ACT_BLOCK_MISSION and submits it to
-// the server with a decision (true or false)
+// the server with a decision (true, false, or null)
+// true: block, false: don't block, null: collect resources for mission
 var blockMissionAction = function( value ){
 	setPendingAction( ACT_BLOCK_MISSION );
 	setPendingChoice( value );
