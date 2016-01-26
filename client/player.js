@@ -33,6 +33,10 @@ var setPendingTargetId = function( id ) {
 	pendingAction.targetid = id;
 };
 
+var setPendingTargetPlayer = function( p ) {
+	pendingAction.targetPlayer = p;
+};
+
 var setPendingChoice = function( value ){
 	pendingAction.choice = value;
 };

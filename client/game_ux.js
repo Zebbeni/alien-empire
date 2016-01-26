@@ -183,18 +183,16 @@ var displayConfirmMessage = function() {
 	var agenttype = pendingAction.agenttype;
 
 	if ( actiontype != ACT_RETIRE ) {
+
 		var planets = clientGame.game.board.planets;
 		var planet = planets[ pendingAction.planetid ];
 		var sectorname = sectors.charAt( pendingAction.planetid );
 		var planetname = planet.explored ? planet.name : "Sector " + sectorname;
 
-		if ( actiontype != ACT_REMOVE_FLEET ) {
-			if ( actiontype != ACT_MISSION_RESOLVE || 
-					agenttype == AGT_EXPLORER ||
-					agenttype == AGT_MINER ) {
-				var index = pendingAction.resourceid;
-				var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
-			}
+		if ( pendingAction.resourceid != undefined ) {
+
+			var index = pendingAction.resourceid;
+			var resourcekind = index == RES_NONE ? RES_NONE : planet.resources[index].kind;
 		}
 	}
 
@@ -256,12 +254,33 @@ var displayConfirmMessage = function() {
 
 		case ACT_MISSION_RESOLVE:
 			switch (agenttype) {
+				
 				case AGT_EXPLORER:
 					message = "Reserve a " + RES_ENGLISH[resourcekind]
 								+ " resource on " + planetname + "?";
 					break;
+				
 				case AGT_MINER:
 					message = "Collect 6 " + RES_ENGLISH[resourcekind] + "?";
+					break;
+
+				case AGT_SABATEUR:
+
+					var targetPlayer = pendingAction.targetPlayer;
+					var userid = clientGame.game.players[targetPlayer];
+					var targetName = all_users[userid].name;
+					var resObjects = [OBJ_EMBASSY, OBJ_FACTORY, OBJ_MINE];
+
+					message = "Destroy " + targetName + "'s ";
+
+					if ( resObjects.indexOf(pendingAction.objecttype) != -1 ) {
+						message += RES_ENGLISH[ resourcekind ] + "-collecting ";
+					}
+					
+					message += OBJ_ENGLISH[objecttype] + " on " + planetname + "?";
+					
+					break;
+
 				default:
 					break;
 			}

@@ -200,10 +200,12 @@ var updateTileInteractivity = function(planetid) {
 			var missionindex = clientGame.game.missionindex;
 			var missions = clientGame.game.missions;
 
-			if (missions[ missionRound ] && missions[ missionRound ][ missionindex ]) {
+			if ( missions[ missionRound ] 
+				 && missions[ missionRound ][ missionindex ]) {
+				
 				var mission = missions[ missionRound ][ missionindex ];
 
-				var planetid = mission.planetTo;
+				var planetTo = mission.planetTo;
 				var agenttype = mission.agenttype;
 
 				mouseTile( planetid, true);
@@ -211,10 +213,13 @@ var updateTileInteractivity = function(planetid) {
 
 				switch (agenttype) {
 					case AGT_EXPLORER:
-						mouseResources( planets, planetid, true, false, false);
+						mouseResources( planets, planetTo, true, false, false);
 						break;
 					case AGT_MINER:
-						mouseResources( planets, planetid, false, true, false);
+						mouseResources( planets, planetTo, false, true, false);
+						break;
+					case AGT_SABATEUR:
+						mouseResources( planets, planetTo, false, false, true);
 						break;
 					default:
 						break;
@@ -717,4 +722,48 @@ var drawBorder = function( planetid, img_width ) {
 	border.graphics.setStrokeStyle(15);
 	border.graphics.beginStroke("rgba(0,0,0,0.9)");
 	border.graphics.drawRect(0, 0, img_width, img_width);
+};
+
+/* 
+ * click handlers
+ */
+var handleClickResource = function( planetid, index ) {
+
+	var objecttype;
+	var planet = clientGame.game.board.planets[planetid];
+	var structure = planet.resources[index].structure;
+
+	if ( structure ){
+		objecttype = structure.kind;
+	}
+
+	switch (clientGame.game.phase) {
+		case PHS_UPKEEP:
+			setPendingAction( ACT_REMOVE );
+			setPendingObject( objecttype );
+			break;
+		case PHS_MISSIONS:
+			setPendingObject( objecttype );
+			setPendingTargetPlayer( structure.player );
+			break;
+		default:
+			break;
+	}
+
+	setPendingPlanet(planetid);
+	setPendingResource(index);
+
+	if ( isPendingActionReady() ) {
+		displayConfirmMenu();
+	}
+};
+
+var handleClickPlanet = function( planetid ) {
+
+	setPendingPlanet(planetid);
+	setPendingResource( RES_NONE );
+
+	if ( isPendingActionReady() ) {
+		displayConfirmMenu();
+	}
 };

@@ -127,6 +127,13 @@ var updateFleetsInteractivity = function(){
 		case PHS_UPKEEP:
 			mouseOnFleets( true, false );
 			break;
+		case PHS_MISSIONS:
+			
+			if (pendingAction.agenttype == AGT_SABATEUR) {
+				mouseOnFleets( false, true );
+			}
+			break;
+		
 		default:
 			mouseOnFleets( false, false );
 			break;
@@ -154,6 +161,7 @@ var mouseOnFleets = function( friendly, opponent ) {
 var handleClickFleet = function( fleetid ) {
 	
 	var fleet = clientGame.game.board.fleets[fleetid];
+	var targetPlayer = fleet.player;
 
 	switch( clientGame.game.phase ){
 		case PHS_UPKEEP:
@@ -163,6 +171,11 @@ var handleClickFleet = function( fleetid ) {
 			setPendingTargetId( fleetid );
 			break;
 		case PHS_ACTIONS:
+			break;
+		case PHS_MISSIONS:
+			setPendingObject( OBJ_FLEET );
+			setPendingTargetId( fleetid );
+			setPendingTargetPlayer( targetPlayer );
 			break;
 		default:
 			break;

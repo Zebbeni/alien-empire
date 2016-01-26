@@ -57,36 +57,6 @@ var handleKeyDown = function( e ) {
 	}
 };
 
-var handleClickResource = function( planetid, index ) {
-
-	switch (clientGame.game.phase) {
-		case PHS_UPKEEP:
-			var objecttype = clientGame.game.board.planets[planetid].resources[index].structure.kind;
-			setPendingAction( ACT_REMOVE );
-			setPendingObject( objecttype );
-			break;
-		default:
-			break;
-	}
-
-	setPendingPlanet(planetid);
-	setPendingResource(index);
-
-	if ( isPendingActionReady() ) {
-		displayConfirmMenu();
-	}
-};
-
-var handleClickPlanet = function( planetid ) {
-
-	setPendingPlanet(planetid);
-	setPendingResource( RES_NONE );
-
-	if ( isPendingActionReady() ) {
-		displayConfirmMenu();
-	}
-};
-
 /**
  * Calls init and draw functions for each tile in game board
  */
@@ -168,7 +138,7 @@ var updateBoardInteractivity = function() {
 		updateTileInteractivity(p);
 	}
 	updateFleetsInteractivity();
-	// updateBasesInteractivity();
+	updateBasesInteractivity();
 	updateAgentsInteractivity();
 };
 

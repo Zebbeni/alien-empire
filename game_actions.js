@@ -907,6 +907,55 @@ var applyBlockMission = function( action, game ){
 					}
 					break;
 
+				case cons.AGT_SABATEUR:
+
+					var planet = game.board.planets[planetid];
+					var possibleTarget = false;
+
+					for ( var r = 0; r < planet.resources.length; r++ ){
+						
+						var res = planet.resources[r];
+						
+						if ( res.structure != undefined 
+								&& res.structure.kind != cons.OBJ_MINE
+							 	&& res.structure.player != mission.player ) {
+						
+							possibleTarget = true;
+							break;
+						}
+					}
+
+					if ( !possibleTarget ){
+						var base = planet.base;
+
+						if ( base && base.player != mission.player ){
+							possibleTarget = true;
+						}
+					} 
+
+					if ( !possibleTarget ){
+						
+						var fleets = planet.fleets;
+
+						for ( var f = 0; f < fleets.length; f++ ){
+							
+							var fleetid = fleets[f];
+							var fleet = game.board.fleets[ fleetid ];
+
+							if ( fleet.player != mission.player ){
+
+								possibleTarget = true;
+								break;
+							}
+						}
+					}
+
+					if ( !possibleTarget ) {
+						game.missions[round][index].resolution.nochoice = true;
+					}
+
+					break;
+
 				default:
 					break;
 			}

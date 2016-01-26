@@ -30,6 +30,45 @@ var initBases = function() {
 	board.addChild(basesContainer);
 };
 
+var updateBasesInteractivity = function() {
+
+	var basesContainer = board.getChildByName('basesContainer');
+
+	for ( var p = 0; p < clientGame.game.players.length; p++){
+		
+		var base = basesContainer.getChildByName('base' + p);
+			
+		if ( base.player != undefined && base.planetid != undefined) {
+
+			switch ( clientGame.game.phase ) {
+
+				case PHS_UPKEEP:
+
+					if ( base.player == clientTurn ){
+						base.mouseEnabled = true;
+					}
+					break;
+
+				case PHS_MISSIONS:
+					
+					if ( pendingAction.agenttype == AGT_SABATEUR 
+						&& base.player != clientTurn
+						&& base.planetid == pendingAction.planetid ) {
+						
+						base.mouseEnabled = true;
+					}
+					else {
+						base.mouseEnabled = false;
+					}
+					break;
+				
+				default:
+					break;
+			}
+		}
+	}
+};
+
 var updateRemovedBases = function(){
 		
 	var basesContainer = board.getChildByName('basesContainer');
@@ -59,8 +98,12 @@ var updateBases = function( planetid ) {
 			base.mouseEnabled = true;
 		}
 
-		var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + planet.base.player);
-		base.graphics.beginBitmapFill(baseImg, "no-repeat").drawRect(0, 0, baseImg.width, baseImg.height);
+		var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + player);
+		base.graphics.beginBitmapFill( baseImg, 
+									   "no-repeat" ).drawRect( 0, 
+									   						   0, 
+									   						   baseImg.width, 
+									   						   baseImg.height );
 		
 		switch (planet.w) {
 			case 1:
@@ -77,14 +120,24 @@ var updateBases = function( planetid ) {
 
 var handleClickBase = function( planetid, player ) {
 	switch( clientGame.game.phase ) {
+		
 		case PHS_UPKEEP:
 			setPendingAction( ACT_REMOVE );
 			setPendingObject( OBJ_BASE );
 			setPendingPlanet( planetid );
 			setPendingResource( RES_NONE );
 			break;
+		
 		case PHS_ACTIONS:
 			break;
+
+		case PHS_MISSIONS:
+			var planet = clientGame.game.board.planets[planetid];
+			var targetPlayer = planet.base.player;
+			setPendingObject( OBJ_BASE );
+			setPendingTargetPlayer( targetPlayer );
+			break;
+		
 		default:
 			break;
 	}
