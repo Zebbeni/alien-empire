@@ -740,11 +740,15 @@ var handleClickResource = function( planetid, index ) {
 	switch (clientGame.game.phase) {
 		case PHS_UPKEEP:
 			setPendingAction( ACT_REMOVE );
-			setPendingObject( objecttype );
+			if (structure) {
+				setPendingObject( objecttype );
+			}
 			break;
 		case PHS_MISSIONS:
 			setPendingObject( objecttype );
-			setPendingTargetPlayer( structure.player );
+			if ( structure ){
+				setPendingTargetPlayer( structure.player );
+			}
 			break;
 		default:
 			break;

@@ -108,7 +108,7 @@
 							5: "envoy",
 							6: "spy",
 							7: "smuggler",
-							8: "sabateur"
+							8: "saboteur"
 						},
 
 		ACT_ENGLISH : {

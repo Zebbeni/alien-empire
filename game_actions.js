@@ -1030,7 +1030,7 @@ var applyMissionResolve = function( action, game ){
 						 	 response: "This resource is already reserved"
 					};
 				}
-				
+								
 				resource.reserved = player;
 				break;
 
@@ -1056,7 +1056,6 @@ var applyMissionResolve = function( action, game ){
 							resources, 
 							'From Miner' );
 				}
-
 				break;
 
 			case cons.AGT_SPY:
@@ -1089,6 +1088,13 @@ var applyMissionResolve = function( action, game ){
 				addPointsLimited( mission.player, 
 								  planetid, 
 								  cons.PNT_ENVOY, 
+								  game );
+				break;
+
+			case cons.AGT_SABATEUR:
+				addPointsLimited( mission.player, 
+								  planetid, 
+								  cons.PNT_DESTROY, 
 								  game );
 				break;
 
@@ -1531,6 +1537,7 @@ var addPointsLimited = function( player, planetid, pointtype, game ){
 			value = game.board.planets[planetid].w; // point value is same as w
 			break;
 		case cons.PNT_ENVOY:
+		case cons.PNT_DESTROY:
 			value = 1;
 			break;
 		default:

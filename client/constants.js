@@ -113,7 +113,7 @@ var AGT_IMG = {
 					5: "envoy",
 					6: "spy",
 					7: "smuggler",
-					8: "sabateur"
+					8: "sabateur" // fixing this misspelling will take work
 };
 
 var AGT_ENGLISH = {
@@ -124,7 +124,7 @@ var AGT_ENGLISH = {
 					5: "Envoy",
 					6: "Spy",
 					7: "Smuggler",
-					8: "Sabateur"
+					8: "Saboteur"
 };
 
 var ACT_ENGLISH_PAST = {
