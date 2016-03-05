@@ -497,6 +497,7 @@ var applyRemoveFleet = function( action, game ) {
 
 	var planet = game.board.planets[planetid];
 	var fleet = game.board.fleets[fleetid];
+	var index = planet.fleets.indexOf(fleetid);
 
 	if ( fleet.planetid != planetid ) {
 		return { isIllegal: true,
@@ -507,29 +508,13 @@ var applyRemoveFleet = function( action, game ) {
 		return { isIllegal: true,
 				 response: "You cannot remove another player's fleet." };
 	}
-	
-	var index = planet.fleets.indexOf(fleetid);
 
 	if ( index == -1 ) {
 		return { isIllegal: true,
 				 response: "This fleet is not registered with this planet." };
 	}
 
-	game.board.planets[planetid].fleets.splice( index, 1 );
-
-	removePointsForStructure( player, cons.OBJ_FLEET, game );
-
-	game.structures[player][cons.OBJ_FLEET] += 1;
-	fleet.planetid = undefined;
-	fleet.used = false;
-
-	// create a different upkeep package if removing during upkeep phase
-	if ( game.phase == cons.PHS_UPKEEP ){
-		replaceUpkeepPackage(game, player);
-	} 
-	else { // either way we recalculate resource upkeep
-		calcResourceUpkeep( game, player );
-	}
+	removeStructure( game, player, cons.OBJ_FLEET, planetid, fleetid); // WIP, the function's not done yet
 
 	return { isIllegal: false};
 };
@@ -558,52 +543,54 @@ var applyRemoveAction = function( action, game ) {
 				 response: "This does not match the structure type for this location." };
 	}
 
-	// restore the removed structure to the player's stash, reset to undefined
-	game.structures[player][objecttype] += 1;
+	removeStructure(game, player, objecttype, planetid, index);
+
+	// // restore the removed structure to the player's stash, reset to undefined
+	// game.structures[player][objecttype] += 1;
 	
-	if ( objecttype == cons.OBJ_BASE ) {
-		planet.base = undefined;
-		removeAllFleets( game, player );
-	}
-	else {
-		planet.resources[index].structure = undefined;
-	}
+	// if ( objecttype == cons.OBJ_BASE ) {
+	// 	planet.base = undefined;
+	// 	removeAllFleets( game, player );
+	// }
+	// else {
+	// 	planet.resources[index].structure = undefined;
+	// }
 
-	// replace the structure with a mine if appropriate
-	if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
+	// // replace the structure with a mine if appropriate
+	// if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
 		
-		if ( game.structures[player][cons.OBJ_MINE] >= 1 ) {
-			planet.resources[index].structure = {
-													player: player, 
-													kind: cons.OBJ_MINE
-												};
-			game.structures[player][cons.OBJ_MINE] -= 1;
-		}
+	// 	if ( game.structures[player][cons.OBJ_MINE] >= 1 ) {
+	// 		planet.resources[index].structure = {
+	// 												player: player, 
+	// 												kind: cons.OBJ_MINE
+	// 											};
+	// 		game.structures[player][cons.OBJ_MINE] -= 1;
+	// 	}
 
-	}
+	// }
 
-	checkAndRemoveAllAgentsFor( game, 
-								player, 
-								objecttype );
+	// checkAndRemoveAllAgentsFor( game, 
+	// 							player, 
+	// 							objecttype );
 
-	updateSettledBy( player, 
-					 planetid, 
-					 game );
+	// updateSettledBy( player, 
+	// 				 planetid, 
+	// 				 game );
 
-	updateBuildableBy( player,
-					   planetid,
-					   game );
+	// updateBuildableBy( player,
+	// 				   planetid,
+	// 				   game );
 
-	removePointsForStructure( player, objecttype, game );
-	calcResourcesToCollect( game, player );
+	// removePointsForStructure( player, objecttype, game );
+	// calcResourcesToCollect( game, player );
 
-	// create a different upkeep package if removing during upkeep phase
-	if ( game.phase == cons.PHS_UPKEEP ){
-		replaceUpkeepPackage(game, player);
-	} 
-	else { // either way we recalculate resource upkeep
-		calcResourceUpkeep( game, player );
-	}
+	// // create a different upkeep package if removing during upkeep phase
+	// if ( game.phase == cons.PHS_UPKEEP ){
+	// 	replaceUpkeepPackage(game, player);
+	// } 
+	// else { // either way we recalculate resource upkeep
+	// 	calcResourceUpkeep( game, player );
+	// }
 
 	return { isIllegal: false};
 };
@@ -1092,10 +1079,22 @@ var applyMissionResolve = function( action, game ){
 				break;
 
 			case cons.AGT_SABATEUR:
+
+				var objecttype = mission.objecttype;
+				var resid = mission.resourceid;
+				var resource = game.board.planets[planetid].resources[resid];
+
 				addPointsLimited( mission.player, 
 								  planetid, 
 								  cons.PNT_DESTROY, 
 								  game );
+				
+				// Some things to consider as we figure out how to click on things
+				// if we remove a base, make sure to remove all of that player's fleets
+				// also remove all agents if removing last factory or embassy
+				// in fact, let's make a generic removeStructure() function to do this
+				// it's dumb we're doing it in multiple places
+
 				break;
 
 			default:
@@ -1114,7 +1113,7 @@ var applyMissionResolve = function( action, game ){
 	return { isIllegal: false };
 };
 
-var applyMissionViewed = function( action, game ){
+var applyMissionViewed = function( faction, game ){
 	var player = action.player;
 	var index = action.choice;
 	var round = game.round - 2;
@@ -1192,6 +1191,79 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
 	}
 };
 
+var removeStructure = function( game, player, objecttype, planetid, idx){
+	
+	var fleets = game.board.fleets;
+	var planets = game.board.planets;
+	var planet = game.board.planets[planetid];
+
+	game.structures[player][objecttype] += 1;
+	removePointsForStructure( player, objecttype, game );
+
+	if (objecttype == cons.OBJ_FLEET) {
+
+		var index = planets[planetid].fleets.indexOf(idx);
+
+		fleets[idx].planetid = undefined;
+		fleets[idx].used = false;
+		game.board.planets[planetid].fleets.splice( index, 1 );
+	}
+
+	else {
+
+		if ( objecttype == cons.OBJ_BASE ) {
+			game.board.planets[planetid].base = undefined;
+			removeAllFleets( game, player );
+		}
+
+		else {
+
+			if ([cons.OBJ_FACTORY, cons.OBJ_EMBASSY].indexOf(objecttype) != -1){
+				
+				if ( game.structures[player][cons.OBJ_MINE] >= 1 ) {
+					game.board.planets[planetid].resources[idx].structure = {
+															player: player, 
+															kind: cons.OBJ_MINE
+														};
+					game.structures[player][cons.OBJ_MINE] -= 1;
+				}
+
+				else {
+					game.board.planets[planetid].resources[idx].structure = undefined;
+				}
+
+			} 
+
+			else {
+				game.board.planets[planetid].resources[idx].structure = undefined;
+			}
+
+		}
+
+		checkAndRemoveAllAgentsFor( game, 
+									player, 
+									objecttype );
+
+		updateSettledBy( player, 
+						 planetid, 
+						 game );
+
+		updateBuildableBy( player,
+						   planetid,
+						   game );
+
+		calcResourcesToCollect( game, player );
+	}
+
+	// create a different upkeep package if removing during upkeep phase
+	if ( game.phase == cons.PHS_UPKEEP ){
+		replaceUpkeepPackage(game, player);
+	} 
+	else { // either way we recalculate resource upkeep
+		calcResourceUpkeep( game, player );
+	}
+};
+
 var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
 	if ( objecttype != cons.OBJ_FLEET && objecttype != cons.OBJ_MINE ) {
 		// if player has no more of this objecttype on the board
@@ -1222,22 +1294,16 @@ var removeAllFleets = function( game, player ){
 	var fleets = game.board.fleets;
 	var planets = game.board.planets;
 
-	for ( var i in fleets ){
+	for ( var fleetid in fleets ){
 
-		if ( fleets[i].player == player ){
+		if ( fleets[fleetid].player == player ){
 
-			var planetid = fleets[i].planetid;
+			var planetid = fleets[fleetid].planetid;
 
 			if ( planetid != undefined ){
-				var index = planets[planetid].fleets.indexOf(i);
-				planets[planetid].fleets.splice( index, 1 );
-				
-				fleets[i].planetid = undefined;
-				fleets[i].used = false;
 
-				game.structures[player][cons.OBJ_FLEET] += 1;
+				removeStructure( game, player, cons.OBJ_FLEET, planetid, fleetid);
 
-				removePointsForStructure( player, cons.OBJ_FLEET, game );
 			}
 		}
 	}
