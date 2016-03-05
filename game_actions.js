@@ -544,54 +544,6 @@ var applyRemoveAction = function( action, game ) {
 	}
 
 	removeStructure(game, player, objecttype, planetid, index);
-
-	// // restore the removed structure to the player's stash, reset to undefined
-	// game.structures[player][objecttype] += 1;
-	
-	// if ( objecttype == cons.OBJ_BASE ) {
-	// 	planet.base = undefined;
-	// 	removeAllFleets( game, player );
-	// }
-	// else {
-	// 	planet.resources[index].structure = undefined;
-	// }
-
-	// // replace the structure with a mine if appropriate
-	// if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
-		
-	// 	if ( game.structures[player][cons.OBJ_MINE] >= 1 ) {
-	// 		planet.resources[index].structure = {
-	// 												player: player, 
-	// 												kind: cons.OBJ_MINE
-	// 											};
-	// 		game.structures[player][cons.OBJ_MINE] -= 1;
-	// 	}
-
-	// }
-
-	// checkAndRemoveAllAgentsFor( game, 
-	// 							player, 
-	// 							objecttype );
-
-	// updateSettledBy( player, 
-	// 				 planetid, 
-	// 				 game );
-
-	// updateBuildableBy( player,
-	// 				   planetid,
-	// 				   game );
-
-	// removePointsForStructure( player, objecttype, game );
-	// calcResourcesToCollect( game, player );
-
-	// // create a different upkeep package if removing during upkeep phase
-	// if ( game.phase == cons.PHS_UPKEEP ){
-	// 	replaceUpkeepPackage(game, player);
-	// } 
-	// else { // either way we recalculate resource upkeep
-	// 	calcResourceUpkeep( game, player );
-	// }
-
 	return { isIllegal: false};
 };
 
