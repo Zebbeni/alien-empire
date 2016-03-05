@@ -1065,7 +1065,7 @@ var applyMissionResolve = function( action, game ){
 	return { isIllegal: false };
 };
 
-var applyMissionViewed = function( faction, game ){
+var applyMissionViewed = function( action, game ){
 	var player = action.player;
 	var index = action.choice;
 	var round = game.round - 2;
