@@ -148,6 +148,7 @@ var mouseOnAgents = function( on ) {
 };
 
 var handleClickAgent = function( agenttype ) {
+	setPendingAgent( agenttype );
 	switch ( clientGame.game.phase ){
 		case PHS_UPKEEP:
 			updateAgentRetireMenu( agenttype );
@@ -175,7 +176,6 @@ var updateAgentRetireMenu = function( agenttype ){
 	$('#agent-retire-button').click( function() { 
 											hideAgentRetireMenu();
 											setPendingAction( ACT_RETIRE );
-											setPendingAgent( agenttype );
 											displayConfirmMenu();
 										} );
 };
@@ -193,14 +193,12 @@ var updateAgentActionMenu = function( agenttype ){
 	$('#agent-move-button').click( function() { 
 											hideAgentActionMenu();
 											setPendingAction( ACT_MOVE_AGENT );
-											setPendingAgent( agenttype );
 											updateBoardInteractivity();
 											updateTurnHelpMessage();
 										} );
 	$('#agent-mission-button').click( function() { 
 											hideAgentActionMenu();
 											setPendingAction( ACT_LAUNCH_MISSION );
-											setPendingAgent( agenttype );
 											updateBoardInteractivity();
 											updateTurnHelpMessage();
 										} );
