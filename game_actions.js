@@ -465,7 +465,6 @@ var applyRetireAction = function( action, game ){
 	}
 
 	findAndSetMissionResolved( game, player, agenttype );
-
 	// remove agent from planet
 	var index = game.board.planets[planetid].agents.indexOf(id);
 	game.board.planets[planetid].agents.splice( index, 1 );
@@ -1047,12 +1046,6 @@ var applyMissionResolve = function( action, game ){
 
 				removeStructure(game, targetPlayer, objecttype, planetid, idx);
 
-				// Some things to consider as we figure out how to click on things
-				// if we remove a base, make sure to remove all of that player's fleets
-				// also remove all agents if removing last factory or embassy
-				// in fact, let's make a generic removeStructure() function to do this
-				// it's dumb we're doing it in multiple places
-
 				break;
 
 			default:
@@ -1230,12 +1223,16 @@ var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
 			for ( var a = cons.AGT_EXPLORER; a <= cons.AGT_SABATEUR; a++ ) {
 				
 				if ( cons.AGT_OBJTYPE[a] == objecttype ){
-
-					var agent = game.board.agents[ String(player) + String(a)];
+					var id = String(player) + String(a);
+					var agent = game.board.agents[ id ];
 					
 					if ( agent.status == cons.AGT_STATUS_ON ) {
 
 						findAndSetMissionResolved( game, player, a );
+
+						var planetid = agent.planetid;
+						var index = game.board.planets[planetid].agents.indexOf(id);
+						game.board.planets[planetid].agents.splice( index, 1 );
 
 						agent.status = cons.AGT_STATUS_OFF;
 						agent.used = false;
