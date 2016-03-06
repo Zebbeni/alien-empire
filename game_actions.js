@@ -1032,15 +1032,21 @@ var applyMissionResolve = function( action, game ){
 
 			case cons.AGT_SABATEUR:
 
-				var objecttype = mission.objecttype;
-				var resid = mission.resourceid;
-				var resource = game.board.planets[planetid].resources[resid];
+				var objecttype = action.objecttype;
+				var targetPlayer = action.targetPlayer;
+				var idx = action.resourceid;
+				
+				if (objecttype == cons.OBJ_FLEET){
+					idx = action.targetid;
+				}
 
 				addPointsLimited( mission.player, 
 								  planetid, 
 								  cons.PNT_DESTROY, 
 								  game );
-				
+
+				removeStructure(game, targetPlayer, objecttype, planetid, idx);
+
 				// Some things to consider as we figure out how to click on things
 				// if we remove a base, make sure to remove all of that player's fleets
 				// also remove all agents if removing last factory or embassy
