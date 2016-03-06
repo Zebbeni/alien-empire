@@ -464,12 +464,7 @@ var applyRetireAction = function( action, game ){
 				 response: "This agent is already retired." };
 	}
 
-	findAndSetMissionResolved( game, player, agenttype );
-	// remove agent from planet
-	var index = game.board.planets[planetid].agents.indexOf(id);
-	game.board.planets[planetid].agents.splice( index, 1 );
-
-	agent.status = cons.AGT_STATUS_DEAD;
+	removeAgent(game, player, agenttype, cons.AGT_STATUS_DEAD);
 	
 	// create a different upkeep package if removing during upkeep phase
 	if ( game.phase == cons.PHS_UPKEEP ){
@@ -1223,25 +1218,30 @@ var checkAndRemoveAllAgentsFor = function( game, player, objecttype ){
 			for ( var a = cons.AGT_EXPLORER; a <= cons.AGT_SABATEUR; a++ ) {
 				
 				if ( cons.AGT_OBJTYPE[a] == objecttype ){
-					var id = String(player) + String(a);
-					var agent = game.board.agents[ id ];
-					
-					if ( agent.status == cons.AGT_STATUS_ON ) {
-
-						findAndSetMissionResolved( game, player, a );
-
-						var planetid = agent.planetid;
-						var index = game.board.planets[planetid].agents.indexOf(id);
-						game.board.planets[planetid].agents.splice( index, 1 );
-
-						agent.status = cons.AGT_STATUS_OFF;
-						agent.used = false;
-					}
+					removeAgent(game, player, a, cons.AGT_STATUS_OFF);
 				}
 			}
 		}
 	}
 };
+
+var removeAgent = function(game, player, agenttype, status) {
+	var id = String(player) + String(agenttype);
+	var agent = game.board.agents[ id ];
+	
+	if ( agent.status == cons.AGT_STATUS_ON ) {
+
+		findAndSetMissionResolved( game, player, agenttype );
+
+		var planetid = agent.planetid;
+		var index = game.board.planets[planetid].agents.indexOf(id);
+		game.board.planets[planetid].agents.splice( index, 1 );
+
+		agent.status = status;
+		agent.used = false;
+	}
+};
+
 
 // Removes all fleets from the board for a given player
 var removeAllFleets = function( game, player ){
