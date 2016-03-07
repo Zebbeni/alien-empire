@@ -91,6 +91,7 @@
 		PKG_MINER : 5,
 		PKG_SMUGGLER : 6,
 		PKG_UPKEEP : 7,
+		PKG_BUILD: 8,
 
 		OBJ_VALUE : {
 			1: 0,
@@ -150,58 +151,29 @@
 
 		STRUCT_REQS : {
 			1: { 
-				build: {
-					0: 1,
-					2: 1,
-					3: 1 
-				},
-				upkeep: {},
+				build: [1,0,1,1],
+				upkeep: [0,0,0,0],
 				max: 4,
 			}, 
 			2: {
 
-				build: {
-					0: 1,
-					1: 1,
-					2: 2
-				},
-				upkeep: {
-					0: 1
-				},
+				build: [1,1,2,0],
+				upkeep: [1,0,0,0],
 				max: 3
 			},
 			3: {
-				build: {
-					0: 2,
-					1: 2,
-					3: 1
-				},
-				upkeep: {
-					1: 1
-				},
+				build: [2,2,0,1],
+				upkeep: [0,1,0,0],
 				max: 5
 			},
 			4: {
-				build: {
-					0: 3,
-					1: 1,
-					2: 1,
-					3: 1
-				},
-				upkeep: {
-					2: 1
-				},
+				build: [3,1,1,1],
+				upkeep: [0,0,1,0],
 				max: 1
 			},
 			5: {
-				build: {
-					0: 1,
-					1: 1,
-					2: 1
-				},
-				upkeep: {
-					2: 1
-				},
+				build: [1,1,1,0],
+				upkeep: [0,0,1,0],
 				max: 3
 			}
 		}
