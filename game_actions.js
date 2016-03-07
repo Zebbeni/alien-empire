@@ -212,7 +212,16 @@ var applyBuildAction = function( action, game ) {
 				};
 	} 
 	
-	if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
+	if ( objecttype == cons.OBJ_MINE ) {
+		if ( planet.buildableBy[player] == false ){
+			return { isIllegal: true,
+					 response: "You may only build on or next to a planet"
+					 			+ " you have already settled."
+			};
+		}
+	}
+
+	else if ( objecttype == cons.OBJ_FACTORY || objecttype == cons.OBJ_EMBASSY ) {
 
 		var structure = planet.resources[index].structure;
 		
