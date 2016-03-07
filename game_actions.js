@@ -174,9 +174,8 @@ var applyPlaceAction = function( action, game ){
 						 planetid, 
 						 game );
 
-		updateBuildableBy( player,
-						   planetid,
-						   game );
+		updateBuildable( player,
+						 game );
 
 		updateTurn( game ); // placing should increment the turn
 		
@@ -274,9 +273,8 @@ var applyBuildAction = function( action, game ) {
 								 planetid, 
 								 game );
 
-				updateBuildableBy( player,
-								   planetid,
-								   game );
+				updateBuildable( player,
+								 game );
 
 				addPointsForStructure( player, 
 									   objecttype, 
@@ -348,9 +346,8 @@ var applyBuildAction = function( action, game ) {
 						   planetid, 
 						   game );
 
-			updateBuildableBy( player,
-							   planetid,
-							   game );
+			updateBuildable( player,
+						     game );
 
 			addPointsForStructure( player, 
 								   objecttype, 
@@ -379,9 +376,8 @@ var applyBuildAction = function( action, game ) {
 							 planetid, 
 							 game );
 
-			updateBuildableBy( player,
-							   planetid,
-							   game );
+			updateBuildable( player,
+							 game );
 
 			addPointsForStructure( player, objecttype, planetid, game);
 			break;
@@ -1203,9 +1199,8 @@ var removeStructure = function( game, player, objecttype, planetid, idx){
 						 planetid, 
 						 game );
 
-		updateBuildableBy( player,
-						   planetid,
-						   game );
+		updateBuildable( player,
+						 game );
 
 		calcResourcesToCollect( game, player );
 	}
@@ -1293,24 +1288,26 @@ var updateSettledBy = function( player, planetid, game ) {
 	}
 };
 
-// Updates planet.buildableBy[player] to true or false for this planet
-// and all planets adjacent to it
-//
-// Currently assumes we added a bulding. We will need to add logic
-// To remove from planet.settledBy if the last structure a player
-// has on planetid is removed
-var updateBuildableBy = function( player, planetid, game ) {
+// Updates planet.buildableBy[player] to true or false for all planets
+// for a given player. Should be called whenever a player has a structure 
+// added or removed from the board.
+var updateBuildable = function( player, game ) {
 
 	var planets = game.board.planets;
 
-	planets[planetid].buildableBy[player] = true;
-
-	// for each planet id bordering this planet (including itself)
-	for ( var pid in planets[planetid].borders ){
-		// if border is open with this planet (not unexplored or blocked)
-		if ( planets[planetid].borders[pid] == cons.BRD_OPEN ){
-			// set buildableBy to true for this player
-			planets[pid].buildableBy[player] = true;
+	// for all planets on board
+	for ( var planetid = 0; planetid < planets.length; planetid++ ){
+		// initialize buildable by to false
+		planets[planetid].buildableBy[player] = false;
+		// for each planet id bordering this planet (including itself)
+		for ( var pid in planets[planetid].borders ){
+			// if border is open with this planet (not unexplored or blocked)
+			if ( planets[pid].settledBy[player] 
+				 && planets[planetid].borders[pid] == cons.BRD_OPEN ){
+				// set buildableBy to true for this player
+				planets[planetid].buildableBy[player] = true;
+				break;
+			}
 		}
 	}
 };
