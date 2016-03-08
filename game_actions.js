@@ -260,26 +260,11 @@ var applyBuildAction = function( action, game ) {
 
 			if ( !planet.base ) {
 
-				// TODO: This block of ~3 lines is very similar for all
-				// Structures. We should generalize this.
 				game.board.planets[planetid].base = {
 													player: action.player,
 													used: false
 												};
-				payToBuild( player, objecttype, game);
 				game.structures[player][cons.OBJ_BASE] -= 1;
-
-				updateSettledBy( player, 
-								 planetid, 
-								 game );
-
-				updateBuildable( player,
-								 game );
-
-				addPointsForStructure( player, 
-									   objecttype, 
-									   planetid, 
-									   game);
 
 			}
 			else {
@@ -309,14 +294,7 @@ var applyBuildAction = function( action, game ) {
 						fleet.planetid = planetid;
 						fleet.used = false;
 						planet.fleets.push( id );
-
-						payToBuild( player, objecttype, game);
 						game.structures[player][cons.OBJ_FLEET] -= 1;
-
-						addPointsForStructure( player, 
-											   objecttype, 
-											   planetid, 
-											   game);
 
 						break;
 					}
@@ -337,22 +315,8 @@ var applyBuildAction = function( action, game ) {
 												player: player,
 												kind: objecttype
 											};
-			payToBuild( player, objecttype, game);
-
 			game.structures[player][objecttype] -= 1;
 			game.structures[player][cons.OBJ_MINE] += 1;
-
-			updateSettledBy( player, 
-						   planetid, 
-						   game );
-
-			updateBuildable( player,
-						     game );
-
-			addPointsForStructure( player, 
-								   objecttype, 
-								   planetid, 
-								   game );
 			break;
 
 		case cons.OBJ_MINE:
@@ -369,17 +333,7 @@ var applyBuildAction = function( action, game ) {
 									player: player,
 									kind: objecttype
 								};
-			payToBuild( player, objecttype, game);
 			game.structures[player][cons.OBJ_MINE] -= 1;
-
-			updateSettledBy( player, 
-							 planetid, 
-							 game );
-
-			updateBuildable( player,
-							 game );
-
-			addPointsForStructure( player, objecttype, planetid, game);
 			break;
 
 		default:
@@ -388,6 +342,11 @@ var applyBuildAction = function( action, game ) {
 					};
 	}
 
+	payToBuild( player, objecttype, game);
+	addBuildResourcePackage(game, player, objecttype);
+	updateSettledBy( player, planetid, game );
+	updateBuildable( player, game );
+	addPointsForStructure( player, objecttype, planetid, game);
 	calcResourcesToCollect( game, player);
 	calcResourceUpkeep( game, player );
 
@@ -1291,6 +1250,8 @@ var updateSettledBy = function( player, planetid, game ) {
 // Updates planet.buildableBy[player] to true or false for all planets
 // for a given player. Should be called whenever a player has a structure 
 // added or removed from the board.
+//
+// TODO: Think of a more efficient way to update this
 var updateBuildable = function( player, game ) {
 
 	var planets = game.board.planets;
@@ -1606,6 +1567,15 @@ var addUpkeepPhaseResourcePackage = function( game, player ) {
 								cons.PKG_UPKEEP, 
 								resources,
 								'Upkeep phase' );
+};
+
+var addBuildResourcePackage = function( game, player, objecttype ){
+	var resources = cons.STRUCT_REQS[objecttype].build;
+	helpers.addResourcePackage( game,
+								player,
+								cons.PKG_BUILD,
+								resources,
+								'Build ' + cons.OBJ_ENGLISH[objecttype] )
 };
 
 var replaceUpkeepPackage = function(game, player){

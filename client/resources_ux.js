@@ -3,11 +3,12 @@
  * menu items in game ux 
  */
 
-var collectedPkgs = []; // indexes of package collections the ux has animated
+// var collectedPkgs = []; // indexes of package collections the ux has animated
 
 var createResourcesMenu = function() {
 	
-	var innerHTML = '';	
+	var innerHTML = '';
+	clientGame.game.collectedPkgs = []; // indices of packages the ux has animated
 
 	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
@@ -142,14 +143,16 @@ var updateResourcePkgMenu = function() {
 var updateResourceAnimations = function() {
 	var packages = clientGame.game.resourcePackages[clientTurn];
 
+	console.log("packages", packages);
+
 	for (var p = 0; p < packages.length; p++){
 		var pkg = packages[p];
 
-		if( pkg.collected && collectedPkgs.indexOf(p) == -1 ){
+		if( pkg.collected && clientGame.game.collectedPkgs.indexOf(p) == -1 ){
 			// don't animate if all changes are 0
 			if ( !pkg.resources.every(elem => elem == 0) ){
 				animateResourceChange(pkg);
-				collectedPkgs.push(p);
+				clientGame.game.collectedPkgs.push(p);
 				break;
 			}
 		}
@@ -161,7 +164,9 @@ var animateResourceChange = function( pkg ) {
 	var clientResources = clientGame.game.resources[clientTurn];
 	var sign = "+";
 
-	if (pkg.pkgtype == PKG_UPKEEP) {
+	console.log("animating pkg", pkg);
+
+	if (pkg.pkgtype == PKG_UPKEEP || pkg.pkgtype ==  PKG_BUILD) {
 		sign = "-";
 		$('.res-change').each( function() {
 			$( this ).addClass('res-change-down');

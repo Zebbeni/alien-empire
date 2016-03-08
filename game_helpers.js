@@ -51,6 +51,12 @@ var addResourcePackage = function(game, player, pkgtype, resources, message) {
 							message: message,
 							isnew: true
 						};
+	// automatically set collected to true for build packages. This is because
+	// build packages are only added for the animation. Resources are deducted
+	// when the build action is taken					
+	if ( pkgtype == cons.PKG_BUILD ){
+		resourcePackage.collected = true;
+	}
 	game.resourcePackages[player].push( resourcePackage );
 };
 
