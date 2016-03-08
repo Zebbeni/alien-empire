@@ -3,10 +3,10 @@ var sWid = 212;
 var agtWid = 100;
 var agtSpace = 5;
 
-var offline = false; // checked by loader when creating settings for LoadQueue
-var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
-// var offline = true;
-// var s3url = 'images/'; // set s3url to this if testing offline
+// var offline = false; // checked by loader when creating settings for LoadQueue
+// var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
+var offline = true;
+var s3url = 'images/'; // set s3url to this if testing offline
 
 var MOVE_DISTANCE = 5;
 var MENU_ON = 1;
@@ -55,6 +55,7 @@ var PKG_ENVOY = 4;
 var PKG_MINER = 5;
 var PKG_SMUGGLER = 6;
 var PKG_UPKEEP = 7;
+var PKG_BUILD = 8;
 
 // Border status constants
 var BRD_UNEXPLORED = 0;
@@ -182,68 +183,31 @@ var ACTION_REQUIREMENTS = {
 	14: ['actiontype', 'agenttype', 'planetid']
 };
 
-// var AGT_OBJTYPE = {
-// 	1: OBJ_FACTORY,
-// 	2: OBJ_FACTORY,
-// 	3: OBJ_FACTORY,
-// 	4: OBJ_EMBASSY,
-// 	5: OBJ_EMBASSY,
-// 	6: OBJ_EMBASSY,
-// 	7: OBJ_BASE,
-// 	8: OBJ_BASE
-// };
-
 var STRUCT_REQS = {
-
-	OBJ_MINE: {
-
-		build: {
-			RES_METAL: 1,
-			RES_FUEL: 1,
-			RES_FOOD: 1 
-		},
-		upkeep: {}
+	1: { 
+		build: [1,0,1,1],
+		upkeep: [0,0,0,0],
+		max: 4,
 	}, 
-	OBJ_FACTORY: {
+	2: {
 
-		build: {
-			RES_METAL: 1,
-			RES_FUEL: 2,
-			RES_WATER: 1
-		},
-		upkeep: {
-			RES_METAL: 1
-		}
+		build: [1,1,2,0],
+		upkeep: [1,0,0,0],
+		max: 3
 	},
-	OBJ_EMBASSY: {
-		build: {
-			RES_METAL: 2,
-			RES_WATER: 2,
-			RES_FOOD: 1
-		},
-		upkeep: {
-			RES_WATER: 1
-		}
+	3: {
+		build: [2,2,0,1],
+		upkeep: [0,1,0,0],
+		max: 5
 	},
-	OBJ_BASE: {
-		build: {
-			RES_METAL: 3,
-			RES_FUEL: 1,
-			RES_WATER: 1,
-			RES_FOOD: 1
-		},
-		upkeep: {
-			RES_FUEL: 1
-		}
+	4: {
+		build: [3,1,1,1],
+		upkeep: [0,0,1,0],
+		max: 1
 	},
-	OBJ_FLEET: {
-		build: {
-			RES_METAL: 1,
-			RES_FUEL: 1,
-			RES_WATER: 1
-		},
-		upkeep: {
-			RES_FUEL: 1
-		}
+	5: {
+		build: [1,1,1,0],
+		upkeep: [0,0,1,0],
+		max: 3
 	}
 };

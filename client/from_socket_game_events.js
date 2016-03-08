@@ -43,7 +43,7 @@ socket.on( 'game event', function(content, msg) {
 
 socket.on('game end', function(content) {
 
-	clientGame = null;
+	clientGame = {};
     setGlobals();
 
     // hide game ux elements, show lobby
