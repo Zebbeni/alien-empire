@@ -52,15 +52,11 @@ var setSelection = function(x, y) {
 
  	board.setChildIndex( selection, 
 						 board.getNumChildren() - 1);
-
- 	stage.update();
  };
 
  var hideSelection = function() {
  	var selection = board.getChildByName('selection');
  	selection.visible = false;
-
- 	stage.update();
  };
 
 var setPlanetSelection = function( planetid ) {
@@ -91,14 +87,10 @@ var setPlanetSelection = function( planetid ) {
 	planetselection.visible = true;
 	board.setChildIndex( planetselection, 
 						 board.getNumChildren() - 1);
-
-	stage.update();
 };
 
 // this could probably be combined into a generic function with hideSelection
 var hidePlanetSelection = function( planetid ){
 	var planetselection = board.getChildByName('planetselection');
 	planetselection.visible = false;
-
-	stage.update();
 };

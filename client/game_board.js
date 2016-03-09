@@ -21,7 +21,6 @@ var setGlobals = function() {
 	tiles = [];
 	fleetshapes = {};
 	scale = 0.65;
-	stage.update();
 };
 
 var handleKeyUp = function( e ) {
@@ -41,16 +40,16 @@ var handleKeyUp = function( e ) {
 var handleKeyDown = function( e ) {
 	switch (e.keyCode) {
 		case 37: // left arrow
-			moveBoard(-1, 0, MOVE_DISTANCE);
+			moveBoard(-1, 0);
 			break;
 		case 38: // up arrow
-			moveBoard(0, -1, MOVE_DISTANCE);
+			moveBoard(0, -1);
 			break;
 		case 39:
-			moveBoard(1, 0, MOVE_DISTANCE);
+			moveBoard(1, 0);
 			break;
 		case 40:
-			moveBoard(0, 1, MOVE_DISTANCE);
+			moveBoard(0, 1);
 			break;
 		default:
 			break;
@@ -165,6 +164,4 @@ var updateBoard = function() {
 	
 	updateRemovedFleets();
 	updateDeadAgents();
-
-	stage.update();
 };

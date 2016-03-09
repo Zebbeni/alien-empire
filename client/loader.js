@@ -145,7 +145,6 @@ var initProgressBar = function() {
 var addProgressBar = function() {
 	updateCanvasSize();
 	stage.addChild(loadProgress);
-	stage.update();
 };
 
 var centerProgressBar = function() {
@@ -162,8 +161,6 @@ var handleProgress = function() {
 	loadProgressLabel.text = "Loaded " + progressPercentage + "%";
 
 	loadProgressBar.graphics.beginFill(loadingColor).drawRect(0, 0, 200 * loader.progress, 25);
-
-	stage.update();
 };
 
 var handleComplete = function() {

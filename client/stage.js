@@ -43,13 +43,21 @@ var init_stage = function() {
 	// move board relative to mouse movement
 	stage.on("stagemousemove", function(evt){
 		if (board && is_dragging) {
-			moveBoard( evt.stageX - lastMouse.x, 
+			dragBoard( evt.stageX - lastMouse.x, 
 					   evt.stageY - lastMouse.y, 
 					   1);
 			lastMouse.x = evt.stageX;
 			lastMouse.y = evt.stageY;
 		}
 	});
+
+	createjs.Ticker.addEventListener("tick", tick);
+	createjs.Ticker.setFPS(30);
+	
+};
+
+var tick = function(event) {
+	stage.update(event);
 };
 
 var init_background = function() {
@@ -105,8 +113,6 @@ var updateCanvasSize = function() {
 
 		centerProgressBar();
 		centerBoard();
-	
-		stage.update();
 	}
 };
 

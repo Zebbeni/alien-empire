@@ -12,8 +12,6 @@ var zoomBoard = function(magnify) {
 	board.scaleY = scale;
 
 	centerBoard();
-
-	stage.update();
 };
 
 /**
@@ -25,16 +23,20 @@ var centerBoard = function() {
 		var boardHeight = 7 * sWid * scale;
 		board.x = (window.innerWidth - boardWidth) / 2.0;
 		board.y = (window.innerHeight - boardHeight) / 2.0;
-		stage.update();
 	}
 };
 
 /**
  * Moves board given x and y shifts, times a multiplier
  */
-var moveBoard = function(right, down, mult ) {
+var moveBoard = function(right, down) {
+	boardX = board.x + (right * MOVE_DISTANCE / pixelRatio);
+	boardY = board.y + (down * MOVE_DISTANCE / pixelRatio);
+
+	createjs.Tween.get(board, {override:true}).to({ x:boardX, y:boardY}, 300 );
+};
+
+var dragBoard = function(right, down, mult ) {
 	board.x += (right * mult / pixelRatio);
 	board.y += (down * mult / pixelRatio);
-
-	stage.update();
 };

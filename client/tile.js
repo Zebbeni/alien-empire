@@ -43,15 +43,12 @@ var initTile = function( planetid ) {
 			showLightscreen( planetid );
 			// setPlanetSelection( planetid );
 		}
-		stage.update();
 	});
 
 	tiles[planetid].on("mouseout", function() {
 
 		hideLightscreen( planetid );
 		// hidePlanetSelection( planetid );
-
-		stage.update();
 
 	});
 
