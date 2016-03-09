@@ -84,16 +84,26 @@ var updateAgents = function(planetid) {
 		var agent = agents[id];
 		var player = agent.player;
 		var agenttype = agent.agenttype;
+		var agentname = AGT_ENGLISH[agenttype] + player;
 
-		var agentContainer = agentsContainer.getChildByName(AGT_ENGLISH[agenttype] + player);
+		var agentContainer = agentsContainer.getChildByName(agentname);
 		
 		agentsContainer.setChildIndex( agentContainer, 
 									   agentsContainer.getNumChildren() - 1);
 
-		agentContainer.visible = true;
+		var newAgentX = tiles[planetid].x + agentsX;
+		var newAgentY = tiles[planetid].y + agentsY;
 
-		agentContainer.x = tiles[planetid].x + agentsX;
-		agentContainer.y = tiles[planetid].y + agentsY;
+		if( agentContainer.visible ){
+			if ( newAgentX != agentContainer.x || newAgentY != agentContainer.y ){
+				createjs.Tween.get(agentContainer, {override:true}).to({ x:newAgentX, y:newAgentY}, 500 );
+			}
+		} 
+		else {
+			agentContainer.x = newAgentX;
+			agentContainer.y = newAgentY;
+			agentContainer.visible = true;
+		}
 
 		agentsX += agtWid + space;
 	}
