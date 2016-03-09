@@ -6,7 +6,7 @@ var zoomBoard = function(magnify) {
 
 	scale = scale + magnify;
 	scale = Math.min(scale, 0.7);
-	scale = Math.max(scale, 0.6);
+	scale = Math.max(scale, 0.4);
 
 	board.scaleX = scale;
 	board.scaleY = scale;
