@@ -157,13 +157,13 @@ var centerProgressBar = function() {
 var handleProgress = function() {
 
 	progressPercentage = Math.round(loader.progress * 100);
-
 	loadProgressLabel.text = "Loaded " + progressPercentage + "%";
-
 	loadProgressBar.graphics.beginFill(loadingColor).drawRect(0, 0, 200 * loader.progress, 25);
+	stage.update();
 };
 
 var handleComplete = function() {
 	stage.removeChild(loadProgress);
 	submitLoadingDone();
+	stage.update();
 };

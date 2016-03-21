@@ -164,4 +164,5 @@ var updateBoard = function() {
 	
 	updateRemovedFleets();
 	updateDeadAgents();
+	stage.update();
 };

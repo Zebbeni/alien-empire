@@ -3,6 +3,7 @@ var resizeTimer;
 var prevWidth = 0;
 var prevHeight = 0;
 var pixelRatio = 1.0;
+var num_objects_moving = 0; // number of objects being animated
 
 /**
  * Periodically checks to see if window has been resized. 
@@ -57,7 +58,13 @@ var init_stage = function() {
 };
 
 var tick = function(event) {
-	stage.update(event);
+	if (num_objects_moving > 0) {
+		stage.update(event);
+	}
+};
+
+var handleTweenComplete = function(){
+	num_objects_moving -= 1;
 };
 
 var init_background = function() {
@@ -113,6 +120,8 @@ var updateCanvasSize = function() {
 
 		centerProgressBar();
 		centerBoard();
+
+		stage.update();
 	}
 };
 
