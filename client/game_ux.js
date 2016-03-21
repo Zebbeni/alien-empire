@@ -827,9 +827,7 @@ var updateMissionsMenu = function() {
 
 			if ( clientGame.game.missionViewed[clientTurn] == false ) {
 				// wait 5 seconds and move to next mission
-				setTimeout(function() {
-					viewMissionAction();
-				}, 2000);
+				viewMissionAction();
 			}
 		}
 
@@ -856,14 +854,6 @@ var updateMissionsMenu = function() {
 		else if ( mission.waitingOnResolve ) {
 			// and if this is actually this client's mission
 			if ( clientTurn == player ) {
-
-				// I think we need to set pending action stuff here, (like pending planet, etc)
-				// if we're going to have the 'Done' button display the Confirm Action dialog
-				//
-				// We'll need to define a new type of action, like ACT_MISSION_RESOLVE
-				// which passes a set of attributes that tell the server how to resolve the mission
-				// 
-				// We'll then need to define how the server handles these ACT_MISSION_RESOLVE actions
 
 				setPendingAction( ACT_MISSION_RESOLVE );
 				setPendingAgent( agenttype );
@@ -925,6 +915,7 @@ var blockMissionAction = function( value ){
 var viewMissionAction = function() {
 	setPendingAction( ACT_MISSION_VIEWED );
 	setPendingChoice( clientGame.game.missionindex );
+	console.log("view mission action running, index:", clientGame.game.missionindex);
 	submitAction();
 };
 
