@@ -915,7 +915,6 @@ var blockMissionAction = function( value ){
 var viewMissionAction = function() {
 	setPendingAction( ACT_MISSION_VIEWED );
 	setPendingChoice( clientGame.game.missionindex );
-	console.log("view mission action running, index:", clientGame.game.missionindex);
 	submitAction();
 };
 

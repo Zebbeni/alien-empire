@@ -705,8 +705,6 @@ var applyBlockMission = function( action, game ){
 	var mission = game.missions[round][index];
 	var planetid = mission.planetTo;
 
-	console.log("player", player, "sent block info for mission", index);
-
 	if ( game.missionSpied[ player ] != null ){
 		// Do not return illegal, but also do not change game state
 		return { isDuplicate: false }; 
@@ -770,8 +768,6 @@ var applyBlockMission = function( action, game ){
 
 					// Add flag if player has no remaining options 
 					if ( !is_unreserved ) {
-						console.log("uh oh, apparently all are reserved. resources");
-						console.log(resources);
 						game.missions[round][index].resolution.nochoice = true;
 					}
 					break;
@@ -1031,8 +1027,6 @@ var applyMissionViewed = function( action, game ){
 	var player = action.player;
 	var index = action.choice;
 	var round = game.round - 2;
-
-	console.log("player", player, "viewed mission. index:", index, "missionindex:", game.missionindex );
 
 	if ( index != game.missionindex) {
 		// don't return illegal if on a different mission
