@@ -97,7 +97,7 @@ var updateAgents = function(planetid) {
 		if( agentContainer.visible ){
 			if ( newAgentX != agentContainer.x || newAgentY != agentContainer.y ){
 				num_objects_moving += 1;
-				createjs.Tween.get(agentContainer, {override:true}).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleComplete);
+				createjs.Tween.get(agentContainer, {override:true}).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
 			}
 		} 
 		else {

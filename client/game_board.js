@@ -75,6 +75,11 @@ var createBoard = function() {
 
 		stage.addChild( board );
 		
+		num_objects_moving += 1;
+
+		board.alpha = 0;
+		createjs.Tween.get(board, {override:true}).to({ alpha:1}, 2000 ).call(handleTweenComplete);
+
 		zoomBoard(0.75); 
 	}
 };
