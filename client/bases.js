@@ -9,7 +9,8 @@ var initBases = function() {
 		var base = new createjs.Shape();
 		base.name = "base" + p;
 		base.planetid = undefined;
-		base.player = undefined;
+		base.player = p;
+		base.visible = false;
 
 		base.on("mouseover", function() {
 			selectBase( this.planetid, this.player );
@@ -38,7 +39,7 @@ var updateBasesInteractivity = function() {
 		
 		var base = basesContainer.getChildByName('base' + p);
 			
-		if ( base.player != undefined && base.planetid != undefined) {
+		if ( base.planetid != undefined) {
 
 			switch ( clientGame.game.phase ) {
 
@@ -75,9 +76,15 @@ var updateRemovedBases = function(){
 
 	for ( var p = 0; p < clientGame.game.players.length; p++){
 		var base = basesContainer.getChildByName('base' + p);
-		base.player = undefined;
-		base.planetid = undefined;
-		base.visible = false;
+		var planetid = base.planetid;
+
+		if ( planetid != undefined ){
+			var planet = clientGame.game.board.planets[planetid];
+			if ( !planet.base ){
+				base.planetid = undefined;
+				fadeOut(base, 500, true);
+			}
+		}
 	}
 };
 
@@ -93,7 +100,23 @@ var updateBases = function( planetid ) {
 
 		base.planetid = planetid;
 		base.player = player;
-		base.visible = true;
+
+		if ( !base.visible ){
+
+			switch (planet.w) {
+				case 1:
+					base.x = tiles[planetid].x - 25;
+					base.y = tiles[planetid].y - 25;
+					break;
+				case 2:
+					base.x = tiles[planetid].x + 25;
+					base.y = tiles[planetid].y + 25;
+					break;
+			}
+
+			fadeIn(base, 500, true);
+		}
+
 		if ( clientTurn == player ) { 
 			base.mouseEnabled = true;
 		}
@@ -105,16 +128,7 @@ var updateBases = function( planetid ) {
 									   						   baseImg.width, 
 									   						   baseImg.height );
 		
-		switch (planet.w) {
-			case 1:
-				base.x = tiles[planetid].x - 25;
-				base.y = tiles[planetid].y - 25;
-				break;
-			case 2:
-				base.x = tiles[planetid].x + 25;
-				base.y = tiles[planetid].y + 25;
-				break;
-		}
+
 	}
 };
 

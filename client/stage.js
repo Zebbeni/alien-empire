@@ -63,10 +63,6 @@ var tick = function(event) {
 	}
 };
 
-var handleTweenComplete = function(){
-	num_objects_moving -= 1;
-};
-
 var init_background = function() {
 	background = new createjs.Shape();
 	

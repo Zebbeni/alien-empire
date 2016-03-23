@@ -95,7 +95,7 @@ var updateAgents = function(planetid) {
 		var newAgentY = tiles[planetid].y + agentsY;
 
 		if( agentContainer.visible ){
-			if ( newAgentX != agentContainer.x || newAgentY != agentContainer.y ){
+			if ( newAgentX != agentContainer.x || Math.abs(newAgentY - agentContainer.y) < 50 ) {
 				num_objects_moving += 1;
 				createjs.Tween.get(agentContainer, {override:true}).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
 			}
@@ -103,7 +103,7 @@ var updateAgents = function(planetid) {
 		else {
 			agentContainer.x = newAgentX;
 			agentContainer.y = newAgentY;
-			fadeIn(agentContainer, 500);
+			fadeIn(agentContainer, 500, true);
 		}
 
 		agentsX += agtWid + space;

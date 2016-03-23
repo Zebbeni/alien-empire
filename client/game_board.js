@@ -75,7 +75,7 @@ var createBoard = function() {
 
 		stage.addChild( board );
 		
-		fadeIn(board, 1000);
+		fadeIn(board, 1000, false);
 
 		zoomBoard(0.75); 
 	}
