@@ -921,7 +921,7 @@ var applyMissionResolve = function( action, game ){
 				
 				var resid = action.resourceid;
 				var resource = game.board.planets[planetid].resources[resid];
-				
+
 				if ( resource.reserved != undefined) {
 					return { isIllegal: true,
 						 	 response: "This resource is already reserved"

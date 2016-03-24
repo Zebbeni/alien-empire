@@ -330,8 +330,10 @@ var initPlanet = function ( planetid ) {
 	planet.hitArea = tiles[planetid].getChildByName("stars");
 	planet.mouseChildren = false;
 	planet.mouseEnabled = true;
+	planet.alpha = 0;
 
 	planet.on("mouseover", function() {
+		console.log("mousing over planet");
 		selectPlanet(planetid);
 	});
 
@@ -346,6 +348,34 @@ var initPlanet = function ( planetid ) {
 	planet.x = 0;
 	planet.y = 0;
 
+	var planets = clientGame.game.board.planets;
+
+	var img_id = planets[planetid].art;
+	var planetImg = loader.getResult("planet_" + img_id);
+	var offsetX = -12;
+	var offsetY = 28;
+	if ( planets[planetid].w == 2 ) {
+		offsetX = 0;
+		offsetY = 25;
+	}
+	// clear before drawing, we call this function multiple times
+	picture.graphics.clear();
+	picture.graphics.beginBitmapFill(planetImg).drawRect(offsetX, offsetY, planetImg.width, planetImg.height);
+	
+	switch ( planets[planetid].w ) {
+
+		case 1:
+			picture.scaleX = 0.45;
+			picture.scaleY = 0.45;
+			break;
+
+		case 2:
+			break;
+	}
+
+	picture.x = offsetX * -1;
+	picture.y = offsetY * -1;
+
 	tiles[planetid].addChild( planet );
 };
 
@@ -356,38 +386,13 @@ var drawPlanet = function( planetid ) {
 	
 	var planets = clientGame.game.board.planets;
 
-
 	if (planets[planetid].explored) {
 
 		var planet = tiles[planetid].getChildByName("planet");
-		var picture = planet.getChildByName("picture");
-		var img_id = planets[planetid].art;
-		var planetImg = loader.getResult("planet_" + img_id);
-		
-		var offsetX = -12;
-		var offsetY = 28;
-		if ( planets[planetid].w == 2 ) {
-			offsetX = 0;
-			offsetY = 25;
+
+		if (planet.alpha == 0) {
+			fadeIn( planet, 2000, false)
 		}
-
-		// clear before drawing, we call this function multiple times
-		picture.graphics.clear();
-		picture.graphics.beginBitmapFill(planetImg).drawRect(offsetX, offsetY, planetImg.width, planetImg.height);
-
-		switch ( planets[planetid].w ) {
-
-			case 1:
-				picture.scaleX = 0.45;
-				picture.scaleY = 0.45;
-				break;
-
-			case 2:
-				break;
-		}
-
-		picture.x = offsetX * -1;
-		picture.y = offsetY * -1;
 	}
 };
 
