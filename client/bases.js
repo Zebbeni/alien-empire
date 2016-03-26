@@ -24,8 +24,14 @@ var initBases = function() {
 			handleClickBase( this.planetid, this.player );
 		});
 
-		basesContainer.addChild(base);
+		var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + p);
+		base.graphics.beginBitmapFill( baseImg, 
+									   "no-repeat" ).drawRect( 0, 
+									   						   0, 
+									   						   baseImg.width, 
+									   						   baseImg.height );
 
+		basesContainer.addChild(base);
 	}
 
 	board.addChild(basesContainer);
@@ -121,14 +127,13 @@ var updateBases = function( planetid ) {
 			base.mouseEnabled = true;
 		}
 
-		var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + player);
-		base.graphics.beginBitmapFill( baseImg, 
-									   "no-repeat" ).drawRect( 0, 
-									   						   0, 
-									   						   baseImg.width, 
-									   						   baseImg.height );
+		// var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + player);
+		// base.graphics.beginBitmapFill( baseImg, 
+		// 							   "no-repeat" ).drawRect( 0, 
+		// 							   						   0, 
+		// 							   						   baseImg.width, 
+		// 							   						   baseImg.height );
 		
-
 	}
 };
 
