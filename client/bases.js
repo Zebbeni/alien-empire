@@ -122,10 +122,6 @@ var updateBases = function( planetid ) {
 
 			fadeIn(base, 500, true);
 		}
-
-		if ( clientTurn == player ) { 
-			base.mouseEnabled = true;
-		}		
 	}
 };
 
