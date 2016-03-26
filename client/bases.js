@@ -125,15 +125,7 @@ var updateBases = function( planetid ) {
 
 		if ( clientTurn == player ) { 
 			base.mouseEnabled = true;
-		}
-
-		// var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + player);
-		// base.graphics.beginBitmapFill( baseImg, 
-		// 							   "no-repeat" ).drawRect( 0, 
-		// 							   						   0, 
-		// 							   						   baseImg.width, 
-		// 							   						   baseImg.height );
-		
+		}		
 	}
 };
 
