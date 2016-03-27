@@ -88,6 +88,10 @@ var updateAgents = function(planetid) {
 
 		var agentContainer = agentsContainer.getChildByName(agentname);
 		
+		if (createjs.Tween.hasActiveTweens(agentContainer) ){
+			console.log(AGT_ENGLISH[agenttype], "has active tweens");
+		}
+
 		agentsContainer.setChildIndex( agentContainer, 
 									   agentsContainer.getNumChildren() - 1);
 
@@ -97,7 +101,7 @@ var updateAgents = function(planetid) {
 		if( agentContainer.visible ){
 			if ( newAgentX != agentContainer.x || Math.abs(newAgentY - agentContainer.y) < 50 ) {
 				num_objects_moving += 1;
-				createjs.Tween.get(agentContainer, {override:true}).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
+				createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
 			}
 		} 
 		else {

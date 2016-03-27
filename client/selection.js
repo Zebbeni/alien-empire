@@ -7,8 +7,6 @@ var color = ["#fb4944","#4a2cff", "#76f339", "#f8ef42"];
 
 var initSelection = function() {
 
- 	console.log('initialized selection');
-
  	var selection = new createjs.Container();
  	selection.name = 'selection';
  	selection.x = 0;
@@ -30,13 +28,35 @@ var initSelection = function() {
  	planetselection.x = 0;
  	planetselection.y = 0;
 
- 	var planetborder = new createjs.Shape();
- 	planetborder.name = "planetborder";
- 	planetborder.mouseEnabled = false;
+	var strokeWid = 8;
+	var strokeOff = 4;
+
+ 	var largeborder = new createjs.Shape();
+ 	largeborder.name = "largeborder";
+	largeborder.graphics.clear();
+	largeborder.graphics.setStrokeStyle(strokeWid);
+	largeborder.graphics.beginStroke(color[clientTurn]);
+	largeborder.graphics.drawRect( strokeOff, 
+								   strokeOff, 
+								   (2 * sWid) - strokeWid, 
+								   (2 * sWid) - strokeWid );
+ 	largeborder.mouseEnabled = false;
+	planetselection.addChild(largeborder);
+
+ 	var smallborder = new createjs.Shape();
+ 	smallborder.name = "smallborder";
+	smallborder.graphics.clear();
+	smallborder.graphics.setStrokeStyle(strokeWid);
+	smallborder.graphics.beginStroke(color[clientTurn]);
+	smallborder.graphics.drawRect( strokeOff, 
+								   strokeOff, 
+								   sWid - strokeWid, 
+								   sWid - strokeWid );
+ 	smallborder.mouseEnabled = false;
+ 	planetselection.addChild(smallborder);
 
  	planetselection.mouseEnabled = false;
  	planetselection.visible = false;
- 	planetselection.addChild(planetborder);
 
  	board.addChild(planetselection);
  };
@@ -60,32 +80,32 @@ var setSelection = function(x, y) {
  };
 
 var setPlanetSelection = function( planetid ) {
-	var strokeWid = 8;
-	var strokeOff = 4;
-	var planetselection = board.getChildByName('planetselection');
-	var planetborder = planetselection.getChildByName('planetborder');
 
 	var planet = clientGame.game.board.planets[planetid];
+	var planetselection = board.getChildByName('planetselection');
+	var onborder, offborder;
+
+	switch ( planet.w ){
+		case 1:
+				onborder = planetselection.getChildByName('smallborder');
+				offborder = planetselection.getChildByName('largeborder');
+			break;
+		case 2:
+				onborder = planetselection.getChildByName('largeborder');
+				offborder = planetselection.getChildByName('smallborder');
+			break;
+	}
+
 	var x = planet.x * sWid;
 	var y = planet.y * sWid;
-	var wid = planet.w * sWid;
-	var hei = planet.w * sWid;
-
-	planetborder.graphics.clear();
-	planetborder.graphics.setStrokeStyle(strokeWid);
-	planetborder.graphics.beginStroke(color[clientTurn]);
-	planetborder.graphics.drawRect( strokeOff, 
-									strokeOff, 
-									wid - strokeWid, 
-									hei - strokeWid);
-	planetborder.x = x;
-	planetborder.y = y;
-
-	planetborder.alpha = planet.explored ? 0.9 : 0.4; 
+	onborder.x = x;
+	onborder.y = y;
 
 	board.setChildIndex( planetselection, 
 						 board.getNumChildren() - 1);
 
+	onborder.visible = true;
+	offborder.visible = false;
 	fadeIn(planetselection, 250);
 };
 
