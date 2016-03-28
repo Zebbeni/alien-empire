@@ -60,7 +60,7 @@ var init_stage = function() {
 var tick = function(event) {
 	if (num_objects_moving > 0) {
 		stage.update(event);
-		console.log("num_objects_moving:", num_objects_moving);
+		console.log("objects moving");
 	}
 };
 

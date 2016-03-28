@@ -120,7 +120,7 @@ var updateBases = function( planetid ) {
 					break;
 			}
 
-			fadeIn(base, 500, true);
+			fadeIn(base, 500, true, false);
 		}
 	}
 };

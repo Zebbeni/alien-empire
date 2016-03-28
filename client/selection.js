@@ -71,7 +71,7 @@ var setSelection = function(x, y) {
  	board.setChildIndex( selection, 
 						 board.getNumChildren() - 1);
 
- 	fadeIn(selection, 250);
+ 	fadeIn(selection, 250, false, true);
  };
 
  var hideSelection = function() {
@@ -106,7 +106,7 @@ var setPlanetSelection = function( planetid ) {
 
 	onborder.visible = true;
 	offborder.visible = false;
-	fadeIn(planetselection, 250);
+	fadeIn(planetselection, 250, false, true);
 };
 
 // this could probably be combined into a generic function with hideSelection

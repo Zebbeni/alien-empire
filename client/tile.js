@@ -42,14 +42,12 @@ var initTile = function( planetid ) {
 	tiles[planetid].on("mouseover", function() {
 		if (planets[planetid].explored) {
 			showLightscreen( planetid );
-			// setPlanetSelection( planetid );
 		}
 	});
 
 	tiles[planetid].on("mouseout", function() {
 
 		hideLightscreen( planetid );
-		// hidePlanetSelection( planetid );
 
 	});
 
@@ -160,7 +158,6 @@ var updateTileInteractivity = function(planetid) {
 		case PHS_UPKEEP:
 
 			mouseTile( planetid, true );
-
 			mouseResources( planets, planetid, false, true, false );
 			mousePlanet( planetid, false );
 
@@ -218,6 +215,9 @@ var updateTileInteractivity = function(planetid) {
 						break;
 					case AGT_SABATEUR:
 						mouseResources( planets, planetTo, false, false, true);
+						break;
+					case AGT_SURVEYOR:
+						mouseResources( planets, planetTo, true, true, true);
 						break;
 					default:
 						break;
@@ -400,7 +400,7 @@ var drawPlanet = function( planetid ) {
 		var planet = tiles[planetid].getChildByName("planet");
 
 		if (planet.alpha == 0) {
-			fadeIn( planet, 2000, false)
+			fadeIn( planet, 2000, false, false);
 		}
 	}
 };
@@ -508,6 +508,14 @@ var initResource = function( planetid, index ) {
 	flag.y = icon.y;
 	resource.addChild(flag);
 
+	var value = new createjs.Text("2", "bold 40px Play", "white");
+	value.name = "value";
+	value.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
+	value.visible = false;
+	value.x = icon.x + 12;
+	value.y = icon.y;
+	resource.addChild(value);
+
 	var structure = new createjs.Shape();
 	structure.name = "structure";
 	structure.visible = false;
@@ -562,7 +570,7 @@ var drawResource = function( planetid, index, num_resources ) {
 	var resource = tiles[planetid].getChildByName("resource" + index);
 
 	if ( !resource.visible ){
-		fadeIn( resource, 500 * ( 1 + index), false );
+		fadeIn( resource, 500, false, false );
 	}
 
 	var flag = resource.getChildByName("flag");
@@ -571,7 +579,19 @@ var drawResource = function( planetid, index, num_resources ) {
 		flag.graphics.clear();
 		var flagImg = loader.getResult( "flag_color" + reserved);
 		flag.graphics.beginBitmapFill(flagImg, "no-repeat").drawRect(0, 0, flagImg.width, flagImg.height);
-		fadeIn( flag, 500, false );
+		fadeIn( flag, 500, false, false );
+	}
+
+	var value = resource.getChildByName("value");
+	var resource_num = planets[planetid].resources[index].num;
+	if ( resource_num > 1){
+		value.isPermanent = true;
+		if ( !value.visible ){
+			fadeIn(value, 500, false, false);
+		}
+	}
+	else if (value.visible) {
+		fadeOut(value, 200, false);
 	}
 
 	var structure = resource.getChildByName("structure");
@@ -587,7 +607,7 @@ var drawResource = function( planetid, index, num_resources ) {
 			structure.kind = kind;
 			structure.graphics.clear();
 			structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(1, 1, structureImg.width - 2, structureImg.height - 2);
-			fadeIn( structure, 500, true);
+			fadeIn( structure, 500, true, false);
 		}
 	}
 	else if ( structure.visible ){
@@ -764,9 +784,27 @@ var handleClickResource = function( planetid, index ) {
 			}
 			break;
 		case PHS_MISSIONS:
-			setPendingObject( objecttype );
-			if ( structure ){
-				setPendingTargetPlayer( structure.player );
+			switch (pendingAction.agenttype){
+				case AGT_SABATEUR:
+				case AGT_MINER:
+					setPendingObject( objecttype );
+					if ( structure ){
+						setPendingTargetPlayer( structure.player );
+					}
+					break;
+				case AGT_SURVEYOR:
+					setPendingChoice(index);
+					var resource = tiles[planetid].getChildByName("resource" + index);
+					var value = resource.getChildByName("value");
+					if ( !value.visible ){
+						fadeIn(value, 200, false, false);
+					}
+					else if ( !value.isPermanent ) {
+						fadeOut(value, 200, false);
+					}
+					break;
+				default:
+					break;
 			}
 			break;
 		default:
@@ -777,7 +815,14 @@ var handleClickResource = function( planetid, index ) {
 	setPendingResource(index);
 
 	if ( isPendingActionReady() ) {
-		displayConfirmMenu();
+		// only automatically display confirm menu if we're not resolving
+		// an ambassador or surveyor mission. Those confirm menus should 
+		// only be triggered by an explicit 'done' command
+		if ((clientGame.game.phase == PHS_MISSIONS
+			 && ( pendingAction.agenttype == AGT_SURVEYOR 
+			 	  || pendingAction.agenttype == AGT_AMBASSADOR )) == false ) {
+			displayConfirmMenu();
+		}
 	}
 };
 

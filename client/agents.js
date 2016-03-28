@@ -107,7 +107,7 @@ var updateAgents = function(planetid) {
 		else {
 			agentContainer.x = newAgentX;
 			agentContainer.y = newAgentY;
-			fadeIn(agentContainer, 500, true);
+			fadeIn(agentContainer, 500, true, false);
 		}
 
 		agentsX += agtWid + space;

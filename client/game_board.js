@@ -75,9 +75,15 @@ var createBoard = function() {
 
 		stage.addChild( board );
 		
-		fadeIn(board, 1000, false);
+		scale = 0.75;
+		var boardWidth = 7 * sWid * scale;
+		var boardHeight = 7 * sWid * scale;
+		board.x = (window.innerWidth - boardWidth) / 2.0;
+		board.y = (window.innerHeight - boardHeight) / 2.0;
+		board.scaleX = scale;
+		board.scaleY = scale;
 
-		zoomBoard(0.75); 
+		fadeIn(board, 1000, false, false);
 	}
 };
 

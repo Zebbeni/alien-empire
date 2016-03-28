@@ -8,9 +8,6 @@ var zoomBoard = function(magnify) {
 	scale = Math.min(scale, 0.7);
 	scale = Math.max(scale, 0.4);
 
-	board.scaleX = scale;
-	board.scaleY = scale;
-
 	centerBoard();
 };
 
@@ -21,8 +18,15 @@ var centerBoard = function() {
 	if (board) {
 		var boardWidth = 7 * sWid * scale;
 		var boardHeight = 7 * sWid * scale;
-		board.x = (window.innerWidth - boardWidth) / 2.0;
-		board.y = (window.innerHeight - boardHeight) / 2.0;
+		var x = (window.innerWidth - boardWidth) / 2.0;
+		var y = (window.innerHeight - boardHeight) / 2.0;
+
+		num_objects_moving += 1;
+		createjs.Tween.get(board).to({ x:x, 
+									   y:y, 
+									   scaleX:scale, 
+									   scaleY:scale}, 
+									   200 ).call(handleTweenComplete);
 	}
 };
 
