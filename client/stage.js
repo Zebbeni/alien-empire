@@ -14,6 +14,8 @@ $(window).resize(function () {
 	resizeTimer = setTimeout( checkPixelRatioAndUpdate, 100);
  });
 
+window.addEventListener("focus", function(){ refresh(); }, false);
+
 /**
  * Creates the game stage on the gameCanvas
  * Defines mouse interaction functions
@@ -87,14 +89,19 @@ var drawBackground = function() {
 
 
 var checkPixelRatioAndUpdate = function() {
+
 	if ( prevWidth != window.innerWidth || prevHeight != window.innerHeight || pixelRatio != window.devicePixelRatio ) {
 
 		prevWidth = window.innerWidth;
 		prevHeight = window.innerHeight;
 
-		setInterfaceImages();
-		updateCanvasSize();
+		refresh();
 	}
+};
+
+var refresh = function() {
+	setInterfaceImages();
+	updateCanvasSize();
 };
 
  /**
