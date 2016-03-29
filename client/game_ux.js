@@ -281,6 +281,25 @@ var displayConfirmMessage = function() {
 					
 					break;
 
+				case AGT_SURVEYOR:
+
+					var choices = pendingAction.choice;
+					message = "Increase mine production for ";
+					if (choices.length <= 0) {
+						message += "no resources";
+					}
+					else if (choices.length == 1) {
+						message += RES_ENGLISH[ planet.resources[choices[0]].kind ];
+					}
+					else {
+						for ( var i = 0; i < choices.length - 1; i++ ){
+							message += RES_ENGLISH[ planet.resources[choices[i]].kind ] + ", ";
+						}
+						message += " and " + RES_ENGLISH[ planet.resources[choices[i]].kind ];
+					}
+					message += " on " + planetname + "?";
+
+					break;
 				default:
 					break;
 			}
@@ -881,7 +900,11 @@ var updateMissionsMenu = function() {
 							messageHtml = 'Choose a resource you occupy to collect 6';
 							break;
 						case AGT_SURVEYOR:
-							messageHtml = 'Choose up to 2 resources to increase';
+							if ( pendingAction.choice == undefined 
+								 || pendingAction.choice.constructor !== Array) {
+								setPendingChoice([]);
+							}
+							messageHtml = 'Choose up to 2 resources to increase and click Done';
 							break;
 						case AGT_AMBASSADOR:
 							messageHtml = 'Choose up to 2 planets to block borders';

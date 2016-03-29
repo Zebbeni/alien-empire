@@ -143,8 +143,6 @@ var updateResourcePkgMenu = function() {
 var updateResourceAnimations = function() {
 	var packages = clientGame.game.resourcePackages[clientTurn];
 
-	console.log("packages", packages);
-
 	for (var p = 0; p < packages.length; p++){
 		var pkg = packages[p];
 
@@ -163,8 +161,6 @@ var animateResourceChange = function( pkg ) {
 
 	var clientResources = clientGame.game.resources[clientTurn];
 	var sign = "+";
-
-	console.log("animating pkg", pkg);
 
 	if (pkg.pkgtype == PKG_UPKEEP || pkg.pkgtype ==  PKG_BUILD) {
 		sign = "-";

@@ -77,15 +77,21 @@ var updateFleets = function(planetid) {
 		var fleetid = planet.fleets[i];
 		var fleetshape = fleetsContainer.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
 
-		if( fleets[fleetid].planetid != undefined ){
-
-			fleetshape.visible = true;
+		if( fleets[fleetid].planetid == planetid ){
 
 			placeY = fleetsY + ( rowNum * yDist );
 			placeX = fleetsX + xOffset + (xDist * rowIndex);
 
-			fleetshape.x = placeX;
-			fleetshape.y = placeY;
+			if ( !fleetshape.visible ) {
+				fleetshape.x = placeX;
+				fleetshape.y = placeY;
+				fadeIn(fleetshape, 500, true);
+			}
+			else if ( placeX != fleetshape.x || placeY != fleetshape.y ){
+				// we do something very similar to this in a few different places. Ought to move to animations.js
+				num_objects_moving += 1;
+				createjs.Tween.get(fleetshape).to({ x:placeX, y:placeY}, 500 ).call(handleTweenComplete);
+			}
 
 			if ( (rowIndex + 1) % rowLength == 0){
 				rowLength -= 1;
@@ -99,7 +105,7 @@ var updateFleets = function(planetid) {
 
 		}
 		else {
-			console.log("Fleet doesn't have a planetid but planet still sees it.");
+			console.log("Fleet doesn't have the correct planetid but planet still sees it.");
 		}
 	}
 };
@@ -114,7 +120,7 @@ var updateRemovedFleets = function() {
 		if ( fleets[fleetid].planetid == undefined ) {
 
 			var fleetshape = fleetsContainer.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
-			fleetshape.visible = false;
+			fadeOut(fleetshape, 500, true);
 		}
 	}
 };

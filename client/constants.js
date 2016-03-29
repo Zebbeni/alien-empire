@@ -8,6 +8,7 @@ var agtSpace = 5;
 var offline = true;
 var s3url = 'images/'; // set s3url to this if testing offline
 
+var DROP_DIST = 50;
 var MOVE_DISTANCE = 200;
 var MENU_ON = 1;
 var MENU_OFF = 2;

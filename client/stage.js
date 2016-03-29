@@ -3,6 +3,7 @@ var resizeTimer;
 var prevWidth = 0;
 var prevHeight = 0;
 var pixelRatio = 1.0;
+var num_objects_moving = 0; // number of objects being animated
 
 /**
  * Periodically checks to see if window has been resized. 
@@ -12,6 +13,8 @@ $(window).resize(function () {
 	clearTimeout(resizeTimer);
 	resizeTimer = setTimeout( checkPixelRatioAndUpdate, 100);
  });
+
+window.addEventListener("focus", function(){ refresh(); }, false);
 
 /**
  * Creates the game stage on the gameCanvas
@@ -57,7 +60,10 @@ var init_stage = function() {
 };
 
 var tick = function(event) {
-	stage.update(event);
+	if (num_objects_moving > 0) {
+		stage.update(event);
+		console.log("objects moving");
+	}
 };
 
 var init_background = function() {
@@ -83,14 +89,19 @@ var drawBackground = function() {
 
 
 var checkPixelRatioAndUpdate = function() {
+
 	if ( prevWidth != window.innerWidth || prevHeight != window.innerHeight || pixelRatio != window.devicePixelRatio ) {
 
 		prevWidth = window.innerWidth;
 		prevHeight = window.innerHeight;
 
-		setInterfaceImages();
-		updateCanvasSize();
+		refresh();
 	}
+};
+
+var refresh = function() {
+	setInterfaceImages();
+	updateCanvasSize();
 };
 
  /**
@@ -113,6 +124,8 @@ var updateCanvasSize = function() {
 
 		centerProgressBar();
 		centerBoard();
+
+		stage.update();
 	}
 };
 

@@ -37,6 +37,22 @@ var setPendingTargetPlayer = function( p ) {
 	pendingAction.targetPlayer = p;
 };
 
+// Sets pendingAction.choice to a given value. If choice is an 
+// array, we either push the value to the array or remove it if 
+// the value is already contained in the array
 var setPendingChoice = function( value ){
+	if (pendingAction.choice != undefined) {
+		if (pendingAction.choice.constructor === Array){
+			var index = pendingAction.choice.indexOf(value);
+			if ( index == -1 ){
+				pendingAction.choice.push(value);
+			}
+			else {
+				pendingAction.choice.splice(index, 1);
+			}
+			console.log("pendingAction.choice", pendingAction.choice);
+			return;
+		}
+	}
 	pendingAction.choice = value;
 };
