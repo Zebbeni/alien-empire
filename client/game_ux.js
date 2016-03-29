@@ -293,9 +293,9 @@ var displayConfirmMessage = function() {
 					}
 					else {
 						for ( var i = 0; i < choices.length - 1; i++ ){
-							message += RES_ENGLISH[ planet.resources[i].kind ] + ", ";
+							message += RES_ENGLISH[ planet.resources[choices[i]].kind ] + ", ";
 						}
-						message += " and " + RES_ENGLISH[ planet.resources[i].kind ];
+						message += " and " + RES_ENGLISH[ planet.resources[choices[i]].kind ];
 					}
 					message += " on " + planetname + "?";
 

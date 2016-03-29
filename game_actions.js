@@ -755,6 +755,9 @@ var applyBlockMission = function( action, game ){
 										  cons.PNT_EXPLORE, 
 										  game );
 						game.board.planets[planetid].explored = true;
+						for (var p = 0; p < game.players.length; p++){
+							updatePlanetBuildable(player, game, planetid);
+						}
 					}
 
 					var is_unreserved = false;
@@ -953,6 +956,34 @@ var applyMissionResolve = function( action, game ){
 							resources, 
 							'From Miner' );
 				}
+				break;
+
+			case cons.AGT_SURVEYOR:
+				
+				var planet_resources = game.board.planets[planetid].resources;
+
+				if (choice.length > 2){
+					return { isIllegal: true,
+					 		 response: "You may only increase 2 resources per mission"
+					};
+				}
+
+				for ( var i = 0; i < choice.length; i++ ){
+					if ( planet_resources[i].num >= 2 ){
+						return { isIllegal: true,
+					 		 	 response: "One of these resources has already been increased"
+						};
+					}
+				}
+
+				for ( var c = 0; c < choice.length; c++ ){
+					game.board.planets[planetid].resources[choice[c]].num = 2;
+				}
+
+				for ( var p = 0; p < game.num_players; p++ ){
+					calcResourcesToCollect( game, p );
+				}
+
 				break;
 
 			case cons.AGT_SPY:
@@ -1258,11 +1289,24 @@ var updateBuildable = function( player, game ) {
 
 	// for all planets on board
 	for ( var planetid = 0; planetid < planets.length; planetid++ ){
-		// initialize buildable by to false
-		planets[planetid].buildableBy[player] = false;
+		updatePlanetBuildable( player, game, planetid);
+	}
+};
+
+var updatePlanetBuildable = function( player, game, planetid ) {
+	var planets = game.board.planets;
+
+	// initialize buildable by to false
+	planets[planetid].buildableBy[player] = false;
+
+	if ( planets[planetid].settledBy[player] ){
+		planets[planetid].buildableBy[player] = true;
+	}
+
+	else if ( planets[planetid].explored ){
 		// for each planet id bordering this planet (including itself)
 		for ( var pid in planets[planetid].borders ){
-			// if border is open with this planet (not unexplored or blocked)
+			// if border open with this planet (not unexplored or blocked)
 			if ( planets[pid].settledBy[player] 
 				 && planets[planetid].borders[pid] == cons.BRD_OPEN ){
 				// set buildableBy to true for this player
