@@ -50,7 +50,6 @@ var setPendingChoice = function( value ){
 			else {
 				pendingAction.choice.splice(index, 1);
 			}
-			console.log("pendingAction.choice", pendingAction.choice);
 			return;
 		}
 	}

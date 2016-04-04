@@ -181,10 +181,10 @@ var displayConfirmMessage = function() {
 	var actiontype = pendingAction.actiontype;
 	var objecttype = pendingAction.objecttype;
 	var agenttype = pendingAction.agenttype;
+	var planets = clientGame.game.board.planets;
 
 	if ( actiontype != ACT_RETIRE ) {
 
-		var planets = clientGame.game.board.planets;
 		var planet = planets[ pendingAction.planetid ];
 		var sectorname = sectors.charAt( pendingAction.planetid );
 		var planetname = planet.explored ? planet.name : "Sector " + sectorname;
@@ -285,20 +285,24 @@ var displayConfirmMessage = function() {
 
 					var choices = pendingAction.choice;
 					message = "Increase mine production for ";
-					if (choices.length <= 0) {
-						message += "no resources";
+					var names = [];
+					for ( var i = 0; i < choices.length; i++ ){
+						names.push(RES_ENGLISH[ planet.resources[choices[i]].kind ]);
 					}
-					else if (choices.length == 1) {
-						message += RES_ENGLISH[ planet.resources[choices[0]].kind ];
-					}
-					else {
-						for ( var i = 0; i < choices.length - 1; i++ ){
-							message += RES_ENGLISH[ planet.resources[choices[i]].kind ] + ", ";
-						}
-						message += " and " + RES_ENGLISH[ planet.resources[choices[i]].kind ];
-					}
+					message += englishList(names, "no resources") + "?";
 					message += " on " + planetname + "?";
 
+					break;
+
+				case AGT_AMBASSADOR:
+
+					var choices = pendingAction.choice;
+					message = "Block travel from " + planetname + " to ";
+					var names = [];
+					for ( var i = 0; i < choices.length; i++ ){
+						names.push(planets[ choices[i] ].name);
+					}
+					message += englishList(names, "no planets") + "?";
 					break;
 				default:
 					break;
@@ -311,6 +315,23 @@ var displayConfirmMessage = function() {
 	}
 
 	$('#your-action-message-div')[0].innerHTML = message;
+};
+
+var englishList = function(list, ifnone){
+	var string = "";
+	if (list.length <= 0) {
+		string += ifnone;
+	}
+	else if (list.length == 1) {
+		string += list[0];
+	}
+	else {
+		for ( var i = 0; i < list.length - 1; i++ ){
+			string += list[i] + ", ";
+		}
+		string += " and " + list[i];
+	}
+	return string;
 };
 
 var confirmPendingAction = function() {
@@ -907,7 +928,13 @@ var updateMissionsMenu = function() {
 							messageHtml = 'Choose up to 2 resources to increase and click Done';
 							break;
 						case AGT_AMBASSADOR:
-							messageHtml = 'Choose up to 2 planets to block borders';
+							if ( pendingAction.choice == undefined 
+								 || pendingAction.choice.constructor !== Array) {
+								setPendingChoice([]);
+								updateNoFlyZones();
+								stage.update();
+							}
+							messageHtml = 'Choose up to 2 borders to block';
 							break;
 						case AGT_SABATEUR:
 							messageHtml = 'Choose an opponent structure to destroy';

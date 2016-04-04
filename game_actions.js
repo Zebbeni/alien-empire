@@ -986,6 +986,40 @@ var applyMissionResolve = function( action, game ){
 
 				break;
 
+			case cons.AGT_AMBASSADOR:
+				
+				if (choice.length > 2){
+					return { isIllegal: true,
+					 		 response: "You may only block 2 borders per mission"
+					};
+				}
+
+				for ( var i = 0; i < choice.length; i++ ){
+					if ( planets[planetid].borders[ choice[i] ] == cons.BRD_BLOCKED ){
+						return { isIllegal: true,
+					 		 	 response: "One of these borders has already been blocked"
+						};
+					}
+
+					if ( !planets[ choice[i] ].explored ){
+						return { isIllegal: true,
+					 		 	 response: "You cannot block a border to an unexplored planet"
+						};
+					}
+				}
+
+				for ( var i = 0; i < choice.length; i++ ){
+					planets[planetid].borders[ choice[i] ] = cons.BRD_BLOCKED;
+					planets[ choice[i] ].borders[ planetid ] = cons.BRD_BLOCKED;
+
+					for ( var p = 0; p < game.players.length; p++ ){
+						updatePlanetBuildable( p, game, planetid );
+						updatePlanetBuildable( p, game, choice[i] );
+					}
+				}
+
+				break;
+
 			case cons.AGT_SPY:
 
 				game.board.planets[mission.planetTo].spyeyes[player] += 1;

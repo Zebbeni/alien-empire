@@ -29,3 +29,16 @@ var fadeOut = function(container, time, raise){
 var handleTweenComplete = function(){
 	num_objects_moving -= 1;
 };
+
+var alphaTo = function(container, time, alpha, override){
+	num_objects_moving += 1;
+
+	if (override){
+		var num_existing_tweens = createjs.Tween.hasActiveTweens(container);
+		if ( num_existing_tweens ){
+			num_objects_moving -= num_existing_tweens;
+		}
+	}
+
+	createjs.Tween.get(container, {override: override}).to({ alpha: alpha}, time ).call(handleTweenComplete);
+};
