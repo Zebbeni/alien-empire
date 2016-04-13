@@ -13,7 +13,7 @@
 	left:0;
 }
 
-#your-turn-div, #confirm-action-div {
+#your-turn-div, #confirm-action-div, #include-smuggler-div {
 	opacity: 0;
 	position: fixed;
 	top: 38%;
@@ -26,7 +26,7 @@
 	pointer-events: none;
 }
 
-#pending-action-div, #your-turn-message-div, #your-action-message-div {
+#pending-action-div, #your-turn-message-div, #your-action-message-div, #include-smuggler-message-div {
 	display: table;
 	position: relative;
 	margin: 0 auto;
@@ -35,7 +35,7 @@
 	text-align: center;
 }
 
-#your-turn-message-div, #your-action-message-div {
+#your-turn-message-div, #your-action-message-div, #include-smuggler-message-div {
 	background: rgba(0, 0, 0, .3);
 }
 
@@ -52,7 +52,7 @@
 	font-size: 15px;
 }
 
-#your-action-message-div {
+#your-action-message-div, #include-smuggler-message-div {
 	font-size: 30px;
 }
 
@@ -151,7 +151,7 @@
 	color: #FFF011;
 }
 
-#action-confirm-button-wrapper {
+#action-confirm-button-wrapper, #include-smuggler-button-wrapper {
 	height: 70px;
 	width: 120px;
     margin: 0 auto;
@@ -252,7 +252,7 @@
 	pointer-events: auto;
 }
 
-#action-confirm-button, #action-cancel-button {
+#action-confirm-button, #action-cancel-button, #smuggler-confirm-button, #smuggler-cancel-button {
 	position: relative;
 	float: left;
 	height: 50px;

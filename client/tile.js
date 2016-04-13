@@ -342,7 +342,6 @@ var initPlanet = function ( planetid ) {
 	planet.alpha = 0;
 
 	planet.on("mouseover", function() {
-		console.log("mousing over planet");
 		selectPlanet(planetid);
 	});
 

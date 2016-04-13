@@ -87,10 +87,6 @@ var updateAgents = function(planetid) {
 		var agentname = AGT_ENGLISH[agenttype] + player;
 
 		var agentContainer = agentsContainer.getChildByName(agentname);
-		
-		if (createjs.Tween.hasActiveTweens(agentContainer) ){
-			console.log(AGT_ENGLISH[agenttype], "has active tweens");
-		}
 
 		agentsContainer.setChildIndex( agentContainer, 
 									   agentsContainer.getNumChildren() - 1);

@@ -317,6 +317,18 @@ var displayConfirmMessage = function() {
 	$('#your-action-message-div')[0].innerHTML = message;
 };
 
+var displayIncludeSmugglerMenu = function(){
+	$('#include-smuggler-div')[0].style.visibility = "visible";
+	$("#include-smuggler-div").transition({ opacity: 1.00, top: "40%"}, 500 );	
+};
+
+var hideIncludeSmugglerMenu = function() {
+	$("#include-smuggler-div").transition({ opacity: 0.00, top: "38%"}, 500, 
+		function(){
+			$('#include-smuggler-div')[0].style.visibility = "hidden";
+		});
+};
+
 var englishList = function(list, ifnone){
 	var string = "";
 	if (list.length <= 0) {
@@ -336,7 +348,12 @@ var englishList = function(list, ifnone){
 
 var confirmPendingAction = function() {
 	hideConfirmMenu();
-	submitAction();
+	if (clientGame.game.phase == PHS_ACTIONS && isSmugglerAvailable(pendingAction.planetid)){
+		displayIncludeSmugglerMenu();
+	}
+	else {
+		submitAction();
+	}
 };
 
 var cancelPendingAction = function() {
@@ -345,6 +362,14 @@ var cancelPendingAction = function() {
 		updateBoardInteractivity();
 	}
 	hideConfirmMenu();
+};
+
+var isSmugglerAvailable = function( planetid ){
+	var agentid = String(clientTurn) + String(pendingAction.agenttype);
+	var smugglerid = String(clientTurn) + String(AGT_SMUGGLER);
+	var agent = clientGame.game.board.agents[ agentid ];
+	var smuggler = clientGame.game.board.agents[ smugglerid ];
+	return (smuggler.planetid == agent.planetid && !smuggler.used && smuggler.status == AGT_STATUS_ON);
 };
 
 var displayGameMessages = function() {
