@@ -162,9 +162,18 @@ var hideYourTurnMenu = function() {
 };
 
 var displayConfirmMenu = function() {
-	displayConfirmMessage();
-	$('#confirm-action-div')[0].style.visibility = "visible";
-	$("#confirm-action-div").transition({ opacity: 1.00, top: "40%"}, 500 );
+	if ( clientGame.game.phase == PHS_ACTIONS 
+		 && pendingAction.agenttype != AGT_SMUGGLER
+		 && pendingAction.actiontype == ACT_LAUNCH_MISSION
+		 && pendingAction.usesmuggler == undefined
+		 && isSmugglerAvailable(pendingAction.planetid) ){
+		displayIncludeSmugglerMenu();
+	}
+	else {
+		displayConfirmMessage();
+		$('#confirm-action-div')[0].style.visibility = "visible";
+		$("#confirm-action-div").transition({ opacity: 1.00, top: "40%"}, 500 );
+	}
 };
 
 var hideConfirmMenu = function() {
@@ -346,14 +355,15 @@ var englishList = function(list, ifnone){
 	return string;
 };
 
+var includeSmuggler = function( include ){
+	setPendingSmuggler(include);
+	hideIncludeSmugglerMenu();
+	displayConfirmMenu();
+};
+
 var confirmPendingAction = function() {
 	hideConfirmMenu();
-	if (clientGame.game.phase == PHS_ACTIONS && isSmugglerAvailable(pendingAction.planetid)){
-		displayIncludeSmugglerMenu();
-	}
-	else {
-		submitAction();
-	}
+	submitAction();
 };
 
 var cancelPendingAction = function() {

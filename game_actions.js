@@ -622,7 +622,10 @@ var applyLaunchMission = function( action, game ) {
 	var planetid = action.planetid;
 
 	var agentid = String(player) + String(agenttype);
+	var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
 	var agent = game.board.agents[ agentid ];
+	var smuggler = game.board.agents[ smugglerid ];
+
 	var planets = game.board.planets;
 
 	if ( planetid != agent.planetid && !(planetid in planets[agent.planetid].borders ) ) {
@@ -649,11 +652,35 @@ var applyLaunchMission = function( action, game ) {
 			};
 	}
 
+	if ( action.usesmuggler == true ) {
+		if ( smuggler.status != cons.AGT_STATUS_ON ) {
+			return { isIllegal: true,
+				 	 response: "Your smuggler is not on the board"
+			};
+		}
+
+		if ( smuggler.used ) {
+			return { isIllegal: true,
+				 	 response: "Your smuggler cannot perform another action this turn"
+			};
+		}
+
+		if ( smuggler.planetid != agent.planetid ) {
+			return { isIllegal: true,
+				 	 response: "Your smuggler must be on the same planet as your mission agent"
+			};
+		}
+
+		smuggler.used = true;
+		smuggler.missionround = game.round;
+	}
+
 	var newMission = {
 						player: player,
 						agenttype: agenttype,
 						planetTo: planetid,
 						planetFrom: agent.planetid,
+						useSmuggler: action.usesmuggler,
 						resolution: {
 							resolved: false,
 							blocked: undefined,
@@ -665,8 +692,6 @@ var applyLaunchMission = function( action, game ) {
 		newMission.collectors = [player];
 	}
 
-	// TODO: check for SMUGGLER and add an extra attribute for the agent he
-	// is smuggling in
 	game.missions[ game.round ].push( newMission );
 
 	agent.used = true;
@@ -902,11 +927,11 @@ var applyMissionResolve = function( action, game ){
 		return { isDuplicate: false };
 	}
 
-	if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
+	// if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
 
-		game.missions[round][ index ].resolution.noflyblocked = true;
+	// 	game.missions[round][ index ].resolution.noflyblocked = true;
 
-	}
+	// }
 
 	else if ( game.missions[round][index].resolution.nochoice ) {
 		moveAgent( agent, agentid, planetid, planets );
@@ -1077,13 +1102,21 @@ var applyMissionResolve = function( action, game ){
 
 		}
 
-		moveAgent( agent, agentid, planetid, planets );
+		// if ( mission.useSmuggler ){
+		// 	var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+		// 	var smuggler = game.board.agents[ smugglerid ];
+		// 	moveAgent( smuggler, smugglerid, planetid, planets );
+		// 	smuggler.missionround = undefined;
+		// 	smuggler.used = false;
+		// }
+
+		// moveAgent( agent, agentid, planetid, planets );
 	}
 	
 	game.missions[round][ index ].resolution.resolved = true;
 	helpers.resetMissionSpied( game );
-	agent.missionround = undefined;
-	agent.used = false;
+	// agent.missionround = undefined;
+	// agent.used = false;
 
 	return { isIllegal: false };
 };
@@ -1513,6 +1546,10 @@ var updatePhase = function( game ){
 		default:
 			break;
 	}
+
+	if (game.phase == cons.PHS_MISSIONS ){
+		preProcessMission( game );
+	}
 };
 
 var updateRound = function( game ){
@@ -1532,6 +1569,43 @@ var updateMissionIndex = function(game, round) {
 	if ( game.missionindex >= game.missions[round].length ) {
 		game.missionindex = 0;
 		updatePhase( game );
+	}
+	else {
+		preProcessMission( game );
+	}
+};
+
+var preProcessMission = function( game ){
+	var index = game.missionindex;
+	var round = game.round - 2;
+	if ( game.missions[round] && game.missions[round].length > 0 ){
+		var mission = game.missions[round][index];
+		var player = mission.player;
+		var planets = game.board.planets;
+		var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+		var smuggler = game.board.agents[ smugglerid ];
+		var agentid = String(player) + String(mission.agenttype);
+		var agent = game.board.agents[ agentid ];
+
+		if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
+
+			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
+				moveAgent( agent, agentid, mission.planetTo, planets );
+				moveAgent( smuggler, smugglerid, mission.planetTo, planets);
+			}
+			else {
+				game.missions[round][ index ].resolution.noflyblocked = true;
+				game.missions[round][ index ].resolution.resolved = true;
+			}
+		}
+		else {
+			moveAgent( agent, agentid, mission.planetTo, planets );
+		}
+
+		smuggler.missionround = undefined;
+		smuggler.used = false;
+		agent.missionround = undefined;
+		agent.used = false;
 	}
 };
 

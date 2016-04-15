@@ -29,6 +29,10 @@ var setPendingAgent = function( agenttype ) {
 	pendingAction.agenttype = agenttype;
 };
 
+var setPendingSmuggler = function( usesmuggler ){
+	pendingAction.usesmuggler = usesmuggler;
+};
+
 var setPendingTargetId = function( id ) {
 	pendingAction.targetid = id;
 };
