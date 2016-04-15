@@ -22,7 +22,12 @@
 	margin-left: -400px;
 }
 
+#confirm-action-div, #include-smuggler-div {
+	top: 38%;
+}
+
 #your-turn-div {
+	top: 28%;
 	pointer-events: none;
 }
 

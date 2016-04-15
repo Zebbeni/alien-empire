@@ -156,7 +156,7 @@ var clickAgentButton = function( agenttype ){
 
 var hideYourTurnMenu = function() {
 	$('#turn-done-button')[0].style.visibility = "hidden";
-	$("#your-turn-div").transition({ opacity: 0.00, top: "38%"}, 500, function(){
+	$("#your-turn-div").transition({ opacity: 0.00, top: "28%"}, 500, function(){
 		$('#your-turn-div')[0].style.visibility = "hidden";
 	});
 };
@@ -503,8 +503,8 @@ var buildChatMessage = function( msg, messages, m) {
 var displayYourTurnMenu = function() {
 	$('#your-turn-div')[0].style.visibility = "visible";
 	$('#turn-done-button')[0].style.visibility = "visible";
-	$("#your-turn-div").transition({ opacity: 1.00, top: "40%"}, 500, function() {
-		$("#your-turn-div").delay(3000).transition({ opacity: 0.00, top: "38%"}, 500, function(){
+	$("#your-turn-div").transition({ opacity: 1.00, top: "30%"}, 500, function() {
+		$("#your-turn-div").delay(3000).transition({ opacity: 0.00, top: "28%"}, 500, function(){
 			$('#your-turn-div')[0].style.visibility = "hidden";
 		});
 	});
