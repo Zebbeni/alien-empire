@@ -1097,26 +1097,37 @@ var applyMissionResolve = function( action, game ){
 
 				break;
 
+			case cons.AGT_SMUGGLER:
+				var planet = game.board.planets[planetid];
+				var resources = [0, 0, 0, 0];
+				
+				for ( var i = 0; i < planet.resources.length; i++ ){
+					var res = planet.resources[i];
+					var struct = res.structure;
+					if ( struct != undefined && struct.player != mission.player ){
+						var kind = res.kind;
+						if ( game.resources[struct.player][kind] > 0) {
+							resources[res.kind] += 1;
+							game.resources[struct.player][kind] -= 1;
+						}
+					}
+				}
+
+				helpers.addResourcePackage( game, 
+							player, 
+							cons.PKG_SMUGGLER, 
+							resources, 
+							'From Smuggler' );
+				break;
+
 			default:
 				break;
 
 		}
-
-		// if ( mission.useSmuggler ){
-		// 	var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
-		// 	var smuggler = game.board.agents[ smugglerid ];
-		// 	moveAgent( smuggler, smugglerid, planetid, planets );
-		// 	smuggler.missionround = undefined;
-		// 	smuggler.used = false;
-		// }
-
-		// moveAgent( agent, agentid, planetid, planets );
 	}
 	
 	game.missions[round][ index ].resolution.resolved = true;
 	helpers.resetMissionSpied( game );
-	// agent.missionround = undefined;
-	// agent.used = false;
 
 	return { isIllegal: false };
 };
