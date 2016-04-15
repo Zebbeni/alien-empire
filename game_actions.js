@@ -575,7 +575,7 @@ var applyPayUpkeep = function( action, game ){
 
 	updateStructurePoints(game, player);
 	calcPoints(game, player);
-	
+
 	return { isIllegal: false };
 };
 
@@ -1704,6 +1704,7 @@ var addPointsForStructure = function( player, objecttype, planetid, game) {
 // this is also dumb. We should eventually replace both the add and remove
 // points functions with one that searches all planets and returns the definitive
 // point total for all structures, considering blocked borders
+// TODO: update calls to this function with the new updateStructurePoints function
 var removePointsForStructure = function( player, objecttype, game ){
 	var value = cons.OBJ_VALUE[objecttype];
 	game.points[player][cons.PNT_STRUCTURES] -= value;
