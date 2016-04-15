@@ -573,6 +573,9 @@ var applyPayUpkeep = function( action, game ){
 		updatePhase( game );
 	}
 
+	updateStructurePoints(game, player);
+	calcPoints(game, player);
+	
 	return { isIllegal: false };
 };
 
@@ -1705,6 +1708,67 @@ var removePointsForStructure = function( player, objecttype, game ){
 	var value = cons.OBJ_VALUE[objecttype];
 	game.points[player][cons.PNT_STRUCTURES] -= value;
 	calcPoints(game, player);
+};
+
+var updateStructurePoints = function(game, player){
+	var protected = getAllProtectedPlanets(game);
+	var planets = game.board.planets;
+	var total = 0;
+
+	for (var p = 0; p < planets.length; p++){
+		for (var r = 0; r < planets[p].resources.length; r++){
+			var struct = planets[p].resources[r].structure;
+			if (struct != undefined && struct.player == player){
+				total += cons.OBJ_VALUE[struct.kind];
+				if ( protected.indexOf(p) != -1 ){
+					total += 1;
+				}
+			}
+		}
+
+		if ( planets[p].base && planets[p].base.player == player) {
+			total += cons.OBJ_VALUE[cons.OBJ_BASE];
+			if ( protected.indexOf(p) != -1 ){
+				total += 1;
+			}
+		}
+	}
+
+	for ( var i = 0; i < cons.NUM_FLEETS; i++ ) {
+		var id = String(player) + String(i);
+		var fleet = game.board.fleets[ id ];
+		if ( fleet.planetid != undefined ){
+			total += cons.OBJ_VALUE[cons.OBJ_FLEET];
+			if ( protected.indexOf(fleet.planetid) != -1 ){
+				total += 1;
+			}
+		}
+	}
+
+	game.points[player][cons.PNT_STRUCTURES] = total;
+};
+
+var getAllProtectedPlanets = function( game ){
+	var protected = [];
+	var planets = game.board.planets;
+
+	for (var pid = 0; pid < planets.length; pid++){
+		if ( planets[pid].explored ){	
+			var is_enclosed = true;
+			for ( var bid in planets[pid].borders ){
+				if ( planets[bid].explored 
+					 && planets[pid].borders[bid] != cons.BRD_BLOCKED ){
+					is_enclosed = false;
+					break;
+				}
+			}
+			if (is_enclosed) {
+				protected.push(pid);
+			}
+		}
+	}
+
+	return protected;
 };
 
 var addPointsLimited = function( player, planetid, pointtype, game ){
