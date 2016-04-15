@@ -10,12 +10,24 @@ var createResourcesMenu = function() {
 	var innerHTML = '';
 	clientGame.game.collectedPkgs = []; // indices of packages the ux has animated
 
+	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
+
 	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+		
+		table = '<table class="fourtoone-menu-table" cellspacing="0">';
+		for ( var j = RES_METAL; j <= RES_FOOD; j++){
+			if ( i != j ){
+				table += '<td width="25px" height="25px"><input type="button" class="res-icon-button ' + icons[j] + '" onclick="javascript:tradeFourToOne(' + i + ',' + j + ')"></input></td>';
+			}
+		}
+		table += '</table>'
+		
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
 				   + '<div class="gain-div"></div><div class="loss-div"></div>'
 				   + '<table class="resource-table" cellspacing="0"></table>'
-				   + '<input type="button" class="fourtoone-button" value="4 to 1"></input>'
+				   + '<input type="button" class="fourtoone-button" value="4 to 1" onclick="javascript:toggleFourToOneMenu(' + i + ')"></input>'
 				   + '<div id="res-change' + i + '" class="res-change"></div>'
+				   + '<div id="fourtoone-menu' + i + '" class="fourtoone-menu">' + table + '</div>'
 				   + '</div>';
 	}
 
@@ -195,4 +207,38 @@ var collectResourcePackage = function( pkgindex ){
 
 var payUpkeepPackage = function( pkgindex ){
 	submitPayUpkeep( pkgindex );
+};
+
+var tradeFourToOne = function( paykind, getkind ){
+	submitTradeFourToOne( paykind, getkind );
+	hideFourToOneMenu( paykind );
+};
+
+var toggleFourToOneMenu = function( res ){
+	for ( var i = RES_METAL; i <= RES_FOOD; i++){
+		if ( i == res){
+			if ( $('#fourtoone-menu' + i)[0].style.visibility == "visible"){
+				hideFourToOneMenu( i );
+			}
+			else {
+				showFourToOneMenu( i );
+			}
+		}
+		else {
+			hideFourToOneMenu( i );
+		}
+	}
+};
+
+var hideFourToOneMenu = function( res ){
+	if ( $('#fourtoone-menu' + res)[0].style.visibility == "visible"){
+		$('#fourtoone-menu' + res).transition({ opacity: 0.00}, 250, function(){
+			$( this )[0].style.visibility = "hidden";
+		});
+	}
+};
+
+var showFourToOneMenu = function( res ){
+	$('#fourtoone-menu' + res)[0].style.visibility = "visible";
+	$('#fourtoone-menu' + res).transition({ opacity: 1.00}, 250);
 };

@@ -27,3 +27,7 @@ var submitPayUpkeep = function(pkg_index) {
 var submitMissionsViewed = function() {
 	socket_submitMissionsViewed();
 };
+
+var submitTradeFourToOne = function(pay, get){
+	socket_submitTradeFourToOne(pay, get);
+};

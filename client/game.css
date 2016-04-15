@@ -215,10 +215,13 @@
 	vertical-align: middle;
 }
 
+.res-icon-button:hover {
+	background-position: -25px 0;
+}
+
 .metal-icon, .water-icon, .fuel-icon, .food-icon {
 	color: white;
 }
-
 
 .points-icon {
 	color: black;
@@ -356,6 +359,15 @@
 
 #resource-div3 {
 	top: 110px;
+}
+
+.fourtoone-menu {
+	position: absolute;
+	visibility: hidden;
+	float: left;
+	left: 380px;
+	height: 25px;
+	width: 75px;
 }
 
 .gain-div, .loss-div {

@@ -53,7 +53,20 @@ var socket_submitPayUpkeep = function(pkgindex) {
 					actiontype: ACT_PAY_UPKEEP
 				};
 	socket.emit('do game action', clientGame.gameid, action, function(data) {
-		console.log('payint upkeep: ', data);
+		console.log('paying upkeep: ', data);
+	});
+};
+
+var socket_submitTradeFourToOne = function(pay, get){
+	var action = {
+		player: clientTurn,
+		actiontype: ACT_TRADE_FOUR_TO_ONE,
+		paytype: pay,
+		gettype: get
+	};
+
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('four to one trading: ', data);
 	});
 };
 

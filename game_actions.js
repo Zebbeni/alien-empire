@@ -125,6 +125,8 @@ var applyAction = function( action, game ){
 			return applyCollectResourcesAction( action, game );
 		case cons.ACT_PAY_UPKEEP:
 			return applyPayUpkeep( action, game );
+		case cons.ACT_TRADE_FOUR_TO_ONE:
+			return applyTradeFourToOne( action, game);
 		case cons.ACT_VIEWED_MISSIONS:
 			return applyViewedMissions( action, game );
 		case cons.ACT_BLOCK_MISSION:
@@ -572,6 +574,31 @@ var applyPayUpkeep = function( action, game ){
 	}
 
 	return { isIllegal: false };
+};
+
+var applyTradeFourToOne = function( action, game){
+	var player = action.player;
+	var paytype = action.paytype;
+	var gettype = action.gettype;
+
+	if ( game.resources[player][paytype] < 4 ){
+		return { isIllegal: true,
+			 	 response: "You do not have enough of this resource to 4 to 1"
+		};
+	}
+
+	game.resources[player][paytype] -= 4;
+
+	var resources = [0,0,0,0];
+	resources[gettype] = 1;
+
+	helpers.addResourcePackage( game, 
+							player, 
+							cons.PKG_TRADE, 
+							resources, 
+							'From 4 to 1' );
+
+	return { isIllegal: false};
 };
 
 var applyMoveAgentAction = function( action, game ){

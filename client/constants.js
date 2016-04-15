@@ -3,10 +3,10 @@ var sWid = 212;
 var agtWid = 100;
 var agtSpace = 5;
 
-var offline = false; // checked by loader when creating settings for LoadQueue
-var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
-// var offline = true;
-// var s3url = 'images/'; // set s3url to this if testing offline
+// var offline = false; // checked by loader when creating settings for LoadQueue
+// var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
+var offline = true;
+var s3url = 'images/'; // set s3url to this if testing offline
 
 var DROP_DIST = 50;
 var MOVE_DISTANCE = 200;
@@ -81,6 +81,7 @@ var ACT_VIEWED_MISSIONS = 12;
 var ACT_BLOCK_MISSION = 13;
 var ACT_MISSION_RESOLVE = 14;
 var ACT_MISSION_VIEWED = 15;
+var ACT_TRADE_FOUR_TO_ONE = 16;
 
 var PNT_STRUCTURES = 0;
 var PNT_EXPLORE = 1;
@@ -144,7 +145,8 @@ var ACT_ENGLISH_PAST = {
 					12: " viewed missions",
 					13: " blocked a mission",
 					14: " resolved their mission",
-					15: " viewed the current mission"
+					15: " viewed the current mission",
+					16: " did a 4 to 1 trade"
 				};
 
 // DON'T CAPITALIZE THESE. USED FOR DOM CLASS NAMES
