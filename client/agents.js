@@ -166,8 +166,8 @@ var handleClickAgent = function( agenttype ) {
 			showAgentRetireMenu();
 			break;
 		case PHS_ACTIONS:
-			updateAgentActionMenu( agenttype );
-			showAgentActionMenu();
+			updateActionMenu( 'agent', agenttype );
+			showActionMenu();
 			break;
 		default:
 			break;
@@ -188,30 +188,6 @@ var updateAgentRetireMenu = function( agenttype ){
 											hideAgentRetireMenu();
 											setPendingAction( ACT_RETIRE );
 											displayConfirmMenu();
-										} );
-};
-
-var showAgentActionMenu = function() {
-	$('#agent-action-div')[0].style.visibility = "visible";
-};
-
-var hideAgentActionMenu = function() {
-	$('#agent-action-div')[0].style.visibility = "hidden";
-};
-
-var updateAgentActionMenu = function( agenttype ){
-	$('#agent-action-name')[0].innerHTML = "Action: " + AGT_ENGLISH[agenttype];
-	$('#agent-move-button').click( function() { 
-											hideAgentActionMenu();
-											setPendingAction( ACT_MOVE_AGENT );
-											updateBoardInteractivity();
-											updateTurnHelpMessage();
-										} );
-	$('#agent-mission-button').click( function() { 
-											hideAgentActionMenu();
-											setPendingAction( ACT_LAUNCH_MISSION );
-											updateBoardInteractivity();
-											updateTurnHelpMessage();
 										} );
 };
 

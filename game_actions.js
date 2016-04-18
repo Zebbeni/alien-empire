@@ -143,6 +143,8 @@ var applyAction = function( action, game ){
 			return applyMissionResolve( action, game );
 		case cons.ACT_MISSION_VIEWED:
 			return applyMissionViewed( action, game );
+		case cons.ACT_FLEET_MOVE:
+			return applyFleetMove( action, game );
 		default:
 			return { 
 					isIllegal: true,
@@ -762,6 +764,42 @@ var applyMoveAgentAction = function( action, game ){
 
 };
 
+var applyFleetMove = function( action, game ){
+
+	var player = action.player;
+	var fleetid = action.targetid;
+	var fleet = game.board.fleets[fleetid];
+	var planetfrom = game.board.planets[fleet.planetid];
+
+	if ( fleet.used ){
+		return { isIllegal: true,
+				 response: "Fleet has already been used this turn"
+		};
+	}
+
+	if ( fleet.planetid == action.planetid ) {
+		return { isIllegal: true,
+				 response: "Fleet is already on this planet"
+		};
+	}
+
+	if ( !(action.planetid in planetfrom.borders )) {
+		return { isIllegal: true,
+				 response: "Fleets can only move one planet per turn"
+		};
+	}
+
+	if ( planetfrom.borders[action.planetid] == cons.BRD_BLOCKED ) {
+		return { isIllegal: true,
+				 response: "Fleets cannot cross no-fly zones"
+		};
+	}
+
+	moveFleet( game, fleetid, action.planetid);
+
+	return { isIllegal: false };
+};
+
 var applyLaunchMission = function( action, game ) {
 
 	var player = action.player;
@@ -1326,6 +1364,21 @@ var moveAgent = function( agent, agentid, planetid, planets ) {
 
 	agent.planetid = planetid;
 	planets[planetid].agents.push( agentid );
+};
+
+var moveFleet = function( game, fleetid, planetid) {
+
+	var planets = game.board.planets;
+	var fleet = game.board.fleets[fleetid];
+	var planetfrom = planets[fleet.planetid];
+	var planetto = planets[planetid];
+
+	var index = planetfrom.fleets.indexOf(fleetid);
+	game.board.planets[fleet.planetid].fleets.splice( index, 1 );
+
+	game.board.planets[planetid].fleets.push(fleetid);
+	game.board.fleets[fleetid].planetid = planetid;
+	game.board.fleets[fleetid].used = true;
 };
 
 // checks if an agent being removed has a pending mission

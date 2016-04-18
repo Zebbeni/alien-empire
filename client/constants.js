@@ -86,6 +86,7 @@ var ACT_TRADE_REQUEST = 17;
 var ACT_TRADE_CANCEL = 18;
 var ACT_TRADE_ACCEPT = 19;
 var ACT_TRADE_DECLINE = 20;
+var ACT_FLEET_MOVE = 21;
 
 var PNT_STRUCTURES = 0;
 var PNT_EXPLORE = 1;
@@ -154,7 +155,8 @@ var ACT_ENGLISH_PAST = {
 					17: " requested a trade",
 					18: " cancelled a trade request",
 					19: " accepted a trade request",
-					20: " declined a trade request"
+					20: " declined a trade request",
+					21: " moved a fleet"
 				};
 
 // DON'T CAPITALIZE THESE. USED FOR DOM CLASS NAMES
@@ -191,7 +193,8 @@ var ACTION_REQUIREMENTS = {
 	6: ['actiontype', 'objecttype', 'planetid', 'resourceid'],
 	8: ['actiontype', 'agenttype', 'planetid'],
 	9: ['actiontype', 'agenttype', 'planetid'],
-	14: ['actiontype', 'agenttype', 'planetid']
+	14: ['actiontype', 'agenttype', 'planetid'],
+	21: ['actiontype', 'planetid', 'targetid']
 };
 
 var STRUCT_REQS = {

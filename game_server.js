@@ -64,6 +64,7 @@ var actions = require('./game_actions');
 			case cons.ACT_TRADE_DECLINE:
 			case cons.ACT_MISSION_RESOLVE:
 			case cons.ACT_MISSION_VIEWED:
+			case cons.ACT_FLEET_MOVE:
 				return actions.resolveGameAction( action, gameInfo.game );
 			default:
 				return false;

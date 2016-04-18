@@ -169,7 +169,10 @@ var updateTileInteractivity = function(planetid) {
 			mousePlanet( planetid, false );
 			mouseResources( planets, planetid, false, false, false );
 
-			if ( actiontype == ACT_MOVE_AGENT || actiontype == ACT_LAUNCH_MISSION ){
+			if ( actiontype == ACT_MOVE_AGENT 
+				 || actiontype == ACT_LAUNCH_MISSION 
+				 || actiontype == ACT_FLEET_MOVE ){
+
 				mousePlanet( planetid, true );
 
 				if ( actiontype == ACT_LAUNCH_MISSION && agenttype == AGT_EXPLORER ){

@@ -260,6 +260,13 @@ var displayConfirmMessage = function() {
 						+ planetname + "?";
 			break;
 
+		case ACT_FLEET_MOVE:
+			var fleet = clientGame.game.board.fleets[pendingAction.targetid];
+			var planetfrom = planets[fleet.planetid].name;
+			message = "Move your " + OBJ_ENGLISH[OBJ_FLEET] + " from "
+						+ planetfrom + " to " + planetname + "?";
+			break;
+
 		case ACT_LAUNCH_MISSION:
 			message = "Send your " + AGT_ENGLISH[agenttype] + " on a mission "
 						+ " to " + planetname + "?";
@@ -1027,6 +1034,53 @@ var viewMissionAction = function() {
 	setPendingAction( ACT_MISSION_VIEWED );
 	setPendingChoice( clientGame.game.missionindex );
 	submitAction();
+};
+
+var showActionMenu = function() {
+	$('#agent-action-div')[0].style.visibility = "visible";
+};
+
+var hideActionMenu = function() {
+	$('#agent-action-div')[0].style.visibility = "hidden";
+};
+
+// actortype is a string, 'fleet' 'agent' or 'base'
+// id is a fleetid, agenttype, or base planetid
+var updateActionMenu = function( actortype, id ){
+	if ( actortype == 'agent' ){
+		$('#agent-action-name')[0].innerHTML = "Action: " + AGT_ENGLISH[id];
+		$('#agent-move-button').prop('value', 'Move');
+		$('#agent-move-button').off().click( function() { 
+											hideActionMenu();
+											setPendingAction( ACT_MOVE_AGENT );
+											updateBoardInteractivity();
+											updateTurnHelpMessage();
+										} );
+		$('#agent-mission-button').prop('value', 'Mission');
+		$('#agent-mission-button').off().click( function() { 
+											hideActionMenu();
+											setPendingAction( ACT_LAUNCH_MISSION );
+											updateBoardInteractivity();
+											updateTurnHelpMessage();
+										} );
+	}
+	else if ( actortype == 'fleet'){
+		$('#agent-action-name')[0].innerHTML = "Action: " + OBJ_ENGLISH[OBJ_FLEET];
+		$('#agent-move-button').prop('value', 'Move');
+		$('#agent-move-button').off().click( function() { 
+											hideActionMenu();
+											setPendingAction( ACT_FLEET_MOVE );
+											updateBoardInteractivity();
+											// updateTurnHelpMessage();
+										} );
+		$('#agent-mission-button').prop('value', 'Attack');
+		$('#agent-mission-button').off().click( function() { 
+											hideActionMenu();
+											// setPendingAction( ACT_FLEET_ATTACK );
+											// updateBoardInteractivity();
+											// updateTurnHelpMessage();
+										} );
+	}
 };
 
 /** 

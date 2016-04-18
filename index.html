@@ -76,6 +76,11 @@
         <div>
             <input type="button" id="turn-done-button" style="visibility: hidden" value="End Turn" onclick="javascript:submitTurnDone();"></input>
         </div>
+        <div id="resourcepackages-div" style="visibility: hidden">
+            <div class="respkg-arrow-div"></div>
+            <div class="respkg-upkeep-div"></div>
+            <div class="respkg-collect-div"></div>
+        </div>
         <div id="bottom-bar-div" style="visibility: hidden">
             <div id="structures-menu-div"></div>
             <div id="agents-menu-div"></div>
@@ -145,9 +150,9 @@
         </div>
         <div id="agent-action-div" style="visibility: hidden">
             <div id="agent-action-name"></div>
-            <input type="button" id="agent-move-button" value="Move"></input>
-            <input type="button" id="agent-mission-button" value="Mission"></input>
-            <input type="button" id="agent-cancel-button" value="Cancel" onclick="javascript:hideAgentActionMenu();"></input>
+            <input type="button" id="agent-move-button"></input>
+            <input type="button" id="agent-mission-button"></input>
+            <input type="button" id="agent-cancel-button" value="Cancel" onclick="javascript:hideActionMenu();"></input>
         </div>
         <div id="confirm-action-div" style="visibility: hidden">
             <div id="your-action-message-div"></div>
@@ -162,11 +167,6 @@
                 <input type="button" id="smuggler-confirm-button" value="✓" onclick="javascript:includeSmuggler(true);"></input>
                 <input type="button" id="smuggler-cancel-button" value="✕" onclick="javascript:includeSmuggler(false);"></input>
             </div>
-        </div>
-        <div id="resourcepackages-div" style="visibility: hidden">
-            <div class="respkg-arrow-div"></div>
-            <div class="respkg-upkeep-div"></div>
-            <div class="respkg-collect-div"></div>
         </div>
         <div id="trade-screen" style="visibility: hidden"></div>
         <div id="trade-menu-div" style="visibility: hidden">

@@ -139,7 +139,9 @@ var updateFleetsInteractivity = function(){
 				mouseOnFleets( false, true );
 			}
 			break;
-		
+		case PHS_ACTIONS:
+			mouseOnFleets( true, false );
+			break;
 		default:
 			mouseOnFleets( false, false );
 			break;
@@ -177,6 +179,9 @@ var handleClickFleet = function( fleetid ) {
 			setPendingTargetId( fleetid );
 			break;
 		case PHS_ACTIONS:
+			setPendingTargetId( fleetid );
+			updateActionMenu( 'fleet', fleetid);
+			showActionMenu();
 			break;
 		case PHS_MISSIONS:
 			setPendingObject( OBJ_FLEET );
