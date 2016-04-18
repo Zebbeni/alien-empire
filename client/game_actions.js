@@ -31,3 +31,19 @@ var submitMissionsViewed = function() {
 var submitTradeFourToOne = function(pay, get){
 	socket_submitTradeFourToOne(pay, get);
 };
+
+var submitTradeRequest = function(requester_resources, opponent_resources, offered_to){
+	socket_submitTradeRequest(requester_resources, opponent_resources, offered_to);
+};
+
+var submitTradeCancel = function(){
+	socket_submitTradeCancel();
+};
+
+var submitTradeAccept = function(requester){
+	socket_submitTradeAccept(requester);
+};
+
+var submitTradeDecline = function(requester){
+	socket_submitTradeDecline(requester);
+};

@@ -1,6 +1,10 @@
 var DOMimageMap = [
 	{ elmt: '#input-username-div', path: 'login/', img: 'login' },
+	{ elmt: '#text-title-div', path: 'login/', img: 'title'},
+	{ elmt: '#players-time-div', path: 'login/', img: 'players_time' },
+	{ elmt: '#github-div', path: 'login/', img: 'github' },
 	{ elmt: '#lobby-div', path: 'lobby/', img: 'lobby_menu' },
+	{ elmt: '#lobby-title-div', path: 'login/', img: 'title'},
 	{ elmt: '#create-game-button', path: 'lobby/', img: 'createnew_button' },
 	{ elmt: '#resume-game-button', path: 'lobby/', img: 'resume_button' },
 	{ elmt: '.game-button', path: 'lobby/', img: 'joingame_button' },
@@ -13,10 +17,9 @@ var DOMimageMap = [
 	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
 	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
 	{ elmt: '#points-remaining', path: 'interface/', img: 'points_remaining'},
-	{ elmt: '#player-div0', path: 'interface/', img: 'player_menu_p0'},
-	{ elmt: '#player-div1', path: 'interface/', img: 'player_menu_p1'},
-	{ elmt: '#player-div2', path: 'interface/', img: 'player_menu_p2'},
-	{ elmt: '#player-div3', path: 'interface/', img: 'player_menu_p3'},
+	{ elmt: '.player-div', path: 'interface/', img: 'player_menu'},
+	{ elmt: '.player-trade-request-div', path: 'interface/', img: 'request_trade', ext: '.gif'},
+	{ elmt: '.player-start-icon', path: 'interface/', img: 'player_start'},
 	{ elmt: '.metal-icon', path: 'interface/', img: 'res_metal_icon'},
 	{ elmt: '.water-icon', path: 'interface/', img: 'res_water_icon'},
 	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
@@ -26,6 +29,12 @@ var DOMimageMap = [
 	{ elmt: '#structures-menu-div', path: 'interface/', img: 'structures_menu'},
 	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
 	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
+	{ elmt: '#trade-menu-div', path: 'interface/', img: 'trade_menu'},
+	{ elmt: '.trade-arrow-up', path: 'interface/', img: 'trade_arrow_button'},
+	{ elmt: '.trade-arrow-down', path: 'interface/', img: 'trade_arrow_button'},
+	{ elmt: '.trade-radio-button', path: 'interface/', img: 'trade_radio_button'},
+	{ elmt: '#trade-button-yes', path: 'interface/', img: 'trade_choice_button'},
+	{ elmt: '#trade-button-no', path: 'interface/', img: 'trade_choice_button'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
 	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
@@ -608,7 +617,9 @@ var createPlayerStatsMenus = function() {
 		var points = clientGame.game.points[i];
 
 		innerHTML += '<div class="player-id-div">' + username + '</div>';
-
+		innerHTML += '<div class="player-trade-request-div" onclick="javascript:drawTradeMenu(' + i + ')">Requesting Trade</div>';
+		innerHTML += '<div class="player-points-div"></div>';
+		innerHTML += '<div class="player-start-icon"></div>';
 		innerHTML += '<div class="player-stats-div">';
 		
 		innerHTML += '<table class="player-stats-table"><tr>';
@@ -616,8 +627,6 @@ var createPlayerStatsMenus = function() {
 		innerHTML += '<td class="water-icon"></td>';
 		innerHTML += '<td class="fuel-icon"></td>';
 		innerHTML += '<td class="food-icon"></td>';
-
-		innerHTML += '<td class="points-icon"></td>';
 
 		innerHTML += '</tr></table>';
 		innerHTML += '</div>';
@@ -655,7 +664,24 @@ var updatePlayerStatsMenus = function() {
 		$(playerDiv).find('.water-icon')[0].innerHTML = resources[RES_WATER];
 		$(playerDiv).find('.fuel-icon')[0].innerHTML = resources[RES_FUEL];
 		$(playerDiv).find('.food-icon')[0].innerHTML = resources[RES_FOOD];
-		$(playerDiv).find('.points-icon')[0].innerHTML = points[PNT_TOTAL];
+		$(playerDiv).find('.player-points-div')[0].innerHTML = points[PNT_TOTAL];
+
+		if ( i != clientTurn 
+			 && clientGame.game.trades[i] != undefined
+			 && clientGame.game.trades[i].offered_to.indexOf(clientTurn) != -1
+			 && clientGame.game.trades[i].declined.indexOf(clientTurn) == -1 ) {
+			$(playerDiv).find('.player-trade-request-div')[0].style.visibility = "visible";
+		}
+		else {
+			$(playerDiv).find('.player-trade-request-div')[0].style.visibility = "hidden";
+		}
+
+		if ( i == clientGame.game.playerOffset ){
+			$(playerDiv).find('.player-start-icon')[0].style.visibility = "visible";
+		}
+		else {
+			$(playerDiv).find('.player-start-icon')[0].style.visibility = "hidden";
+		}
 	}
 };
 

@@ -82,6 +82,10 @@ var ACT_BLOCK_MISSION = 13;
 var ACT_MISSION_RESOLVE = 14;
 var ACT_MISSION_VIEWED = 15;
 var ACT_TRADE_FOUR_TO_ONE = 16;
+var ACT_TRADE_REQUEST = 17;
+var ACT_TRADE_CANCEL = 18;
+var ACT_TRADE_ACCEPT = 19;
+var ACT_TRADE_DECLINE = 20;
 
 var PNT_STRUCTURES = 0;
 var PNT_EXPLORE = 1;
@@ -146,7 +150,11 @@ var ACT_ENGLISH_PAST = {
 					13: " blocked a mission",
 					14: " resolved their mission",
 					15: " viewed the current mission",
-					16: " did a 4 to 1 trade"
+					16: " did a 4 to 1 trade",
+					17: " requested a trade",
+					18: " cancelled a trade request",
+					19: " accepted a trade request",
+					20: " declined a trade request"
 				};
 
 // DON'T CAPITALIZE THESE. USED FOR DOM CLASS NAMES

@@ -126,7 +126,15 @@ var applyAction = function( action, game ){
 		case cons.ACT_PAY_UPKEEP:
 			return applyPayUpkeep( action, game );
 		case cons.ACT_TRADE_FOUR_TO_ONE:
-			return applyTradeFourToOne( action, game);
+			return applyTradeFourToOne( action, game );
+		case cons.ACT_TRADE_REQUEST:
+			return applyTradeRequest( action, game );
+		case cons.ACT_TRADE_CANCEL:
+			return applyTradeCancel( action, game );
+		case cons.ACT_TRADE_ACCEPT:
+			return applyTradeAccept( action, game );
+		case cons.ACT_TRADE_DECLINE:
+			return applyTradeDecline( action, game );
 		case cons.ACT_VIEWED_MISSIONS:
 			return applyViewedMissions( action, game );
 		case cons.ACT_BLOCK_MISSION:
@@ -602,6 +610,115 @@ var applyTradeFourToOne = function( action, game){
 							'From 4 to 1' );
 
 	return { isIllegal: false};
+};
+
+var applyTradeRequest = function( action, game ){
+	var player = action.player;
+	var offered_to = action.offered_to;
+	var requester_resources = action.requester_resources;
+	var opponent_resources = action.opponent_resources;
+
+	if ( offered_to.length <= 0 ){
+		return { isIllegal: true,
+				 response: "You must offer this trade to at least one player"
+			};
+	}
+
+	for ( var i = 0; i < requester_resources.length; i++ ){
+		if ( game.resources[player][i] < requester_resources[i] ){
+			return { isIllegal: true,
+				 	 response: "You do not have the resources for this trade"
+			};
+		}
+	}
+
+	game.trades[player] = {
+		requester_resources: requester_resources,
+		opponent_resources: opponent_resources,
+		offered_to: offered_to,
+		declined: []
+	};
+
+	return { isIllegal: false };
+};
+
+var applyTradeCancel = function( action, game ){
+	var player = action.player;
+
+	game.trades[player] = undefined;
+
+	return { isIllegal: false };
+};
+
+var applyTradeAccept = function( action, game ){
+	var requester = action.requester;
+	var opponent = action.player;
+
+	if ( game.trades[requester] == undefined ) {
+		return { isIllegal: true,
+				 response: "This trade is no longer available"
+		};
+	}
+
+	var requester_resources = game.trades[requester].requester_resources;
+	var opponent_resources = game.trades[requester].opponent_resources;
+
+	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
+		if ( game.resources[opponent][i] < opponent_resources[i] ){
+			return { isIllegal: true,
+					 response: "You do not have enough resources for this trade"
+			};
+		}
+		if ( game.resources[requester][i] < requester_resources[i] ){
+			return { isIllegal: true,
+					 response: "Your opponent does not have these resources"
+			};
+		}
+	}
+
+	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
+		game.resources[requester][i] -= requester_resources[i];
+		game.resources[opponent][i] -= opponent_resources[i];
+	}
+
+	helpers.addResourcePackage( game, 
+								requester, 
+								cons.PKG_TRADE, 
+								opponent_resources, 
+								'From Trade' );
+
+	helpers.addResourcePackage( game, 
+								opponent, 
+								cons.PKG_TRADE, 
+								requester_resources, 
+								'From Trade' );
+
+	game.trades[requester] = undefined;
+
+	return { isIllegal: false };
+};
+
+var applyTradeDecline = function( action, game ){
+	var requester = action.requester;
+	var opponent = action.player;
+
+	if ( game.trades[requester] == undefined ) {
+		return { isIllegal: true,
+				 response: "This trade is no longer available"
+		};
+	}
+
+	if ( game.trades[requester].declined.indexOf(opponent) != -1 ) {
+		return { isIllegal: true,
+				 response: "You have already declined this trade"
+		};
+	}
+
+	game.trades[requester].declined.push(opponent);
+
+	var offered_to = game.trades[requester].offered_to;
+
+	return { isIllegal: false };
 };
 
 var applyMoveAgentAction = function( action, game ){
@@ -1552,9 +1669,6 @@ var updatePhase = function( game ){
 			game.phase = cons.PHS_RESOURCE;
 			addCollectionPhaseResourcePackages(game);
 			break;
-		// including missions here is temporary. Eventually there should
-		// be extra logic to move to the next mission in the queue, and so on
-		// until all missions have been viewed, and THEN update the phase
 		case cons.PHS_RESOURCE:
 		case cons.PHS_UPKEEP:
 			
@@ -1861,5 +1975,5 @@ var calcPoints = function( game, player ) {
  * @return true or false
  */ 
 var isEndCondition = function( game ) {
-	return ( game.round >= 3 );
+	return ( game.round >= 10 );
 };

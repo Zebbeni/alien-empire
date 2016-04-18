@@ -8,20 +8,21 @@
     </head>
     <body>
         <div id="game-canvas-div"><canvas id="gameCanvas"></canvas></div>
-        <div id="copyright">©2015 Andrew Albers</div>
+        <div id="copyright">©2016 Andrew Albers</div>
         <div id="main-div">
             <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="login-div">
-                <div id="text-title-div">Alien empirE</div>
-                <div id="text-tagline-div">Build | Explore | Trade | Destroy</div>
+                <div id="text-title-div"></div>
                 <div id="input-username-div">
                     <form action="javascript:submitLogin();">
                         <input id="input-username" type="text", placeholder="Enter a Username!" autocomplete="off" autofocus/>
                     </form>
                 </div>
+                <div id="players-time-div"></div>
+                <div id="github-div" onclick="location.href='https://github.com/Zebbeni/alien-empire'"></div>
             </div>
             <div id="lobby-div" style="visibility: hidden">
-                <div id="lobby-title-div">Alien empirE</div>
+                <div id="lobby-title-div"></div>
                 <div id="users-wrapper-div">
                     <div id="users-scroll"></div>
                 </div>
@@ -86,6 +87,7 @@
                 </form>
             </div>
         </div>
+        
         <div id="points-remaining" style="visibility: hidden">
             <div id="points-remaining-explore">9</div>
             <div id="points-remaining-envoy">10</div>
@@ -165,6 +167,52 @@
             <div class="respkg-arrow-div"></div>
             <div class="respkg-upkeep-div"></div>
             <div class="respkg-collect-div"></div>
+        </div>
+        <div id="trade-screen" style="visibility: hidden"></div>
+        <div id="trade-menu-div" style="visibility: hidden">
+            <div id="player-trade-div"><table id="player-trade-table">
+                <tr>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',0,1);"></td>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',1,1);"></td>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',2,1);"></td>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',3,1);"></td>
+                </tr>
+                <tr>
+                    <td class="metal-icon" id="player-trade-res0"></td>
+                    <td class="water-icon" id="player-trade-res1"></td>
+                    <td class="fuel-icon" id="player-trade-res2"></td>
+                    <td class="food-icon" id="player-trade-res3"></td>
+                </tr>
+                <tr>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',0,-1);"></td>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',1,-1);"></td>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',2,-1);"></td>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',3,-1);"></td>
+                </tr>
+            </table></div>
+            <div id="opponent-trade-div"><table id=opponent-trade-table>
+                <tr>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',0,1);"></td>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',1,1);"></td>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',2,1);"></td>
+                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',3,1);"></td>
+                </tr>
+                <tr>
+                    <td class="metal-icon" id="opponent-trade-res0"></td>
+                    <td class="water-icon" id="opponent-trade-res1"></td>
+                    <td class="fuel-icon" id="opponent-trade-res2"></td>
+                    <td class="food-icon" id="opponent-trade-res3"></td>
+                </tr>
+                <tr>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',0,-1);"></td>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',1,-1);"></td>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',2,-1);"></td>
+                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',3,-1);"></td>
+                </tr>
+            </table></div>
+            <div id="trade-offers-div"></div>
+            <input type="button" id="trade-button-yes"></input>
+            <input type="button" id="trade-button-no" onclick="javascript:hideTradeMenu();"></input>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

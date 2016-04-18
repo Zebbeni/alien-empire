@@ -70,6 +70,55 @@ var socket_submitTradeFourToOne = function(pay, get){
 	});
 };
 
+var socket_submitTradeRequest = function(requester_resources, opponent_resources, offered_to){
+	var action = {
+		player: clientTurn,
+		actiontype: ACT_TRADE_REQUEST,
+		requester_resources: requester_resources,
+		opponent_resources: opponent_resources,
+		offered_to: offered_to
+	};
+
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('requesting a trade');
+	});
+};
+
+var socket_submitTradeCancel = function() {
+	var action = {
+		player: clientTurn,
+		actiontype: ACT_TRADE_CANCEL
+	};
+
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('cancelling a trade');
+	});
+};
+
+var socket_submitTradeAccept = function(requester) {
+	var action = {
+		actiontype: ACT_TRADE_ACCEPT,
+		player: clientTurn,
+		requester: requester,
+	};
+
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('accepting a trade');
+	});
+};
+
+var socket_submitTradeDecline = function(requester) {
+	var action = {
+		actiontype: ACT_TRADE_DECLINE,
+		player: clientTurn,
+		requester: requester
+	};
+
+	socket.emit('do game action', clientGame.gameid, action, function(data) {
+		console.log('declining a trade');
+	});
+};
+
 /**
  * This is a stand-in, to allow mission phase to be passed. Eventually
  * this should be more developed.

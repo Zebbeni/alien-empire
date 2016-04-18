@@ -24,6 +24,7 @@ var actions = require('./game_actions');
 			phase: cons.PHS_PLACING,
 			phaseDone: board.initializeUserArray( num_users, false ),
 			turn: 0,
+			trades: board.initializeUserArray(num_users, undefined),
 			playerTurn: 0,
 			playerOffset: 0,
 			missions: {},
@@ -57,6 +58,10 @@ var actions = require('./game_actions');
 			case cons.ACT_COLLECT_RESOURCES:
 			case cons.ACT_PAY_UPKEEP:
 			case cons.ACT_TRADE_FOUR_TO_ONE:
+			case cons.ACT_TRADE_REQUEST:
+			case cons.ACT_TRADE_CANCEL:
+			case cons.ACT_TRADE_ACCEPT:
+			case cons.ACT_TRADE_DECLINE:
 			case cons.ACT_MISSION_RESOLVE:
 			case cons.ACT_MISSION_VIEWED:
 				return actions.resolveGameAction( action, gameInfo.game );

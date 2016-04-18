@@ -25,13 +25,13 @@ var createResourcesMenu = function() {
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
 				   + '<div class="gain-div"></div><div class="loss-div"></div>'
 				   + '<table class="resource-table" cellspacing="0"></table>'
-				   + '<input type="button" class="fourtoone-button" value="4 to 1" onclick="javascript:toggleFourToOneMenu(' + i + ')"></input>'
+				   + '<input type="button" class="fourtoone-button" value="4 to 1" onclick="javascript:toggleFourToOneMenu(' + i + ');"></input>'
 				   + '<div id="res-change' + i + '" class="res-change"></div>'
 				   + '<div id="fourtoone-menu' + i + '" class="fourtoone-menu">' + table + '</div>'
 				   + '</div>';
 	}
 
-	innerHTML += '<input type="button" id="trade-button" value="Trade"></input>';
+	innerHTML += '<input type="button" id="trade-button" value="Trade" onclick="javascript:drawTradeMenu(null);"></input>';
 
 	$('#resources-menu-div')[0].innerHTML = innerHTML;
 
@@ -241,4 +241,172 @@ var hideFourToOneMenu = function( res ){
 var showFourToOneMenu = function( res ){
 	$('#fourtoone-menu' + res)[0].style.visibility = "visible";
 	$('#fourtoone-menu' + res).transition({ opacity: 1.00}, 250);
+};
+
+// draws the Trade Menu in one of two ways, depending on whether triggered from
+// the 'trade' button on the resource menu or from clicking a trade offer on a 
+// player stats menu. (if player is null, it means we are offerig a new trade) 
+var drawTradeMenu = function(player) {
+	
+	// player is null if this function triggered from 'Trade' on Resource Menu
+	if (player == null) {
+
+		allowTradeMenuChanges('auto');
+
+		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+			$('#player-trade-res' + i)[0].innerHTML = 0;
+			$('#opponent-trade-res' + i)[0].innerHTML = 0;
+		}
+		var playersHtml = "<table><tr>";
+		for ( var p = 0; p < 4; p++ ){
+			if ( p < clientGame.game.players.length ){
+				if ( p != clientTurn){
+					playersHtml += '<td class="trade-radio-button radio-on" id="trade-radio-button' + p + '"';
+					playersHtml += 'onclick="javascript:toggleTradeRadio(' + p + ')"></td>';
+				}
+			}
+			else {
+				playersHtml += '<td style="width: 25px height:25px"></td>';
+			}
+		}
+		playersHtml += "</tr></table>";
+		$('#trade-offers-div')[0].innerHTML = playersHtml;
+		$('#trade-button-yes').prop('value', 'Submit Request');
+		$('#trade-button-yes').css('pointer-events', 'auto');
+		$('#trade-button-yes').off().click( function() { 
+
+			allowTradeMenuChanges('none');
+
+			$('#trade-button-yes').prop('value', 'Waiting...');
+			$('#trade-button-yes').css('pointer-events', 'none');
+			
+			// get list of offered players
+			var offered_to = [];
+			$('.trade-radio-button').each(function() {
+				if ( $(this).hasClass('radio-on') ){
+					var offeredid = parseInt(this.id[this.id.length - 1], 10);
+					offered_to.push(offeredid);
+				}
+			});
+
+			// get list of player resources to be traded
+			requester_resources = [0,0,0,0];
+			for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+				requester_resources[i] = parseInt( $('#player-trade-res' + i)[0].innerHTML, 10);
+			}
+
+			// get list of opponent resources to be traded
+			opponent_resources = [0,0,0,0];
+			for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+				opponent_resources[i] = parseInt( $('#opponent-trade-res' + i)[0].innerHTML, 10);
+			}
+
+			submitTradeRequest(requester_resources, opponent_resources, offered_to);
+
+			var checker = setInterval( function(){ 
+				var trade = clientGame.game.trades[clientTurn];
+				if (trade == undefined) {
+					hideTradeMenu();
+					clearInterval(checker);
+				}
+				else if ( trade.offered_to.length == trade.declined.length ){
+					$('#trade-button-yes').prop('value', 'Declined');
+					clearInterval(checker);
+				}
+			}, 500);
+		});
+		$('#trade-button-no').prop('value', 'Cancel');
+		$('#trade-button-no').off().click( function() { 
+			if (clientGame.game.trades[clientTurn] != undefined){
+				submitTradeCancel(); 
+			}
+			hideTradeMenu();
+		});
+	}
+	else {
+		var trade = clientGame.game.trades[player];
+		// flip these since these are now being viewed by the opponent
+		var requester_resources = trade.opponent_resources;
+		var opponent_resources = trade.requester_resources;
+		var offered_to = trade.offered_to;
+
+		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+			$('#player-trade-res' + i)[0].innerHTML = requester_resources[i];
+			$('#opponent-trade-res' + i)[0].innerHTML = opponent_resources[i];
+		}
+		var playersHtml = "<table><tr>";
+		for ( var p = 0; p < 4; p++ ){
+			if ( p < clientGame.game.players.length ){
+				if ( p != player){
+					playersHtml += '<td class="trade-radio-button';
+					if ( offered_to.indexOf(p) != -1 ) { 
+						playersHtml += ' radio-on'; 
+					}
+					playersHtml += '" id="trade-radio-button' + p + '"></td>';
+				}
+			}
+			else {
+				playersHtml += '<td style="width: 25px height:25px"></td>';
+			}
+		}
+		playersHtml += "</tr></table>";
+		$('#trade-offers-div')[0].innerHTML = playersHtml;
+		$('#trade-button-yes').prop('value', 'Accept Trade');
+		$('#trade-button-yes').css('pointer-events', 'auto');
+		$('#trade-button-yes').off().click( function() { 
+			submitTradeAccept(player);
+			hideTradeMenu();
+		});
+		$('#trade-button-no').prop('value', 'Decline');
+		$('#trade-button-no').off().click( function() { 
+			submitTradeDecline(player);
+			hideTradeMenu();
+		});
+
+		allowTradeMenuChanges('none');
+	}
+	setInterfaceImages();
+	showTradeMenu();
+};
+
+// sets user-configurable settings' pointer-events properties 
+// in trade menu to val (val must be either 'none' or 'auto')
+var allowTradeMenuChanges = function( val ){
+	$('.trade-radio-button').each( function() {
+		$(this).css( 'pointer-events', val );
+	});
+	$('.trade-arrow-down').each( function() {
+		$(this).css( 'pointer-events', val );
+	});
+	$('.trade-arrow-up').each( function() {
+		$(this).css( 'pointer-events', val );
+	});
+};
+
+var handletradeArrow = function(player, res, val){
+	var value = parseInt($('#' + player + '-trade-res' + res)[0].innerHTML, 10);
+	if ( value + val <= 9 && value + val >= 0){
+		$('#' + player + '-trade-res' + res)[0].innerHTML = value + val;
+	}
+};
+
+var toggleTradeRadio = function( player ){
+	$('#trade-radio-button' + player).toggleClass('radio-on');
+	$('#trade-radio-button' + player).toggleClass('radio-off');
+};
+
+var showTradeMenu = function() {
+	$('#trade-menu-div')[0].style.visibility = "visible";
+	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 1000);
+	$('#trade-screen')[0].style.visibility = "visible";
+	$('#trade-screen').transition({ opacity: 1.00 }, 1000);
+};
+
+var hideTradeMenu = function() {
+	$('#trade-menu-div').transition({opacity: 0.00,top: "38%"}, 1000,function(){
+		$( this )[0].style.visibility = "hidden";
+	});
+	$('#trade-screen').transition({ opacity: 0.00}, 1000, function(){
+		$( this )[0].style.visibility = "hidden";
+	});
 };

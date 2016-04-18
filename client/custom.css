@@ -41,27 +41,39 @@ button {
 	table-layout: fixed;
 }
 
-#text-title-div, #text-tagline-div, #lobby-title-div {
+#text-title-div {
 	position: absolute;
-	font-family: 'Cinzel Decorative', cursive;
-	width: 100%;
-	text-align: center;
-	color: rgb(72, 159, 129);
+	width: 724px;
+	height: 101px;
+	left: 50%;
+	top: 175px;
+	margin-left: -362px;
+}
+
+#players-time-div, #github-div {
+	position: fixed;
+	bottom: 14px;
+	height: 70px;
+}
+
+#players-time-div {
+	left: 14px;
+	width: 140px;
+}
+
+#github-div {
+	right: 14px;
+	width: 70px;
+	cursor: pointer;
 }
 
 #lobby-title-div {
-	font-size: 23px;
-	font-weight: 700;
+	position: absolute;
 	top: -40px;
-	width: 200px;
+	width: 215px;
+	height: 30px;
 	left: 50%;
-	margin-left: -100px;
-}
-
-#text-title-div {
-	font-weight: 700;
-	font-size: 70pt;
-	top: 125px;
+	margin-left: -143px;
 }
 
 #text-tagline-div {
@@ -151,7 +163,7 @@ button {
 	margin-top: -300px;
 }
 
-#screen-div {
+#screen-div, #trade-screen {
 	position: fixed;
 	opacity: 0.0;
 	padding: 0;
@@ -161,7 +173,14 @@ button {
 	width: 100%;
 	height: 100%;
 	border-radius: 0px;
+}
+
+#screen-div {
 	background: rgba(0, 0, 0, .8);
+}
+
+#trade-screen {
+	background: rgba(0, 0, 0, .5);
 }
 
 #messages-div, #users-scroll, #games-list-div, #staging-inner-div, #staging-messages-div {
@@ -472,7 +491,8 @@ button {
 	position: fixed; bottom: 10px;
 	display: block;
 	font-size: 9pt;
-	color: rgba(161, 233, 210, .5);
+	/*color: rgba(161, 233, 210, .8);*/
+	color: white;
 	text-align: center;
 	width: 100%;
 }

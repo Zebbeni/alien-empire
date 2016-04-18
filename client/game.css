@@ -16,7 +16,6 @@
 #your-turn-div, #confirm-action-div, #include-smuggler-div {
 	opacity: 0;
 	position: fixed;
-	top: 38%;
 	left: 50%;
 	width: 800px;
 	margin-left: -400px;
@@ -53,7 +52,7 @@
 }
 
 #pending-action-div {
-	top: 35px;
+	top: 50px;
 	font-size: 15px;
 }
 
@@ -173,19 +172,24 @@
 	position: absolute;
 	top: 0px;
 	width: 250px;
-	height: 43px;
+	height: 35px;
+	background-size: 250px 140px;
 	color: black;
 }
+
+#player-div1{ background-position: 0 -35px; }
+#player-div2{ background-position: 0 -70px; }
+#player-div3{ background-position: 0 -105px; }
 
 .player-id-div {
 	position: relative;
 	display: table-cell;
-	top: 0px;
-	left: 0px;
-	height: 43px;
-	width: 104px;
-	padding: 2px;
-	font-size: 14px;
+	top: 4px;
+	left: 30px;
+	height: 26px;
+	width: 115px;
+	padding: 0px;
+	font-size: 13px;
 	font-family: 'Cinzel Decorative', cursive;
 	font-weight: 700;
 	text-align: center;
@@ -199,11 +203,11 @@
 
 .player-stats-div {
 	position: absolute;
-	top: 4px;
-	right: 12px;
-	width: 135px;
-	height: 31px;
-	padding: 3px;
+	top: 3px;
+	right: 5px;
+	width: 100px;
+	height: 25px;
+	padding: 0px;
 }
 
 .metal-icon, .water-icon, .fuel-icon, .food-icon, .points-icon {
@@ -213,6 +217,46 @@
 	padding: 0px;
 	text-align: center;
 	vertical-align: middle;
+}
+
+.player-trade-request-div {
+	position: absolute;
+	visibility: hidden;
+	width: 222px;
+	height: 24px;
+	top: 33px;
+	left: 26px;
+	padding-top: 1px;
+	padding-left: 15px;
+	text-align: center;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+.player-trade-request-div:hover {
+	background-position: -222px 0;
+	cursor: pointer;
+}
+
+.player-points-div {
+	position: absolute;
+	top: 2px;
+	left: 3px;
+	width: 29px;
+	height: 25px;
+	font-size: 19px;
+	font-weight: bold;
+	padding: 0px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.player-start-icon {
+	position: absolute;
+	top: 21px;
+	left: 21px;
+	width: 31px;
+	height: 31px;
 }
 
 .res-icon-button:hover {
@@ -413,6 +457,16 @@
 	background-position: -55px 0;
 }
 
+.trade-request {
+	position: absolute;
+	width: 222px;
+	height: 24px;
+}
+
+.trade-request:hover {
+	background-position: -222px 0;
+}
+
 #trade-button {
 	position: absolute;
 	right: 7px;
@@ -425,6 +479,128 @@
 
 #trade-button:hover {
 	background-position: -55px 0;
+}
+
+#trade-menu-div {
+	opacity: 0;
+	position: fixed;
+	top: 38%;
+	left: 50%;
+	width: 269px;
+	height: 191px;
+	margin-left: -134px;
+}
+
+#player-trade-div, #opponent-trade-div{
+	position: absolute;
+	top: 67px;
+	width: 100px;
+	height: 57px;
+}
+
+.trade-arrow-up, .trade-arrow-down {
+	width: 25px;
+	height: 16px;
+	background-size: 75px 32px;
+	cursor: pointer;
+}
+
+.trade-arrow-down {
+	background-position: 0 -16px;
+}
+
+.trade-arrow-up:hover {
+	background-position: -25px 0;
+}
+
+.trade-arrow-down:hover {
+	background-position: -25px -16px;
+}
+
+.trade-arrow-up:active {
+	background-position: -50px 0;
+}
+
+.trade-arrow-down:active {
+	background-position: -50px -16px;
+}
+
+#player-trade-div {
+	left: 21px;
+}
+
+#opponent-trade-div {
+	right: 21px;
+}
+
+#trade-offers-div {
+	position: absolute;
+	top: 130px;
+	left: 175px;
+	width: 75px;
+	height: 25px;
+}
+
+.trade-radio-button {
+	width: 25px;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-size: 100px 100px;
+}
+
+#trade-radio-button0.radio-on: { background-position: 0 0; }
+#trade-radio-button0.radio-on:hover { background-position: -25px 0; }
+#trade-radio-button0.radio-off { background-position: -50px 0; }
+#trade-radio-button0.radio-off:hover { background-position: -75px 0; }
+
+#trade-radio-button1.radio-on { background-position: 0 -25px; }
+#trade-radio-button1.radio-on:hover { background-position: -25px -25px; }
+#trade-radio-button1.radio-off { background-position: -50px -25px; }
+#trade-radio-button1.radio-off:hover { background-position: -75px -25px; }
+
+#trade-radio-button2.radio-on { background-position: 0 -50px; }
+#trade-radio-button2.radio-on:hover { background-position: -25px -50px; }
+#trade-radio-button2.radio-off { background-position: -50px -50px; }
+#trade-radio-button2.radio-off:hover { background-position: -75px -50px; }
+
+#trade-radio-button3.radio-on { background-position: 0 -75px; }
+#trade-radio-button3.radio-on:hover { background-position: -25px -75px; }
+#trade-radio-button3.radio-off { background-position: -50px -75px; }
+#trade-radio-button3.radio-off:hover { background-position: -75px -75px; }
+
+#trade-button-yes, #trade-button-no {
+	position: absolute;
+	top: 157px;
+	width: 124px;
+	height: 24px;
+	font-weight: bold;
+	background-repeat: no-repeat;
+	background-size: 372px 48px;
+}
+
+#trade-button-yes {
+	left: 11px;
+}
+
+#trade-button-no {
+	right: 11px;
+	background-position: 0 -24px;;
+}
+
+#trade-button-yes:hover, #trade-button-no:hover {
+	background-position: -124px 0;
+}
+
+#trade-button-no:hover {
+	background-position: -124px -24px;
+}
+
+#trade-button-yes:active {
+	background-position: -248px 0;
+}
+
+#trade-button-no:active {
+	background-position: -248px -24px;
 }
 
 #struct-mines-div, #struct-fleets-div, #struct-factories-div, #struct-embassies-div, #struct-base-div {
