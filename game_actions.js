@@ -1767,6 +1767,7 @@ var updateRound = function( game ){
 	game.round += 1;
 	game.missionindex = 0; // reset mission index to resolve
 	updateAgentsUsed( game );
+	updateFleetsUsed( game );
 	updateMissions( game, game.round );
 };
 
@@ -1847,6 +1848,15 @@ var updateAgentsUsed = function( game ) {
 		if ( agents[id].missionround == undefined ) {
 			agents[id].used = false;
 		}
+	}
+};
+
+// to be called on round updates, resets all fleets used
+// attributes to false
+var updateFleetsUsed = function( game ){
+	var fleets = game.board.fleets;
+	for ( var id in fleets ){
+		fleets[id].used = false;
 	}
 };
 
