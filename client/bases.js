@@ -69,6 +69,20 @@ var updateBasesInteractivity = function() {
 					}
 					break;
 				
+				case PHS_ACTIONS:
+					if ( pendingAction.actionttype == ACT_FLEET_ATTACK) {
+						if ( base.player != clientTurn ){
+							base.mouseEnabled = true;
+						}
+						else {
+							base.mouseEnabled = false;
+						}
+					}
+					else if ( base.player == clientTurn ){
+						base.mouseEnabled = true;
+					}
+					break;
+
 				default:
 					break;
 			}
@@ -136,6 +150,19 @@ var handleClickBase = function( planetid, player ) {
 			break;
 		
 		case PHS_ACTIONS:
+			if (pendingAction.actiontype == ACT_FLEET_ATTACK){
+				var planet = clientGame.game.board.planets[planetid];
+				var targetPlayer = planet.base.player;
+				setPendingObject( OBJ_BASE );
+				setPendingPlanet( planetid );
+				setPendingChoice( RES_NONE );
+				setPendingTargetPlayer( targetPlayer );
+			}
+			else {
+				setPendingPlanet( planetid );
+				updateActionMenu( 'base', planetid );
+				showActionMenu();
+			}
 			break;
 
 		case PHS_MISSIONS:

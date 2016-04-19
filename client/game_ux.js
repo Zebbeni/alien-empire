@@ -267,6 +267,20 @@ var displayConfirmMessage = function() {
 						+ planetfrom + " to " + planetname + "?";
 			break;
 
+		case ACT_FLEET_ATTACK:
+			var targetPlayer = pendingAction.targetPlayer;
+			var userid = clientGame.game.players[targetPlayer];
+			var targetName = all_users[userid].name;
+			message = "Attack " + targetname + "'s " + OBJ_ENGLISH[objecttype] + " with your fleet?";
+			break;
+
+		case ACT_BASE_ATTACK:
+			var targetPlayer = pendingAction.targetPlayer;
+			var userid = clientGame.game.players[targetPlayer];
+			var targetName = all_users[userid].name;
+			message = "Attack " + targetname + "'s " + OBJ_ENGLISH[objecttype] + "with Base?";
+			break;
+
 		case ACT_LAUNCH_MISSION:
 			message = "Send your " + AGT_ENGLISH[agenttype] + " on a mission "
 						+ " to " + planetname + "?";
@@ -1042,14 +1056,19 @@ var showActionMenu = function() {
 
 var hideActionMenu = function() {
 	$('#agent-action-div')[0].style.visibility = "hidden";
+	$('#agent-move-button')[0].style.visibility = "hidden";
+	clearPendingAction();
+	updateBoardInteractivity();
 };
 
 // actortype is a string, 'fleet' 'agent' or 'base'
 // id is a fleetid, agenttype, or base planetid
 var updateActionMenu = function( actortype, id ){
+	setPendingChoice(undefined); // ensure choice is not an array (This might be better when switching phases)
 	if ( actortype == 'agent' ){
 		$('#agent-action-name')[0].innerHTML = "Action: " + AGT_ENGLISH[id];
 		$('#agent-move-button').prop('value', 'Move');
+		$('#agent-move-button')[0].style.visibility = "visible";
 		$('#agent-move-button').off().click( function() { 
 											hideActionMenu();
 											setPendingAction( ACT_MOVE_AGENT );
@@ -1065,19 +1084,34 @@ var updateActionMenu = function( actortype, id ){
 										} );
 	}
 	else if ( actortype == 'fleet'){
-		$('#agent-action-name')[0].innerHTML = "Action: " + OBJ_ENGLISH[OBJ_FLEET];
-		$('#agent-move-button').prop('value', 'Move');
-		$('#agent-move-button').off().click( function() { 
-											hideActionMenu();
-											setPendingAction( ACT_FLEET_MOVE );
-											updateBoardInteractivity();
-											// updateTurnHelpMessage();
-										} );
+		if ( pendingAction.actiontype != ACT_BASE_ATTACK 
+			 && pendingAction.actiontype != ACT_FLEET_ATTACK) {
+			$('#agent-action-name')[0].innerHTML = "Action: " + OBJ_ENGLISH[OBJ_FLEET];
+			$('#agent-move-button').prop('value', 'Move');
+			$('#agent-move-button')[0].style.visibility = "visible";
+			$('#agent-move-button').off().click( function() { 
+												hideActionMenu();
+												setPendingAction( ACT_FLEET_MOVE );
+												updateBoardInteractivity();
+												// updateTurnHelpMessage();
+											} );
+			$('#agent-mission-button').prop('value', 'Attack');
+			$('#agent-mission-button').off().click( function() { 
+												hideActionMenu();
+												setPendingAction( ACT_FLEET_ATTACK );
+												updateBoardInteractivity();
+												// updateTurnHelpMessage();
+											} );
+		}
+	}
+	else if ( actortype == 'base'){
+		$('#agent-action-name')[0].innerHTML = "Action: " + OBJ_ENGLISH[OBJ_BASE];
+		$('#agent-move-button')[0].style.visibility = "hidden";
 		$('#agent-mission-button').prop('value', 'Attack');
 		$('#agent-mission-button').off().click( function() { 
 											hideActionMenu();
-											// setPendingAction( ACT_FLEET_ATTACK );
-											// updateBoardInteractivity();
+											setPendingAction( ACT_BASE_ATTACK );
+											updateBoardInteractivity();
 											// updateTurnHelpMessage();
 										} );
 	}

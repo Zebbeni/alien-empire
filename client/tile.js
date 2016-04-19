@@ -190,6 +190,11 @@ var updateTileInteractivity = function(planetid) {
 					}
 				}
 			}
+
+			else if ( actiontype == ACT_FLEET_ATTACK ){
+				mouseResources( planets, planetid, false, false, true );
+			}
+
 			break;
 
 		case PHS_MISSIONS:
@@ -807,6 +812,14 @@ var handleClickResource = function( planetid, index ) {
 					break;
 				default:
 					break;
+			}
+			break;
+		case PHS_ACTIONS:
+			if (pendingAction.actiontype == ACT_FLEET_ATTACK){
+				setPendingChoice(index);
+				setPendingObject(objecttype);
+				setPendingPlanet(planetid);
+				setPendingTargetPlayer( structure.player );
 			}
 			break;
 		default:
