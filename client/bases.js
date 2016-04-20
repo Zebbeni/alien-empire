@@ -154,7 +154,6 @@ var handleClickBase = function( planetid, player ) {
 				var planet = clientGame.game.board.planets[planetid];
 				var targetPlayer = planet.base.player;
 				setPendingObject( OBJ_BASE );
-				setPendingPlanet( planetid );
 				setPendingChoice( RES_NONE );
 				setPendingTargetPlayer( targetPlayer );
 			}

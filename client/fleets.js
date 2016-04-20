@@ -188,10 +188,10 @@ var handleClickFleet = function( fleetid ) {
 				setPendingObject( OBJ_FLEET );
 				setPendingChoice( fleetid );
 				setPendingTargetPlayer( targetPlayer );
-				setPendingPlanet( fleet.planetid );
 			}
 			else {
 				setPendingTargetId( fleetid );
+				setPendingPlanet( fleet.planetid );
 				updateActionMenu( 'fleet', fleetid);
 				showActionMenu();
 			}

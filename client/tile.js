@@ -175,6 +175,8 @@ var updateTileInteractivity = function(planetid) {
 
 				mousePlanet( planetid, true );
 
+				console.log(pendingAction);
+
 				if ( actiontype == ACT_LAUNCH_MISSION && agenttype == AGT_EXPLORER ){
 					var agent = clientGame.game.board.agents[ 
 													String(clientTurn) + 
@@ -818,7 +820,6 @@ var handleClickResource = function( planetid, index ) {
 			if (pendingAction.actiontype == ACT_FLEET_ATTACK){
 				setPendingChoice(index);
 				setPendingObject(objecttype);
-				setPendingPlanet(planetid);
 				setPendingTargetPlayer( structure.player );
 			}
 			break;

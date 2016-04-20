@@ -271,14 +271,14 @@ var displayConfirmMessage = function() {
 			var targetPlayer = pendingAction.targetPlayer;
 			var userid = clientGame.game.players[targetPlayer];
 			var targetName = all_users[userid].name;
-			message = "Attack " + targetname + "'s " + OBJ_ENGLISH[objecttype] + " with your fleet?";
+			message = "Attack " + targetName + "'s " + OBJ_ENGLISH[objecttype] + " with your fleet?";
 			break;
 
 		case ACT_BASE_ATTACK:
 			var targetPlayer = pendingAction.targetPlayer;
 			var userid = clientGame.game.players[targetPlayer];
 			var targetName = all_users[userid].name;
-			message = "Attack " + targetname + "'s " + OBJ_ENGLISH[objecttype] + "with Base?";
+			message = "Attack " + targetName + "'s " + OBJ_ENGLISH[objecttype] + " with your base?";
 			break;
 
 		case ACT_LAUNCH_MISSION:
@@ -1057,7 +1057,11 @@ var showActionMenu = function() {
 var hideActionMenu = function() {
 	$('#agent-action-div')[0].style.visibility = "hidden";
 	$('#agent-move-button')[0].style.visibility = "hidden";
+};
+
+var cancelAction = function() {
 	clearPendingAction();
+	hideActionMenu();
 	updateBoardInteractivity();
 };
 
