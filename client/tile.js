@@ -136,7 +136,12 @@ var updateTileInteractivity = function(planetid) {
 						mousePlanet( planetid, true );
 					}
 					else {
-						mouseResources( planets, planetid, true, true, false );
+						if ( objecttype == OBJ_MINE ){
+							mouseResources( planets, planetid, true, false, false );
+						}
+						else {
+							mouseResources( planets, planetid, false, true, false );
+						}
 						mousePlanet( planetid, false );
 					}
 				}
@@ -190,6 +195,11 @@ var updateTileInteractivity = function(planetid) {
 					}
 				}
 			}
+
+			else if ( actiontype == ACT_FLEET_ATTACK ){
+				mouseResources( planets, planetid, false, false, true );
+			}
+
 			break;
 
 		case PHS_MISSIONS:
@@ -807,6 +817,13 @@ var handleClickResource = function( planetid, index ) {
 					break;
 				default:
 					break;
+			}
+			break;
+		case PHS_ACTIONS:
+			if (pendingAction.actiontype == ACT_FLEET_ATTACK){
+				setPendingChoice(index);
+				setPendingObject(objecttype);
+				setPendingTargetPlayer( structure.player );
 			}
 			break;
 		default:

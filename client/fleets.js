@@ -141,6 +141,10 @@ var updateFleetsInteractivity = function(){
 			break;
 		case PHS_ACTIONS:
 			mouseOnFleets( true, false );
+			if ( pendingAction.actiontype == ACT_FLEET_ATTACK
+				 || pendingAction.actiontype == ACT_BASE_ATTACK ){
+				mouseOnFleets( false, true );
+			}
 			break;
 		default:
 			mouseOnFleets( false, false );
@@ -179,9 +183,18 @@ var handleClickFleet = function( fleetid ) {
 			setPendingTargetId( fleetid );
 			break;
 		case PHS_ACTIONS:
-			setPendingTargetId( fleetid );
-			updateActionMenu( 'fleet', fleetid);
-			showActionMenu();
+			if ( pendingAction.actiontype == ACT_FLEET_ATTACK
+				 || pendingAction.actiontype == ACT_BASE_ATTACK ){
+				setPendingObject( OBJ_FLEET );
+				setPendingChoice( fleetid );
+				setPendingTargetPlayer( targetPlayer );
+			}
+			else {
+				setPendingTargetId( fleetid );
+				setPendingPlanet( fleet.planetid );
+				updateActionMenu( 'fleet', fleetid);
+				showActionMenu();
+			}
 			break;
 		case PHS_MISSIONS:
 			setPendingObject( OBJ_FLEET );

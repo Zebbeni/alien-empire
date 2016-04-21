@@ -40,6 +40,7 @@ var actions = require('./game_actions');
 
 	module.exports.resolveAction = function( action, gameInfo ) {
 		// This will be a switch for all different action types.
+		console.log("actiontype:", action.actiontype);
 		switch (action.actiontype) {
 			case cons.ACT_LOADED_ASSETS:
 				return actions.resolveLoadingDone( action, gameInfo.game );
@@ -65,6 +66,8 @@ var actions = require('./game_actions');
 			case cons.ACT_MISSION_RESOLVE:
 			case cons.ACT_MISSION_VIEWED:
 			case cons.ACT_FLEET_MOVE:
+			case cons.ACT_FLEET_ATTACK:
+			case cons.ACT_BASE_ATTACK:
 				return actions.resolveGameAction( action, gameInfo.game );
 			default:
 				return false;

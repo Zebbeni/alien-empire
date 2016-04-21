@@ -145,6 +145,10 @@ var applyAction = function( action, game ){
 			return applyMissionViewed( action, game );
 		case cons.ACT_FLEET_MOVE:
 			return applyFleetMove( action, game );
+		case cons.ACT_FLEET_ATTACK:
+			return applyFleetAttack( action, game );
+		case cons.ACT_BASE_ATTACK:
+			return applyBaseAttack( action, game );
 		default:
 			return { 
 					isIllegal: true,
@@ -771,6 +775,12 @@ var applyFleetMove = function( action, game ){
 	var fleet = game.board.fleets[fleetid];
 	var planetfrom = game.board.planets[fleet.planetid];
 
+	if ( game.playerTurn != player ) {
+		return { isIllegal: true,
+				 response: "You must move fleets during your turn"
+		};
+	}
+
 	if ( fleet.used ){
 		return { isIllegal: true,
 				 response: "Fleet has already been used this turn"
@@ -796,6 +806,174 @@ var applyFleetMove = function( action, game ){
 	}
 
 	moveFleet( game, fleetid, action.planetid);
+
+	return { isIllegal: false };
+};
+
+var applyFleetAttack = function( action, game ){
+	var player = action.player;
+	var objecttype = action.objecttype;
+	var fleetid = action.targetid;
+	var attackid = action.choice;
+	var planetid = action.planetid;
+	var targetPlayer = action.targetPlayer;
+	var planet = game.board.planets[planetid];
+	var fleet = game.board.fleets[fleetid];
+
+	if ( game.playerTurn != player ) {
+		return { isIllegal: true,
+				 response: "You may only attack during your turn"
+		};
+	}
+
+	if ( fleet.used ){
+		return { isIllegal: true,
+				 response: "This fleet has already been used this turn"
+		};
+	}
+
+	if ( objecttype == cons.OBJ_MINE ){
+		return { isIllegal: true,
+				 response: "Mines cannot be attacked"
+		};
+	}
+
+	if ( planetid != fleet.planetid ){
+		return { isIllegal: true,
+				 response: "Your fleet does not appear to be on this planet"
+		};
+	}
+
+	if ( player == targetPlayer ){
+		return { isIllegal: true,
+				 response: "You cannot attack your own structures"
+		};
+	}
+
+	if ( objecttype == cons.OBJ_FLEET ){
+		var attackfleet = game.board.fleets[attackid];
+
+		if ( fleet.planetid != attackfleet.planetid ){
+			return { isIllegal: true,
+				 	 response: "You must attack a fleet on the same planet"
+			};
+		}
+
+		var attackRoll = Math.ceil(Math.random() * 6);
+
+		if ( attackRoll > cons.STRUCT_REQS[objecttype].defense ){
+
+			addPointsLimited( player, 
+							  planetid, 
+							  cons.PNT_DESTROY,
+							  game );
+
+			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+		}
+	}
+	else if ( objecttype == cons.OBJ_BASE) {
+		if ( planet.base == undefined || planet.base.player != targetPlayer ) {
+			return { isIllegal: true,
+				 	 response: "You must attack a base on the same planet"
+			};
+		}
+
+		var attackRoll = Math.ceil(Math.random() * 6);
+		if ( attackRoll > cons.STRUCT_REQS[objecttype].defense ){
+
+			addPointsLimited( player, 
+							  planetid, 
+							  cons.PNT_DESTROY,
+							  game );
+
+			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+		}
+		// Do logic to attack base here
+	}
+	else {
+		var resource = planet.resources[attackid];
+		
+		if ( resource.structure == undefined 
+			 || resource.structure.player != targetPlayer
+			 || resource.structure.kind != objecttype ) {
+			return { isIllegal: true,
+				 	 response: "You must attack a structure on the same planet"
+			};
+		}
+
+		// Do logic to attack fleets and embassies here
+		var attackRoll = Math.ceil(Math.random() * 6);
+		if ( attackRoll > cons.STRUCT_REQS[objecttype].defense ){
+
+			addPointsLimited( player, 
+							  planetid, 
+							  cons.PNT_DESTROY,
+							  game );
+
+			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+		}
+	}
+
+	game.board.fleets[fleetid].used = true;
+
+	return { isIllegal: false };
+};
+
+var applyBaseAttack = function( action, game ){
+	var player = action.player;
+	var objecttype = action.objecttype;
+	var attackid = action.choice;
+	var planetid = action.planetid;
+	var targetPlayer = action.targetPlayer;
+	var planet = game.board.planets[planetid];
+	var base = planet.base;
+
+	if ( game.playerTurn != player ) {
+		return { isIllegal: true,
+				 response: "You may only attack during your turn"
+		};
+	}
+
+	if ( base.used ){
+		return { isIllegal: true,
+				 response: "Your base has already been used this turn"
+		};
+	}
+
+	if (objecttype != cons.OBJ_FLEET){
+		return { isIllegal: true,
+				 response: "Bases can only attack fleets"
+		};
+	}
+
+	if ( player == targetPlayer ){
+		return { isIllegal: true,
+				 response: "You cannot attack your own fleet"
+		};
+	}
+
+	var fleet = game.board.fleets[attackid];
+
+	if ( fleet.planetid != planetid ) {
+		return { isIllegal: true,
+				 response: "Your base can only attack fleets at the same planet"
+		};
+	}
+
+	// Do logic to attack fleet here
+	var attackRoll = Math.ceil(Math.random() * 6);
+
+	if ( attackRoll > cons.STRUCT_REQS[cons.OBJ_FLEET].defense ){
+
+		addPointsLimited( player, 
+						  planetid, 
+						  cons.PNT_DESTROY,
+						  game );
+
+		removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+	}
+
+	game.board.planets[planetid].base.used = true;
 
 	return { isIllegal: false };
 };

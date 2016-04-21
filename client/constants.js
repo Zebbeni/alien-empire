@@ -87,6 +87,8 @@ var ACT_TRADE_CANCEL = 18;
 var ACT_TRADE_ACCEPT = 19;
 var ACT_TRADE_DECLINE = 20;
 var ACT_FLEET_MOVE = 21;
+var ACT_FLEET_ATTACK = 22;
+var ACT_BASE_ATTACK = 23;
 
 var PNT_STRUCTURES = 0;
 var PNT_EXPLORE = 1;
@@ -156,7 +158,9 @@ var ACT_ENGLISH_PAST = {
 					18: " cancelled a trade request",
 					19: " accepted a trade request",
 					20: " declined a trade request",
-					21: " moved a fleet"
+					21: " moved a fleet",
+					22: " attacked ",
+					23: " attacked "
 				};
 
 // DON'T CAPITALIZE THESE. USED FOR DOM CLASS NAMES
@@ -194,7 +198,9 @@ var ACTION_REQUIREMENTS = {
 	8: ['actiontype', 'agenttype', 'planetid'],
 	9: ['actiontype', 'agenttype', 'planetid'],
 	14: ['actiontype', 'agenttype', 'planetid'],
-	21: ['actiontype', 'planetid', 'targetid']
+	21: ['actiontype', 'planetid', 'targetid'],
+	22: ['actiontype', 'objecttype', 'planetid', 'targetPlayer', 'targetid', 'choice'],
+	23: ['actiontype', 'objecttype', 'planetid', 'targetPlayer', 'choice']
 };
 
 var STRUCT_REQS = {
@@ -202,26 +208,31 @@ var STRUCT_REQS = {
 		build: [1,0,1,1],
 		upkeep: [0,0,0,0],
 		max: 4,
+		defense: 6
 	}, 
 	2: {
 
 		build: [1,1,2,0],
 		upkeep: [1,0,0,0],
-		max: 3
+		max: 3,
+		defense: 2
 	},
 	3: {
 		build: [2,2,0,1],
 		upkeep: [0,1,0,0],
-		max: 5
+		max: 5,
+		defense: 3
 	},
 	4: {
 		build: [3,1,1,1],
 		upkeep: [0,0,1,0],
-		max: 1
+		max: 1,
+		defense: 4
 	},
 	5: {
 		build: [1,1,1,0],
 		upkeep: [0,0,1,0],
-		max: 3
+		max: 3,
+		defense: 3
 	}
 };

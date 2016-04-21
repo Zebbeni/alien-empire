@@ -44,7 +44,7 @@ var updateBasesInteractivity = function() {
 	for ( var p = 0; p < clientGame.game.players.length; p++){
 		
 		var base = basesContainer.getChildByName('base' + p);
-			
+
 		if ( base.planetid != undefined) {
 
 			switch ( clientGame.game.phase ) {
@@ -69,6 +69,23 @@ var updateBasesInteractivity = function() {
 					}
 					break;
 				
+				case PHS_ACTIONS:
+					if ( pendingAction.actionttype == ACT_FLEET_ATTACK) {
+
+						console.log(base);
+
+						if ( base.player != clientTurn ){
+							base.mouseEnabled = true;
+						}
+						else {
+							base.mouseEnabled = false;
+						}
+					}
+					else if ( base.player == clientTurn ){
+						base.mouseEnabled = true;
+					}
+					break;
+
 				default:
 					break;
 			}
@@ -136,6 +153,18 @@ var handleClickBase = function( planetid, player ) {
 			break;
 		
 		case PHS_ACTIONS:
+			if (pendingAction.actiontype == ACT_FLEET_ATTACK){
+				var planet = clientGame.game.board.planets[planetid];
+				var targetPlayer = planet.base.player;
+				setPendingObject( OBJ_BASE );
+				setPendingChoice( RES_NONE );
+				setPendingTargetPlayer( targetPlayer );
+			}
+			else {
+				setPendingPlanet( planetid );
+				updateActionMenu( 'base', planetid );
+				showActionMenu();
+			}
 			break;
 
 		case PHS_MISSIONS:
