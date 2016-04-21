@@ -1062,8 +1062,6 @@ var hideActionMenu = function() {
 var cancelAction = function() {
 	clearPendingAction();
 	hideActionMenu();
-	console.log("canceling action");
-	console.log(pendingAction);
 	updateBoardInteractivity();
 };
 

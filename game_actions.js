@@ -859,8 +859,8 @@ var applyFleetAttack = function( action, game ){
 			};
 		}
 
-		var attackRoll = Math.floor(Math.random() * 6);
-		console.log("attackRoll:", attackRoll);
+		var attackRoll = Math.ceil(Math.random() * 6);
+
 		if ( attackRoll > cons.STRUCT_REQS[objecttype].defense ){
 
 			addPointsLimited( player, 
@@ -878,8 +878,7 @@ var applyFleetAttack = function( action, game ){
 			};
 		}
 
-		var attackRoll = Math.floor(Math.random() * 6);
-		console.log("attackRoll:", attackRoll);
+		var attackRoll = Math.ceil(Math.random() * 6);
 		if ( attackRoll > cons.STRUCT_REQS[objecttype].defense ){
 
 			addPointsLimited( player, 
@@ -903,8 +902,7 @@ var applyFleetAttack = function( action, game ){
 		}
 
 		// Do logic to attack fleets and embassies here
-		var attackRoll = Math.floor(Math.random() * 6);
-		console.log("attackRoll:", attackRoll);
+		var attackRoll = Math.ceil(Math.random() * 6);
 		if ( attackRoll > cons.STRUCT_REQS[objecttype].defense ){
 
 			addPointsLimited( player, 
@@ -963,8 +961,7 @@ var applyBaseAttack = function( action, game ){
 	}
 
 	// Do logic to attack fleet here
-	var attackRoll = Math.floor(Math.random() * 6);
-	console.log("attackRoll:", attackRoll);
+	var attackRoll = Math.ceil(Math.random() * 6);
 
 	if ( attackRoll > cons.STRUCT_REQS[cons.OBJ_FLEET].defense ){
 

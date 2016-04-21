@@ -180,8 +180,6 @@ var updateTileInteractivity = function(planetid) {
 
 				mousePlanet( planetid, true );
 
-				console.log(pendingAction);
-
 				if ( actiontype == ACT_LAUNCH_MISSION && agenttype == AGT_EXPLORER ){
 					var agent = clientGame.game.board.agents[ 
 													String(clientTurn) + 

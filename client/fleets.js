@@ -163,11 +163,9 @@ var mouseOnFleets = function( friendly, opponent ) {
 
 		if ( fleets[fleetid].player == clientTurn ){
 			fleetshape.mouseEnabled = friendly;
-			console.log("enable Mouse " + friendly + " friendly fleet");
 		}
 		else {
 			fleetshape.mouseEnabled = opponent;
-			console.log("enable Mouse " + opponent + " opponent fleet");
 		}
 	}
 };

@@ -6,7 +6,6 @@ var submitLogin = function() {
 };
 
 var submitLogout = function() {
-    console.log("Attempting to logout");
     clearClientData();
     socket_logout();
 };
