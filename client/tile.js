@@ -32,9 +32,9 @@ var initTile = function( planetid ) {
 	initLightScreen(planetid, tile_width);
 	initBorder(planetid, tile_width);
 	initPlanet(planetid);
-	initNametext(planetid);
 	initResources(planetid);
 	initSpyEyes(planetid);
+	initNametext(planetid);
 	initDarkScreen(planetid, tile_width);
 
 	// tiles[planetid].hitArea = tiles[planetid].getChildByName("stars");

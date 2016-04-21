@@ -328,7 +328,7 @@ var displayConfirmMessage = function() {
 					for ( var i = 0; i < choices.length; i++ ){
 						names.push(RES_ENGLISH[ planet.resources[choices[i]].kind ]);
 					}
-					message += englishList(names, "no resources") + "?";
+					message += englishList(names, "no resources");
 					message += " on " + planetname + "?";
 
 					break;

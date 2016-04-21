@@ -29,12 +29,15 @@ var initAgents = function() {
 		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 103, 103);
 		agentshape.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
 
+		agentshape.scaleX = 0.85;
+		agentshape.scaleY = 0.85;
+
 		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 18px Play", "white");
 		agenttext.name = "agenttext";
 		agenttext.textAlign = "center";
-		agenttext.x = 51;
-		agenttext.y = 80;
-		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 2, 2, 1);
+		agenttext.x = 43;
+		agenttext.y = 65;
+		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 3, 3, 1);
 
 		agentContainer.visible = false;
 		agentContainer.mouseEnabled = false;
@@ -194,5 +197,5 @@ var updateAgentRetireMenu = function( agenttype ){
 var selectAgent = function( agentname) {
 	var agentsContainer = board.getChildByName('agentsContainer');
 	var agentContainer = agentsContainer.getChildByName( agentname );
-	setSelection(agentContainer.x + 27, agentContainer.y - 28);
+	setSelection(agentContainer.x + 20, agentContainer.y - 28);
 };
