@@ -51,6 +51,10 @@ var initTile = function( planetid ) {
 
 	});
 
+	tiles[planetid].on("click", function() {
+		centerPlanet( planetid );
+	});
+
 	board.addChild( tiles[planetid] );
 };
 
