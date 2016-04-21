@@ -916,6 +916,8 @@ var applyFleetAttack = function( action, game ){
 		}
 	}
 
+	game.board.fleets[fleetid].used = true;
+
 	return { isIllegal: false };
 };
 
@@ -956,7 +958,7 @@ var applyBaseAttack = function( action, game ){
 
 	if ( fleet.planetid != planetid ) {
 		return { isIllegal: true,
-				 response: "Bases can only attack fleets"
+				 response: "Your base can only attack fleets at the same planet"
 		};
 	}
 
@@ -964,7 +966,7 @@ var applyBaseAttack = function( action, game ){
 	var attackRoll = Math.floor(Math.random() * 6);
 	console.log("attackRoll:", attackRoll);
 
-	if ( attackRoll > cons.STRUCT_REQS[OBJ_FLEET].defense ){
+	if ( attackRoll > cons.STRUCT_REQS[cons.OBJ_FLEET].defense ){
 
 		addPointsLimited( player, 
 						  planetid, 

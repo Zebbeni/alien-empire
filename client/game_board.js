@@ -69,11 +69,10 @@ var createBoard = function() {
 
 		drawAsteroids();
 		drawTiles();
-		drawFleets();
 		drawNoFlyZones();
 		drawBases();
 		drawAgents();
-
+		drawFleets();
 
 		stage.addChild( board );
 		

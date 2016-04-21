@@ -44,7 +44,9 @@ var updateBasesInteractivity = function() {
 	for ( var p = 0; p < clientGame.game.players.length; p++){
 		
 		var base = basesContainer.getChildByName('base' + p);
-			
+		
+		console.log(base);
+
 		if ( base.planetid != undefined) {
 
 			switch ( clientGame.game.phase ) {
@@ -71,6 +73,9 @@ var updateBasesInteractivity = function() {
 				
 				case PHS_ACTIONS:
 					if ( pendingAction.actionttype == ACT_FLEET_ATTACK) {
+						
+						console.log(base);
+
 						if ( base.player != clientTurn ){
 							base.mouseEnabled = true;
 						}

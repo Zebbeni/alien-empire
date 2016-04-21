@@ -136,7 +136,12 @@ var updateTileInteractivity = function(planetid) {
 						mousePlanet( planetid, true );
 					}
 					else {
-						mouseResources( planets, planetid, true, true, false );
+						if ( objecttype == OBJ_MINE ){
+							mouseResources( planets, planetid, true, false, false );
+						}
+						else {
+							mouseResources( planets, planetid, false, true, false );
+						}
 						mousePlanet( planetid, false );
 					}
 				}
