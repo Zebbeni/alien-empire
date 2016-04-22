@@ -33,8 +33,6 @@ var socket_submitTurnDone = function() {
 };
 
 var socket_submitCollectResources = function(pkgindex) {
-	console.log("submiting collect resources action");
-
 	var action = {	
 					pkgindex: pkgindex,
 					player: clientTurn,

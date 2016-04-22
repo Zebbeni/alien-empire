@@ -1142,10 +1142,8 @@ var applyBlockMission = function( action, game ){
 										  planetid, 
 										  cons.PNT_EXPLORE, 
 										  game );
-						game.board.planets[planetid].explored = true;
-						for (var p = 0; p < game.players.length; p++){
-							updatePlanetBuildable(player, game, planetid);
-						}
+
+						setPlanetExplored( game, planetid );
 					}
 
 					var is_unreserved = false;
@@ -1290,12 +1288,6 @@ var applyMissionResolve = function( action, game ){
 		return { isDuplicate: false };
 	}
 
-	// if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
-
-	// 	game.missions[round][ index ].resolution.noflyblocked = true;
-
-	// }
-
 	else if ( game.missions[round][index].resolution.nochoice ) {
 		moveAgent( agent, agentid, planetid, planets );
 	}
@@ -1318,7 +1310,7 @@ var applyMissionResolve = function( action, game ){
 						 	 response: "This resource is already reserved"
 					};
 				}
-								
+				
 				resource.reserved = player;
 				break;
 
@@ -1714,6 +1706,14 @@ var removeAllFleets = function( game, player ){
 	}
 };
 
+var setPlanetExplored = function( game, planetid ){
+	game.board.planets[planetid].explored = true;
+
+	for ( var p = 0; p < game.players.length; p++ ){
+		updateBuildable( p, game );
+	}
+};
+
 // Updates planet.settledBy[player] to true or false 
 // 
 // True if player has a non-space structure on this planet
@@ -1764,7 +1764,7 @@ var updatePlanetBuildable = function( player, game, planetid ) {
 		for ( var pid in planets[planetid].borders ){
 			// if border open with this planet (not unexplored or blocked)
 			if ( planets[pid].settledBy[player] 
-				 && planets[planetid].borders[pid] == cons.BRD_OPEN ){
+				 && planets[planetid].borders[pid] != cons.BRD_BLOCKED ){
 				// set buildableBy to true for this player
 				planets[planetid].buildableBy[player] = true;
 				break;

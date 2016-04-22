@@ -1,6 +1,6 @@
 // width in pixels of a small planet tile
 var sWid = 212;
-var agtWid = 100;
+var agtWid = 85;
 var agtSpace = 5;
 
 // var offline = false; // checked by loader when creating settings for LoadQueue
