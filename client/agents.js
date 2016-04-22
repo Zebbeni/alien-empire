@@ -79,7 +79,7 @@ var updateAgents = function(planetid) {
 	}
 
 	var agentsX = ((planet.w * sWid) / 2.0) - ( agtWidAll / 2.0);
-	var agentsY = planet.w == 1 ? 15 : 155 ;
+	var agentsY = planet.w == 1 ? 25 : 155 ;
 
 	for (var i = 0; i < num_agents; i++) {
 

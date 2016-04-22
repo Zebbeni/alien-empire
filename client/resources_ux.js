@@ -135,6 +135,9 @@ var updateResourcePkgMenu = function() {
 			if ( pkg.pkgtype != PKG_UPKEEP ) {
 				collectResourcePackage(p);
 			}
+			else if ( clientGame.game.phase == PHS_RESOURCE ){
+				submitTurnDone();
+			}
 			else if ( pkg.resources.every(elem => elem == 0 ) ) {
 				payUpkeepPackage(p);
 			}

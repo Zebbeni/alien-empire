@@ -1288,12 +1288,6 @@ var applyMissionResolve = function( action, game ){
 		return { isDuplicate: false };
 	}
 
-	// if ( planets[ agent.planetid ].borders[planetid] == cons.BRD_BLOCKED ){
-
-	// 	game.missions[round][ index ].resolution.noflyblocked = true;
-
-	// }
-
 	else if ( game.missions[round][index].resolution.nochoice ) {
 		moveAgent( agent, agentid, planetid, planets );
 	}
