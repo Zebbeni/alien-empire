@@ -27,6 +27,7 @@ var initTile = function( planetid ) {
 	tiles[planetid].x = planets[planetid].x * sWid;
 	tiles[planetid].y = planets[planetid].y * sWid;
 	var tile_width = planets[planetid].w * sWid;
+	tiles[planetid].mouseEnabled = true;
 
 	initStars(planetid, tile_width);
 	initLightScreen(planetid, tile_width);
@@ -122,7 +123,7 @@ var updateTileInteractivity = function(planetid) {
 
 		case PHS_RESOURCE:
 
-			mouseTile( planetid, false );
+			mouseTile( planetid, true );
 
 			break;
 
@@ -157,7 +158,7 @@ var updateTileInteractivity = function(planetid) {
 			}
 			else {
 
-				mouseTile( planetid, false );
+				// mouseTile( planetid, false );
 				mouseResources( planets, planetid, false, false, false );
 				mousePlanet( planetid, false );
 			}

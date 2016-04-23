@@ -899,6 +899,7 @@ var updateMissionsMenu = function() {
 		var name = player == clientTurn ? 'You' : all_users[userid].name;
 		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
 		var message = "";
+		centerPlanet( mission.planetTo );
 
 		// display basic mission information
 		// (eg. Bob sent an Explorer to Sector G!)

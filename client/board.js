@@ -4,9 +4,12 @@
  */
 var zoomBoard = function(magnify) {
 
-	scale = scale + magnify;
-	scale = Math.min(scale, 0.7);
-	scale = Math.max(scale, 0.4);
+
+	scale = magnify == 1 ? 0.65 : 0.5 ;
+	// scale = Math.min(scale, 0.7);
+	// scale = Math.max(scale, 0.4);
+
+	// scale = 0.65;
 
 	centerBoard();
 };
@@ -26,7 +29,49 @@ var centerBoard = function() {
 									   y:y, 
 									   scaleX:scale, 
 									   scaleY:scale}, 
-									   200 ).call(handleTweenComplete);
+									   1000 ).call(handleTweenComplete);
+	}
+};
+
+var centerPlanet = function(planetid){
+	if (board){
+		var planet = clientGame.game.board.planets[planetid];
+		var planetX = scale * ((planet.x) * sWid + (planet.w * sWid / 2.0));
+		var planetY = scale * ((planet.y) * sWid + (planet.w * sWid / 2.0));
+		var x = (window.innerWidth / 2.0) - planetX;
+		var y = (window.innerHeight / 2.0) - planetY;
+
+		num_objects_moving += 1;
+		createjs.Tween.get(board).to({ x:x, 
+									   y:y, 
+									   scaleX:scale, 
+									   scaleY:scale}, 
+									   700 ).call(handleTweenComplete);
+
+		console.log("scale:", scale);
+	}
+};
+
+var focusPlanet = function(planetid){
+	if (board){
+		var planet = clientGame.game.board.planets[planetid];
+		var midX = 7 * sWid * scale / 2.0;
+		var midY = 7 * sWid * scale / 2.0;
+		var planetX = scale * ((planet.x) * sWid + (planet.w * sWid / 2.0));
+		var planetY = scale * ((planet.y) * sWid + (planet.w * sWid / 2.0));
+		var focusX = ( midX + planetX ) / 2.0;
+		var focusY = ( midY + planetY ) / 2.0;
+		var x = (window.innerWidth / 2.0) - focusX;
+		var y = (window.innerHeight / 2.0) - focusY - 150;
+
+		num_objects_moving += 1;
+		createjs.Tween.get(board).to({ x:x, 
+									   y:y, 
+									   scaleX:scale, 
+									   scaleY:scale}, 
+									   700 ).call(handleTweenComplete);
+
+		console.log("scale:", scale);
 	}
 };
 

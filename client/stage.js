@@ -123,7 +123,7 @@ var updateCanvasSize = function() {
 		updatePixelRatio();
 
 		centerProgressBar();
-		centerBoard();
+		// centerBoard();
 
 		stage.update();
 	}

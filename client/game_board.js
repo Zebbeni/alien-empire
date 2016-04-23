@@ -26,10 +26,10 @@ var setGlobals = function() {
 var handleKeyUp = function( e ) {
 	switch (e.keyCode) {
 		case 189: // dash
-			zoomBoard(-0.05);
+			zoomBoard(-1);
 			break;
 		case 187: // equals (plus sign)
-			zoomBoard(0.05);
+			zoomBoard(1);
 			break;
 		default:
 			break;
@@ -76,7 +76,7 @@ var createBoard = function() {
 
 		stage.addChild( board );
 		
-		scale = 0.75;
+		scale = 0.65;
 		var boardWidth = 7 * sWid * scale;
 		var boardHeight = 7 * sWid * scale;
 		board.x = (window.innerWidth - boardWidth) / 2.0;
