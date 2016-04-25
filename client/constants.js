@@ -3,10 +3,10 @@ var sWid = 212;
 var agtWid = 85;
 var agtSpace = 5;
 
-// var offline = false; // checked by loader when creating settings for LoadQueue
-// var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
-var offline = true;
-var s3url = 'images/'; // set s3url to this if testing offline
+var offline = false; // checked by loader when creating settings for LoadQueue
+var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
+// var offline = true;
+// var s3url = 'images/'; // set s3url to this if testing offline
 
 var DROP_DIST = 50;
 var MOVE_DISTANCE = 200;
@@ -162,6 +162,43 @@ var ACT_ENGLISH_PAST = {
 					22: " attacked ",
 					23: " attacked "
 				};
+
+var INFO_TEXT = {
+	agent: {
+		1: {
+			action: 'Target a sector to discover a new planet and earn points'
+		},
+		2: {
+			action: 'Target a planet where you collect resources and collect 6 of one'
+		},
+		3: {
+			action: 'Target a planet to increase mining output for up to 2 resources'
+		},
+		4: {
+			action: 'Target a planet to place no-fly zones on up to 2 borders'
+		},
+		5: {
+			action: 'Target a planet with your embassy to gain resources and a point'
+		},
+		6: {
+			action: 'Target a planet to place spy eyes, capable of blocking missions'
+		},
+		7: {
+			action: 'Target a planet occupied by other players to steal resources'
+		},
+		8: {
+			action: 'Target a planet to destroy an opponent structure there'
+		}
+	},
+	structure: {
+		4: {
+			action: 'Target a fleet to attack'
+		},
+		5: {
+			action: 'Target a fleet or base to attack, or move to an adjacent planet'
+		}
+	}
+};
 
 // DON'T CAPITALIZE THESE. USED FOR DOM CLASS NAMES
 var RES_ENGLISH = { 

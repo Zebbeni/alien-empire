@@ -15,7 +15,7 @@
                 <div id="text-title-div"></div>
                 <div id="input-username-div">
                     <form action="javascript:submitLogin();">
-                        <input id="input-username" type="text", placeholder="Enter a Username!" autocomplete="off" autofocus/>
+                        <input id="input-username" type="text" placeholder="Enter a Username!" autocomplete="off" autofocus />
                     </form>
                 </div>
                 <div id="players-time-div"></div>
@@ -122,20 +122,37 @@
             </table>
         </div>
         <div id="missions-phase-div" class="phase-div" style="display: none">
-            <div>Resolving Missions Phase</div>
-            <div id="missions-phase-info"></div>
-            <div id="missions-spy-menu">
-                <div>Block Mission?</div>
-                <input type="button" id="mission-block-button" value="Yes" onclick="javascript:blockMissionAction( true );"></input>
-                <input type="button" id="mission-allow-button" value="No" onclick="javascript:blockMissionAction( false );"></input>
-                <input type="button" id="mission-collect-button" value="Collect" onclick="javascript:blockMissionAction( null );"></input>
+            <div id="mission-prev-button" class="mission-arrow" ></div>
+            <div id="mission-div" class="action-menu">
+                <div id="mission-name"></div>
+                <div id="mission-agent-div"></div> 
+                <div id="mission-location"></div>
+                <div id="mission-label"></div>
+                <div id="mission-text"></div>
+                <input type="button" class="mission-button" id="mission-button-1"></input>
+                <input type="button" class="mission-button" id="mission-button-2"></input>
+                <input type="button" class="mission-button" id="mission-button-3"></input>
             </div>
-            <div id="missions-resolution-menu"></div>
-            <div id="missions-choice-menu">
-                <div id="missions-choice-message">Target your stuff or whatever</div>
-                <input type="button" value="Done" onclick="javascript:displayConfirmMenu();"/>
-            </div>
-            <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
+            <div id="mission-next-button" class="mission-arrow" ></div>
+<!--             <div id="mission-info-div">
+                <div></div>
+                    <div id="missions-spy-menu">
+                        <div>Block Mission?</div>
+                        <input type="button" id="mission-block-button" value="Yes" onclick="javascript:blockMissionAction( true );"></input>
+                        <input type="button" id="mission-allow-button" value="No" onclick="javascript:blockMissionAction( false );"></input>
+                        <input type="button" id="mission-collect-button" value="Collect" onclick="javascript:blockMissionAction( null );"></input>
+                    </div>
+                </div>
+                <div id="missions-resolution-menu"></div>
+                <div id="missions-choice-menu">
+                    <div id="missions-choice-message">Target your stuff or whatever</div>
+                    <input type="button" value="Done" onclick="javascript:displayConfirmMenu();"/>
+                </div>
+                <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
+            </div> -->
+<!--             <div id="mission-phase-next-div">
+                <input type="button" id="agent-retire-button" value="Retire"></input>
+            </div> -->
         </div>
         <div id="resource-phase-div" class="phase-div" style="display: none"></div>
         <div id="upkeep-phase-div" class="phase-div" style="display: none"></div>
@@ -144,11 +161,15 @@
             <input type="button" id="agent-retire-button" value="Retire"></input>
             <input type="button" id="agent-cancel-button" value="Cancel" onclick="javascript:hideAgentRetireMenu();"></input>
         </div>
-        <div id="agent-action-div" style="visibility: hidden">
-            <div id="agent-action-name"></div>
-            <input type="button" id="agent-move-button"></input>
-            <input type="button" id="agent-mission-button"></input>
-            <input type="button" id="agent-cancel-button" value="Cancel" onclick="javascript:cancelAction();"></input>
+        <div id="action-div" class="action-menu" style="visibility: hidden">
+            <div id="action-name"></div>
+            <div id="action-location"></div>
+            <div id="action-label"></div>
+            <div id="action-text"></div>
+            <div id="actor-div"></div>
+            <input type="button" class="action-button" id="action-button-1"></input>
+            <input type="button" class="action-button" id="action-button-2"></input>
+            <input type="button" class="action-button" id="action-button-3" value="Cancel" onclick="javascript:cancelAction();"></input>
         </div>
         <div id="confirm-action-div" style="visibility: hidden">
             <div id="your-action-message-div"></div>

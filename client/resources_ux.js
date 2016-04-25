@@ -81,7 +81,7 @@ var updateResourcePkgMenu = function() {
 		if ( !packages[p].collected && !packages[p].cancelled 
 			 && ( !pkg.isnew 
 				 || ( pkg.pkgtype == PKG_UPKEEP 
-				 	  && !pkg.resources.every(elem => elem == 0) ) ) ) {
+				 	  && !allValuesEqualTo(pkg.resources, 0) ) ) ) {
 
 			message = pkg.message;
 
@@ -138,7 +138,7 @@ var updateResourcePkgMenu = function() {
 			else if ( clientGame.game.phase == PHS_RESOURCE ){
 				submitTurnDone();
 			}
-			else if ( pkg.resources.every(elem => elem == 0 ) ) {
+			else if ( allValuesEqualTo(pkg.resources, 0) ) {
 				payUpkeepPackage(p);
 			}
 		}
@@ -155,6 +155,15 @@ var updateResourcePkgMenu = function() {
 
 };
 
+var allValuesEqualTo = function(array, val) {
+	for ( var i = 0; i < array.length; i++ ){
+		if (array[i] != val){
+			return false;
+		}
+	}
+	return true;
+};
+
 var updateResourceAnimations = function() {
 	var packages = clientGame.game.resourcePackages[clientTurn];
 
@@ -163,7 +172,7 @@ var updateResourceAnimations = function() {
 
 		if( pkg.collected && clientGame.game.collectedPkgs.indexOf(p) == -1 ){
 			// don't animate if all changes are 0
-			if ( !pkg.resources.every(elem => elem == 0) ){
+			if ( !allValuesEqualTo(pkg.resources, 0) ){
 				animateResourceChange(pkg);
 				clientGame.game.collectedPkgs.push(p);
 				break;
