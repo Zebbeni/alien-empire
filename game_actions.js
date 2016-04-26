@@ -1059,6 +1059,7 @@ var applyLaunchMission = function( action, game ) {
 
 	agent.used = true;
 	agent.missionround = game.round;
+	agent.destination = planetid;
 
 	return { isIllegal: false };
 };
@@ -1303,6 +1304,12 @@ var applyMissionResolve = function( action, game ){
 			case cons.AGT_EXPLORER:
 				
 				var resid = action.resourceid;
+
+				// if explorer player has elected not to reserve a resource
+				if ( resid == undefined ){
+					break;
+				}
+
 				var resource = game.board.planets[planetid].resources[resid];
 
 				if ( resource.reserved != undefined) {
@@ -1993,6 +2000,7 @@ var preProcessMission = function( game ){
 		smuggler.used = false;
 		agent.missionround = undefined;
 		agent.used = false;
+		agent.destination = undefined;
 	}
 };
 

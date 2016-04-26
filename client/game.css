@@ -99,15 +99,13 @@
 }
 
 #agent-retire-div {
-	width: 300px;
-	height: 100px;
 	top: 50%;
 	left: 50%;
-	margin-left: -150px;
-	margin-top: -50px;
+	margin-left: -192px;
+	margin-top: -80px;
 }
 
-#action-div {
+#action-div, #agent-retire-div {
 	width: 384px;
 	height: 160px;
 	top: 30%;
@@ -130,7 +128,13 @@
 	height: 160px;
 	top: 0px;
 	left: 20px;
+	background-size: 384px 640px;
 }
+
+.mission-div-p1 { background-position: 0 0; }
+.mission-div-p2 { background-position: 0 -160px; }
+.mission-div-p3 { background-position: 0 -320px; }
+.mission-div-p4 { background-position: 0 -480px; }
 
 .mission-arrow {
 	position: absolute;
@@ -175,19 +179,12 @@
 	background-size: 384px 640px;
 }
 
-.action-div-p1 {
-	background-position: 0 -160px;
-}
+.action-div-p0 { background-position: 0 0; }
+.action-div-p1 { background-position: 0 -160px; }
+.action-div-p2 { background-position: 0 -320px; }
+.action-div-p3 { background-position: 0 -480px; }
 
-.action-div-p2 {
-	background-position: 0 -320px;
-}
-
-.action-div-p3 {
-	background-position: 0 -480px;
-}
-
-#action-name, #mission-name {
+.action-name {
 	position: absolute;
 	top: 10px;
 	left: 0px;
@@ -206,7 +203,7 @@
 	color: black;
 }
 
-#action-location, #action-text, #mission-location, #mission-text {
+.action-location, .action-text {
 	position: absolute;
 	left: 120px;
 	width: 257px;
@@ -220,7 +217,7 @@
 	color: white;
 }
 
-#action-label, #mission-label {
+.action-label {
 	position: absolute;
 	left: 120px;
 	width: 257px;
@@ -238,7 +235,7 @@
 	color: black;
 }
 
-#action-location, #mission-location {
+.action-location {
 	top: 36px;
 	padding: 0px;
 	font-weight: bold;
@@ -246,7 +243,7 @@
 	text-align: center;
 }
 
-#action-text, #mission-text {
+.action-text {
 	top: 80px;
 	padding: 5px;
 	font-weight: normal;
@@ -254,7 +251,7 @@
 	text-align: left;
 }
 
-.action-button, .mission-button {
+.action-button {
 	position: absolute;
 	width: 124px;
 	height: 24px;
@@ -264,30 +261,28 @@
 	background-color: transparent;
 }
 
-#action-button-1, #mission-button-1 { left: 7px; }
+.button-1 { left: 7px; }
+.button-2 { left: 131px; }
+.button-3 { left: 255px; }
 
-#action-button-1:hover, #mission-button-1:hover { background-position: -124px 0; }
+.button-yellow {background-position: 0 0; }
+.button-yellow:hover { background-position: -124px 0; }
+.button-yellow:active { background-position: -248px 0; }
 
-#action-button-1:active, #mission-button-1:active { background-position: -248px 0; }
+.button-red { background-position: 0 -24px; }
+.button-red:hover { background-position: -124px -24px; }
+.button-red:active { background-position: -248px -24px; }
 
-#action-button-2, #mission-button-2 { left: 131px; background-position: 0 -24px; }
+.button-blue { background-position: 0 -48px; }
+.button-blue:hover { background-position:  -124px -48px; }
+.button-blue:active { background-position: -248px -48px; }
 
-#action-button-2:hover, #mission-button-2:hover { background-position: -124px -24px; }
-
-#action-button-2:active, #mission-button-2:active { background-position: -248px -24px; }
-
-#action-button-3, #mission-button-3 { left: 255px; background-position: 0 -48px; }
-
-#action-button-3:hover, #mission-button-3:hover { background-position:  -124px -48px; }
-
-#action-button-3:active, #mission-button-3:active { background-position: -248px -48px; }
-
-#action-button-1.gray, #action-button-2.gray, #action-button-3.gray, #mission-button-1.gray, #mission-button-2.gray, #mission-button-3.gray {
+.gray {
 	background-position: -372px 0px;
 	pointer-events: none;
 }
 
-#actor-div {
+.actor-pic {
 	position: absolute;
 	top: 30px;
 	left: 11px;
@@ -296,6 +291,7 @@
 	background-size: 102px 1157px;
 }
 
+.actor-struct-2 { background-position: 0 0; }
 .actor-struct-2 { background-position: 0 -89px; }
 .actor-struct-3 { background-position: 0 -178px; }
 .actor-struct-4 { background-position: 0 -267px; }

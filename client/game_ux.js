@@ -36,10 +36,9 @@ var DOMimageMap = [
 	{ elmt: '#trade-button-yes', path: 'interface/', img: 'color_buttons'},
 	{ elmt: '#trade-button-no', path: 'interface/', img: 'color_buttons'},
 	{ elmt: '.action-button', path: 'interface/', img: 'color_buttons'},
-	{ elmt: '.mission-button', path: 'interface/', img: 'color_buttons'},
 	{ elmt: '.action-menu', path: 'interface/', img: 'action_menu'},
 	{ elmt: '.mission-arrow', path: 'interface/', img: 'mission_arrows'},
-	{ elmt: '#actor-div', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
+	{ elmt: '.actor-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
 	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
@@ -301,8 +300,13 @@ var displayConfirmMessage = function() {
 			switch (agenttype) {
 				
 				case AGT_EXPLORER:
-					message = "Reserve a " + RES_ENGLISH[resourcekind]
+					if (resourcekind == undefined){
+						message = "Reserve no resource on " + planetname + "?";
+					}
+					else {
+						message = "Reserve a " + RES_ENGLISH[resourcekind]
 								+ " resource on " + planetname + "?";
+					}
 					break;
 				
 				case AGT_MINER:
@@ -895,7 +899,8 @@ var updateMissionsMenu = function() {
 
 	$('#mission-name')[0].innerHTML = 'Round ' + clientGame.game.round + ' Missions';
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
-		$('#mission-location')[0].innerHTML = '';
+		$('#mission-agent-div').removeClass().addClass('actor-pic actor-struct-1');
+		$('#mission-location')[0].innerHTML = '--';
 		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
 		$('#mission-button-1').hide();
 		$('#mission-button-2').hide();
@@ -913,6 +918,10 @@ var updateMissionsMenu = function() {
 		var name = player == clientTurn ? 'You' : all_users[userid].name;
 		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
 		var message = "";
+		var picClass = 'actor-agent-' + agenttype;
+		$('#mission-agent-div').removeClass().addClass('actor-pic ' + picClass);
+		$('#mission-location')[0].innerHTML = AGT_ENGLISH[agenttype] + ' to ' + planetname;
+		$('#mission-div').removeClass().addClass('action-menu mission-div-p' + player);
 
 		// display basic mission information
 		// (eg. Bob sent an Explorer to Sector G!)
@@ -983,6 +992,8 @@ var updateMissionsMenu = function() {
 			else {
 				$('#missions-phase-div').show();
 				if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
+					$('#mission-button-1').attr('value', 'Block');
+					$('#mission-button-1').show();
 					$('#mission-button-2').attr('value', 'Collect');
 					$('#mission-button-2').show();
 				}
@@ -1041,7 +1052,6 @@ var updateMissionsMenu = function() {
 						default:
 							break;
 					}
-					$('#mission-location')[0].innerHTML = AGT_ENGLISH[agenttype] + ' to ' + planetname;
 					$('#mission-text')[0].innerHTML = messageHtml;
 					$('#mission-button-1').hide();
 					$('#mission-button-2').hide();
@@ -1094,7 +1104,7 @@ var updateActionMenu = function( actortype, id ){
 	var locationText = 'Location: ';
 	if ( actortype == 'agent' ){
 		picClass += 'agent-' + pendingAction.agenttype;
-		$('#actor-div').removeClass().addClass(picClass);
+		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
 		$('#action-name')[0].innerHTML = AGT_ENGLISH[id];
 
 		var agentid = String(clientTurn) + String(id);
@@ -1121,7 +1131,7 @@ var updateActionMenu = function( actortype, id ){
 	}
 	else if ( actortype == 'fleet'){
 		picClass += 'struct-' + OBJ_FLEET;
-		$('#actor-div').removeClass().addClass(picClass);
+		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
 		if ( pendingAction.actiontype != ACT_BASE_ATTACK 
 			 && pendingAction.actiontype != ACT_FLEET_ATTACK) {
 			
@@ -1152,7 +1162,7 @@ var updateActionMenu = function( actortype, id ){
 	}
 	else if ( actortype == 'base'){
 		picClass += 'struct-' + OBJ_BASE;
-		$('#actor-div').removeClass().addClass(picClass);
+		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
 		$('#action-name')[0].innerHTML = OBJ_ENGLISH[OBJ_BASE];
 
 		var planetid = pendingAction.planetid;

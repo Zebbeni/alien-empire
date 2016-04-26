@@ -186,7 +186,22 @@ var hideAgentRetireMenu = function() {
 };
 
 var updateAgentRetireMenu = function( agenttype ){
+	var agentid = String(clientTurn) + String(agenttype);
+	var agent = clientGame.game.board.agents[agentid];
+	var planetid = agent.planetid;
+	var planet = clientGame.game.board.planets[planetid];
+	$('#agent-retire-pic').removeClass().addClass('actor-pic actor-agent-' + agenttype);
 	$('#agent-retire-name')[0].innerHTML = AGT_ENGLISH[agenttype];
+	$('#agent-retire-div').addClass('action-div-p' + clientTurn);
+	$('#agent-retire-location')[0].innerHTML = 'Location: ' + planet.name;
+	if (agent.used) {
+		var dest_id = agent.destination;
+		var dest = clientGame.game.board.planets[dest_id].name
+		$('#agent-retire-text')[0].innerHTML = 'Currently on mission to ' + dest;
+	}
+	else {
+		$('#agent-retire-text')[0].innerHTML = 'Not on mission';
+	}
 	$('#agent-retire-button').click( function() { 
 											hideAgentRetireMenu();
 											setPendingAction( ACT_RETIRE );
