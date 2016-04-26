@@ -131,10 +131,10 @@
 	background-size: 384px 640px;
 }
 
-.mission-div-p1 { background-position: 0 0; }
-.mission-div-p2 { background-position: 0 -160px; }
-.mission-div-p3 { background-position: 0 -320px; }
-.mission-div-p4 { background-position: 0 -480px; }
+.mission-div-p0 { background-position: 0 0; }
+.mission-div-p1 { background-position: 0 -160px; }
+.mission-div-p2 { background-position: 0 -320px; }
+.mission-div-p3 { background-position: 0 -480px; }
 
 .mission-arrow {
 	position: absolute;

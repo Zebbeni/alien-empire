@@ -895,7 +895,6 @@ var updateMissionsMenu = function() {
 	var missionRound = clientGame.game.round - 2;
 	var missionindex = clientGame.game.missionindex;
 	var missions = clientGame.game.missions;
-	var innerHTML = '';
 
 	$('#mission-name')[0].innerHTML = 'Round ' + clientGame.game.round + ' Missions';
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
@@ -922,13 +921,6 @@ var updateMissionsMenu = function() {
 		$('#mission-agent-div').removeClass().addClass('actor-pic ' + picClass);
 		$('#mission-location')[0].innerHTML = AGT_ENGLISH[agenttype] + ' to ' + planetname;
 		$('#mission-div').removeClass().addClass('action-menu mission-div-p' + player);
-
-		// display basic mission information
-		// (eg. Bob sent an Explorer to Sector G!)
-		innerHTML += name + ' sent a ' 
-						+ AGT_ENGLISH[agenttype] 
-						+ ' to ' + planetname;
-
 		$('#mission-name').attr('value', AGT_ENGLISH[agenttype]);
 
 		// if mission has been resolved
@@ -961,6 +953,10 @@ var updateMissionsMenu = function() {
 						message = "Mission resolved,"
 									+ name + " has no embassy on this planet";
 						break;
+					case AGT_SABATEUR:
+						message = "Mission resolved,"
+									+ " opponents have no targetable structures here";
+						break;
 					default:
 						message = "Mission resolved";
 						break;
@@ -973,8 +969,11 @@ var updateMissionsMenu = function() {
 			$('#mission-text')[0].innerHTML = message;
 
 			if ( clientGame.game.missionViewed[clientTurn] == false ) {
-				// wait 5 seconds and move to next mission
-				viewMissionAction();
+				$('#mission-button-3').show();
+				$('#mission-button-3').attr('value', 'Okay');
+				$('#mission-button-3').off().click( function() {
+					viewMissionAction();
+				});
 			}
 		}
 
