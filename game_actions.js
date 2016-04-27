@@ -1044,6 +1044,7 @@ var applyLaunchMission = function( action, game ) {
 						planetTo: planetid,
 						planetFrom: agent.planetid,
 						useSmuggler: action.usesmuggler,
+						result: "Mission pending...",
 						resolution: {
 							resolved: false,
 							blocked: undefined,
@@ -1139,12 +1140,17 @@ var applyBlockMission = function( action, game ){
 					// since player needs to be able to see planet to resolve.
 
 					if ( game.board.planets[planetid].explored == false ){
-						addPointsLimited( mission.player, 
-										  planetid, 
-										  cons.PNT_EXPLORE, 
-										  game );
+						var points = addPointsLimited( mission.player, 
+										 			   planetid, 
+										  			   cons.PNT_EXPLORE, 
+										  			   game );
 
 						setPlanetExplored( game, planetid );
+						var planet = game.board.planets[planetid];
+						var planetname = planet.name;
+						var result = " discovered " + planetname;
+						result += " and earned " + points + " points,";
+						game.missions[round][index].result = result;
 					}
 
 					var is_unreserved = false;
@@ -1169,6 +1175,7 @@ var applyBlockMission = function( action, game ){
 					if ( !planet.settledBy[mission.player] ) {
 						game.missions[round][index].resolution.nochoice = true;
 					}
+
 					break;
 
 				case cons.AGT_ENVOY:
@@ -1318,6 +1325,8 @@ var applyMissionResolve = function( action, game ){
 					};
 				}
 				
+				game.missions[round][index].result += ' reserved ' + cons.RES_ENGLISH[resource.kind] + ".";
+
 				resource.reserved = player;
 				break;
 
@@ -1343,6 +1352,9 @@ var applyMissionResolve = function( action, game ){
 							resources, 
 							'From Miner' );
 				}
+
+				var result = " collected 6 " + cons.RES_ENGLISH[resource_kind] + " resources.";
+				game.missions[round][index].result = result;
 				break;
 
 			case cons.AGT_SURVEYOR:
@@ -1371,6 +1383,9 @@ var applyMissionResolve = function( action, game ){
 					calcResourcesToCollect( game, p );
 				}
 
+				var result = " increased mining resources on " + planets[planetid].name + ".";
+				game.missions[round][index].result = result;
+
 				break;
 
 			case cons.AGT_AMBASSADOR:
@@ -1395,6 +1410,8 @@ var applyMissionResolve = function( action, game ){
 					}
 				}
 
+				var result = ' blocked borders from ' + planets[planetid].name + ' to ';
+
 				for ( var i = 0; i < choice.length; i++ ){
 					planets[planetid].borders[ choice[i] ] = cons.BRD_BLOCKED;
 					planets[ choice[i] ].borders[ planetid ] = cons.BRD_BLOCKED;
@@ -1403,7 +1420,14 @@ var applyMissionResolve = function( action, game ){
 						updatePlanetBuildable( p, game, planetid );
 						updatePlanetBuildable( p, game, choice[i] );
 					}
+					if (i > 0){ 
+						result += ' and '; 
+					}
+					result +=  planets[ choice[i] ].name;
 				}
+
+				result += ".";
+				game.missions[round][index].result = result;
 
 				break;
 
@@ -1411,6 +1435,12 @@ var applyMissionResolve = function( action, game ){
 
 				game.board.planets[mission.planetTo].spyeyes[player] += 1;
 				game.board.planets[mission.planetFrom].spyeyes[player] += 1;
+
+				var result = ' added spy tokens to ' + planets[mission.planetTo].name;
+				if (mission.planetTo != mission.planetFrom){
+					result += ' and ' + planets[mission.planetFrom].name;
+				}
+				game.missions[round][index].result = result + ".";
 				break;
 
 			case cons.AGT_ENVOY:
@@ -1434,10 +1464,12 @@ var applyMissionResolve = function( action, game ){
 							'From Envoy' );
 				}
 
-				addPointsLimited( mission.player, 
-								  planetid, 
-								  cons.PNT_ENVOY, 
-								  game );
+				var points = addPointsLimited( mission.player, 
+											   planetid, 
+								  			   cons.PNT_ENVOY, 
+								  			   game );
+				var result = ' collected resources and gained ' + points + ' point.';
+				game.missions[round][index].result = result;
 				break;
 
 			case cons.AGT_SABATEUR:
@@ -1450,25 +1482,28 @@ var applyMissionResolve = function( action, game ){
 					idx = action.targetid;
 				}
 
-				addPointsLimited( mission.player, 
+				var points = addPointsLimited( mission.player, 
 								  planetid, 
 								  cons.PNT_DESTROY, 
 								  game );
 
 				removeStructure(game, targetPlayer, objecttype, planetid, idx);
+				var result = ' destroyed a ' + cons.OBJ_ENGLISH[objecttype] + ' for ' + points + ' point.';
+				game.missions[round][index].result = result;
 
 				break;
 
 			case cons.AGT_SMUGGLER:
 				var planet = game.board.planets[planetid];
 				var resources = [0, 0, 0, 0];
-				
+				var num_stolen = 0;
 				for ( var i = 0; i < planet.resources.length; i++ ){
 					var res = planet.resources[i];
 					var struct = res.structure;
 					if ( struct != undefined && struct.player != mission.player ){
 						var kind = res.kind;
 						if ( game.resources[struct.player][kind] > 0) {
+							num_stolen += 1;
 							resources[res.kind] += 1;
 							game.resources[struct.player][kind] -= 1;
 						}
@@ -1480,6 +1515,9 @@ var applyMissionResolve = function( action, game ){
 							cons.PKG_SMUGGLER, 
 							resources, 
 							'From Smuggler' );
+
+				var result = ' stole ' + num_stolen + ' resources.';
+				game.missions[round][index].result = result;
 				break;
 
 			default:
@@ -2156,6 +2194,7 @@ var addPointsLimited = function( player, planetid, pointtype, game ){
 	game.points_remaining[pointtype] -= points_to_add;
 
 	calcPoints(game, player);
+	return points_to_add;
 };
 
 var addCollectionPhaseResourcePackages = function(game) {

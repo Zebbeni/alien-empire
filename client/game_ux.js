@@ -387,7 +387,7 @@ var englishList = function(list, ifnone){
 		string += list[0];
 	}
 	else {
-		for ( var i = 0; i < list.length - 1; i++ ){
+		for ( var i = 0; i < list.length - 2; i++ ){
 			string += list[i] + ", ";
 		}
 		string += " and " + list[i];
@@ -896,10 +896,11 @@ var updateMissionsMenu = function() {
 	var missionindex = clientGame.game.missionindex;
 	var missions = clientGame.game.missions;
 
-	$('#mission-name')[0].innerHTML = 'Round ' + clientGame.game.round + ' Missions';
+	$('#mission-name')[0].innerHTML = 'Round ' + clientGame.game.round;
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
 		$('#mission-agent-div').removeClass().addClass('actor-pic actor-struct-1');
-		$('#mission-location')[0].innerHTML = '--';
+		$('#mission-location')[0].innerHTML = '- - -';
+		$('#mission-label')[0].innerHTML = 'Mission';
 		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
 		$('#mission-button-1').hide();
 		$('#mission-button-2').hide();
@@ -909,6 +910,7 @@ var updateMissionsMenu = function() {
 			submitMissionsViewed();
 		});
 	}
+
 	else {
 		var mission = missions[ missionRound ][ missionindex ];
 		var player = mission.player;
@@ -920,8 +922,11 @@ var updateMissionsMenu = function() {
 		var picClass = 'actor-agent-' + agenttype;
 		$('#mission-agent-div').removeClass().addClass('actor-pic ' + picClass);
 		$('#mission-location')[0].innerHTML = AGT_ENGLISH[agenttype] + ' to ' + planetname;
+		$('#mission-label')[0].innerHTML = 'Mission (' + String( missionindex + 1 ) 
+										    + ' of ' + missions[missionRound].length + ')';
 		$('#mission-div').removeClass().addClass('action-menu mission-div-p' + player);
 		$('#mission-name').attr('value', AGT_ENGLISH[agenttype]);
+		$('#mission-button-3').hide(); // Hide the view all missions button by default
 
 		// if mission has been resolved
 		if ( mission.resolution.resolved == true ) {
@@ -951,7 +956,7 @@ var updateMissionsMenu = function() {
 						break;
 					case AGT_ENVOY:
 						message = "Mission resolved,"
-									+ name + " has no embassy on this planet";
+									" has no embassy on this planet";
 						break;
 					case AGT_SABATEUR:
 						message = "Mission resolved,"
@@ -963,7 +968,7 @@ var updateMissionsMenu = function() {
 				}
 			}
 			else {
-				message = "Mission is resolved";
+				message = name + mission.result;
 			}
 
 			$('#mission-text')[0].innerHTML = message;
@@ -975,7 +980,7 @@ var updateMissionsMenu = function() {
 					viewMissionAction();
 				});
 			}
-		}
+		} 
 
 		// otherwise, if we can block this mission
 		// display spy block menu (block mission, allow)
@@ -1002,8 +1007,10 @@ var updateMissionsMenu = function() {
 		// if all clients have responded with spy actions
 		else if ( mission.waitingOnResolve ) {
 			// and if this is actually this client's mission
-			if ( clientTurn == player ) {
-
+			if ( clientTurn != player ) {
+				$('#mission-text')[0].innerHTML = "Mission pending";
+			}
+			else {
 				setPendingAction( ACT_MISSION_RESOLVE );
 				setPendingAgent( agenttype );
 				setPendingPlanet( mission.planetTo );
