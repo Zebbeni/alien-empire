@@ -872,7 +872,7 @@ var updatePhaseMenus = function() {
 
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
-			updateMissionsMenu();
+			updateMissionsMenu(undefined, undefined, true);
 			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
@@ -890,11 +890,43 @@ var updatePhaseMenus = function() {
  * Displays mission resolving information to each client based on which round
  * and mission index we're on. 
  */
-var updateMissionsMenu = function() {
-
+var updateMissionsMenu = function(round, index, allow_close) {
+	
 	var missionRound = clientGame.game.round - 2;
 	var missionindex = clientGame.game.missionindex;
 	var missions = clientGame.game.missions;
+
+	if (round != undefined && index != undefined){
+		missionRound = round - 2;
+		missionindex = index;
+	}
+
+	var prevRound, prevIndex;
+
+	if ( missionindex - 1 >= 0 ){
+		prevRound = missionRound;
+		prevIndex = missionindex - 1;
+	}
+	else {
+		if ( missionRound - 3 >= 1 ){
+			prevRound = missionRound - 1;
+			var num_missions = missions[missionRound - 3].length;
+			if ( num_missions > 0 ){
+				prevIndex = num_missions - 1;
+			}
+			else {
+				prevIndex = 0;
+			}
+		}
+		else {
+			prevRound = missionRound;
+			prevIndex = missionindex;
+		}
+	}
+
+	$('#mission-prev-button').off().click( function() {
+		updateMissionsMenu( prevRound, prevIndex, false );
+	});
 
 	$('#mission-name')[0].innerHTML = 'Round ' + clientGame.game.round;
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
@@ -904,11 +936,16 @@ var updateMissionsMenu = function() {
 		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
 		$('#mission-button-1').hide();
 		$('#mission-button-2').hide();
-		$('#mission-button-3').show();
-		$('#mission-button-3').attr('value', 'Okay');
-		$('#mission-button-3').off().click( function() {
-			submitMissionsViewed();
-		});
+		if ( allow_close ){
+			$('#mission-button-3').show();
+			$('#mission-button-3').attr('value', 'Okay');
+			$('#mission-button-3').off().click( function() {
+				submitMissionsViewed();
+			});
+		}
+		else {
+			$('#mission-button-3').hide();
+		}
 	}
 
 	else {
