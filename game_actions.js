@@ -1346,11 +1346,21 @@ var applyMissionResolve = function( action, game ){
 				resources[resource_kind] = 6;
 
 				for ( var i = 0; i < mission.collectors.length; i++ ) {
-					helpers.addResourcePackage( game, 
+
+					if (mission.collectors[i] == player) {
+						helpers.addResourcePackage( game, 
 							mission.collectors[i], 
 							cons.PKG_MINER, 
 							resources, 
 							'From Miner' );
+					}
+					else {
+						helpers.addResourcePackage( game, 
+							mission.collectors[i], 
+							cons.PKG_SPY, 
+							resources, 
+							'From Spy' );
+					}
 				}
 
 				var result = " collected 6 " + cons.RES_ENGLISH[resource_kind] + " resources.";
@@ -1457,11 +1467,20 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				for ( var i = 0; i < mission.collectors.length; i++ ) {
-					helpers.addResourcePackage( game, 
+					if (mission.collectors[i] == player) {
+						helpers.addResourcePackage( game, 
 							mission.collectors[i], 
 							cons.PKG_ENVOY, 
 							resources, 
 							'From Envoy' );
+					}
+					else {
+						helpers.addResourcePackage( game, 
+							mission.collectors[i], 
+							cons.PKG_SPY, 
+							resources, 
+							'From Spy' );
+					}
 				}
 
 				var points = addPointsLimited( mission.player, 

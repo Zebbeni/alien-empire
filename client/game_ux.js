@@ -387,8 +387,8 @@ var englishList = function(list, ifnone){
 		string += list[0];
 	}
 	else {
-		for ( var i = 0; i < list.length - 2; i++ ){
-			string += list[i] + ", ";
+		for ( var i = 0; i < list.length - 1; i++ ){
+			string += list[i] + " ";
 		}
 		string += " and " + list[i];
 	}
