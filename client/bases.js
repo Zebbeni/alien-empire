@@ -26,10 +26,10 @@ var initBases = function() {
 
 		var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + p);
 		base.graphics.beginBitmapFill( baseImg, 
-									   "no-repeat" ).drawRect( 0, 
-									   						   0, 
-									   						   baseImg.width, 
-									   						   baseImg.height );
+									   "no-repeat" ).drawRect( 1, 
+									   						   1, 
+									   						   baseImg.width - 2, 
+									   						   baseImg.height - 2);
 
 		basesContainer.addChild(base);
 	}

@@ -94,19 +94,216 @@
 	background: rgba(255, 255, 100, 0.5);
 }
 
-#missions-phase-div, #resource-phase-div, #upkeep-phase-div, #agent-retire-div, #agent-action-div {
+#missions-phase-div, #resource-phase-div, #upkeep-phase-div, #agent-retire-div, #action-div {
 	position: absolute;
 }
 
-#missions-phase-div, #agent-retire-div, #agent-action-div {
-	width: 300px;
-	height: 100px;
+#agent-retire-div {
 	top: 50%;
 	left: 50%;
-	margin-left: -150px;
-	margin-top: -50px;
-	background: rgba(255, 255, 255, 1.0);
+	margin-left: -192px;
+	margin-top: -80px;
 }
+
+#action-div, #agent-retire-div {
+	width: 384px;
+	height: 160px;
+	top: 30%;
+	left: 50%;
+	margin-left: -192px;
+	margin-top: -80px;
+}
+
+#missions-phase-div {
+	width: 424px;
+	height: 160px;
+	top: 110px;
+	left: 50%;
+	margin-left: -192px;
+}
+
+#mission-div {
+	position: absolute;
+	width: 384px;
+	height: 160px;
+	top: 0px;
+	left: 20px;
+	background-size: 384px 640px;
+}
+
+.mission-div-p0 { background-position: 0 0; }
+.mission-div-p1 { background-position: 0 -160px; }
+.mission-div-p2 { background-position: 0 -320px; }
+.mission-div-p3 { background-position: 0 -480px; }
+
+.mission-arrow {
+	position: absolute;
+	top: 0px;
+	width: 20px;
+	height: 160px;
+	background-size: 60px 320px;
+}
+
+.mission-arrow:hover {
+	cursor: pointer;
+}
+
+#mission-prev-button {
+	left: 0px;
+}
+
+#mission-prev-button:hover {
+	background-position: -20px 0;
+}
+
+#mission-prev-button:active {
+	background-position: -40px 0;
+}
+
+#mission-next-button {
+	left: 404px;
+	background-position: 0 -160px;
+}
+
+#mission-next-button:hover {
+	background-position: -20px -160px;
+}
+
+#mission-next-button:active {
+	background-position: -40px -160px;
+}
+
+.action-menu {
+	width: 384px;
+	height: 160px;
+	background-size: 384px 640px;
+}
+
+.action-div-p0 { background-position: 0 0; }
+.action-div-p1 { background-position: 0 -160px; }
+.action-div-p2 { background-position: 0 -320px; }
+.action-div-p3 { background-position: 0 -480px; }
+
+.action-name {
+	position: absolute;
+	top: 10px;
+	left: 0px;
+	height: 26px;
+	width: 384px;
+	padding: 0px;
+	font-size: 15px;
+	font-family: 'Cinzel Decorative', cursive;
+	font-weight: 700;
+	text-align: center;
+	vertical-align: middle;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	word-break: break-word;
+	line-height: 90%;
+	color: black;
+}
+
+.action-location, .action-text {
+	position: absolute;
+	left: 120px;
+	width: 257px;
+	font-size: 14px;
+	font-weight: bold;
+	vertical-align: middle;
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	word-break: break-word;
+	line-height: 110%;
+	color: white;
+}
+
+.action-label {
+	position: absolute;
+	left: 120px;
+	width: 257px;
+	top: 61px;
+	vertical-align: middle;
+	overflow-wrap: break-word;
+	padding: 0px;
+	font-family: 'Cinzel Decorative', cursive;
+	font-size: 12px;
+	font-weight: 700;
+	text-align: center;
+	word-wrap: break-word;
+	word-break: break-word;
+	line-height: 110%;
+	color: black;
+}
+
+.action-location {
+	top: 36px;
+	padding: 0px;
+	font-weight: bold;
+	height: 25px;
+	text-align: center;
+}
+
+.action-text {
+	top: 80px;
+	padding: 5px;
+	font-weight: normal;
+	height: 40px;
+	text-align: left;
+}
+
+.action-button {
+	position: absolute;
+	width: 124px;
+	height: 24px;
+	top: 126px;
+	font-weight: bold;
+	background-size: 496px 72px;
+	background-color: transparent;
+}
+
+.button-1 { left: 7px; }
+.button-2 { left: 131px; }
+.button-3 { left: 255px; }
+
+.button-yellow {background-position: 0 0; }
+.button-yellow:hover { background-position: -124px 0; }
+.button-yellow:active { background-position: -248px 0; }
+
+.button-red { background-position: 0 -24px; }
+.button-red:hover { background-position: -124px -24px; }
+.button-red:active { background-position: -248px -24px; }
+
+.button-blue { background-position: 0 -48px; }
+.button-blue:hover { background-position:  -124px -48px; }
+.button-blue:active { background-position: -248px -48px; }
+
+.gray {
+	background-position: -372px 0px;
+	pointer-events: none;
+}
+
+.actor-pic {
+	position: absolute;
+	top: 30px;
+	left: 11px;
+	width: 102px;
+	height: 89px;
+	background-size: 102px 1157px;
+}
+
+.actor-struct-2 { background-position: 0 0; }
+.actor-struct-2 { background-position: 0 -89px; }
+.actor-struct-3 { background-position: 0 -178px; }
+.actor-struct-4 { background-position: 0 -267px; }
+.actor-struct-5 { background-position: 0 -356px; }
+.actor-agent-1 { background-position: 0 -445px; }
+.actor-agent-2 { background-position: 0 -534px; }
+.actor-agent-3 { background-position: 0 -623px; }
+.actor-agent-4 { background-position: 0 -712px; }
+.actor-agent-5 { background-position: 0 -801px; }
+.actor-agent-6 { background-position: 0 -890px; }
+.actor-agent-7 { background-position: 0 -979px; }
+.actor-agent-8 { background-position: 0 -1068px; }
 
 #resource-phase-div, #upkeep-phase-div {
 	width: 100px;
@@ -584,7 +781,7 @@
 
 #trade-button-no {
 	right: 11px;
-	background-position: 0 -24px;;
+	background-position: 0 -24px;
 }
 
 #trade-button-yes:hover, #trade-button-no:hover {

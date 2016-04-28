@@ -15,7 +15,7 @@
                 <div id="text-title-div"></div>
                 <div id="input-username-div">
                     <form action="javascript:submitLogin();">
-                        <input id="input-username" type="text", placeholder="Enter a Username!" autocomplete="off" autofocus/>
+                        <input id="input-username" type="text" placeholder="Enter a Username!" autocomplete="off" autofocus />
                     </form>
                 </div>
                 <div id="players-time-div"></div>
@@ -122,33 +122,58 @@
             </table>
         </div>
         <div id="missions-phase-div" class="phase-div" style="display: none">
-            <div>Resolving Missions Phase</div>
-            <div id="missions-phase-info"></div>
-            <div id="missions-spy-menu">
-                <div>Block Mission?</div>
-                <input type="button" id="mission-block-button" value="Yes" onclick="javascript:blockMissionAction( true );"></input>
-                <input type="button" id="mission-allow-button" value="No" onclick="javascript:blockMissionAction( false );"></input>
-                <input type="button" id="mission-collect-button" value="Collect" onclick="javascript:blockMissionAction( null );"></input>
+            <div id="mission-prev-button" class="mission-arrow" ></div>
+            <div id="mission-div" class="action-menu">
+                <div id="mission-name" class="action-name"></div>
+                <div id="mission-agent-div" class="actor-pic"></div> 
+                <div id="mission-location" class="action-location"></div>
+                <div id="mission-label" class="action-label"></div>
+                <div id="mission-text" class="action-text"></div>
+                <input type="button" class="action-button button-1 button-yellow" id="mission-button-1"></input>
+                <input type="button" class="action-button button-2 button-blue" id="mission-button-2"></input>
+                <input type="button" class="action-button button-3 button-red" id="mission-button-3"></input>
             </div>
-            <div id="missions-resolution-menu"></div>
-            <div id="missions-choice-menu">
-                <div id="missions-choice-message">Target your stuff or whatever</div>
-                <input type="button" value="Done" onclick="javascript:displayConfirmMenu();"/>
-            </div>
-            <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
+            <div id="mission-next-button" class="mission-arrow" ></div>
+<!--             <div id="mission-info-div">
+                <div></div>
+                    <div id="missions-spy-menu">
+                        <div>Block Mission?</div>
+                        <input type="button" id="mission-block-button" value="Yes" onclick="javascript:blockMissionAction( true );"></input>
+                        <input type="button" id="mission-allow-button" value="No" onclick="javascript:blockMissionAction( false );"></input>
+                        <input type="button" id="mission-collect-button" value="Collect" onclick="javascript:blockMissionAction( null );"></input>
+                    </div>
+                </div>
+                <div id="missions-resolution-menu"></div>
+                <div id="missions-choice-menu">
+                    <div id="missions-choice-message">Target your stuff or whatever</div>
+                    <input type="button" value="Done" onclick="javascript:displayConfirmMenu();"/>
+                </div>
+                <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
+            </div> -->
+<!--             <div id="mission-phase-next-div">
+                <input type="button" id="agent-retire-button" value="Retire"></input>
+            </div> -->
         </div>
         <div id="resource-phase-div" class="phase-div" style="display: none"></div>
         <div id="upkeep-phase-div" class="phase-div" style="display: none"></div>
-        <div id="agent-retire-div" style="visibility: hidden">
-            <div id="agent-retire-name"></div>
-            <input type="button" id="agent-retire-button" value="Retire"></input>
-            <input type="button" id="agent-cancel-button" value="Cancel" onclick="javascript:hideAgentRetireMenu();"></input>
+        <div id="agent-retire-div" class="action-menu" style="visibility: hidden">
+            <div id="agent-retire-name" class="action-name"></div>
+            <div id="agent-retire-location" class="action-location"></div>
+            <div id="agent-retire-label" class="action-label">Status</div>
+            <div id="agent-retire-text" class="action-text"></div>
+            <div id="agent-retire-pic" class="actor-pic"></div>
+            <input type="button" id="agent-retire-button" class="action-button button-2 button-yellow" value="Retire"></input>
+            <input type="button" id="agent-cancel-button" class="action-button button-3 button-red" value="Cancel" onclick="javascript:hideAgentRetireMenu();"></input>
         </div>
-        <div id="agent-action-div" style="visibility: hidden">
-            <div id="agent-action-name"></div>
-            <input type="button" id="agent-move-button"></input>
-            <input type="button" id="agent-mission-button"></input>
-            <input type="button" id="agent-cancel-button" value="Cancel" onclick="javascript:cancelAction();"></input>
+        <div id="action-div" class="action-menu" style="visibility: hidden">
+            <div id="action-name" class="action-name"></div>
+            <div id="action-location" class="action-location"></div>
+            <div id="action-label" class="action-label"></div>
+            <div id="action-text" class="action-text"></div>
+            <div id="actor-div" class="actor-pic"></div>
+            <input type="button" class="action-button button-1 button-yellow" id="action-button-1"></input>
+            <input type="button" class="action-button button-2 button-blue" id="action-button-2"></input>
+            <input type="button" class="action-button button-3 button-red" id="action-button-3" value="Cancel" onclick="javascript:cancelAction();"></input>
         </div>
         <div id="confirm-action-div" style="visibility: hidden">
             <div id="your-action-message-div"></div>

@@ -35,6 +35,10 @@ var DOMimageMap = [
 	{ elmt: '.trade-radio-button', path: 'interface/', img: 'trade_radio_button'},
 	{ elmt: '#trade-button-yes', path: 'interface/', img: 'color_buttons'},
 	{ elmt: '#trade-button-no', path: 'interface/', img: 'color_buttons'},
+	{ elmt: '.action-button', path: 'interface/', img: 'color_buttons'},
+	{ elmt: '.action-menu', path: 'interface/', img: 'action_menu'},
+	{ elmt: '.mission-arrow', path: 'interface/', img: 'mission_arrows'},
+	{ elmt: '.actor-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
 	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
@@ -73,6 +77,7 @@ var createInterface = function() {
 	createTurnHelpMessage();
 	createBottomBarMenus();
 	createRoundMenu();
+	createActionMenu();
 }
 /**
  * Updates menus and board interactivity when a game action occurs.
@@ -295,8 +300,13 @@ var displayConfirmMessage = function() {
 			switch (agenttype) {
 				
 				case AGT_EXPLORER:
-					message = "Reserve a " + RES_ENGLISH[resourcekind]
+					if (resourcekind == undefined){
+						message = "Reserve no resource on " + planetname + "?";
+					}
+					else {
+						message = "Reserve a " + RES_ENGLISH[resourcekind]
 								+ " resource on " + planetname + "?";
+					}
 					break;
 				
 				case AGT_MINER:
@@ -378,7 +388,7 @@ var englishList = function(list, ifnone){
 	}
 	else {
 		for ( var i = 0; i < list.length - 1; i++ ){
-			string += list[i] + ", ";
+			string += list[i] + " ";
 		}
 		string += " and " + list[i];
 	}
@@ -658,6 +668,10 @@ var createPlayerStatsMenus = function() {
 	$('#players-wrapper-div')[0].style.visibility = "visible";
 };
 
+var createActionMenu = function() {
+	$('#action-div').addClass('action-div-p' + clientTurn);
+};
+
 var updatePlayerStatsMenus = function() {
 
 	var numPlayers = clientGame.players.length;
@@ -842,10 +856,10 @@ var updateRoundMenu = function() {
 
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
 		if ( i == clientGame.game.phase) {
-			$('#phase-td' + i).addClass('phase-td-current')
+			$('#phase-td' + i).addClass('phase-td-current');
 		} 
 		else {
-			$('#phase-td' + i).removeClass('phase-td-current')
+			$('#phase-td' + i).removeClass('phase-td-current');
 		}
 	};
 };
@@ -858,7 +872,7 @@ var updatePhaseMenus = function() {
 
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
-			updateMissionsMenu();
+			updateMissionsMenu(undefined, undefined);
 			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
@@ -876,21 +890,81 @@ var updatePhaseMenus = function() {
  * Displays mission resolving information to each client based on which round
  * and mission index we're on. 
  */
-var updateMissionsMenu = function() {
-
+var updateMissionsMenu = function(round, index) {
+	
 	var missionRound = clientGame.game.round - 2;
 	var missionindex = clientGame.game.missionindex;
 	var missions = clientGame.game.missions;
-	var innerHTML = '';
 
-	$('#missions-choice-menu')[0].style.visibility = "hidden";
-	$('#missions-spy-menu')[0].style.visibility = "hidden";
-	$('#mission-collect-button')[0].style.visibility = "hidden";
-	$('#missions-resolution-menu')[0].style.visibility = "hidden";
-
-	if ( missionRound <= 0 || missions[missionRound].length == 0) {
-		innerHTML += 'There are no missions to resolve this round';
+	if (round != undefined && index != undefined){
+		missionRound = round - 2;
+		missionindex = index;
 	}
+
+	var nowRound = missionRound + 2;
+	var nowIndex = missionindex;
+	var prevRound, prevIndex, nextRound, nextIndex;
+
+	if ( missionindex - 1 >= 0 ){
+		prevRound = nowRound;
+		prevIndex = nowIndex - 1;
+	}
+	else {
+		if ( nowRound - 3 >= 1 ){
+			prevRound = nowRound - 1;
+			var num_missions = missions[prevRound - 2].length;
+			if ( num_missions > 0 ){
+				prevIndex = num_missions - 1;
+			}
+			else {
+				prevIndex = 0;
+			}
+		}
+		else {
+			prevRound = nowRound;
+			prevIndex = nowIndex;
+		}
+	}
+
+	if ( nowIndex >= clientGame.game.missionindex && nowRound >= clientGame.game.round ){
+		nextIndex = clientGame.game.missionindex;
+		nextRound = clientGame.game.round;
+	}
+	else if ( nowIndex + 1 < missions[nowRound - 2].length ){
+		nextIndex = nowIndex + 1;
+		nextRound = nowRound;
+	}
+	else {
+		nextIndex = 0;
+		nextRound = nowRound + 1;
+	}
+
+	$('#mission-prev-button').off().click( function() {
+		updateMissionsMenu( prevRound, prevIndex );
+	});
+	$('#mission-next-button').off().click( function() {
+		updateMissionsMenu( nextRound, nextIndex );
+	});
+
+	$('#mission-button-3').hide();
+
+	$('#mission-name')[0].innerHTML = 'Round ' + String(missionRound + 2);
+	if ( missionRound <= 0 || missions[missionRound].length == 0) {
+		$('#mission-agent-div').removeClass().addClass('actor-pic actor-struct-1');
+		$('#mission-location')[0].innerHTML = '- - -';
+		$('#mission-label')[0].innerHTML = 'Mission';
+		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
+		$('#mission-button-1').hide();
+		$('#mission-button-2').hide();
+		if ( nowRound == clientGame.game.round && nowIndex == clientGame.game.missionindex ){
+			$('#mission-button-3').show();
+			$('#mission-button-3').attr('value', 'Okay');
+			$('#mission-button-3').off().click( function() {
+				submitMissionsViewed();
+			});
+		}
+	}
+
 	else {
 		var mission = missions[ missionRound ][ missionindex ];
 		var player = mission.player;
@@ -899,17 +973,19 @@ var updateMissionsMenu = function() {
 		var name = player == clientTurn ? 'You' : all_users[userid].name;
 		var planetname = clientGame.game.board.planets[ mission.planetTo ].name;
 		var message = "";
-
-		// display basic mission information
-		// (eg. Bob sent an Explorer to Sector G!)
-		innerHTML += name + ' sent a ' 
-						+ AGT_ENGLISH[agenttype] 
-						+ ' to ' + planetname;
+		var picClass = 'actor-agent-' + agenttype;
+		$('#mission-agent-div').removeClass().addClass('actor-pic ' + picClass);
+		$('#mission-location')[0].innerHTML = AGT_ENGLISH[agenttype] + ' to ' + planetname;
+		$('#mission-label')[0].innerHTML = 'Mission (' + String( missionindex + 1 ) 
+										    + ' of ' + missions[missionRound].length + ')';
+		$('#mission-div').removeClass().addClass('action-menu mission-div-p' + player);
+		$('#mission-name').attr('value', AGT_ENGLISH[agenttype]);
+		$('#mission-button-3').hide(); // Hide the view all missions button by default
 
 		// if mission has been resolved
 		if ( mission.resolution.resolved == true ) {
 			// display mission resolution message (eg. no-fly zones placed on __)
-			$('#missions-resolution-menu')[0].style.visibility = "visible";
+			$('#missions-phase-div').show();
 
 			if ( mission.resolution.blocked ) {
 				var blocker = mission.resolution.blockedBy;
@@ -934,7 +1010,11 @@ var updateMissionsMenu = function() {
 						break;
 					case AGT_ENVOY:
 						message = "Mission resolved,"
-									+ name + " has no embassy on this planet";
+									" has no embassy on this planet";
+						break;
+					case AGT_SABATEUR:
+						message = "Mission resolved,"
+									+ " opponents have no targetable structures here";
 						break;
 					default:
 						message = "Mission resolved";
@@ -942,16 +1022,21 @@ var updateMissionsMenu = function() {
 				}
 			}
 			else {
-				message = "Mission is resolved";
+				message = name + mission.result;
 			}
 
-			$('#missions-resolution-menu')[0].innerHTML = message;
+			$('#mission-text')[0].innerHTML = message;
 
-			if ( clientGame.game.missionViewed[clientTurn] == false ) {
-				// wait 5 seconds and move to next mission
-				viewMissionAction();
+			if ( nowIndex == clientGame.game.missionindex && nowRound == clientGame.game.round ) {
+				if ( clientGame.game.missionViewed[clientTurn] == false ) {
+					$('#mission-button-3').show();
+					$('#mission-button-3').attr('value', 'Okay');
+					$('#mission-button-3').off().click( function() {
+						viewMissionAction();
+					});
+				}
 			}
-		}
+		} 
 
 		// otherwise, if we can block this mission
 		// display spy block menu (block mission, allow)
@@ -965,9 +1050,12 @@ var updateMissionsMenu = function() {
 				blockMissionAction( false );
 			}
 			else {
-				$('#missions-spy-menu')[0].style.visibility = "visible";
+				$('#missions-phase-div').show();
 				if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
-					$('#mission-collect-button')[0].style.visibility = "visible";
+					$('#mission-button-1').attr('value', 'Block');
+					$('#mission-button-1').show();
+					$('#mission-button-2').attr('value', 'Collect');
+					$('#mission-button-2').show();
 				}
 			}
 		}
@@ -975,8 +1063,10 @@ var updateMissionsMenu = function() {
 		// if all clients have responded with spy actions
 		else if ( mission.waitingOnResolve ) {
 			// and if this is actually this client's mission
-			if ( clientTurn == player ) {
-
+			if ( clientTurn != player ) {
+				$('#mission-text')[0].innerHTML = "Mission pending";
+			}
+			else {
 				setPendingAction( ACT_MISSION_RESOLVE );
 				setPendingAgent( agenttype );
 				setPendingPlanet( mission.planetTo );
@@ -997,17 +1087,17 @@ var updateMissionsMenu = function() {
 					var messageHtml = '';
 					switch ( agenttype ) {
 						case AGT_EXPLORER:
-							messageHtml = 'Choose a resource to reserve';
+							messageHtml = 'Your explorer has discovered a planet! Select a resource here to reserve it.';
 							break;
 						case AGT_MINER:
-							messageHtml = 'Choose a resource you occupy to collect 6';
+							messageHtml = 'Your miner has arrived! Select a resource you occupy here to collect 6.';
 							break;
 						case AGT_SURVEYOR:
 							if ( pendingAction.choice == undefined 
 								 || pendingAction.choice.constructor !== Array) {
 								setPendingChoice([]);
 							}
-							messageHtml = 'Choose up to 2 resources to increase and click Done';
+							messageHtml = 'Select up to 2 resources to increase. click Done when finished.';
 							break;
 						case AGT_AMBASSADOR:
 							if ( pendingAction.choice == undefined 
@@ -1016,7 +1106,7 @@ var updateMissionsMenu = function() {
 								updateNoFlyZones();
 								stage.update();
 							}
-							messageHtml = 'Choose up to 2 borders to block';
+							messageHtml = 'Select up to 2 borders to block, click Done when finished';
 							break;
 						case AGT_SABATEUR:
 							messageHtml = 'Choose an opponent structure to destroy';
@@ -1024,15 +1114,18 @@ var updateMissionsMenu = function() {
 						default:
 							break;
 					}
-					$('#missions-choice-message')[0].innerHTML = messageHtml;
-					$('#missions-choice-menu')[0].style.visibility = "visible";
+					$('#mission-text')[0].innerHTML = messageHtml;
+					$('#mission-button-1').hide();
+					$('#mission-button-2').hide();
+					$('#mission-button-3').show();
+					$('#mission-button-3').attr('value', 'Done');
+					$('#mission-button-3').off().click( function() {
+						displayConfirmMenu();
+					});
 				}
 			}
 		}
 	}
-
-	$('#missions-phase-info')[0].innerHTML = innerHTML;
-
 };
 
 // sets pending action to ACT_BLOCK_MISSION and submits it to
@@ -1051,12 +1144,12 @@ var viewMissionAction = function() {
 };
 
 var showActionMenu = function() {
-	$('#agent-action-div')[0].style.visibility = "visible";
+	$('#action-div')[0].style.visibility = "visible";
 };
 
 var hideActionMenu = function() {
-	$('#agent-action-div')[0].style.visibility = "hidden";
-	$('#agent-move-button')[0].style.visibility = "hidden";
+	$('#action-div')[0].style.visibility = "hidden";
+	$('#action-button-1')[0].style.visibility = "hidden";
 };
 
 var cancelAction = function() {
@@ -1069,18 +1162,42 @@ var cancelAction = function() {
 // id is a fleetid, agenttype, or base planetid
 var updateActionMenu = function( actortype, id ){
 	setPendingChoice(undefined); // ensure choice is not an array (This might be better when switching phases)
+	var picClass = 'actor-';
+	var locationText = 'Location: ';
 	if ( actortype == 'agent' ){
-		$('#agent-action-name')[0].innerHTML = "Action: " + AGT_ENGLISH[id];
-		$('#agent-move-button').prop('value', 'Move');
-		$('#agent-move-button')[0].style.visibility = "visible";
-		$('#agent-move-button').off().click( function() { 
+		picClass += 'agent-' + pendingAction.agenttype;
+		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
+		$('#action-name')[0].innerHTML = AGT_ENGLISH[id];
+
+		var agentid = String(clientTurn) + String(id);
+		var planetid = clientGame.game.board.agents[agentid].planetid;
+		var agent = clientGame.game.board.agents[agentid];
+		locationText += clientGame.game.board.planets[planetid].name;
+		$('#action-location')[0].innerHTML = locationText;
+		$('#action-label')[0].innerHTML = 'Mission';
+
+		if ( agent.used == true ){
+			if (agent.destination != undefined){
+				var planetname = clientGame.game.board.planets[agent.destination].name;
+				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' is on mission to ' + planetname;
+			}
+			else {
+				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' already moved this turn';
+			}
+		}
+		else {
+			$('#action-text')[0].innerHTML = INFO_TEXT.agent[id].action;
+		}
+		$('#action-button-1').attr('value', 'Move');
+		$('#action-button-1')[0].style.visibility = "visible";
+		$('#action-button-1').off().click( function() { 
 											hideActionMenu();
 											setPendingAction( ACT_MOVE_AGENT );
 											updateBoardInteractivity();
 											updateTurnHelpMessage();
 										} );
-		$('#agent-mission-button').prop('value', 'Mission');
-		$('#agent-mission-button').off().click( function() { 
+		$('#action-button-2').attr('value', 'Mission');
+		$('#action-button-2').off().click( function() { 
 											hideActionMenu();
 											setPendingAction( ACT_LAUNCH_MISSION );
 											updateBoardInteractivity();
@@ -1088,19 +1205,29 @@ var updateActionMenu = function( actortype, id ){
 										} );
 	}
 	else if ( actortype == 'fleet'){
+		picClass += 'struct-' + OBJ_FLEET;
+		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
 		if ( pendingAction.actiontype != ACT_BASE_ATTACK 
 			 && pendingAction.actiontype != ACT_FLEET_ATTACK) {
-			$('#agent-action-name')[0].innerHTML = "Action: " + OBJ_ENGLISH[OBJ_FLEET];
-			$('#agent-move-button').prop('value', 'Move');
-			$('#agent-move-button')[0].style.visibility = "visible";
-			$('#agent-move-button').off().click( function() { 
+			
+			$('#action-name')[0].innerHTML = OBJ_ENGLISH[OBJ_FLEET];
+
+			var planetid = pendingAction.planetid;
+			locationText += clientGame.game.board.planets[planetid].name;
+			$('#action-location')[0].innerHTML = locationText;
+			$('#action-label')[0].innerHTML = 'Action';
+			$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_FLEET].action;
+
+			$('#action-button-1').attr('value', 'Move');
+			$('#action-button-1')[0].style.visibility = "visible";
+			$('#action-button-1').off().click( function() { 
 												hideActionMenu();
 												setPendingAction( ACT_FLEET_MOVE );
 												updateBoardInteractivity();
 												// updateTurnHelpMessage();
 											} );
-			$('#agent-mission-button').prop('value', 'Attack');
-			$('#agent-mission-button').off().click( function() { 
+			$('#action-button-2').attr('value', 'Attack');
+			$('#action-button-2').off().click( function() { 
 												hideActionMenu();
 												setPendingAction( ACT_FLEET_ATTACK );
 												updateBoardInteractivity();
@@ -1109,10 +1236,19 @@ var updateActionMenu = function( actortype, id ){
 		}
 	}
 	else if ( actortype == 'base'){
-		$('#agent-action-name')[0].innerHTML = "Action: " + OBJ_ENGLISH[OBJ_BASE];
-		$('#agent-move-button')[0].style.visibility = "hidden";
-		$('#agent-mission-button').prop('value', 'Attack');
-		$('#agent-mission-button').off().click( function() { 
+		picClass += 'struct-' + OBJ_BASE;
+		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
+		$('#action-name')[0].innerHTML = OBJ_ENGLISH[OBJ_BASE];
+
+		var planetid = pendingAction.planetid;
+		locationText += clientGame.game.board.planets[planetid].name;
+		$('#action-location')[0].innerHTML = locationText;
+		$('#action-label')[0].innerHTML = 'Action';
+		$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_BASE].action;
+
+		$('#action-button-1')[0].style.visibility = "hidden";
+		$('#action-button-2').prop('value', 'Attack');
+		$('#action-button-2').off().click( function() { 
 											hideActionMenu();
 											setPendingAction( ACT_BASE_ATTACK );
 											updateBoardInteractivity();

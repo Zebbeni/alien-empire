@@ -19,7 +19,7 @@ var initFleets = function() {
 		fleetshape.fleetid = fleetid;
 
 		var fleetImg = loader.getResult( OBJ_ENGLISH[OBJ_FLEET] + fleet.player );
-		fleetshape.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(0, 0, fleetImg.width, fleetImg.height);
+		fleetshape.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(1, 1, fleetImg.width - 2, fleetImg.height - 2);
 		fleetshape.visible = false;
 
 		fleetshape.mouseEnabled = true;
