@@ -872,7 +872,7 @@ var updatePhaseMenus = function() {
 
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
-			updateMissionsMenu(undefined, undefined, true);
+			updateMissionsMenu(undefined, undefined);
 			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
@@ -890,7 +890,7 @@ var updatePhaseMenus = function() {
  * Displays mission resolving information to each client based on which round
  * and mission index we're on. 
  */
-var updateMissionsMenu = function(round, index, allow_close) {
+var updateMissionsMenu = function(round, index) {
 	
 	var missionRound = clientGame.game.round - 2;
 	var missionindex = clientGame.game.missionindex;
@@ -901,16 +901,18 @@ var updateMissionsMenu = function(round, index, allow_close) {
 		missionindex = index;
 	}
 
-	var prevRound, prevIndex;
+	var nowRound = missionRound + 2;
+	var nowIndex = missionindex;
+	var prevRound, prevIndex, nextRound, nextIndex;
 
 	if ( missionindex - 1 >= 0 ){
-		prevRound = missionRound;
-		prevIndex = missionindex - 1;
+		prevRound = nowRound;
+		prevIndex = nowIndex - 1;
 	}
 	else {
-		if ( missionRound - 3 >= 1 ){
-			prevRound = missionRound - 1;
-			var num_missions = missions[missionRound - 3].length;
+		if ( nowRound - 3 >= 1 ){
+			prevRound = nowRound - 1;
+			var num_missions = missions[prevRound - 2].length;
 			if ( num_missions > 0 ){
 				prevIndex = num_missions - 1;
 			}
@@ -919,16 +921,34 @@ var updateMissionsMenu = function(round, index, allow_close) {
 			}
 		}
 		else {
-			prevRound = missionRound;
-			prevIndex = missionindex;
+			prevRound = nowRound;
+			prevIndex = nowIndex;
 		}
 	}
 
+	if ( nowIndex >= clientGame.game.missionindex && nowRound >= clientGame.game.round ){
+		nextIndex = clientGame.game.missionindex;
+		nextRound = clientGame.game.round;
+	}
+	else if ( nowIndex + 1 < missions[nowRound - 2].length ){
+		nextIndex = nowIndex + 1;
+		nextRound = nowRound;
+	}
+	else {
+		nextIndex = 0;
+		nextRound = nowRound + 1;
+	}
+
 	$('#mission-prev-button').off().click( function() {
-		updateMissionsMenu( prevRound, prevIndex, false );
+		updateMissionsMenu( prevRound, prevIndex );
+	});
+	$('#mission-next-button').off().click( function() {
+		updateMissionsMenu( nextRound, nextIndex );
 	});
 
-	$('#mission-name')[0].innerHTML = 'Round ' + clientGame.game.round;
+	$('#mission-button-3').hide();
+
+	$('#mission-name')[0].innerHTML = 'Round ' + String(missionRound + 2);
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
 		$('#mission-agent-div').removeClass().addClass('actor-pic actor-struct-1');
 		$('#mission-location')[0].innerHTML = '- - -';
@@ -936,15 +956,12 @@ var updateMissionsMenu = function(round, index, allow_close) {
 		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
 		$('#mission-button-1').hide();
 		$('#mission-button-2').hide();
-		if ( allow_close ){
+		if ( nowRound == clientGame.game.round && nowIndex == clientGame.game.missionindex ){
 			$('#mission-button-3').show();
 			$('#mission-button-3').attr('value', 'Okay');
 			$('#mission-button-3').off().click( function() {
 				submitMissionsViewed();
 			});
-		}
-		else {
-			$('#mission-button-3').hide();
 		}
 	}
 
@@ -1010,12 +1027,14 @@ var updateMissionsMenu = function(round, index, allow_close) {
 
 			$('#mission-text')[0].innerHTML = message;
 
-			if ( clientGame.game.missionViewed[clientTurn] == false ) {
-				$('#mission-button-3').show();
-				$('#mission-button-3').attr('value', 'Okay');
-				$('#mission-button-3').off().click( function() {
-					viewMissionAction();
-				});
+			if ( nowIndex == clientGame.game.missionindex && nowRound == clientGame.game.round ) {
+				if ( clientGame.game.missionViewed[clientTurn] == false ) {
+					$('#mission-button-3').show();
+					$('#mission-button-3').attr('value', 'Okay');
+					$('#mission-button-3').off().click( function() {
+						viewMissionAction();
+					});
+				}
 			}
 		} 
 
@@ -1152,10 +1171,23 @@ var updateActionMenu = function( actortype, id ){
 
 		var agentid = String(clientTurn) + String(id);
 		var planetid = clientGame.game.board.agents[agentid].planetid;
+		var agent = clientGame.game.board.agents[agentid];
 		locationText += clientGame.game.board.planets[planetid].name;
 		$('#action-location')[0].innerHTML = locationText;
 		$('#action-label')[0].innerHTML = 'Mission';
-		$('#action-text')[0].innerHTML = INFO_TEXT.agent[id].action;
+
+		if ( agent.used == true ){
+			if (agent.destination != undefined){
+				var planetname = clientGame.game.board.planets[agent.destination].name;
+				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' is on mission to ' + planetname;
+			}
+			else {
+				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' already moved this turn';
+			}
+		}
+		else {
+			$('#action-text')[0].innerHTML = INFO_TEXT.agent[id].action;
+		}
 		$('#action-button-1').attr('value', 'Move');
 		$('#action-button-1')[0].style.visibility = "visible";
 		$('#action-button-1').off().click( function() { 

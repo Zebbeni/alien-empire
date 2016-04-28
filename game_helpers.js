@@ -45,7 +45,7 @@ var addGameMessage = function(gameInfo, userid, msg) {
  */
 var addResourcePackage = function(game, player, pkgtype, resources, message) {
 	var isnew = true;
-	var agent_pkgs = [cons.PKG_ENVOY, cons.PKG_MINER, cons.PKG_SPY, cons.PKG_SMUGGLER];
+	var agent_pkgs = [cons.PKG_ENVOY, cons.PKG_MINER, cons.PKG_SPY, cons.PKG_SMUGGLER, cons.PKG_COLLECT];
 	if ( agent_pkgs.indexOf(pkgtype) != -1 ){
 		isnew = false; // set this so ui will draw the package (don't auto-collect)
 	}

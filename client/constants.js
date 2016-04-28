@@ -169,7 +169,7 @@ var INFO_TEXT = {
 			action: 'Target a sector to discover a new planet and earn points'
 		},
 		2: {
-			action: 'Target a planet where you collect resources and collect 6 of one'
+			action: 'Target a planet where you collect resources, choose one to collect 6'
 		},
 		3: {
 			action: 'Target a planet to increase mining output for up to 2 resources'

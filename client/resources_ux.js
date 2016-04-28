@@ -78,7 +78,7 @@ var updateResourcePkgMenu = function() {
 		// show all packages that have not already been collected or cancelled
 		// if collection has already been tried before, or if the package
 		// is upkeep and not trivial to resolve (all elements not 0)
-		if ( !packages[p].collected && !packages[p].cancelled 
+		if ( !pkg.collected && !pkg.cancelled 
 			 && ( !pkg.isnew 
 				 || ( pkg.pkgtype == PKG_UPKEEP 
 				 	  && !allValuesEqualTo(pkg.resources, 0) ) ) ) {
@@ -353,6 +353,9 @@ var drawTradeMenu = function(player) {
 					playersHtml += '<td class="trade-radio-button';
 					if ( offered_to.indexOf(p) != -1 ) { 
 						playersHtml += ' radio-on'; 
+					}
+					else {
+						playersHtml += ' radio-off';
 					}
 					playersHtml += '" id="trade-radio-button' + p + '"></td>';
 				}
