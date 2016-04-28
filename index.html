@@ -73,18 +73,15 @@
         </div>
         <div id="players-wrapper-div" style="visibility: hidden"></div>
         <div id="pending-action-div" style="visibility: hidden"></div>
-        <div>
-            <input type="button" id="turn-done-button" style="visibility: hidden" value="End Turn" onclick="javascript:submitTurnDone();"></input>
-        </div>
         <div id="resourcepackages-div" style="visibility: hidden">
             <div class="respkg-arrow-div"></div>
             <div class="respkg-upkeep-div"></div>
             <div class="respkg-collect-div"></div>
         </div>
         <div id="bottom-bar-div" style="visibility: hidden">
-            <div id="structures-menu-div"></div>
-            <div id="agents-menu-div"></div>
-            <div id="resources-menu-div"></div>
+            <div id="structures-menu-div" class="color-menu"></div>
+            <div id="agents-menu-div" class="color-menu"></div>
+            <div id="resources-menu-div" class="color-menu"></div>
             <div id="game-messages-wrapper-div" style="visibility: hidden">
                 <div id="game-messages-div"></div>
                 <form action="javascript:submitGameMessage('#game-chat-input');">
@@ -98,28 +95,33 @@
             <div id="points-remaining-envoy">10</div>
             <div id="points-remaining-destroy">11</div>
         </div>
-        <div id="round-div" style="visibility: hidden">
-            <table>
-                <tr>
-                    <td></td>
-                    <td id="round-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td0" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td1" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td2" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td3" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td4" class="phase-td"></td>
-                </tr>
-            </table>
+        <div id="round-menu-div" class="color-menu" style="visibility: hidden">
+            <div>
+                <input type="button" id="turn-done-button" value="End Turn" onclick="javascript:submitTurnDone();"></input>
+            </div>
+            <div id="round-div">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td id="round-td"></td>
+                    </tr><tr>
+                        <td></td>
+                        <td id="phase-td0" class="phase-td"></td>
+                    </tr><tr>
+                        <td></td>
+                        <td id="phase-td1" class="phase-td"></td>
+                    </tr><tr>
+                        <td></td>
+                        <td id="phase-td2" class="phase-td"></td>
+                    </tr><tr>
+                        <td></td>
+                        <td id="phase-td3" class="phase-td"></td>
+                    </tr><tr>
+                        <td></td>
+                        <td id="phase-td4" class="phase-td"></td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <div id="missions-phase-div" class="phase-div" style="display: none">
             <div id="mission-prev-button" class="mission-arrow" ></div>
@@ -190,7 +192,8 @@
             </div>
         </div>
         <div id="trade-screen" style="visibility: hidden"></div>
-        <div id="trade-menu-div" style="visibility: hidden">
+        <div id="trade-menu-div" class="color-menu" style="visibility: hidden">
+            <div id="trade-menu-title" class="menu-title">Trade</div>
             <div id="player-trade-div"><table id="player-trade-table">
                 <tr>
                     <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',0,1);"></td>

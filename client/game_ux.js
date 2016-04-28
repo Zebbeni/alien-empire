@@ -25,11 +25,12 @@ var DOMimageMap = [
 	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
 	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
 	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
-	{ elmt: '#resources-menu-div', path: 'interface/', img: 'resources_menu'},
-	{ elmt: '#structures-menu-div', path: 'interface/', img: 'structures_menu'},
-	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
+	{ elmt: '.color-menu', path: 'interface/', img: 'menus_p', player: true},
+	// { elmt: '#resources-menu-div', path: 'interface/', img: 'menus_p', player: true},
+	// { elmt: '#structures-menu-div', path: 'interface/', img: 'menus_p', player: true},
+	// { elmt: '#agents-menu-div', path: 'interface/', img: 'menus_p', player: true},
 	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
-	{ elmt: '#trade-menu-div', path: 'interface/', img: 'trade_menu'},
+	// { elmt: '#trade-menu-div', path: 'interface/', img: 'menus_p', player: true},
 	{ elmt: '.trade-arrow-up', path: 'interface/', img: 'trade_arrow_button'},
 	{ elmt: '.trade-arrow-down', path: 'interface/', img: 'trade_arrow_button'},
 	{ elmt: '.trade-radio-button', path: 'interface/', img: 'trade_radio_button'},
@@ -735,6 +736,7 @@ var updateBottomBarMenus = function() {
 var createStructuresMenu = function() {
 	var innerHTML = '';
 
+	innerHTML += '<div id="structures-menu-title" class="menu-title">Structures</div>';
 	innerHTML += '<div id="struct-mines-div"><table class="struct-table">'
 					+ '</table></div>';
 	innerHTML += '<div id="struct-fleets-div"><table class="struct-table">'
@@ -802,7 +804,8 @@ var updateStructuresMenu = function() {
 };
 
 var createAgentsMenu = function() {
-	var innerHTML = '<table id="agents-table"></table>';
+	var innerHTML = '<div id="agents-menu-title" class="menu-title">Agents</div>';
+	innerHTML += '<table id="agents-table"></table>';
 
 	$('#agents-menu-div')[0].innerHTML = innerHTML;
 
@@ -1272,7 +1275,8 @@ var setInterfaceImages = function() {
 
 		var name = element.elmt;
 		var img = element.img;
-		var path = s3url + element.path + px + img;
+		var player = element.player ? String(clientTurn) : '';
+		var path = s3url + element.path + px + img + player;
 		var ext = element.ext == undefined ? '.png' : element.ext;
 		$( name ).css("background-image", 'url(' + path + ext + ')');
 	}

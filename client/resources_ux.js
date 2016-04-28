@@ -7,7 +7,7 @@
 
 var createResourcesMenu = function() {
 	
-	var innerHTML = '';
+	var innerHTML = '<div id="resources-menu-title" class="menu-title">Resources</div>';
 	clientGame.game.collectedPkgs = []; // indices of packages the ux has animated
 
 	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
