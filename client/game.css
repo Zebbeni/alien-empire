@@ -110,7 +110,7 @@
 	position: absolute;
 	opacity: 0.0;
 	right: 5px;
-	bottom: 172px;
+	bottom: 160px;
 	width: 124px; 
 	height: 226px;
 	background-position: -671px -149px;
@@ -619,7 +619,7 @@
 #agents-menu-div {
 	right: 0px;
 	width: 244px;
-	height: 161px;
+	height: 157px;
 	background-position: -795px 0px;
 }
 
@@ -861,7 +861,7 @@
 	top: 36px;
 	left: 170px;
 	width: 126px;
-	height: 33px;
+	height: 34px;
 }
 
 #struct-factories-div {
@@ -890,45 +890,49 @@
 	height: 100%;
 }
 
-.struct-mine-button, .struct-factory-button, .struct-embassy-button, .struct-base-button,
-.struct-fleet-button {
+.struct-button {
 	background-color: transparent;
+	background-size: 292px 84px;
 }
 
 .struct-mine-button {
 	width: 34px;
 	height: 34px;
+	background-position: -140px -50px;
 }
 
 .struct-mine-button:hover {
-	background-position: -34px;
+	background-position: -174px -50px;
 }
 
 .struct-factory-button {
 	width: 34px;
 	height: 50px;
+	background-position: -140px 0;
 }
 
 .struct-factory-button:hover {
-	background-position: -34px 0;
+	background-position: -174px 0;
 }
 
 .struct-embassy-button {
 	width: 37px;
 	height: 50px;
+	background-position: -208px 0;
 }
 
 .struct-embassy-button:hover {
-	background-position: -37px 0;
+	background-position: -245px 0;
 }
 
 .struct-fleet-button {
 	width: 42px;
-	height: 33px;
+	height: 34px;
+	background-position: -208px -50px;
 }
 
 .struct-fleet-button:hover {
-	background-position: -42px 0;
+	background-position: -250px -50px;
 }
 
 .struct-base-button {
@@ -937,6 +941,7 @@
 	left: 0px;
 	width: 70px;
 	height: 70px;
+	background-position: 0 0;
 }
 
 .struct-base-button:hover {

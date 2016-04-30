@@ -26,11 +26,7 @@ var DOMimageMap = [
 	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
 	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
 	{ elmt: '.color-menu', path: 'interface/', img: 'menus_p', player: true},
-	// { elmt: '#resources-menu-div', path: 'interface/', img: 'menus_p', player: true},
-	// { elmt: '#structures-menu-div', path: 'interface/', img: 'menus_p', player: true},
-	// { elmt: '#agents-menu-div', path: 'interface/', img: 'menus_p', player: true},
 	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
-	// { elmt: '#trade-menu-div', path: 'interface/', img: 'menus_p', player: true},
 	{ elmt: '.trade-arrow-up', path: 'interface/', img: 'trade_arrow_button'},
 	{ elmt: '.trade-arrow-down', path: 'interface/', img: 'trade_arrow_button'},
 	{ elmt: '.trade-radio-button', path: 'interface/', img: 'trade_radio_button'},
@@ -44,11 +40,12 @@ var DOMimageMap = [
 	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
 	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
-	{ elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
-	{ elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
-	{ elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
-	{ elmt: '.struct-base-button', path: 'interface/', img: 'structbase_button'},
-	{ elmt: '.struct-fleet-button', path: 'interface/', img: 'structfleet_button'},
+	{ elmt: '.struct-button', path: 'interface/', img: 'struct_buttons_p', player: true},
+	// { elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
+	// { elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
+	// { elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
+	// { elmt: '.struct-base-button', path: 'interface/', img: 'structbase_button'},
+	// { elmt: '.struct-fleet-button', path: 'interface/', img: 'structfleet_button'},
 	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
 	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
 	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
@@ -759,7 +756,7 @@ var updateStructuresMenu = function() {
 	var innerHTML = '<tr>';
 	for ( var i = 0; i < 4; i++ ){
 		innerHTML += (i < structures[OBJ_MINE] ? 
-				  '<td><input type="button" class="struct-mine-button"'
+				  '<td><input type="button" class="struct-button struct-mine-button"'
 				  + 'onclick="javascript:clickStructureButton(OBJ_MINE);"></input></td>':
 				  '<td width="34px" height="34px"></td>');
 	}
@@ -769,7 +766,7 @@ var updateStructuresMenu = function() {
 	innerHTML = '<tr>';
 	for ( var i = 0; i < 3; i++ ){
 		innerHTML += (i < structures[OBJ_FLEET] ? 
-				  '<td><input type="button" class="struct-fleet-button"'
+				  '<td><input type="button" class="struct-button struct-fleet-button"'
 				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);"></input></td>':
 				  '<td width="42px" height="33px"></td>');
 	}
@@ -779,7 +776,7 @@ var updateStructuresMenu = function() {
 	innerHTML = '<tr>';
 	for ( var i = 0; i < 3; i++ ){
 		innerHTML += (i < structures[OBJ_FACTORY] ? 
-				  '<td><input type="button" class="struct-factory-button"'
+				  '<td><input type="button" class="struct-button struct-factory-button"'
 				  + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);"></input></td>':
 				  '<td width="34px" height="50px"></td>');
 	}
@@ -789,7 +786,7 @@ var updateStructuresMenu = function() {
 	innerHTML = '<tr>';
 	for ( var i = 0; i < 5; i++ ){
 		innerHTML += (i < structures[OBJ_EMBASSY] ? 
-				  '<td><input type="button" class="struct-embassy-button"'
+				  '<td><input type="button" class="struct-button struct-embassy-button"'
 				  + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);"></input></td>':
 				  '<td width="37px" height="50px"></td>');
 	}
@@ -797,7 +794,7 @@ var updateStructuresMenu = function() {
 	$('#struct-embassies-div').find('.struct-table').html(innerHTML);
 
 	innerHTML = (structures[OBJ_BASE] > 0 ? 
-			  '<input type="button" class="struct-base-button"'
+			  '<input type="button" class="struct-button struct-base-button"'
 			  + 'onclick="javascript:clickStructureButton(OBJ_BASE);"></input>':
 			  '');
 	$('#struct-base-div').html(innerHTML);

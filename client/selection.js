@@ -3,7 +3,7 @@
  * on rollover
  */
 
-var color = ["#fb4944","#4a2cff", "#76f339", "#f8ef42"];
+var color = ["#fb4944","#11a7d6", "#76f339", "#f8ef42"];
 
 var initSelection = function() {
 
