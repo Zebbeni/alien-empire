@@ -27,8 +27,8 @@ var initFleets = function() {
 
 		fleetshape.visible = false;
 		fleetshape.mouseEnabled = true;
-		fleetshape.scaleX = 0.786;
-		fleetshape.scaleY = 0.786;
+		fleetshape.scaleX = 0.75;
+		fleetshape.scaleY = 0.75;
 
 		fleetshape.on("mouseover", function() {
 			selectFleet( this.name );

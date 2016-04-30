@@ -21,7 +21,7 @@ var drawAsteroid = function( asteroid ) {
 	asteroidTile.addChild( darkscreen );
 
 	var border = new createjs.Shape();
-	border.graphics.setStrokeStyle(15);
+	border.graphics.setStrokeStyle(10);
 	border.graphics.beginStroke("rgba(0,0,0,0.9)");
 	border.graphics.drawRect(0, 0, 2 * sWid, sWid);
 	asteroidTile.addChild( border );

@@ -13,7 +13,7 @@ var load_assets = function() {
 			{src: s3url + "game/water.png", id: "water"},
 			{src: s3url + "game/fuel.png", id: "fuel"},
 			{src: s3url + "game/food.png", id: "food"},
-			{src: s3url + "game/stars.png", id: "stars"},
+			{src: s3url + "game/stars2.png", id: "stars"},
 			{src: s3url + "game/asteroids.png", id: "asteroids"},
 			{src: s3url + "game/noflyzone.png", id: "noflyzone"},
 

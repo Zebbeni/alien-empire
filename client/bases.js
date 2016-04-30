@@ -30,8 +30,8 @@ var initBases = function() {
 									   						   0,
 									   						   140, 
 									   						   140);
-		base.scaleX = 0.857;
-		base.scaleY = 0.857;
+		base.scaleX = 0.80;
+		base.scaleY = 0.80;
 
 		basesContainer.addChild(base);
 	}
