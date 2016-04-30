@@ -24,12 +24,14 @@ var initBases = function() {
 			handleClickBase( this.planetid, this.player );
 		});
 
-		var baseImg = loader.getResult( OBJ_ENGLISH[ OBJ_BASE ] + p);
+		var baseImg = loader.getResult( 'structures' + String(p) );
 		base.graphics.beginBitmapFill( baseImg, 
-									   "no-repeat" ).drawRect( 1, 
-									   						   1, 
-									   						   baseImg.width - 2, 
-									   						   baseImg.height - 2);
+									   "no-repeat" ).drawRect( 0,
+									   						   0,
+									   						   140, 
+									   						   140);
+		base.scaleX = 0.857;
+		base.scaleY = 0.857;
 
 		basesContainer.addChild(base);
 	}

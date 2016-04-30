@@ -14,15 +14,21 @@ var initFleets = function() {
 
 		var fleet = clientGame.game.board.fleets[fleetid];
 
-		var fleetshape = new createjs.Shape();
+		var fleetshape = new createjs.Container();
 		fleetshape.name = OBJ_ENGLISH[ OBJ_FLEET ] + fleetid;
 		fleetshape.fleetid = fleetid;
 
-		var fleetImg = loader.getResult( OBJ_ENGLISH[OBJ_FLEET] + fleet.player );
-		fleetshape.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(1, 1, fleetImg.width - 2, fleetImg.height - 2);
-		fleetshape.visible = false;
+		var fleetimage = new createjs.Shape();
+		var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
+		fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(416, 100, 84, 68);
+		fleetimage.x = -416;
+		fleetimage.y = -100;
+		fleetshape.addChild(fleetimage);
 
+		fleetshape.visible = false;
 		fleetshape.mouseEnabled = true;
+		fleetshape.scaleX = 0.786;
+		fleetshape.scaleY = 0.786;
 
 		fleetshape.on("mouseover", function() {
 			selectFleet( this.name );
