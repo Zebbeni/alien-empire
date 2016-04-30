@@ -333,7 +333,7 @@
 	background-size: 102px 1157px;
 }
 
-.actor-struct-2 { background-position: 0 0; }
+.actor-struct-1 { background-position: 0 0; }
 .actor-struct-2 { background-position: 0 -89px; }
 .actor-struct-3 { background-position: 0 -178px; }
 .actor-struct-4 { background-position: 0 -267px; }
@@ -346,6 +346,82 @@
 .actor-agent-6 { background-position: 0 -890px; }
 .actor-agent-7 { background-position: 0 -979px; }
 .actor-agent-8 { background-position: 0 -1068px; }
+
+#info-pic {
+	position: absolute;
+	top: 29px;
+	left: 10px;
+	width: 154px;
+	height: 132px;
+	background-size: 154px 1716px;
+}
+
+#info-title, #build-title, #upkeep-title{
+	position: absolute;
+	top: 5px;
+	left: 0px;
+	height: 26px;
+	padding: 0px;
+	font-size: 15px;
+	font-family: 'Cinzel Decorative', cursive;
+	font-weight: 700;
+	text-align: center;
+	color: black;
+}
+
+#info-title {
+	width: 400px;
+}
+
+#build-title {
+	left: 173px;
+	top: 108px;
+	width: 156px;
+	font-size: 12px;
+	text-align: left;
+}
+
+#upkeep-title {
+	left: 335px;
+	top: 108px;
+	width: 50px;
+	font-size: 12px;
+}
+
+#info-text {
+	position: absolute;
+	padding: 5px;
+	left: 173px;
+	top: 30px;
+	width: 214px;
+	height: 72px;
+	font-size: 12px;
+	color: white;
+}
+
+#info-build {
+	position: absolute;
+	top: 132px;
+	left: 175px;
+	height: 25px;
+	width: 150px;
+	padding: 0px;
+}
+
+#info-upkeep {
+	position: absolute;
+	top: 132px;
+	left: 350px;
+	height: 25px;
+	width: 25px;
+	padding: 0px;
+}
+
+.nocost-td {
+	width: 50px;
+	padding-left: 5px;
+	color: white;
+}
 
 #resource-phase-div, #upkeep-phase-div {
 	width: 100px;
@@ -844,6 +920,14 @@
 
 #trade-button-no:active {
 	background-position: -248px -24px;
+}
+
+#info-div {
+	bottom: 150px;
+	right: 100px;
+	width: 400px;
+	height: 174px;
+	background-position: 0 -149px;
 }
 
 #struct-mines-div, #struct-fleets-div, #struct-factories-div, #struct-embassies-div, #struct-base-div {

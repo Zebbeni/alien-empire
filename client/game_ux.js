@@ -36,16 +36,12 @@ var DOMimageMap = [
 	{ elmt: '.action-menu', path: 'interface/', img: 'action_menu'},
 	{ elmt: '.mission-arrow', path: 'interface/', img: 'mission_arrows'},
 	{ elmt: '.actor-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
+	{ elmt: '#info-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
 	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
 	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
 	{ elmt: '.struct-button', path: 'interface/', img: 'struct_buttons_p', player: true},
-	// { elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
-	// { elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
-	// { elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
-	// { elmt: '.struct-base-button', path: 'interface/', img: 'structbase_button'},
-	// { elmt: '.struct-fleet-button', path: 'interface/', img: 'structfleet_button'},
 	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
 	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
 	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
@@ -730,6 +726,63 @@ var updateBottomBarMenus = function() {
 	updateAgentsMenu();
 };
 
+var showInfoMenu = function(evt, type, id){
+	var left = String(evt.pageX - 400) + "px";
+	var top = String(evt.pageY - 190) + "px";
+	$('#info-div').css({"bottom": "150px", "left": left, "top": top});
+	$('#upkeep-title')[0].innerHTML = "Upkeep";
+
+	var tds = ["metal-icon", "water-icon", "fuel-icon", "food-icon"];
+	var buildHTML = '<table><tr>';
+	var upkeepHTML = '<table><tr>';
+	
+	if ( type == "structure"){
+		var backgroundPos = "0 " + String(-132 * (id - 1)) + "px";
+		$('#info-pic').removeClass().addClass('info-struct-'+ String(id));
+		$('#info-pic').css({"background-position": backgroundPos});
+		$('#build-title')[0].innerHTML = "Build";
+		$('#info-title')[0].innerHTML = OBJ_ENGLISH[id];
+		$('#info-text')[0].innerHTML = INFO_TEXT.structure[id].info;
+		$('#info-text').css({'line-height': "150%"});
+		var count = 0;
+		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+			for ( var r = 0; r < STRUCT_REQS[id].build[i]; r++ ){
+				buildHTML += '<td class="' +  tds[i] + '"></td>';
+				count += 1;
+			}
+			for ( var r = 0; r < STRUCT_REQS[id].upkeep[i]; r++ ){
+				upkeepHTML += '<td class="' + tds[i] + '"></td>';
+			}
+		}
+		for ( var i = count; i < 6; i++){
+			buildHTML += '<td width="25px"></td>';
+		}
+		if ( id == OBJ_MINE ){
+			upkeepHTML += '<td width="25px" class="nocost-td">--</td><td></td>';
+		}
+	} else if (type == "agent"){
+		var backgroundPos = "0 " + String(-132 * (id + 4)) + "px";
+		$('#info-pic').removeClass().addClass('info-agent-'+ String(id));
+		$('#info-pic').css({"background-position": backgroundPos});
+		$('#build-title')[0].innerHTML = "Recruit";
+		$('#info-title')[0].innerHTML = AGT_ENGLISH[id];
+		$('#info-text')[0].innerHTML = INFO_TEXT.agent[id].info;
+		$('#info-text').css({'line-height': "130%"});
+		buildHTML += '<td class="nocost-td">No Cost</td>'
+		upkeepHTML += '<td class="food-icon"></td>';
+	}
+	buildHTML += '</tr></table>';
+	upkeepHTML += '</tr></table>';
+	$('#info-build')[0].innerHTML = buildHTML;
+	$('#info-upkeep')[0].innerHTML = upkeepHTML;
+	$('#info-div').show();
+	setInterfaceImages();
+};
+
+var hideInfoMenu = function() {
+	$('#info-div').hide();
+};
+
 var createStructuresMenu = function() {
 	var innerHTML = '';
 
@@ -767,7 +820,10 @@ var updateStructuresMenu = function() {
 	for ( var i = 0; i < 3; i++ ){
 		innerHTML += (i < structures[OBJ_FLEET] ? 
 				  '<td><input type="button" class="struct-button struct-fleet-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);"></input></td>':
+				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);" '
+				  // + 'onmouseenter="javascript:showInfoMenu();" '
+				  // + 'onmouseout="javascript:hideInfoMenu();" '
+				  + '></input></td>':
 				  '<td width="42px" height="33px"></td>');
 	}
 	innerHTML += '</tr>';
@@ -798,6 +854,30 @@ var updateStructuresMenu = function() {
 			  + 'onclick="javascript:clickStructureButton(OBJ_BASE);"></input>':
 			  '');
 	$('#struct-base-div').html(innerHTML);
+
+	$('.struct-mine-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_MINE);
+	});
+
+	$('.struct-factory-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_FACTORY);
+	});
+
+	$('.struct-embassy-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_EMBASSY);
+	});
+
+	$('.struct-base-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_BASE);
+	});
+
+	$('.struct-fleet-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_FLEET);
+	});
+
+	$('.struct-button').mouseleave(function(event){
+		hideInfoMenu(event);
+	});
 };
 
 var createAgentsMenu = function() {
@@ -835,6 +915,42 @@ var updateAgentsMenu = function() {
 	innerHTML += '</tr>';
 
 	$('#agents-table').html(innerHTML);
+
+	$('#agent-button-explorer').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_EXPLORER);
+	});
+
+	$('#agent-button-miner').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_MINER);
+	});
+
+	$('#agent-button-surveyor').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SURVEYOR);
+	});
+
+	$('#agent-button-smuggler').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SMUGGLER);
+	});
+
+	$('#agent-button-ambassador').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_AMBASSADOR);
+	});
+
+	$('#agent-button-envoy').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_ENVOY);
+	});
+
+	$('#agent-button-spy').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SPY);
+	});
+
+	$('#agent-button-sabateur').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SABATEUR);
+	});
+
+	$('.agent-button').mouseleave(function(event){
+		hideInfoMenu(event);
+	});
 };
 
 var createRoundMenu = function() {
