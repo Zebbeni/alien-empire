@@ -979,6 +979,10 @@ var updateAgentsMenu = function() {
 	});
 };
 
+var showEndGameMenu = function() {
+	$('#game-end-div').show();
+};
+
 var createRoundMenu = function() {
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
 		$('#phase-td' + i)[0].innerHTML = PHS_ENGLISH[i];

@@ -42,14 +42,9 @@ socket.on( 'game event', function(content, msg) {
 
 
 socket.on('game end', function(content) {
-
-	clientGame = {};
-    setGlobals();
-
-    fadeOut(board, 1000, false);
+    
+    showEndGameMenu()
     // hide game ux elements, show lobby
-    leaveGameInterface();
-    moveToLobby();
 });
 
 socket.on('illegal action', function(response) {

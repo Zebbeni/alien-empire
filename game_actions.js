@@ -2282,5 +2282,5 @@ var calcPoints = function( game, player ) {
  * @return true or false
  */ 
 var isEndCondition = function( game ) {
-	return ( game.round >= 10 );
+	return ( game.round >= 2 );
 };
