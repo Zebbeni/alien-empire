@@ -11,6 +11,7 @@ var clearPendingAction = function() {
 var setPendingAction = function( actiontype ) {
 	pendingAction.player = clientTurn;
 	pendingAction.actiontype = actiontype;
+	displayCancelAction();
 };
 
 var setPendingPlanet = function( planetid ) {

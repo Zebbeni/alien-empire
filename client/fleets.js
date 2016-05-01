@@ -55,7 +55,7 @@ var updateFleets = function(planetid) {
 	var num_fleets = planet.fleets.length;
 	var fleetsX, fleetsY;
 	var yDist = 50;
-	var xDist = 70;
+	var xDist = 65;
 	var xOffset = 0;
 
 	var placeX, placeY;

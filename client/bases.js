@@ -72,9 +72,7 @@ var updateBasesInteractivity = function() {
 					break;
 				
 				case PHS_ACTIONS:
-					if ( pendingAction.actionttype == ACT_FLEET_ATTACK) {
-
-						console.log(base);
+					if ( pendingAction.actiontype == ACT_FLEET_ATTACK) {
 
 						if ( base.player != clientTurn ){
 							base.mouseEnabled = true;

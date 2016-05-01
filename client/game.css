@@ -77,34 +77,40 @@
 	background: rgba(0, 0, 0, .3);
 }
 
-#turn-done-button:hover {
-	background: rgba(100, 100, 100, .3);
-}
-
 #your-turn-message-div {
 	font-size: 40px;
 }
 
 #pending-action-div {
 	top: 50px;
-	font-size: 15px;
+	font-sfize: 15px;
 }
 
 #your-action-message-div, #include-smuggler-message-div {
 	font-size: 30px;
 }
 
-#turn-done-button {
+#done-button {
 	position: absolute;
 	width: 100px;
 	height: 40px;
 	right: 11px;
 	top: 15px;
-	padding: 5px;
 	font-weight: bold;
-	background: rgba(131, 203, 180, .8);
+	font-size: 18px;
+	background-size: 300px 120px;
+	background-color: transparent;
+	padding-bottom: 3px;
 	color: black;
 }
+
+.end-turn-button { background-position: 0px 0px; }
+.end-turn-button:hover { background-position: -100px 0px; }
+.end-turn-button:active { background-position: -200px 0px; }
+.cancel-action-button { background-position: 0px -40px; }
+.cancel-action-button:hover { background-position: -100px -40px; }
+.cancel-action-button:active { background-position: --200px -40px; }
+.inactive-button { background-position: 0px -80px; }
 
 #round-menu-div {
 	position: absolute;
@@ -574,6 +580,10 @@
 	height: 31px;
 }
 
+.res-icon-button {
+	background-color: transparent;
+}
+
 .res-icon-button:hover {
 	background-position: -25px 0;
 }
@@ -769,6 +779,7 @@
 	height: 25px;
 	color: black;
 	font-weight: bold;
+	background-color: transparent;
 }
 
 .fourtoone-button:hover {
@@ -793,6 +804,7 @@
 	width: 55px;
 	height: 27px;
 	color: black;
+	background-color: transparent;
 }
 
 #trade-button:hover {

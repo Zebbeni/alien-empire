@@ -18,6 +18,7 @@ var DOMimageMap = [
 	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
 	{ elmt: '#points-remaining', path: 'interface/', img: 'points_remaining'},
 	{ elmt: '.player-div', path: 'interface/', img: 'player_menu'},
+	{ elmt: '#done-button', path: 'interface/', img: 'end_buttons'},
 	{ elmt: '.player-trade-request-div', path: 'interface/', img: 'request_trade', ext: '.gif'},
 	{ elmt: '.player-start-icon', path: 'interface/', img: 'player_start'},
 	{ elmt: '.metal-icon', path: 'interface/', img: 'res_metal_icon'},
@@ -87,8 +88,14 @@ var updateInterface = function() {
 			setPendingObject( OBJ_MINE );
 			setPendingAction( ACT_PLACE );
 		}
-
-		displayYourTurnMenu();
+		
+		if ( pendingAction.actionttype != undefined 
+			      && pendingAction.actiontype != ACT_PLACE ){
+			displayCancelAction();
+		}
+		else {
+			displayEndTurn();
+		}
 		updateBoard();
 
 	} else {
@@ -163,7 +170,9 @@ var clickAgentButton = function( agenttype ){
 };
 
 var hideYourTurnMenu = function() {
-	$('#turn-done-button')[0].style.visibility = "hidden";
+	$('#done-button').removeClass().addClass('inactive-button');
+	$('#done-button').off();
+	$('#done-button').attr('value', 'Waiting');
 	$("#your-turn-div").transition({ opacity: 0.00, top: "28%"}, 500, function(){
 		$('#your-turn-div')[0].style.visibility = "hidden";
 	});
@@ -404,6 +413,7 @@ var cancelPendingAction = function() {
 	if(clientGame.game.round != 0 && clientGame.game.phase != PHS_MISSIONS) {
 		clearPendingAction();
 		updateBoardInteractivity();
+		displayEndTurn();
 	}
 	hideConfirmMenu();
 };
@@ -534,13 +544,28 @@ var buildChatMessage = function( msg, messages, m) {
 /**
  * Display your turn menu (and fades back out after a few seconds)
  */
-var displayYourTurnMenu = function() {
+var displayEndTurn = function() {
 	$('#your-turn-div')[0].style.visibility = "visible";
-	$('#turn-done-button')[0].style.visibility = "visible";
+	$('#done-button')[0].style.visibility = "visible";
+	$('#done-button').attr('value', 'End Turn');
+	$('#done-button').off().click(function(){
+		if ( clientGame.game.phase != PHS_PLACING ) {
+			submitTurnDone();
+		}
+	});
+	$('#done-button').removeClass().addClass('end-turn-button');
 	$("#your-turn-div").transition({ opacity: 1.00, top: "30%"}, 500, function() {
 		$("#your-turn-div").delay(3000).transition({ opacity: 0.00, top: "28%"}, 500, function(){
 			$('#your-turn-div')[0].style.visibility = "hidden";
 		});
+	});
+};
+
+var displayCancelAction = function() {
+	$('#done-button').attr('value', 'Cancel');
+	$('#done-button').removeClass().addClass('cancel-action-button');
+	$('#done-button').off().click( function(){
+		cancelPendingAction();
 	});
 };
 

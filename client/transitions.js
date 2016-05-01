@@ -74,7 +74,7 @@ var moveToGameInterface = function() {
 var leaveGameInterface = function() {
     $('#your-turn-div')[0].style.visibility = "hidden";
     $('#pending-action-div')[0].style.visibility = "hidden";
-    $('#turn-done-button')[0].style.visibility = "hidden";
+    $('#done-button')[0].style.visibility = "hidden";
     $('#players-wrapper-div')[0].style.visibility = "hidden";
     $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
     $('.phase-div').hide();
