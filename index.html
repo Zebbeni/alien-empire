@@ -136,25 +136,6 @@
                 <input type="button" class="action-button button-3 button-red" id="mission-button-3"></input>
             </div>
             <div id="mission-next-button" class="mission-arrow" ></div>
-<!--             <div id="mission-info-div">
-                <div></div>
-                    <div id="missions-spy-menu">
-                        <div>Block Mission?</div>
-                        <input type="button" id="mission-block-button" value="Yes" onclick="javascript:blockMissionAction( true );"></input>
-                        <input type="button" id="mission-allow-button" value="No" onclick="javascript:blockMissionAction( false );"></input>
-                        <input type="button" id="mission-collect-button" value="Collect" onclick="javascript:blockMissionAction( null );"></input>
-                    </div>
-                </div>
-                <div id="missions-resolution-menu"></div>
-                <div id="missions-choice-menu">
-                    <div id="missions-choice-message">Target your stuff or whatever</div>
-                    <input type="button" value="Done" onclick="javascript:displayConfirmMenu();"/>
-                </div>
-                <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
-            </div> -->
-<!--             <div id="mission-phase-next-div">
-                <input type="button" id="agent-retire-button" value="Retire"></input>
-            </div> -->
         </div>
         <div id="resource-phase-div" class="phase-div" style="display: none"></div>
         <div id="upkeep-phase-div" class="phase-div" style="display: none"></div>
@@ -200,7 +181,7 @@
             <div id="info-build"></div>
             <div id="info-upkeep">Upkeep</div>
         </div>
-        <div id="trade-screen" style="visibility: hidden"></div>
+        <div id="trade-screen" class="dark-screen" style="visibility: hidden"></div>
         <div id="trade-menu-div" class="color-menu" style="visibility: hidden">
             <div id="trade-menu-title" class="menu-title">Trade</div>
             <div id="player-trade-div"><table id="player-trade-table">
@@ -246,6 +227,13 @@
             <div id="trade-offers-div"></div>
             <input type="button" id="trade-button-yes"></input>
             <input type="button" id="trade-button-no" onclick="javascript:hideTradeMenu();"></input>
+        </div>
+        <div id="game-end-div">
+            <div class="dark-screen"></div>
+            <div id="game-end-menu">
+                <div id="end-game-graph"></div>
+                <input type="button" id="end-game-lobby-button" class="action-button button-blue" value="Return to Lobby"></input>
+            </div>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>

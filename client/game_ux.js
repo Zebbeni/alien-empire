@@ -51,6 +51,7 @@ var DOMimageMap = [
 	{ elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
 	{ elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
 	{ elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
+	{ elmt: '#game-end-menu', path: 'interface/', img: 'end_game_menu'}
 ];
 
 $.fn.preload = function() {
