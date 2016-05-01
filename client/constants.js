@@ -295,3 +295,6 @@ var STRUCT_REQS = {
 		defense: 3
 	}
 };
+
+PLOT_POINTS = 0;
+PLOT_RESOURCES = 1;

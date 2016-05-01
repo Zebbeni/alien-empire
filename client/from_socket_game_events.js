@@ -41,9 +41,10 @@ socket.on( 'game event', function(content, msg) {
 });
 
 
-socket.on('game end', function(content) {
-    
-    showEndGameMenu()
+socket.on('game end', function(content, msg) {
+
+    updateClientGame( content )
+    updateAll();
     // hide game ux elements, show lobby
 });
 

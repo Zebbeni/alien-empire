@@ -115,6 +115,10 @@ var updateInterface = function() {
 	updateResourceAnimations();
 
 	setInterfaceImages();
+
+	if (clientGame.game.isEnded){
+		showEndGameMenu();
+	}
 };
 
 /**
@@ -980,7 +984,18 @@ var updateAgentsMenu = function() {
 };
 
 var showEndGameMenu = function() {
+	$('#game-end-div').css({opacity: '0.0'});
 	$('#game-end-div').show();
+	$('#game-end-div').transition({opacity: 0.0}, 2000, function(){
+		$('#game-end-div').transition({opacity: 1.0}, 2000);
+	});
+	plotEndGame(PLOT_POINTS);
+};
+
+var plotEndGame = function(type){
+	if (type == PLOT_POINTS){
+		$.plot($("#end-game-graph"), [ [[0, 0], [1, 1], [2,2], [3,4], [4,3]], [[0, 0], [1, 0], [2,1], [3,3], [4,4]] ], {});
+	}
 };
 
 var createRoundMenu = function() {

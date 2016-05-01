@@ -19,6 +19,7 @@ var actions = require('./game_actions');
 
 			points: board.initializePlayerPoints( num_users ),
 			points_remaining: board.initializePoints(),
+			points_to_win: 2,
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
 			phase: cons.PHS_PLACING,
@@ -32,7 +33,8 @@ var actions = require('./game_actions');
 			missionSpied: board.initializeUserArray( num_users, null ),
 			missionViewed: board.initializeUserArray( num_users, false ),
 			secondmines: false,
-			board: board.initializeBoard( num_users )
+			board: board.initializeBoard( num_users ),
+			isEnded: false
 		};
 
 		return newGame;
