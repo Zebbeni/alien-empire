@@ -122,7 +122,7 @@
 .end-turn-button:active { background-position: -200px 0px; }
 .cancel-action-button { background-position: 0px -40px; }
 .cancel-action-button:hover { background-position: -100px -40px; }
-.cancel-action-button:active { background-position: --200px -40px; }
+.cancel-action-button:active { background-position: -200px -40px; }
 .inactive-button { background-position: 0px -80px; }
 
 #round-menu-div {
@@ -134,19 +134,24 @@
 	background-position: -671px -149px;
 }
 
+#round-table {
+	height: 144px;
+	table-layout: fixed;
+}
+
 #round-div {
 	position: absolute;
-	bottom: 14px;
+	top: 65px;
 	left: 13px;
 	width: 100px;
-	height: auto;
+	height: 144px;
 	padding: 2px;	
 }
 
 #round-td, .phase-td {
-	height: 15px;
+	height: 23px;
 	color: white;
-	padding: 2px;
+	padding-left: 0px;
 }
 
 .phase-td-current {

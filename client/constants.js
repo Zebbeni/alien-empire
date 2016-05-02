@@ -25,7 +25,7 @@ var PHS_BUILD = 3;
 var PHS_ACTIONS = 4;
 
 var PHS_ENGLISH = {
-	'-1': 'Placing Mines',
+	'-1': 'Place Mines',
 	0: 'Missions',
 	1: 'Resources',
 	2: 'Upkeep',
