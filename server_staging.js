@@ -54,6 +54,10 @@ var allPlayersReady = function(gameInfo) {
 	return (players.length == ready.length);
 };
 
+var allRequestedHere = function(gameInfo){
+	return gameInfo.players.length == gameInfo.requestedPlayers;
+};
+
 var userCreateGame = function(socket, io, users, gamesInfo) {
 	var roomId = 'game' + gamesInfo.length;
 	var gameid = gamesInfo.length;
@@ -121,7 +125,7 @@ var setUserReady = function(socket, io, users, gamesInfo, fn) {
 						gamesInfo[gameid].ready);
 
 	// START game if all players in staging are now ready
-	if ( allPlayersReady( gamesInfo[gameid] )) {
+	if ( allPlayersReady( gamesInfo[gameid] ) && allRequestedHere( gamesInfo[gameid]) ) {
 
 		gamesInfo[gameid].status = 2;
 		gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
