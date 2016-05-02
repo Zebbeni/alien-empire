@@ -20,6 +20,7 @@ var moveToLobby = function() {
     $("#lobby-div").transition({top: '450px', opacity: 1.0}, 1000);
     $("#logout-button").transition({top: '-30px'}, 500);
     $("#main-div").transition({top: '450px', opacity: 1.00}, 1000);
+    $('#copyright').show();
 };
 
 var leaveLobby = function() {
@@ -67,6 +68,7 @@ var moveToGameInterface = function() {
     $('#game-interface-div').show();
     $('#game-interface-div').transition({opacity: 1.0}, 2000 );
     $('#game-end-div').hide();
+    $('#copyright').hide();
 };
 
 var leaveGameInterface = function() {
@@ -79,13 +81,6 @@ var leaveGameInterface = function() {
     $('#game-interface-div').transition({opacity: 0.0}, 1000, function() {
         $('#game-interface-div').hide();
     });
-    // $('#bottom-bar-div').transition({ opacity: 0.0}, 1000, function() {
-    //     $('#bottom-bar-div')[0].style.visibility = "hidden";
-    // });
-    // $('#points-remaining')[0].style.visibility = "hidden";
-    // $('#round-menu-div').transition({opacity: 0.0}, 1000, function() {
-    //     $('#round-menu-div')[0].style.visibility = "hidden";
-    // });
 };
 
 var transGameToLobby = function() {
