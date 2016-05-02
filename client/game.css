@@ -381,6 +381,21 @@
 	background-size: 154px 1716px;
 }
 
+#info-points {
+	position: absolute;
+	top: -8px;
+	right: 5px;
+	width: 30px;
+	height: 30px;
+	background-size: 30px 30px;
+	padding-top: 2px;
+	text-align: center;
+	vertical-align: middle;
+	font-weight: bold;
+	font-size: 18px;
+	color: black;
+}
+
 #info-title, #build-title, #upkeep-title{
 	position: absolute;
 	top: 5px;

@@ -267,32 +267,37 @@ var STRUCT_REQS = {
 		build: [1,0,1,1],
 		upkeep: [0,0,0,0],
 		max: 4,
-		defense: 6
+		defense: 6,
+		points: 0
 	}, 
 	2: {
 
 		build: [1,1,2,0],
 		upkeep: [1,0,0,0],
 		max: 3,
-		defense: 2
+		defense: 2,
+		points: 1
 	},
 	3: {
 		build: [2,2,0,1],
 		upkeep: [0,1,0,0],
 		max: 5,
-		defense: 3
+		defense: 3,
+		points: 1
 	},
 	4: {
 		build: [3,1,1,1],
 		upkeep: [0,0,1,0],
 		max: 1,
-		defense: 4
+		defense: 4,
+		points: 2
 	},
 	5: {
 		build: [1,1,1,0],
 		upkeep: [0,0,1,0],
 		max: 3,
-		defense: 3
+		defense: 3,
+		points: 1
 	}
 };
 
