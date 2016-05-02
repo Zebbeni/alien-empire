@@ -650,18 +650,26 @@
 	pointer-events: auto;
 }
 
-#action-confirm-button, #action-cancel-button, #smuggler-confirm-button, #smuggler-cancel-button {
+.confirm-button, .cancel-button {
 	position: relative;
 	float: left;
 	height: 50px;
 	width: 50px;
 	top: 10px;
 	margin: 3px;
-	background: rgba(131, 203, 180, .8);
+	background-size: 150px 100px;
 	font-size: 30px;
 	font-weight: bold;
+	background-color: transparent;
 	color: black;
 }
+
+.confirm-button { background-position: 0px 0px; }
+.confirm-button:hover {	background-position: -50px 0px; }
+.confirm-button:active { background-position: -100px 0px; }
+.cancel-button { background-position: 0px -50px; }
+.cancel-button:hover { background-position: -50px -50px; }
+.cancel-button:active { background-position: -100px -50px; }
 
 #bottom-bar-div {
 	position: absolute;

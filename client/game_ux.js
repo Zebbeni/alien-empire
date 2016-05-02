@@ -43,6 +43,8 @@ var DOMimageMap = [
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
 	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
 	{ elmt: '.struct-button', path: 'interface/', img: 'struct_buttons_p', player: true},
+	{ elmt: '.confirm-button', path: 'interface/', img: 'confirm_buttons'},
+	{ elmt: '.cancel-button', path: 'interface/', img: 'confirm_buttons'},
 	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
 	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
 	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
