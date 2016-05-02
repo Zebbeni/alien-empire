@@ -71,6 +71,11 @@ socket.on('room requested players changed', function(newMsg, requested, ready) {
     updateGameStage(false, newMsg, false);
 });
 
+socket.on('room requested points changed', function(newMsg, requested, ready) {
+    clientGame.requestedPoints = requested;
+    updateGameStage(false, newMsg, false);
+});
+
 socket.on('self left game staging', function(game) {
     status = USR_ONLINE;
     clientGame = null;

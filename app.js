@@ -77,6 +77,12 @@ io.sockets.on('connection', function(socket) {
 	
 	});
 
+	socket.on('request num points staging', function( gameid, num ){
+
+		staging.userRequestNumPointsStaging( socket, io, users, gamesInfo, gameid, num );
+	
+	});
+
 	/**
 	 * This function serves as the channel through which all user actions
 	 * and gameInfo references are passed to the game_server module and 

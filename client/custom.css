@@ -283,6 +283,10 @@ button {
 	background-position: -62px 0;
 }
 
+.staging-pointnum-selected:hover {
+	background-position: -62px 0;
+}
+
 #staging-leave-button {
 	position: absolute;
 	right: 2px;

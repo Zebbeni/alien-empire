@@ -36,6 +36,10 @@ var submitStagingNumPlayers = function( num ){
     socket_requestNumPlayersStaging( num );
 };
 
+var submitStagingPoints = function( num ){
+    socket_requestPointsStaging( num );
+};
+
 // deletes local info so it isn't repopulated on login as a different user
 var clearClientData = function() {
     all_users = [];

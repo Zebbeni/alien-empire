@@ -38,6 +38,7 @@ var updateGameStage = function(users, newMsg, ready) {
     displayGameStage();
 };
 
+// There is a smarter way to do this. Think about it for 1 minute
 var displayGameOptions = function() {
     $('.staging-playernum-selected').each(function() {
         if ( $( this ).val() != clientGame.requestedPlayers ){
@@ -47,6 +48,16 @@ var displayGameOptions = function() {
     $('.staging-playernum-button').each(function() {
         if ( $( this ).val() == clientGame.requestedPlayers ){
             $( this ).addClass('staging-playernum-selected');
+        }
+    });
+    $('.staging-pointnum-selected').each(function() {
+        if ( $( this ).val() != clientGame.requestedPoints ){
+            $( this ).removeClass('staging-pointnum-selected');
+        }
+    });
+    $('.staging-pointnum-button').each(function() {
+        if ( $( this ).val() == clientGame.requestedPoints ){
+            $( this ).addClass('staging-pointnum-selected');
         }
     });
 };

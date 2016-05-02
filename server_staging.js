@@ -68,7 +68,8 @@ var userCreateGame = function(socket, io, users, gamesInfo) {
 					ready: [],
 					room: roomId,
 					messages: [],
-					requestedPlayers: 4 // 4 is default
+					requestedPlayers: 4, // 4 is default
+					requestedPoints: 10 // 10 is default
 				};
 
 	gamesInfo.push(gameInfo);
@@ -181,6 +182,22 @@ var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gamei
 	}
 };
 
+var userRequestNumPointsStaging = function( socket, io, users, gamesInfo, gameid, num ){
+	var gameInfo = gamesInfo[gameid];
+
+	gameInfo.requestedPoints = num;
+
+	var username = users[socket.userid].name;
+	var newMsg = helpers.addGameMessage( gamesInfo[gameid],
+										 cons.MSG_SERVER,
+										 username 
+										 + " changed points to win to " 
+										 + num);
+	io.in(gamesInfo[gameid].room).emit('room requested points changed', 
+											newMsg, 
+											gamesInfo[gameid].requestedPoints);
+};
+
 (function() {
 
 	module.exports = {
@@ -193,7 +210,8 @@ var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gamei
 		userJoinGame: userJoinGame,
 		setUserReady: setUserReady,
 		userLeaveStaging: userLeaveStaging,
-		userRequestNumPlayersStaging: userRequestNumPlayersStaging
+		userRequestNumPlayersStaging: userRequestNumPlayersStaging,
+		userRequestNumPointsStaging: userRequestNumPointsStaging
 	};
 
 }());

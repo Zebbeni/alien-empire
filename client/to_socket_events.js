@@ -49,3 +49,9 @@ var socket_requestNumPlayersStaging = function( num ) {
         console.log('recieved players requested confirmation', data);
     });
 };
+
+var socket_requestPointsStaging = function( num ){
+    socket.emit('request num points staging', clientGame.gameid, num, function(data) {
+        console.log('recieved points requested confirmation', data);
+    });
+};
