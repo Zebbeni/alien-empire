@@ -49,7 +49,7 @@ socket.on('game end', function(content, msg) {
 });
 
 socket.on('illegal action', function(response) {
-    toggleIllegalActionMenu(response);
+    showIllegalMenu(response);
     if ( clientGame.game.phase == PHS_ACTIONS ){
         clearPendingAction();
     }

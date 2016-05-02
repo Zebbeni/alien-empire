@@ -125,14 +125,6 @@ var updateInterface = function() {
 	}
 };
 
-/**
- * Displays an 'illegal action' message returned from the server.
- * TODO: Animate this in a nice div instead of an ugly alert
- */
-var toggleIllegalActionMenu = function(response) {
-	alert( response );
-};
-
 var clickBuildButton = function() {
 	if ( clientGame.game.round != 0 ) {
 		updateBoardInteractivity();
@@ -758,6 +750,23 @@ var updateBottomBarMenus = function() {
 	updateResourcesMenu();
 	updateStructuresMenu();
 	updateAgentsMenu();
+};
+
+var showIllegalMenu = function( response ){
+	$('#illegal-menu-div')[0].innerHTML = response;
+	$('#illegal-menu-div').css({opacity: 0});
+	$('#illegal-menu-div').show();
+	$('#illegal-menu-div').transition({opacity: 1}, 500, function(){
+		setTimeout(function(){
+        	hideIllegalMenu();
+    	},2500);
+	});
+};
+
+var hideIllegalMenu = function() {
+	$('#illegal-menu-div').transition({opacity: 0}, 500, function(){
+		$('#illegal-menu-div').hide();
+	});
 };
 
 var showInfoMenu = function(evt, type, id){

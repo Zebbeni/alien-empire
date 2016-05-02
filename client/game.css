@@ -89,13 +89,33 @@
 	border-radius: 10px;
 }
 
+#illegal-menu-div {
+	position: fixed;
+	font-size: 20px;
+	top: 60px;
+	left: 50%;
+	width: 600px;
+	margin-left: -300px;
+	pointer-events: auto;
+	font-weight: bold;
+	text-align: center;
+	color: black;
+	background: rgba(254, 193, 43, 0.9);
+	border-radius: 10px;
+}
+
+#illegal-menu-div:hover {
+	background: rgba(254, 193, 43, 1);
+	cursor: pointer;
+}
+
 #your-turn-message-div {
 	font-size: 40px;
 }
 
 #pending-action-div {
 	top: 50px;
-	font-sfize: 15px;
+	font-size: 15px;
 }
 
 #your-action-message-div, #include-smuggler-message-div {

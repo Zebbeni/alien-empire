@@ -76,11 +76,6 @@
             </div>
             <div id="players-wrapper-div"></div>
             <div id="pending-action-div" style="visibility: hidden"></div>
-            <div id="resourcepackages-div" style="visibility: hidden">
-                <div class="respkg-arrow-div"></div>
-                <div class="respkg-upkeep-div"></div>
-                <div class="respkg-collect-div"></div>
-            </div>
             <div id="bottom-bar-div">
                 <div id="structures-menu-div" class="color-menu"></div>
                 <div id="agents-menu-div" class="color-menu"></div>
@@ -92,7 +87,11 @@
                     </form>
                 </div>
             </div>
-            
+            <div id="resourcepackages-div" style="visibility: hidden">
+                <div class="respkg-arrow-div"></div>
+                <div class="respkg-upkeep-div"></div>
+                <div class="respkg-collect-div"></div>
+            </div>
             <div id="points-remaining">
                 <div id="points-remaining-explore">9</div>
                 <div id="points-remaining-envoy">10</div>
@@ -227,6 +226,7 @@
                 <input type="button" id="trade-button-yes"></input>
                 <input type="button" id="trade-button-no" onclick="javascript:hideTradeMenu();"></input>
             </div>
+            <div id="illegal-menu-div" onclick="javascript:hideIllegalMenu();"></div>
             <div id="game-end-div" style="display: none">
                 <div class="dark-screen"></div>
                 <div id="game-end-menu">
