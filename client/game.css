@@ -396,6 +396,21 @@
 	color: black;
 }
 
+#info-defense {
+	position: absolute;
+	top: -8px;
+	right: 40px;
+	width: 30px;
+	height: 30px;
+	background-size: 30px 30px;
+	padding-top: 4px;
+	text-align: center;
+	vertical-align: middle;
+	font-weight: bold;
+	font-size: 15px;
+	color: white;
+}
+
 #info-title, #build-title, #upkeep-title{
 	position: absolute;
 	top: 5px;

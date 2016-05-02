@@ -39,6 +39,7 @@ var DOMimageMap = [
 	{ elmt: '.actor-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
 	{ elmt: '#info-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
 	{ elmt: '#info-points', path: 'interface/', img: 'points'},
+	{ elmt: '#info-defense', path: 'interface/', img: 'defense'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
 	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
@@ -779,6 +780,8 @@ var showInfoMenu = function(evt, type, id){
 		$('#info-text').css({'line-height': "150%"});
 		$('#info-points')[0].innerHTML = STRUCT_REQS[id].points;
 		$('#info-points').show();
+		$('#info-defense')[0].innerHTML = String(STRUCT_REQS[id].defense) + "/6";
+		$('#info-defense').show();
 		var count = 0;
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 			for ( var r = 0; r < STRUCT_REQS[id].build[i]; r++ ){
@@ -804,6 +807,7 @@ var showInfoMenu = function(evt, type, id){
 		$('#info-text')[0].innerHTML = INFO_TEXT.agent[id].info;
 		$('#info-text').css({'line-height': "130%"});
 		$('#info-points').hide();
+		$('#info-defense').hide();
 		buildHTML += '<td class="nocost-td">No Cost</td>'
 		upkeepHTML += '<td class="food-icon"></td>';
 	}
