@@ -3,10 +3,10 @@ var sWid = 212;
 var agtWid = 85;
 var agtSpace = 5;
 
-var offline = false; // checked by loader when creating settings for LoadQueue
-var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
-// var offline = true;
-// var s3url = 'images/'; // set s3url to this if testing offline
+// var offline = false; // checked by loader when creating settings for LoadQueue
+// var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
+var offline = true;
+var s3url = 'images/'; // set s3url to this if testing offline
 
 var DROP_DIST = 50;
 var MOVE_DISTANCE = 200;
@@ -29,7 +29,7 @@ var PHS_ENGLISH = {
 	0: 'Missions',
 	1: 'Resources',
 	2: 'Upkeep',
-	3: 'Build',
+	3: 'Build/ Recruit',
 	4: 'Actions'
 };
 
@@ -166,36 +166,58 @@ var ACT_ENGLISH_PAST = {
 var INFO_TEXT = {
 	agent: {
 		1: {
-			action: 'Target a sector to discover a new planet and earn points'
+			action: 'Target a sector to discover a new planet and earn points',
+			info: 'Target unexplored sectors to find new planets and reserve resources. Get 2 points for discovering large planets, 1 for small.'
 		},
 		2: {
-			action: 'Target a planet where you collect resources, choose one to collect 6'
+			action: 'Target a planet where you collect resources, choose one to collect 6',
+			info: 'Target a planet occupied by your mine, factory, or embassy. Choose one resource you occupy here to collect 6 of that type.'
 		},
 		3: {
-			action: 'Target a planet to increase mining output for up to 2 resources'
+			action: 'Target a planet to increase mining output for up to 2 resources',
+			info: 'Target a planet to increase mining resource collection to 2. (No benefit to factories or embassies)'
 		},
 		4: {
-			action: 'Target a planet to place no-fly zones on up to 2 borders'
+			action: 'Target a planet to place no-fly zones on up to 2 borders',
+			info: 'Target a planet to place No-Fly Zones which fleets and agents cannot pass. If all borders blocked, structures there each worth +1 point.'
 		},
 		5: {
-			action: 'Target a planet with your embassy to gain resources and a point'
+			action: 'Target a planet with your embassy to gain resources and a point',
+			info: 'Target a planet occupied by your embassy. Gain one point. Also, for each opponent structure here, gain one resource of the type it occupies.'
 		},
 		6: {
-			action: 'Target a planet to place spy eyes, capable of blocking missions'
+			action: 'Target a planet to place spy eyes, capable of blocking missions',
+			info: 'Adds a spy network to source and destination planet. Discard these to cancel opponent missions or collect resources from them.'
 		},
 		7: {
-			action: 'Target a planet occupied by other players to steal resources'
+			action: 'Target a planet occupied by other players to steal resources',
+			info: 'Target a planet to steal resources collected there. OR include when launching another mission. That mission may pass a No-Fly-Zone.'
 		},
 		8: {
-			action: 'Target a planet to destroy an opponent structure there'
+			action: 'Target a planet to destroy an opponent structure there',
+			info: 'Target a planet. On arrival, choose one opponent factory, embassy, base, or fleet. Structure is destroyed. Earns 1 point'
 		}
 	},
 	structure: {
+		1: {
+			action: '',
+			info: '- Build on an empty resource<br>- Collects 1 resource per round<br>- Upgrades to Factory or Embassy'
+		},
+		2: {
+			action: '',
+			info: '- Build to replace one of your mines<br>- Collects 2 resources per round<br>- Creates Explorer, Miner & Surveyor'
+		},
+		3: {
+			action: '',
+			info: '- Build to replace one of your mines<br>- Collects 2 resources per round<br>- Creates Ambassador, Envoy & Spy'
+		},
 		4: {
-			action: 'Target a fleet to attack'
+			action: 'Target a fleet to attack',
+			info:  '- Build on any planet you occupy<br>- May attack one fleet per round<br>- Creates Smuggler & Saboteur'
 		},
 		5: {
-			action: 'Target a fleet or base to attack, or move to an adjacent planet'
+			action: 'Target a fleet or base to attack, or move to an adjacent planet',
+			info:  '- Build where you have a Base<br>- May attack fleets or structures<br>- May move to adjacent planets'
 		}
 	}
 };
@@ -273,3 +295,6 @@ var STRUCT_REQS = {
 		defense: 3
 	}
 };
+
+PLOT_POINTS = 0;
+PLOT_RESOURCES = 1;

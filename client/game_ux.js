@@ -18,6 +18,7 @@ var DOMimageMap = [
 	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
 	{ elmt: '#points-remaining', path: 'interface/', img: 'points_remaining'},
 	{ elmt: '.player-div', path: 'interface/', img: 'player_menu'},
+	{ elmt: '#done-button', path: 'interface/', img: 'end_buttons'},
 	{ elmt: '.player-trade-request-div', path: 'interface/', img: 'request_trade', ext: '.gif'},
 	{ elmt: '.player-start-icon', path: 'interface/', img: 'player_start'},
 	{ elmt: '.metal-icon', path: 'interface/', img: 'res_metal_icon'},
@@ -25,11 +26,8 @@ var DOMimageMap = [
 	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
 	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
 	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
-	{ elmt: '#resources-menu-div', path: 'interface/', img: 'resources_menu'},
-	{ elmt: '#structures-menu-div', path: 'interface/', img: 'structures_menu'},
-	{ elmt: '#agents-menu-div', path: 'interface/', img: 'agents_menu'},
+	{ elmt: '.color-menu', path: 'interface/', img: 'menus_p', player: true},
 	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
-	{ elmt: '#trade-menu-div', path: 'interface/', img: 'trade_menu'},
 	{ elmt: '.trade-arrow-up', path: 'interface/', img: 'trade_arrow_button'},
 	{ elmt: '.trade-arrow-down', path: 'interface/', img: 'trade_arrow_button'},
 	{ elmt: '.trade-radio-button', path: 'interface/', img: 'trade_radio_button'},
@@ -39,15 +37,12 @@ var DOMimageMap = [
 	{ elmt: '.action-menu', path: 'interface/', img: 'action_menu'},
 	{ elmt: '.mission-arrow', path: 'interface/', img: 'mission_arrows'},
 	{ elmt: '.actor-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
+	{ elmt: '#info-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
 	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
 	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
 	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
 	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
-	{ elmt: '.struct-mine-button', path: 'interface/', img: 'structmine_button'},
-	{ elmt: '.struct-factory-button', path: 'interface/', img: 'structfactory_button'},
-	{ elmt: '.struct-embassy-button', path: 'interface/', img: 'structembassy_button'},
-	{ elmt: '.struct-base-button', path: 'interface/', img: 'structbase_button'},
-	{ elmt: '.struct-fleet-button', path: 'interface/', img: 'structfleet_button'},
+	{ elmt: '.struct-button', path: 'interface/', img: 'struct_buttons_p', player: true},
 	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
 	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
 	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
@@ -56,6 +51,7 @@ var DOMimageMap = [
 	{ elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
 	{ elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
 	{ elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
+	{ elmt: '#game-end-menu', path: 'interface/', img: 'end_game_menu'}
 ];
 
 $.fn.preload = function() {
@@ -93,8 +89,14 @@ var updateInterface = function() {
 			setPendingObject( OBJ_MINE );
 			setPendingAction( ACT_PLACE );
 		}
-
-		displayYourTurnMenu();
+		
+		if ( pendingAction.actionttype != undefined 
+			      && pendingAction.actiontype != ACT_PLACE ){
+			displayCancelAction();
+		}
+		else {
+			displayEndTurn();
+		}
 		updateBoard();
 
 	} else {
@@ -113,6 +115,10 @@ var updateInterface = function() {
 	updateResourceAnimations();
 
 	setInterfaceImages();
+
+	if (clientGame.game.isEnded){
+		showEndGameMenu();
+	}
 };
 
 /**
@@ -169,7 +175,9 @@ var clickAgentButton = function( agenttype ){
 };
 
 var hideYourTurnMenu = function() {
-	$('#turn-done-button')[0].style.visibility = "hidden";
+	$('#done-button').removeClass().addClass('inactive-button');
+	$('#done-button').off();
+	$('#done-button').attr('value', 'Waiting');
 	$("#your-turn-div").transition({ opacity: 0.00, top: "28%"}, 500, function(){
 		$('#your-turn-div')[0].style.visibility = "hidden";
 	});
@@ -410,6 +418,7 @@ var cancelPendingAction = function() {
 	if(clientGame.game.round != 0 && clientGame.game.phase != PHS_MISSIONS) {
 		clearPendingAction();
 		updateBoardInteractivity();
+		displayEndTurn();
 	}
 	hideConfirmMenu();
 };
@@ -540,13 +549,28 @@ var buildChatMessage = function( msg, messages, m) {
 /**
  * Display your turn menu (and fades back out after a few seconds)
  */
-var displayYourTurnMenu = function() {
+var displayEndTurn = function() {
 	$('#your-turn-div')[0].style.visibility = "visible";
-	$('#turn-done-button')[0].style.visibility = "visible";
+	$('#done-button')[0].style.visibility = "visible";
+	$('#done-button').attr('value', 'End Turn');
+	$('#done-button').off().click(function(){
+		if ( clientGame.game.phase != PHS_PLACING ) {
+			submitTurnDone();
+		}
+	});
+	$('#done-button').removeClass().addClass('end-turn-button');
 	$("#your-turn-div").transition({ opacity: 1.00, top: "30%"}, 500, function() {
 		$("#your-turn-div").delay(3000).transition({ opacity: 0.00, top: "28%"}, 500, function(){
 			$('#your-turn-div')[0].style.visibility = "hidden";
 		});
+	});
+};
+
+var displayCancelAction = function() {
+	$('#done-button').attr('value', 'Cancel');
+	$('#done-button').removeClass().addClass('cancel-action-button');
+	$('#done-button').off().click( function(){
+		cancelPendingAction();
 	});
 };
 
@@ -643,7 +667,7 @@ var createPlayerStatsMenus = function() {
 
 		innerHTML += '<div id="player-div' + i + '" class="player-div" style="bottom: 100px">';
 
-		var username = all_users[clientGame.game.players[i]].name;
+		var username = getUsername(i);
 		var resources = clientGame.game.resources[i];
 		var points = clientGame.game.points[i];
 
@@ -732,9 +756,67 @@ var updateBottomBarMenus = function() {
 	updateAgentsMenu();
 };
 
+var showInfoMenu = function(evt, type, id){
+	var left = String(evt.pageX - 400) + "px";
+	var top = String(evt.pageY - 190) + "px";
+	$('#info-div').css({"bottom": "150px", "left": left, "top": top});
+	$('#upkeep-title')[0].innerHTML = "Upkeep";
+
+	var tds = ["metal-icon", "water-icon", "fuel-icon", "food-icon"];
+	var buildHTML = '<table><tr>';
+	var upkeepHTML = '<table><tr>';
+	
+	if ( type == "structure"){
+		var backgroundPos = "0 " + String(-132 * (id - 1)) + "px";
+		$('#info-pic').removeClass().addClass('info-struct-'+ String(id));
+		$('#info-pic').css({"background-position": backgroundPos});
+		$('#build-title')[0].innerHTML = "Build";
+		$('#info-title')[0].innerHTML = OBJ_ENGLISH[id];
+		$('#info-text')[0].innerHTML = INFO_TEXT.structure[id].info;
+		$('#info-text').css({'line-height': "150%"});
+		var count = 0;
+		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
+			for ( var r = 0; r < STRUCT_REQS[id].build[i]; r++ ){
+				buildHTML += '<td class="' +  tds[i] + '"></td>';
+				count += 1;
+			}
+			for ( var r = 0; r < STRUCT_REQS[id].upkeep[i]; r++ ){
+				upkeepHTML += '<td class="' + tds[i] + '"></td>';
+			}
+		}
+		for ( var i = count; i < 6; i++){
+			buildHTML += '<td width="25px"></td>';
+		}
+		if ( id == OBJ_MINE ){
+			upkeepHTML += '<td width="25px" class="nocost-td">--</td><td></td>';
+		}
+	} else if (type == "agent"){
+		var backgroundPos = "0 " + String(-132 * (id + 4)) + "px";
+		$('#info-pic').removeClass().addClass('info-agent-'+ String(id));
+		$('#info-pic').css({"background-position": backgroundPos});
+		$('#build-title')[0].innerHTML = "Recruit";
+		$('#info-title')[0].innerHTML = AGT_ENGLISH[id];
+		$('#info-text')[0].innerHTML = INFO_TEXT.agent[id].info;
+		$('#info-text').css({'line-height': "130%"});
+		buildHTML += '<td class="nocost-td">No Cost</td>'
+		upkeepHTML += '<td class="food-icon"></td>';
+	}
+	buildHTML += '</tr></table>';
+	upkeepHTML += '</tr></table>';
+	$('#info-build')[0].innerHTML = buildHTML;
+	$('#info-upkeep')[0].innerHTML = upkeepHTML;
+	$('#info-div').show();
+	setInterfaceImages();
+};
+
+var hideInfoMenu = function() {
+	$('#info-div').hide();
+};
+
 var createStructuresMenu = function() {
 	var innerHTML = '';
 
+	innerHTML += '<div id="structures-menu-title" class="menu-title">Structures</div>';
 	innerHTML += '<div id="struct-mines-div"><table class="struct-table">'
 					+ '</table></div>';
 	innerHTML += '<div id="struct-fleets-div"><table class="struct-table">'
@@ -757,7 +839,7 @@ var updateStructuresMenu = function() {
 	var innerHTML = '<tr>';
 	for ( var i = 0; i < 4; i++ ){
 		innerHTML += (i < structures[OBJ_MINE] ? 
-				  '<td><input type="button" class="struct-mine-button"'
+				  '<td><input type="button" class="struct-button struct-mine-button"'
 				  + 'onclick="javascript:clickStructureButton(OBJ_MINE);"></input></td>':
 				  '<td width="34px" height="34px"></td>');
 	}
@@ -767,8 +849,11 @@ var updateStructuresMenu = function() {
 	innerHTML = '<tr>';
 	for ( var i = 0; i < 3; i++ ){
 		innerHTML += (i < structures[OBJ_FLEET] ? 
-				  '<td><input type="button" class="struct-fleet-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);"></input></td>':
+				  '<td><input type="button" class="struct-button struct-fleet-button"'
+				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);" '
+				  // + 'onmouseenter="javascript:showInfoMenu();" '
+				  // + 'onmouseout="javascript:hideInfoMenu();" '
+				  + '></input></td>':
 				  '<td width="42px" height="33px"></td>');
 	}
 	innerHTML += '</tr>';
@@ -777,7 +862,7 @@ var updateStructuresMenu = function() {
 	innerHTML = '<tr>';
 	for ( var i = 0; i < 3; i++ ){
 		innerHTML += (i < structures[OBJ_FACTORY] ? 
-				  '<td><input type="button" class="struct-factory-button"'
+				  '<td><input type="button" class="struct-button struct-factory-button"'
 				  + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);"></input></td>':
 				  '<td width="34px" height="50px"></td>');
 	}
@@ -787,7 +872,7 @@ var updateStructuresMenu = function() {
 	innerHTML = '<tr>';
 	for ( var i = 0; i < 5; i++ ){
 		innerHTML += (i < structures[OBJ_EMBASSY] ? 
-				  '<td><input type="button" class="struct-embassy-button"'
+				  '<td><input type="button" class="struct-button struct-embassy-button"'
 				  + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);"></input></td>':
 				  '<td width="37px" height="50px"></td>');
 	}
@@ -795,14 +880,39 @@ var updateStructuresMenu = function() {
 	$('#struct-embassies-div').find('.struct-table').html(innerHTML);
 
 	innerHTML = (structures[OBJ_BASE] > 0 ? 
-			  '<input type="button" class="struct-base-button"'
+			  '<input type="button" class="struct-button struct-base-button"'
 			  + 'onclick="javascript:clickStructureButton(OBJ_BASE);"></input>':
 			  '');
 	$('#struct-base-div').html(innerHTML);
+
+	$('.struct-mine-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_MINE);
+	});
+
+	$('.struct-factory-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_FACTORY);
+	});
+
+	$('.struct-embassy-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_EMBASSY);
+	});
+
+	$('.struct-base-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_BASE);
+	});
+
+	$('.struct-fleet-button').mouseenter(function(event){
+		showInfoMenu(event, "structure", OBJ_FLEET);
+	});
+
+	$('.struct-button').mouseleave(function(event){
+		hideInfoMenu(event);
+	});
 };
 
 var createAgentsMenu = function() {
-	var innerHTML = '<table id="agents-table"></table>';
+	var innerHTML = '<div id="agents-menu-title" class="menu-title">Agents</div>';
+	innerHTML += '<table id="agents-table"></table>';
 
 	$('#agents-menu-div')[0].innerHTML = innerHTML;
 
@@ -835,6 +945,79 @@ var updateAgentsMenu = function() {
 	innerHTML += '</tr>';
 
 	$('#agents-table').html(innerHTML);
+
+	$('#agent-button-explorer').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_EXPLORER);
+	});
+
+	$('#agent-button-miner').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_MINER);
+	});
+
+	$('#agent-button-surveyor').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SURVEYOR);
+	});
+
+	$('#agent-button-smuggler').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SMUGGLER);
+	});
+
+	$('#agent-button-ambassador').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_AMBASSADOR);
+	});
+
+	$('#agent-button-envoy').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_ENVOY);
+	});
+
+	$('#agent-button-spy').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SPY);
+	});
+
+	$('#agent-button-sabateur').mouseenter(function(event){
+		showInfoMenu(event, "agent", AGT_SABATEUR);
+	});
+
+	$('.agent-button').mouseleave(function(event){
+		hideInfoMenu(event);
+	});
+};
+
+var showEndGameMenu = function() {
+	$('#game-end-div').css({opacity: '0.0'});
+	$('#game-end-menu').css({opacity: '0.0'});
+	var winner = clientGame.game.winner
+	$('#winner-div').css({opacity: '0.0', color: color[winner]});
+	$('#winner-div')[0].innerHTML = getUsername(winner) + " Wins!";
+	$('#game-end-div').show();
+	$('#game-end-div').transition({opacity: 0.0}, 500, function(){
+		$('#game-end-div').transition({opacity: 1.0}, 500, function(){
+			$('#game-end-menu').transition({opacity: 1.0}, 500, function(){
+				$('#winner-div').transition({opacity: 1.0}, 500);
+			});
+		});
+	});
+	plotEndGame(PLOT_POINTS);
+};
+
+var plotEndGame = function(type){
+	var stats = clientGame.game.stats;
+	var data = [];
+	var options = {
+    	series: {
+        	lines: { show: true, lineWidth: 3 },
+	    },
+	    xaxis: { tickSize: 1, tickDecimals: 0 },
+	    yaxis: { tickSize: 1, tickDecimals: 0 },
+	    legend: { show: false }
+	};
+	if (type == PLOT_POINTS){
+		var points = stats.points;
+		for ( var p = 0; p < clientGame.game.players.length; p++ ){
+			data.push({ color: color[p], data: points[p] });
+		}
+	}
+	$.plot($("#end-game-graph"), data, options);
 };
 
 var createRoundMenu = function() {
@@ -1272,7 +1455,8 @@ var setInterfaceImages = function() {
 
 		var name = element.elmt;
 		var img = element.img;
-		var path = s3url + element.path + px + img;
+		var player = element.player ? String(clientTurn) : '';
+		var path = s3url + element.path + px + img + player;
 		var ext = element.ext == undefined ? '.png' : element.ext;
 		$( name ).css("background-image", 'url(' + path + ext + ')');
 	}

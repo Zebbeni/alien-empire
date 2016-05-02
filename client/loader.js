@@ -13,7 +13,7 @@ var load_assets = function() {
 			{src: s3url + "game/water.png", id: "water"},
 			{src: s3url + "game/fuel.png", id: "fuel"},
 			{src: s3url + "game/food.png", id: "food"},
-			{src: s3url + "game/stars.png", id: "stars"},
+			{src: s3url + "game/stars2.png", id: "stars"},
 			{src: s3url + "game/asteroids.png", id: "asteroids"},
 			{src: s3url + "game/noflyzone.png", id: "noflyzone"},
 
@@ -31,6 +31,11 @@ var load_assets = function() {
 			{src: s3url + "game/spy_eye_blue.png", id: "spy_eye_color1"},
 			{src: s3url + "game/spy_eye_green.png", id: "spy_eye_color2"},
 			{src: s3url + "game/spy_eye_yellow.png", id: "spy_eye_color3"},
+
+			{src: s3url + "interface/2x_struct_buttons_p0.png", id: "structures0"},
+			{src: s3url + "interface/2x_struct_buttons_p1.png", id: "structures1"},
+			{src: s3url + "interface/2x_struct_buttons_p2.png", id: "structures2"},
+			{src: s3url + "interface/2x_struct_buttons_p3.png", id: "structures3"},
 
 			{src: s3url + "game/mine_red.png", id: "mine0"},
 			{src: s3url + "game/mine_blue.png", id: "mine1"},

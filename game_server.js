@@ -19,6 +19,7 @@ var actions = require('./game_actions');
 
 			points: board.initializePlayerPoints( num_users ),
 			points_remaining: board.initializePoints(),
+			points_to_win: 2,
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
 			phase: cons.PHS_PLACING,
@@ -32,7 +33,9 @@ var actions = require('./game_actions');
 			missionSpied: board.initializeUserArray( num_users, null ),
 			missionViewed: board.initializeUserArray( num_users, false ),
 			secondmines: false,
-			board: board.initializeBoard( num_users )
+			board: board.initializeBoard( num_users ),
+			stats: { points: initStats(num_users) },
+			isEnded: false
 		};
 
 		return newGame;
@@ -113,4 +116,12 @@ var initResourceUpkeep = function( num_users ){
 		resourceUpkeep.push( [0, 0, 0, 0] );
 	}
 	return resourceUpkeep;
+};
+
+var initStats = function( num_users ){
+	var stats = [];
+	for ( var p = 0; p < num_users; p++ ){
+		stats.push([]);
+	}
+	return stats;
 };

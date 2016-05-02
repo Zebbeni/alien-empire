@@ -41,15 +41,11 @@ socket.on( 'game event', function(content, msg) {
 });
 
 
-socket.on('game end', function(content) {
+socket.on('game end', function(content, msg) {
 
-	clientGame = {};
-    setGlobals();
-
-    fadeOut(board, 1000, false);
+    updateClientGame( content )
+    updateAll();
     // hide game ux elements, show lobby
-    leaveGameInterface();
-    moveToLobby();
 });
 
 socket.on('illegal action', function(response) {

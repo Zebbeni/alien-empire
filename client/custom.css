@@ -7,13 +7,6 @@
 	background-repeat: no-repeat;
 	background-position: top left;
 	outline: none;
-
-/*	-webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;*/
     -webkit-appearance: none;
 }
 
@@ -164,7 +157,7 @@ button {
 	margin-top: -300px;
 }
 
-#screen-div, #trade-screen {
+#screen-div {
 	position: fixed;
 	opacity: 0.0;
 	padding: 0;
@@ -178,10 +171,6 @@ button {
 
 #screen-div {
 	background: rgba(0, 0, 0, .8);
-}
-
-#trade-screen {
-	background: rgba(0, 0, 0, .5);
 }
 
 #messages-div, #users-scroll, #games-list-div, #staging-inner-div, #staging-messages-div {

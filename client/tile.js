@@ -307,13 +307,14 @@ var initStars = function( planetid, img_width) {
 	tiles[planetid].on("rollout", function() {
 		hidePlanetSelection( planetid );
 	});
-
 	var starsImg = loader.getResult("stars");
-	var starOffsetX = Math.floor(Math.random() * (starsImg.width - (2 * sWid)));
-	var starOffsetY = Math.floor(Math.random() * (starsImg.height - (2 * sWid)));
-	stars.graphics.beginBitmapFill(starsImg).drawRect(starOffsetX, starOffsetY, img_width, img_width);
-	stars.x = starOffsetX * -1;
-	stars.y = starOffsetY * -1;
+	var starOffsetX = Math.floor(Math.random() * (starsImg.width - (4 * sWid)));
+	var starOffsetY = Math.floor(Math.random() * (starsImg.height - (4 * sWid)));
+	stars.graphics.beginBitmapFill(starsImg).drawRect(starOffsetX, starOffsetY, 2 * img_width, 2 * img_width);
+	stars.scaleX = 0.5;
+	stars.scaleY = 0.5;
+	stars.x = starOffsetX * -0.5;
+	stars.y = starOffsetY * -0.5;
 
 	tiles[planetid].addChild( stars );
 };
@@ -528,11 +529,17 @@ var initResource = function( planetid, index ) {
 	value.y = icon.y;
 	resource.addChild(value);
 
-	var structure = new createjs.Shape();
+	var structure = new createjs.Container();
 	structure.name = "structure";
 	structure.visible = false;
 	structure.x = icon.x + 38;
-	structure.y = icon.y - 48;
+	structure.y = icon.y - 38;
+	structure.scaleX = 0.9;
+	structure.scaleY = 0.9;
+
+	var structureimage = new createjs.Shape();
+	structureimage.name = "structureimage";
+	structure.addChild(structureimage);
 	resource.addChild(structure);
 
 	resource.mouseChildren = false;
@@ -614,11 +621,31 @@ var drawResource = function( planetid, index, num_resources ) {
 
 			var player = struct.player;
 			var kind = struct.kind;
-			var structureImg = loader.getResult( OBJ_ENGLISH[ kind ] + player );
+			var structureimage = structure.getChildByName("structureimage");
+			structureimage.graphics.clear();
+			var structureImg = loader.getResult( 'structures' + String(player) );
+
+			switch (kind){
+				case OBJ_MINE:
+					structureimage.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(280, 100, 68, 68);
+					structureimage.x = -280;
+					structureimage.y = -70;
+					break;
+				case OBJ_FACTORY:
+					structureimage.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(280, 0, 68, 100);
+					structureimage.x = -280;
+					structureimage.y = 0;
+					break;
+				case OBJ_EMBASSY:
+					structureimage.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(416, 0, 74, 100);
+					structureimage.x = -419;
+					structureimage.y = 0;
+					break;
+				default:
+					break;
+			}
 
 			structure.kind = kind;
-			structure.graphics.clear();
-			structure.graphics.beginBitmapFill(structureImg, "no-repeat").drawRect(1, 1, structureImg.width - 2, structureImg.height - 2);
 			fadeIn( structure, 500, true, false);
 		}
 	}
@@ -762,7 +789,7 @@ var hideLightscreen = function( planetid ) {
 var initBorder = function( planetid, img_width ) {
 	var border = new createjs.Shape();
 	border.name = "border";
-	border.graphics.setStrokeStyle(15);
+	border.graphics.setStrokeStyle(10);
 	border.graphics.beginStroke("rgba(0,0,0,0.9)");
 	border.graphics.drawRect(0, 0, img_width, img_width);
 	tiles[planetid].addChild( border );

@@ -7,7 +7,9 @@ var drawAsteroid = function( asteroid ) {
 
 	var stars = new createjs.Shape();
 	var starsImg = loader.getResult("stars");
-	stars.graphics.beginBitmapFill(starsImg).drawRect(0, 0, 2 * sWid, sWid);
+	stars.graphics.beginBitmapFill(starsImg).drawRect(0, 0, 4 * sWid, 2 * sWid);
+	stars.scaleX = 0.5;
+	stars.scaleY = 0.5;
 	asteroidTile.addChild( stars );
 
 	var asteroids = new createjs.Shape();
@@ -21,7 +23,7 @@ var drawAsteroid = function( asteroid ) {
 	asteroidTile.addChild( darkscreen );
 
 	var border = new createjs.Shape();
-	border.graphics.setStrokeStyle(15);
+	border.graphics.setStrokeStyle(10);
 	border.graphics.beginStroke("rgba(0,0,0,0.9)");
 	border.graphics.drawRect(0, 0, 2 * sWid, sWid);
 	asteroidTile.addChild( border );

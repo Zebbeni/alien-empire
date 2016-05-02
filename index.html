@@ -68,178 +68,182 @@
                 </div>
             </div>
         </div>
-        <div id="your-turn-div" style="visibility: hidden">
-            <div id="your-turn-message-div">Your turn!</div>
-        </div>
-        <div id="players-wrapper-div" style="visibility: hidden"></div>
-        <div id="pending-action-div" style="visibility: hidden"></div>
-        <div>
-            <input type="button" id="turn-done-button" style="visibility: hidden" value="End Turn" onclick="javascript:submitTurnDone();"></input>
-        </div>
-        <div id="resourcepackages-div" style="visibility: hidden">
-            <div class="respkg-arrow-div"></div>
-            <div class="respkg-upkeep-div"></div>
-            <div class="respkg-collect-div"></div>
-        </div>
-        <div id="bottom-bar-div" style="visibility: hidden">
-            <div id="structures-menu-div"></div>
-            <div id="agents-menu-div"></div>
-            <div id="resources-menu-div"></div>
-            <div id="game-messages-wrapper-div" style="visibility: hidden">
-                <div id="game-messages-div"></div>
-                <form action="javascript:submitGameMessage('#game-chat-input');">
-                    <input type="text" id="game-chat-input" placeholder="Type a message here!" autocomplete="off" autofocus></input>
-                </form>
+        <div id="game-interface-div" style="display: none">
+            <div id="your-turn-div" style="visibility: hidden">
+                <div id="your-turn-message-div">Your turn!</div>
             </div>
-        </div>
-        
-        <div id="points-remaining" style="visibility: hidden">
-            <div id="points-remaining-explore">9</div>
-            <div id="points-remaining-envoy">10</div>
-            <div id="points-remaining-destroy">11</div>
-        </div>
-        <div id="round-div" style="visibility: hidden">
-            <table>
-                <tr>
-                    <td></td>
-                    <td id="round-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td0" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td1" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td2" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td3" class="phase-td"></td>
-                </tr><tr>
-                    <td></td>
-                    <td id="phase-td4" class="phase-td"></td>
-                </tr>
-            </table>
-        </div>
-        <div id="missions-phase-div" class="phase-div" style="display: none">
-            <div id="mission-prev-button" class="mission-arrow" ></div>
-            <div id="mission-div" class="action-menu">
-                <div id="mission-name" class="action-name"></div>
-                <div id="mission-agent-div" class="actor-pic"></div> 
-                <div id="mission-location" class="action-location"></div>
-                <div id="mission-label" class="action-label"></div>
-                <div id="mission-text" class="action-text"></div>
-                <input type="button" class="action-button button-1 button-yellow" id="mission-button-1"></input>
-                <input type="button" class="action-button button-2 button-blue" id="mission-button-2"></input>
-                <input type="button" class="action-button button-3 button-red" id="mission-button-3"></input>
+            <div id="players-wrapper-div"></div>
+            <div id="pending-action-div" style="visibility: hidden"></div>
+            <div id="resourcepackages-div" style="visibility: hidden">
+                <div class="respkg-arrow-div"></div>
+                <div class="respkg-upkeep-div"></div>
+                <div class="respkg-collect-div"></div>
             </div>
-            <div id="mission-next-button" class="mission-arrow" ></div>
-<!--             <div id="mission-info-div">
-                <div></div>
-                    <div id="missions-spy-menu">
-                        <div>Block Mission?</div>
-                        <input type="button" id="mission-block-button" value="Yes" onclick="javascript:blockMissionAction( true );"></input>
-                        <input type="button" id="mission-allow-button" value="No" onclick="javascript:blockMissionAction( false );"></input>
-                        <input type="button" id="mission-collect-button" value="Collect" onclick="javascript:blockMissionAction( null );"></input>
-                    </div>
+            <div id="bottom-bar-div">
+                <div id="structures-menu-div" class="color-menu"></div>
+                <div id="agents-menu-div" class="color-menu"></div>
+                <div id="resources-menu-div" class="color-menu"></div>
+                <div id="game-messages-wrapper-div">
+                    <div id="game-messages-div"></div>
+                    <form action="javascript:submitGameMessage('#game-chat-input');">
+                        <input type="text" id="game-chat-input" placeholder="Type a message here!" autocomplete="off" autofocus></input>
+                    </form>
                 </div>
-                <div id="missions-resolution-menu"></div>
-                <div id="missions-choice-menu">
-                    <div id="missions-choice-message">Target your stuff or whatever</div>
-                    <input type="button" value="Done" onclick="javascript:displayConfirmMenu();"/>
+            </div>
+            
+            <div id="points-remaining">
+                <div id="points-remaining-explore">9</div>
+                <div id="points-remaining-envoy">10</div>
+                <div id="points-remaining-destroy">11</div>
+            </div>
+            <div id="round-menu-div" class="color-menu">
+                <div>
+                    <input type="button" id="done-button"></input>
                 </div>
-                <input type="button" value="Okay" onclick="javascript:submitMissionsViewed();"/>
-            </div> -->
-<!--             <div id="mission-phase-next-div">
-                <input type="button" id="agent-retire-button" value="Retire"></input>
-            </div> -->
-        </div>
-        <div id="resource-phase-div" class="phase-div" style="display: none"></div>
-        <div id="upkeep-phase-div" class="phase-div" style="display: none"></div>
-        <div id="agent-retire-div" class="action-menu" style="visibility: hidden">
-            <div id="agent-retire-name" class="action-name"></div>
-            <div id="agent-retire-location" class="action-location"></div>
-            <div id="agent-retire-label" class="action-label">Status</div>
-            <div id="agent-retire-text" class="action-text"></div>
-            <div id="agent-retire-pic" class="actor-pic"></div>
-            <input type="button" id="agent-retire-button" class="action-button button-2 button-yellow" value="Retire"></input>
-            <input type="button" id="agent-cancel-button" class="action-button button-3 button-red" value="Cancel" onclick="javascript:hideAgentRetireMenu();"></input>
-        </div>
-        <div id="action-div" class="action-menu" style="visibility: hidden">
-            <div id="action-name" class="action-name"></div>
-            <div id="action-location" class="action-location"></div>
-            <div id="action-label" class="action-label"></div>
-            <div id="action-text" class="action-text"></div>
-            <div id="actor-div" class="actor-pic"></div>
-            <input type="button" class="action-button button-1 button-yellow" id="action-button-1"></input>
-            <input type="button" class="action-button button-2 button-blue" id="action-button-2"></input>
-            <input type="button" class="action-button button-3 button-red" id="action-button-3" value="Cancel" onclick="javascript:cancelAction();"></input>
-        </div>
-        <div id="confirm-action-div" style="visibility: hidden">
-            <div id="your-action-message-div"></div>
-            <div id="action-confirm-button-wrapper">
-                <input type="button" id="action-confirm-button" value="✓" onclick="javascript:confirmPendingAction();"></input>
-                <input type="button" id="action-cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
+                <div id="round-div">
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td id="round-td"></td>
+                        </tr><tr>
+                            <td></td>
+                            <td id="phase-td0" class="phase-td"></td>
+                        </tr><tr>
+                            <td></td>
+                            <td id="phase-td1" class="phase-td"></td>
+                        </tr><tr>
+                            <td></td>
+                            <td id="phase-td2" class="phase-td"></td>
+                        </tr><tr>
+                            <td></td>
+                            <td id="phase-td3" class="phase-td"></td>
+                        </tr><tr>
+                            <td></td>
+                            <td id="phase-td4" class="phase-td"></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-        </div>
-        <div id="include-smuggler-div" style="visibility: hidden">
-            <div id="include-smuggler-message-div">Include smuggler on this mission?</div>
-            <div id="include-smuggler-button-wrapper">
-                <input type="button" id="smuggler-confirm-button" value="✓" onclick="javascript:includeSmuggler(true);"></input>
-                <input type="button" id="smuggler-cancel-button" value="✕" onclick="javascript:includeSmuggler(false);"></input>
+            <div id="missions-phase-div" class="phase-div" style="display: none">
+                <div id="mission-prev-button" class="mission-arrow" ></div>
+                <div id="mission-div" class="action-menu">
+                    <div id="mission-name" class="action-name"></div>
+                    <div id="mission-agent-div" class="actor-pic"></div> 
+                    <div id="mission-location" class="action-location"></div>
+                    <div id="mission-label" class="action-label"></div>
+                    <div id="mission-text" class="action-text"></div>
+                    <input type="button" class="action-button button-1 button-yellow" id="mission-button-1"></input>
+                    <input type="button" class="action-button button-2 button-blue" id="mission-button-2"></input>
+                    <input type="button" class="action-button button-3 button-red" id="mission-button-3"></input>
+                </div>
+                <div id="mission-next-button" class="mission-arrow" ></div>
             </div>
-        </div>
-        <div id="trade-screen" style="visibility: hidden"></div>
-        <div id="trade-menu-div" style="visibility: hidden">
-            <div id="player-trade-div"><table id="player-trade-table">
-                <tr>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',0,1);"></td>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',1,1);"></td>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',2,1);"></td>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',3,1);"></td>
-                </tr>
-                <tr>
-                    <td class="metal-icon" id="player-trade-res0"></td>
-                    <td class="water-icon" id="player-trade-res1"></td>
-                    <td class="fuel-icon" id="player-trade-res2"></td>
-                    <td class="food-icon" id="player-trade-res3"></td>
-                </tr>
-                <tr>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',0,-1);"></td>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',1,-1);"></td>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',2,-1);"></td>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',3,-1);"></td>
-                </tr>
-            </table></div>
-            <div id="opponent-trade-div"><table id=opponent-trade-table>
-                <tr>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',0,1);"></td>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',1,1);"></td>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',2,1);"></td>
-                    <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',3,1);"></td>
-                </tr>
-                <tr>
-                    <td class="metal-icon" id="opponent-trade-res0"></td>
-                    <td class="water-icon" id="opponent-trade-res1"></td>
-                    <td class="fuel-icon" id="opponent-trade-res2"></td>
-                    <td class="food-icon" id="opponent-trade-res3"></td>
-                </tr>
-                <tr>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',0,-1);"></td>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',1,-1);"></td>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',2,-1);"></td>
-                    <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',3,-1);"></td>
-                </tr>
-            </table></div>
-            <div id="trade-offers-div"></div>
-            <input type="button" id="trade-button-yes"></input>
-            <input type="button" id="trade-button-no" onclick="javascript:hideTradeMenu();"></input>
+            <div id="resource-phase-div" class="phase-div" style="display: none"></div>
+            <div id="upkeep-phase-div" class="phase-div" style="display: none"></div>
+            <div id="agent-retire-div" class="action-menu" style="visibility: hidden">
+                <div id="agent-retire-name" class="action-name"></div>
+                <div id="agent-retire-location" class="action-location"></div>
+                <div id="agent-retire-label" class="action-label">Status</div>
+                <div id="agent-retire-text" class="action-text"></div>
+                <div id="agent-retire-pic" class="actor-pic"></div>
+                <input type="button" id="agent-retire-button" class="action-button button-2 button-yellow" value="Retire"></input>
+                <input type="button" id="agent-cancel-button" class="action-button button-3 button-red" value="Cancel" onclick="javascript:hideAgentRetireMenu();"></input>
+            </div>
+            <div id="action-div" class="action-menu" style="visibility: hidden">
+                <div id="action-name" class="action-name"></div>
+                <div id="action-location" class="action-location"></div>
+                <div id="action-label" class="action-label"></div>
+                <div id="action-text" class="action-text"></div>
+                <div id="actor-div" class="actor-pic"></div>
+                <input type="button" class="action-button button-1 button-yellow" id="action-button-1"></input>
+                <input type="button" class="action-button button-2 button-blue" id="action-button-2"></input>
+                <input type="button" class="action-button button-3 button-red" id="action-button-3" value="Cancel" onclick="javascript:cancelAction();"></input>
+            </div>
+            <div id="confirm-action-div" style="visibility: hidden">
+                <div id="your-action-message-div"></div>
+                <div id="action-confirm-button-wrapper">
+                    <input type="button" id="action-confirm-button" value="✓" onclick="javascript:confirmPendingAction();"></input>
+                    <input type="button" id="action-cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
+                </div>
+            </div>
+            <div id="include-smuggler-div" style="visibility: hidden">
+                <div id="include-smuggler-message-div">Include smuggler on this mission?</div>
+                <div id="include-smuggler-button-wrapper">
+                    <input type="button" id="smuggler-confirm-button" value="✓" onclick="javascript:includeSmuggler(true);"></input>
+                    <input type="button" id="smuggler-cancel-button" value="✕" onclick="javascript:includeSmuggler(false);"></input>
+                </div>
+            </div>
+            <div id="info-div" class="color-menu" style="display: none">
+                <div id="info-title" class="menu-title"></div>
+                <div id="info-pic" class="info-pic"></div>
+                <div id="info-text"></div>
+                <div id="build-title" class="menu-title"></div>
+                <div id="upkeep-title" class="menu-title"></div>
+                <div id="info-build"></div>
+                <div id="info-upkeep">Upkeep</div>
+            </div>
+            <div id="trade-screen" class="dark-screen" style="visibility: hidden"></div>
+            <div id="trade-menu-div" class="color-menu" style="visibility: hidden">
+                <div id="trade-menu-title" class="menu-title">Trade</div>
+                <div id="player-trade-div"><table id="player-trade-table">
+                    <tr>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',0,1);"></td>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',1,1);"></td>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',2,1);"></td>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',3,1);"></td>
+                    </tr>
+                    <tr>
+                        <td class="metal-icon" id="player-trade-res0"></td>
+                        <td class="water-icon" id="player-trade-res1"></td>
+                        <td class="fuel-icon" id="player-trade-res2"></td>
+                        <td class="food-icon" id="player-trade-res3"></td>
+                    </tr>
+                    <tr>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',0,-1);"></td>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',1,-1);"></td>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',2,-1);"></td>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',3,-1);"></td>
+                    </tr>
+                </table></div>
+                <div id="opponent-trade-div"><table id=opponent-trade-table>
+                    <tr>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',0,1);"></td>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',1,1);"></td>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',2,1);"></td>
+                        <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',3,1);"></td>
+                    </tr>
+                    <tr>
+                        <td class="metal-icon" id="opponent-trade-res0"></td>
+                        <td class="water-icon" id="opponent-trade-res1"></td>
+                        <td class="fuel-icon" id="opponent-trade-res2"></td>
+                        <td class="food-icon" id="opponent-trade-res3"></td>
+                    </tr>
+                    <tr>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',0,-1);"></td>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',1,-1);"></td>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',2,-1);"></td>
+                        <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',3,-1);"></td>
+                    </tr>
+                </table></div>
+                <div id="trade-offers-div"></div>
+                <input type="button" id="trade-button-yes"></input>
+                <input type="button" id="trade-button-no" onclick="javascript:hideTradeMenu();"></input>
+            </div>
+            <div id="game-end-div" style="display: none">
+                <div class="dark-screen"></div>
+                <div id="game-end-menu">
+                    <div id="end-game-graph"></div>
+                    <div id="winner-div" class="menu-title"></div>
+                    <input type="button" id="end-game-lobby-button" class="action-button button-blue" value="Return to Lobby" onclick="javascript:transGameToLobby();"></input>
+                </div>
+            </div>
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="https://code.createjs.com/easeljs-0.8.1.min.js"></script>
         <script src="https://code.createjs.com/preloadjs-0.6.1.min.js"></script>
         <script src="https://code.createjs.com/tweenjs-0.6.2.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
         <!-- <script src="easeljs-0.8.1.min.js"></script>
         <script src="preloadjs-0.6.1.min.js"></script>
         <script src="tweenjs-0.6.2.min.js"></script>

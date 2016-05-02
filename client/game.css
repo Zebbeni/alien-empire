@@ -13,6 +13,51 @@
 	left:0;
 }
 
+#game-interface-div {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	opacity: 0.0;
+	pointer-events: none;
+	border-radius: 0;
+}
+
+.color-menu {
+	position: absolute;
+	background-size: 1040px 375px;
+}
+
+.menu-title {
+	position: absolute;
+	top: 5px;
+	left: 0px;
+	height: 26px;
+	padding: 0px;
+	font-size: 15px;
+	font-family: 'Cinzel Decorative', cursive;
+	font-weight: 700;
+	text-align: center;
+	color: black;
+}
+
+#resources-menu-title {
+	width: 386px;
+}
+
+#structures-menu-title {
+	width: 388px;
+}
+
+#agents-menu-title {
+	width: 244px;
+}
+
+#trade-menu-title {
+	width: 270px;
+}
+
 #your-turn-div, #confirm-action-div, #include-smuggler-div {
 	opacity: 0;
 	position: fixed;
@@ -40,11 +85,8 @@
 }
 
 #your-turn-message-div, #your-action-message-div, #include-smuggler-message-div {
-	background: rgba(0, 0, 0, .3);
-}
-
-#turn-done-button:hover {
-	background: rgba(100, 100, 100, .3);
+	background: rgba(0, 0, 0, .7);
+	border-radius: 10px;
 }
 
 #your-turn-message-div {
@@ -53,34 +95,52 @@
 
 #pending-action-div {
 	top: 50px;
-	font-size: 15px;
+	font-sfize: 15px;
 }
 
 #your-action-message-div, #include-smuggler-message-div {
 	font-size: 30px;
 }
 
-#turn-done-button {
+#done-button {
 	position: absolute;
 	width: 100px;
 	height: 40px;
-	right: 10px;
-	bottom: 330px;
-	padding: 5px;
+	right: 11px;
+	top: 15px;
 	font-weight: bold;
-	background: rgba(131, 203, 180, .8);
+	font-size: 18px;
+	background-size: 300px 120px;
+	background-color: transparent;
+	padding-bottom: 3px;
+	pointer-events: auto;
 	color: black;
+}
+
+.end-turn-button { background-position: 0px 0px; }
+.end-turn-button:hover { background-position: -100px 0px; }
+.end-turn-button:active { background-position: -200px 0px; }
+.cancel-action-button { background-position: 0px -40px; }
+.cancel-action-button:hover { background-position: -100px -40px; }
+.cancel-action-button:active { background-position: --200px -40px; }
+.inactive-button { background-position: 0px -80px; }
+
+#round-menu-div {
+	position: absolute;
+	right: 5px;
+	bottom: 160px;
+	width: 124px; 
+	height: 226px;
+	background-position: -671px -149px;
 }
 
 #round-div {
 	position: absolute;
-	opacity: 0.0;
-	bottom: 172px;
-	right: 10px;
+	bottom: 14px;
+	left: 13px;
 	width: 100px;
 	height: auto;
-	background: rgba( 0, 0, 0, 0.8);
-	
+	padding: 2px;	
 }
 
 #round-td, .phase-td {
@@ -142,6 +202,7 @@
 	width: 20px;
 	height: 160px;
 	background-size: 60px 320px;
+	pointer-events: auto;
 }
 
 .mission-arrow:hover {
@@ -259,6 +320,7 @@
 	font-weight: bold;
 	background-size: 496px 72px;
 	background-color: transparent;
+	pointer-events: auto;
 }
 
 .button-1 { left: 7px; }
@@ -291,7 +353,7 @@
 	background-size: 102px 1157px;
 }
 
-.actor-struct-2 { background-position: 0 0; }
+.actor-struct-1 { background-position: 0 0; }
 .actor-struct-2 { background-position: 0 -89px; }
 .actor-struct-3 { background-position: 0 -178px; }
 .actor-struct-4 { background-position: 0 -267px; }
@@ -304,6 +366,82 @@
 .actor-agent-6 { background-position: 0 -890px; }
 .actor-agent-7 { background-position: 0 -979px; }
 .actor-agent-8 { background-position: 0 -1068px; }
+
+#info-pic {
+	position: absolute;
+	top: 29px;
+	left: 10px;
+	width: 154px;
+	height: 132px;
+	background-size: 154px 1716px;
+}
+
+#info-title, #build-title, #upkeep-title{
+	position: absolute;
+	top: 5px;
+	left: 0px;
+	height: 26px;
+	padding: 0px;
+	font-size: 15px;
+	font-family: 'Cinzel Decorative', cursive;
+	font-weight: 700;
+	text-align: center;
+	color: black;
+}
+
+#info-title {
+	width: 400px;
+}
+
+#build-title {
+	left: 173px;
+	top: 108px;
+	width: 156px;
+	font-size: 12px;
+	text-align: left;
+}
+
+#upkeep-title {
+	left: 335px;
+	top: 108px;
+	width: 50px;
+	font-size: 12px;
+}
+
+#info-text {
+	position: absolute;
+	padding: 5px;
+	left: 173px;
+	top: 30px;
+	width: 214px;
+	height: 72px;
+	font-size: 12px;
+	color: white;
+}
+
+#info-build {
+	position: absolute;
+	top: 132px;
+	left: 175px;
+	height: 25px;
+	width: 150px;
+	padding: 0px;
+}
+
+#info-upkeep {
+	position: absolute;
+	top: 132px;
+	left: 350px;
+	height: 25px;
+	width: 25px;
+	padding: 0px;
+}
+
+.nocost-td {
+	width: 50px;
+	padding-left: 5px;
+	color: white;
+}
 
 #resource-phase-div, #upkeep-phase-div {
 	width: 100px;
@@ -355,6 +493,7 @@
 #action-confirm-button-wrapper, #include-smuggler-button-wrapper {
 	height: 70px;
 	width: 120px;
+	pointer-events: auto;
     margin: 0 auto;
 }
 
@@ -428,6 +567,7 @@
 	text-align: center;
 	vertical-align: middle;
 	font-weight: bold;
+	pointer-events: auto;
 }
 
 .player-trade-request-div:hover {
@@ -456,6 +596,10 @@
 	height: 31px;
 }
 
+.res-icon-button {
+	background-color: transparent;
+}
+
 .res-icon-button:hover {
 	background-position: -25px 0;
 }
@@ -473,8 +617,8 @@
 #game-messages-wrapper-div {
 	position: absolute;
 	width: 350px;
-	height: 130px;
-	bottom: 160px;
+	height: 160px;
+	bottom: 145px;
 	left: 0px;
 	pointer-events: auto;
 }
@@ -488,7 +632,7 @@
 
 #game-messages-div {
 	vertical-align: bottom;
-	height: 90px;
+	height: 120px;
 	overflow-y: auto;
 	overflow-x: hidden;
 	pointer-events: auto;
@@ -520,7 +664,6 @@
 	bottom: 0px;
 	width: 100%;
 	height: 162px;
-	opacity: 0.0;
 	pointer-events: none;
 }
 
@@ -562,26 +705,29 @@
 
 #resources-menu-div {
 	left: 0px;
-	width: 390px;
-	height: 156px;
+	width: 386px;
+	height: 148px;
+	background-position: 0px 0px;
 }
 
 #structures-menu-div {
 	right: 244px;
-	width: 390px;
-	height: 143px;
+	width: 388px;
+	height: 136px;
+	background-position: -386px -12px;
 }
 
 #agents-menu-div {
 	right: 0px;
 	width: 244px;
-	height: 162px;
+	height: 157px;
+	background-position: -795px 0px;
 }
 
 .resource-div {
 	position: absolute;
 	float: left;
-	left: 10px;
+	left: 6px;
 	height: 27px;
 	width: 372px;
 }
@@ -648,6 +794,7 @@
 	height: 25px;
 	color: black;
 	font-weight: bold;
+	background-color: transparent;
 }
 
 .fourtoone-button:hover {
@@ -672,6 +819,7 @@
 	width: 55px;
 	height: 27px;
 	color: black;
+	background-color: transparent;
 }
 
 #trade-button:hover {
@@ -686,6 +834,7 @@
 	width: 269px;
 	height: 191px;
 	margin-left: -134px;
+	background-position: -401px -149px;
 }
 
 #player-trade-div, #opponent-trade-div{
@@ -773,6 +922,7 @@
 	font-weight: bold;
 	background-repeat: no-repeat;
 	background-size: 496px 72px;
+	pointer-events: auto;
 }
 
 #trade-button-yes {
@@ -800,6 +950,14 @@
 	background-position: -248px -24px;
 }
 
+#info-div {
+	bottom: 150px;
+	right: 100px;
+	width: 400px;
+	height: 174px;
+	background-position: 0 -149px;
+}
+
 #struct-mines-div, #struct-fleets-div, #struct-factories-div, #struct-embassies-div, #struct-base-div {
 	position: absolute;
 }
@@ -815,11 +973,11 @@
 	top: 36px;
 	left: 170px;
 	width: 126px;
-	height: 33px;
+	height: 34px;
 }
 
 #struct-factories-div {
-	top: 70px;
+	top: 72px;
 	left: 13px;
 	width: 108px;
 	height: 50px;
@@ -844,45 +1002,49 @@
 	height: 100%;
 }
 
-.struct-mine-button, .struct-factory-button, .struct-embassy-button, .struct-base-button,
-.struct-fleet-button {
+.struct-button {
 	background-color: transparent;
+	background-size: 292px 84px;
 }
 
 .struct-mine-button {
 	width: 34px;
 	height: 34px;
+	background-position: -140px -50px;
 }
 
 .struct-mine-button:hover {
-	background-position: -34px;
+	background-position: -174px -50px;
 }
 
 .struct-factory-button {
 	width: 34px;
 	height: 50px;
+	background-position: -140px 0;
 }
 
 .struct-factory-button:hover {
-	background-position: -34px 0;
+	background-position: -174px 0;
 }
 
 .struct-embassy-button {
 	width: 37px;
 	height: 50px;
+	background-position: -208px 0;
 }
 
 .struct-embassy-button:hover {
-	background-position: -37px 0;
+	background-position: -245px 0;
 }
 
 .struct-fleet-button {
 	width: 42px;
-	height: 33px;
+	height: 34px;
+	background-position: -208px -50px;
 }
 
 .struct-fleet-button:hover {
-	background-position: -42px 0;
+	background-position: -250px -50px;
 }
 
 .struct-base-button {
@@ -891,6 +1053,7 @@
 	left: 0px;
 	width: 70px;
 	height: 70px;
+	background-position: 0 0;
 }
 
 .struct-base-button:hover {
@@ -919,7 +1082,7 @@
 	position: absolute;
 	bottom: 0px;
 	left: 391px;
-	height: 157px;
+	height: 150px;
 	width: 0px;
 }
 
@@ -927,6 +1090,7 @@
 	position: absolute;
 	width: 68px;
 	height: 150px;
+	pointer-events: auto;
 	cursor: pointer;
 }
 
@@ -1023,6 +1187,57 @@
 
 .res-change-down {
 	color: #ff9191;
+}
+
+#game-end-div {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	background: transparent;
+}
+
+.dark-screen {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	margin: 0px;
+	position: fixed;
+	border-radius: 0px;
+	background: rgba(0, 0, 0, .7);
+}
+
+#game-end-menu {
+	position: absolute;
+	width: 608px;
+	height: 437px;
+	left: 50%;
+	margin-left: -304px;
+	top: 40%;
+	margin-top: -215px;
+}
+
+#winner-div {
+	top: 45px;
+	width: 608px;
+	font-size: 23px;
+}
+
+#end-game-graph {
+	position: absolute;
+	left: 13px;
+	top: 30px;
+	width: 580px;
+	height: 365px;
+}
+
+#end-game-lobby-button {
+	position: absolute;
+	right: 14px;
+	top: 403px;
 }
 
 #game-chat-input::-webkit-input-placeholder { /* WebKit, Blink, Edge */

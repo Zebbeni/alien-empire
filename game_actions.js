@@ -19,16 +19,7 @@ var helpers = require('./game_helpers');
 	 * @return [sockets to update, event type, game object]
 	 */
 	module.exports.resolveTurnDone = function( action, game ) {
-		// This is stand in logic. End game condition should be checked 
-		// during the upkeep phase
-		if ( isEndCondition( game ) ){
-			return {
-					to: cons.EVENT_ALL,
-					evnt: 'game end',
-					content: {}
-				};
-		}
-		else if ( game.playerTurn != action.player ){
+		if ( game.playerTurn != action.player ){
 			return {
 					to: cons.EVENT_ONE,
 					evnt: 'illegal action',
@@ -87,6 +78,17 @@ var helpers = require('./game_helpers');
 					evnt: 'duplicate',
 					content: applyResult.response
 				};
+		}
+		else if ( applyResult.endGame ){
+			return {
+				to: cons.EVENT_ALL,
+				evnt: 'game end',
+				content: {
+					game: game,
+					action: action,
+					response: applyResult.response
+				}
+			};
 		}
 		else {
 			return {
@@ -582,13 +584,22 @@ var applyPayUpkeep = function( action, game ){
 	payPlayerUpkeep(player, resources, game);
 	game.resourcePackages[player][pkgindex].collected = true;
 
-	if ( pkgtype == cons.PKG_UPKEEP && game.phase == cons.PHS_UPKEEP ){
-		game.phaseDone[player] = true;
-		updatePhase( game );
-	}
-
 	updateStructurePoints(game, player);
 	calcPoints(game, player);
+	updateGameStats(game, player);
+
+	if ( pkgtype == cons.PKG_UPKEEP && game.phase == cons.PHS_UPKEEP ){
+		game.phaseDone[player] = true;
+	}
+
+	// This is where we check to see if the game should end
+	if ( isEndCondition( game ) ){
+		return { endGame: true };
+	}
+
+	if ( pkgtype == cons.PKG_UPKEEP && game.phase == cons.PHS_UPKEEP ){
+		updatePhase( game );
+	}
 
 	return { isIllegal: false };
 };
@@ -1966,7 +1977,7 @@ var updatePhase = function( game ){
 			break;
 		case cons.PHS_RESOURCE:
 		case cons.PHS_UPKEEP:
-			
+			// if all players have completed this phase
 			if(game.phaseDone.indexOf(false) == -1){
 
 				game.phase = (game.phase + 1) % 5;
@@ -2276,11 +2287,38 @@ var calcPoints = function( game, player ) {
 	game.points[player][cons.PNT_TOTAL] = total;
 };
 
+var updateGameStats = function(game, player){
+	var round = game.round;
+	var points = game.points[player][cons.PNT_TOTAL];
+	game.stats.points[player].push([round, points]);
+};
+
 /**
  * Checks to see if the end condition for the game has been met
  * 
  * @return true or false
  */ 
 var isEndCondition = function( game ) {
-	return ( game.round >= 10 );
+	var isEnd = false;
+	var maxScore = 0;
+	var winner = undefined;
+	var isTie = false;
+	if ( game.phase == cons.PHS_UPKEEP && game.phaseDone.indexOf(false) == -1 ) {
+		for ( var p = 0; p < game.players.length; p++ ) {
+			if (game.points[p][cons.PNT_TOTAL] > maxScore){
+				maxScore = game.points[p][cons.PNT_TOTAL];
+				winner = p;
+				isTie = false;
+			}
+			else if (game.points[p][cons.PNT_TOTAL] == maxScore){
+				isTie = true;
+			}
+		}
+		if ( maxScore >= game.points_to_win && !isTie ) {
+			game.isEnded = true;
+			game.winner = winner;
+			return true;
+		}
+	}
+	return ( false );
 };

@@ -64,25 +64,34 @@ var hideGameStage = function() {
 // Revisit these two functions when you actually create the nice game interface
 var moveToGameInterface = function() {
     $('#game-messages-wrapper-div')[0].style.visibility = "visible";
-    $('#bottom-bar-div')[0].style.visibility = "visible";
-    $('#points-remaining')[0].style.visibility = "visible";
-    $('#round-div')[0].style.visibility = "visible";
-    $('#bottom-bar-div').transition({ opacity: 1.0}, 1000);
-    $('#round-div').transition({ opacity: 1.0}, 1000);
+    $('#game-interface-div').show();
+    $('#game-interface-div').transition({opacity: 1.0}, 2000 );
+    $('#game-end-div').hide();
 };
 
 var leaveGameInterface = function() {
     $('#your-turn-div')[0].style.visibility = "hidden";
     $('#pending-action-div')[0].style.visibility = "hidden";
-    $('#turn-done-button')[0].style.visibility = "hidden";
+    $('#done-button')[0].style.visibility = "hidden";
     $('#players-wrapper-div')[0].style.visibility = "hidden";
     $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
     $('.phase-div').hide();
-    $('#bottom-bar-div').transition({ opacity: 0.0}, 1000, function() {
-        $('#bottom-bar-div')[0].style.visibility = "hidden";
+    $('#game-interface-div').transition({opacity: 0.0}, 1000, function() {
+        $('#game-interface-div').hide();
     });
-    $('#points-remaining')[0].style.visibility = "hidden";
-    $('#round-div').transition({opacity: 0.0}, 1000, function() {
-        $('#round-div')[0].style.visibility = "hidden";
-    });
+    // $('#bottom-bar-div').transition({ opacity: 0.0}, 1000, function() {
+    //     $('#bottom-bar-div')[0].style.visibility = "hidden";
+    // });
+    // $('#points-remaining')[0].style.visibility = "hidden";
+    // $('#round-menu-div').transition({opacity: 0.0}, 1000, function() {
+    //     $('#round-menu-div')[0].style.visibility = "hidden";
+    // });
+};
+
+var transGameToLobby = function() {
+    fadeOut(board, 1000, false);
+    clientGame = {};
+    setGlobals();
+    leaveGameInterface();
+    moveToLobby();
 };
