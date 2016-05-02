@@ -129,7 +129,7 @@ var setUserReady = function(socket, io, users, gamesInfo, fn) {
 	if ( allPlayersReady( gamesInfo[gameid] ) && allRequestedHere( gamesInfo[gameid]) ) {
 
 		gamesInfo[gameid].status = 2;
-		gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid );
+		gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid, gamesInfo[gameid].requestedPoints );
 
 		io.in('lobby').emit('game starting', gamesInfo[gameid]);
 		io.in(gamesInfo[gameid].room).emit('room game starting', 

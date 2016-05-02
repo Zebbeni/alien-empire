@@ -5,7 +5,7 @@ var actions = require('./game_actions');
 
 (function() {
 
-	module.exports.initializeGame = function( user_ids, gameid ) {
+	module.exports.initializeGame = function( user_ids, gameid, points ) {
 		var num_users = user_ids.length;
 		var newGame = {
 			gameid: gameid,
@@ -19,7 +19,7 @@ var actions = require('./game_actions');
 
 			points: board.initializePlayerPoints( num_users ),
 			points_remaining: board.initializePoints(),
-			points_to_win: 10,
+			points_to_win: points,
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
 			phase: cons.PHS_PLACING,
