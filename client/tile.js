@@ -375,10 +375,10 @@ var initPlanet = function ( planetid ) {
 	var img_id = planets[planetid].art;
 	var planetImg = loader.getResult("planet_" + img_id);
 	var offsetX = -12;
-	var offsetY = 28;
+	var offsetY = 73;
 	if ( planets[planetid].w == 2 ) {
-		offsetX = 0;
-		offsetY = 25;
+		offsetX = 5;
+		offsetY = 30;
 	}
 	// clear before drawing, we call this function multiple times
 	picture.graphics.clear();
@@ -389,14 +389,15 @@ var initPlanet = function ( planetid ) {
 		case 1:
 			picture.scaleX = 0.45;
 			picture.scaleY = 0.45;
+			picture.x = offsetX * -1;
+			picture.y = offsetY * -1 + 45;
 			break;
 
 		case 2:
+			picture.x = offsetX * -1 + 5;
+			picture.y = offsetY * -1 + 5;
 			break;
 	}
-
-	picture.x = offsetX * -1;
-	picture.y = offsetY * -1;
 
 	tiles[planetid].addChild( planet );
 };
