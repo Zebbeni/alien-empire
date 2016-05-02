@@ -28,6 +28,10 @@ var updateAll = function() {
 	updateBoardInteractivity();
 };
 
+var getUsername = function( player ) {
+	return all_users[clientGame.game.players[player]].name;
+};
+
 /**
  * Returns true if object type is 
  */

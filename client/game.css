@@ -85,7 +85,8 @@
 }
 
 #your-turn-message-div, #your-action-message-div, #include-smuggler-message-div {
-	background: rgba(0, 0, 0, .3);
+	background: rgba(0, 0, 0, .7);
+	border-radius: 10px;
 }
 
 #your-turn-message-div {
@@ -566,6 +567,7 @@
 	text-align: center;
 	vertical-align: middle;
 	font-weight: bold;
+	pointer-events: auto;
 }
 
 .player-trade-request-div:hover {
@@ -920,6 +922,7 @@
 	font-weight: bold;
 	background-repeat: no-repeat;
 	background-size: 496px 72px;
+	pointer-events: auto;
 }
 
 #trade-button-yes {
@@ -1215,6 +1218,12 @@
 	margin-left: -304px;
 	top: 40%;
 	margin-top: -215px;
+}
+
+#winner-div {
+	top: 45px;
+	width: 608px;
+	font-size: 23px;
 }
 
 #end-game-graph {

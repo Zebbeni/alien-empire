@@ -586,6 +586,7 @@ var applyPayUpkeep = function( action, game ){
 
 	updateStructurePoints(game, player);
 	calcPoints(game, player);
+	updateGameStats(game, player);
 
 	if ( pkgtype == cons.PKG_UPKEEP && game.phase == cons.PHS_UPKEEP ){
 		game.phaseDone[player] = true;
@@ -2286,6 +2287,12 @@ var calcPoints = function( game, player ) {
 	game.points[player][cons.PNT_TOTAL] = total;
 };
 
+var updateGameStats = function(game, player){
+	var round = game.round;
+	var points = game.points[player][cons.PNT_TOTAL];
+	game.stats.points[player].push([round, points]);
+};
+
 /**
  * Checks to see if the end condition for the game has been met
  * 
@@ -2294,11 +2301,13 @@ var calcPoints = function( game, player ) {
 var isEndCondition = function( game ) {
 	var isEnd = false;
 	var maxScore = 0;
+	var winner = undefined;
 	var isTie = false;
 	if ( game.phase == cons.PHS_UPKEEP && game.phaseDone.indexOf(false) == -1 ) {
 		for ( var p = 0; p < game.players.length; p++ ) {
 			if (game.points[p][cons.PNT_TOTAL] > maxScore){
 				maxScore = game.points[p][cons.PNT_TOTAL];
+				winner = p;
 				isTie = false;
 			}
 			else if (game.points[p][cons.PNT_TOTAL] == maxScore){
@@ -2307,6 +2316,7 @@ var isEndCondition = function( game ) {
 		}
 		if ( maxScore >= game.points_to_win && !isTie ) {
 			game.isEnded = true;
+			game.winner = winner;
 			return true;
 		}
 	}

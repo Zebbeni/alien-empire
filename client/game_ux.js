@@ -667,7 +667,7 @@ var createPlayerStatsMenus = function() {
 
 		innerHTML += '<div id="player-div' + i + '" class="player-div" style="bottom: 100px">';
 
-		var username = all_users[clientGame.game.players[i]].name;
+		var username = getUsername(i);
 		var resources = clientGame.game.resources[i];
 		var points = clientGame.game.points[i];
 
@@ -985,17 +985,39 @@ var updateAgentsMenu = function() {
 
 var showEndGameMenu = function() {
 	$('#game-end-div').css({opacity: '0.0'});
+	$('#game-end-menu').css({opacity: '0.0'});
+	var winner = clientGame.game.winner
+	$('#winner-div').css({opacity: '0.0', color: color[winner]});
+	$('#winner-div')[0].innerHTML = getUsername(winner) + " Wins!";
 	$('#game-end-div').show();
-	$('#game-end-div').transition({opacity: 0.0}, 2000, function(){
-		$('#game-end-div').transition({opacity: 1.0}, 2000);
+	$('#game-end-div').transition({opacity: 0.0}, 500, function(){
+		$('#game-end-div').transition({opacity: 1.0}, 500, function(){
+			$('#game-end-menu').transition({opacity: 1.0}, 500, function(){
+				$('#winner-div').transition({opacity: 1.0}, 500);
+			});
+		});
 	});
 	plotEndGame(PLOT_POINTS);
 };
 
 var plotEndGame = function(type){
+	var stats = clientGame.game.stats;
+	var data = [];
+	var options = {
+    	series: {
+        	lines: { show: true, lineWidth: 3 },
+	    },
+	    xaxis: { tickSize: 1, tickDecimals: 0 },
+	    yaxis: { tickSize: 1, tickDecimals: 0 },
+	    legend: { show: false }
+	};
 	if (type == PLOT_POINTS){
-		$.plot($("#end-game-graph"), [ [[0, 0], [1, 1], [2,2], [3,4], [4,3]], [[0, 0], [1, 0], [2,1], [3,3], [4,4]] ], {});
+		var points = stats.points;
+		for ( var p = 0; p < clientGame.game.players.length; p++ ){
+			data.push({ color: color[p], data: points[p] });
+		}
 	}
+	$.plot($("#end-game-graph"), data, options);
 };
 
 var createRoundMenu = function() {

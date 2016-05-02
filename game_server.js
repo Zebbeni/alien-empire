@@ -34,6 +34,7 @@ var actions = require('./game_actions');
 			missionViewed: board.initializeUserArray( num_users, false ),
 			secondmines: false,
 			board: board.initializeBoard( num_users ),
+			stats: { points: initStats(num_users) },
 			isEnded: false
 		};
 
@@ -115,4 +116,12 @@ var initResourceUpkeep = function( num_users ){
 		resourceUpkeep.push( [0, 0, 0, 0] );
 	}
 	return resourceUpkeep;
+};
+
+var initStats = function( num_users ){
+	var stats = [];
+	for ( var p = 0; p < num_users; p++ ){
+		stats.push([]);
+	}
+	return stats;
 };

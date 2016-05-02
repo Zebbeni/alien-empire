@@ -29,7 +29,7 @@ var PHS_ENGLISH = {
 	0: 'Missions',
 	1: 'Resources',
 	2: 'Upkeep',
-	3: 'Build',
+	3: 'Build/ Recruit',
 	4: 'Actions'
 };
 
