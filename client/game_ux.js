@@ -635,12 +635,29 @@ var updateTurnHelpMessage = function() {
 			break;
 			
 		case PHS_RESOURCE:
+			message = "Click collect to receive your resources for this round";
+			break;
 		default:
 			break;
-
 	}
 
-	$('#pending-action-div')[0].innerHTML = message;
+	if ( message == ""){
+		$('#pending-action-div').hide();
+	}
+	else {
+		$('#pending-action-div')[0].innerHTML = message;
+		$('#pending-action-div').css({opacity: 0.0});
+		$('#pending-action-div').show();
+		$('#pending-action-div').transition({opacity: 1.0}, 500, function(){
+			setTimeout(function(){
+	        	$('#pending-action-div').transition({opacity: 0.0}, 500, function(){
+	        		$('#pending-action-div').hide();
+	        	});
+	    	},2500);
+		});
+	}
+
+	
 };
 
 var updatePointsRemainingMenu = function() {

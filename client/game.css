@@ -84,7 +84,7 @@
 	text-align: center;
 }
 
-#your-turn-message-div, #your-action-message-div, #include-smuggler-message-div {
+#your-turn-message-div, #your-action-message-div, #include-smuggler-message-div, #pending-action-div {
 	background: rgba(0, 0, 0, .7);
 	border-radius: 10px;
 }
