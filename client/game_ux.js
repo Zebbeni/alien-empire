@@ -1147,7 +1147,9 @@ var updateMissionsMenu = function(round, index) {
 	$('#mission-next-button').off().click( function() {
 		updateMissionsMenu( nextRound, nextIndex );
 	});
-
+	
+	$('#mission-button-1').hide();
+	$('#mission-button-2').hide();
 	$('#mission-button-3').hide();
 
 	$('#mission-name')[0].innerHTML = 'Round ' + String(missionRound + 2);
@@ -1156,8 +1158,6 @@ var updateMissionsMenu = function(round, index) {
 		$('#mission-location')[0].innerHTML = '- - -';
 		$('#mission-label')[0].innerHTML = 'Mission';
 		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
-		$('#mission-button-1').hide();
-		$('#mission-button-2').hide();
 		if ( nowRound == clientGame.game.round && nowIndex == clientGame.game.missionindex ){
 			$('#mission-button-3').show();
 			$('#mission-button-3').attr('value', 'Okay');
@@ -1240,25 +1240,43 @@ var updateMissionsMenu = function(round, index) {
 			}
 		} 
 
-		// otherwise, if we can block this mission
-		// display spy block menu (block mission, allow)
-		else if ( clientGame.game.missionSpied[ clientTurn ] == undefined ) {
-
-			// automatically allow if this is client's own mission
-			if ( clientTurn == player ){
-				blockMissionAction( false );
-			} 
-			else if ( clientGame.game.board.planets[mission.planetTo].spyeyes[clientTurn] <= 0 ) {
-				blockMissionAction( false );
-			}
-			else {
-				$('#missions-phase-div').show();
-				if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
+		// otherwise, if not all spies have resolved
+		else if ( clientGame.game.missionSpied.indexOf(null) != -1 ) {
+			// if player hasn't responded with a spy action yet
+			if ( clientGame.game.missionSpied[ clientTurn ] == null ) {
+				// automatically allow if this is client's own mission
+				if ( clientTurn == player ){
+					blockMissionAction( false );
+				} 
+				// automatically allow if client has no spies here
+				else if ( clientGame.game.board.planets[mission.planetTo].spyeyes[clientTurn] <= 0 ) {
+					blockMissionAction( false );
+				}
+				else {
+					$('#missions-phase-div').show();
+					$('#mission-text')[0].innerHTML = "Mission pending. Would you like to block this mission?";
 					$('#mission-button-1').attr('value', 'Block');
 					$('#mission-button-1').show();
-					$('#mission-button-2').attr('value', 'Collect');
-					$('#mission-button-2').show();
+					$('#mission-button-1').off().click( function() {
+						blockMissionAction(true);
+					});
+					if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
+						$('#mission-text')[0].innerHTML = "Mission Pending. Use a spy eye to block or collect resources from this mission?";
+						$('#mission-button-2').attr('value', 'Collect');
+						$('#mission-button-2').show();
+						$('#mission-button-2').off().click( function() {
+							blockMissionAction(null);
+						});
+					}
+					$('#mission-button-3').attr('value', 'Allow');
+					$('#mission-button-3').show();
+					$('#mission-button-3').off().click( function() {
+						blockMissionAction( false );
+					});
 				}
+			}
+			else {
+				$('#mission-text')[0].innerHTML = "Mission pending, waiting on spy actions...";
 			}
 		}
 
@@ -1317,8 +1335,6 @@ var updateMissionsMenu = function(round, index) {
 							break;
 					}
 					$('#mission-text')[0].innerHTML = messageHtml;
-					$('#mission-button-1').hide();
-					$('#mission-button-2').hide();
 					$('#mission-button-3').show();
 					$('#mission-button-3').attr('value', 'Done');
 					$('#mission-button-3').off().click( function() {
@@ -1326,6 +1342,9 @@ var updateMissionsMenu = function(round, index) {
 					});
 				}
 			}
+		}
+		else {
+
 		}
 	}
 };
