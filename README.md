@@ -1,7 +1,7 @@
 # Alien Empire
 A multiplayer boardgame using Node.js, Socket.io and CreateJS
 
-![Screenshot](https://s3-us-west-2.amazonaws.com/alien-empire/github/github_image.jpg "Alien Empire Screenshot")
+![Screenshot](https://s3-us-west-2.amazonaws.com/alien-empire/github/github_image2.jpg "Alien Empire Screenshot")
 
 ## Running locally:
 1. Install npm dependencies
