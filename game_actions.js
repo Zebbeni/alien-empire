@@ -429,6 +429,12 @@ var applyRetireAction = function( action, game ){
 	var id = String(player) + String(agenttype);
 
 	var agent = game.board.agents[id];
+
+	if (agent == undefined){
+		return { isIllegal: true,
+				 response: "Something went wrong. Please try again." };
+	}
+
 	var planetid = agent.planetid;
 
 	if (agent.player != player){
