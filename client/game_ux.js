@@ -517,7 +517,7 @@ var buildActionMessage = function( actionMsg ){
 		case ACT_FLEET_ATTACK:
 		case ACT_BASE_ATTACK:
 			var targetPlayer = getUsername(actionMsg.targetPlayer);
-			var structure = OBJ_ENGLISH(actionMsg.objecttype);
+			var structure = OBJ_ENGLISH[actionMsg.objecttype];
 			message += targetPlayer + "'s " + structure + " on " + planetname + ".";
 			if (actionMsg.success){
 				message += " Target destroyed.";
