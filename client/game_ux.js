@@ -483,7 +483,11 @@ var buildServerMessage = function( msg ) {
 var buildActionMessage = function( actionMsg ){
 	var player = actionMsg.player;
 	var userid = clientGame.game.players[player];
-	var name = all_users[userid].name;
+	var name = getUsername(userid);
+	var planetname = "";
+	if (actionMsg.planetid != undefined){
+		planetname = clientGame.game.board.planets[actionMsg.planetid].name;
+	}
 
 	messagesHtml = '<tr><td class="msg-action-td msg-action-p' + player + '" colspan="2" >';
 
@@ -492,11 +496,11 @@ var buildActionMessage = function( actionMsg ){
 		case ACT_PLACE:
 		case ACT_BUILD:
 			message += OBJ_ENGLISH[actionMsg.objecttype];
-			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			message += ' on ' + planetname;
 			break;
 		case ACT_RECRUIT:
 			message += AGT_ENGLISH[actionMsg.agenttype];
-			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			message += ' on ' + planetname;
 			break;
 		case ACT_RETIRE:
 			message += AGT_ENGLISH[actionMsg.agenttype];
@@ -504,11 +508,23 @@ var buildActionMessage = function( actionMsg ){
 		case ACT_REMOVE:
 		case ACT_REMOVE_FLEET:
 			message += OBJ_ENGLISH[actionMsg.objecttype];
-			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			message += ' at ' + planetname;
 			break;
 		case ACT_MOVE_AGENT:
 			message += AGT_ENGLISH[actionMsg.agenttype] 
-					+ ' to ' + clientGame.game.board.planets[actionMsg.planetid].name;
+					+ ' to ' + planetname;
+			break;
+		case ACT_FLEET_ATTACK:
+		case ACT_BASE_ATTACK:
+			var targetPlayer = getUsername(actionMsg.targetPlayer);
+			var structure = OBJ_ENGLISH(actionMsg.objecttype);
+			message += targetPlayer + "'s " + structure + " on " + planetname + ".";
+			if (actionMsg.success){
+				message += " Target destroyed.";
+			}
+			else {
+				message += " Attempt failed.";
+			}
 			break;
 		default:
 			break;

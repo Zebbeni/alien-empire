@@ -830,6 +830,7 @@ var applyFleetAttack = function( action, game ){
 	var targetPlayer = action.targetPlayer;
 	var planet = game.board.planets[planetid];
 	var fleet = game.board.fleets[fleetid];
+	action.success = false;
 
 	if ( game.playerTurn != player ) {
 		return { isIllegal: true,
@@ -880,6 +881,7 @@ var applyFleetAttack = function( action, game ){
 							  game );
 
 			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+			action.success = true;
 		}
 	}
 	else if ( objecttype == cons.OBJ_BASE) {
@@ -898,6 +900,7 @@ var applyFleetAttack = function( action, game ){
 							  game );
 
 			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+			action.success = true;
 		}
 		// Do logic to attack base here
 	}
@@ -922,6 +925,7 @@ var applyFleetAttack = function( action, game ){
 							  game );
 
 			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+			action.success = true;
 		}
 	}
 
@@ -938,6 +942,8 @@ var applyBaseAttack = function( action, game ){
 	var targetPlayer = action.targetPlayer;
 	var planet = game.board.planets[planetid];
 	var base = planet.base;
+
+	action.success = false;
 
 	if ( game.playerTurn != player ) {
 		return { isIllegal: true,
@@ -982,6 +988,7 @@ var applyBaseAttack = function( action, game ){
 						  game );
 
 		removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+		action.success = true;
 	}
 
 	game.board.planets[planetid].base.used = true;
