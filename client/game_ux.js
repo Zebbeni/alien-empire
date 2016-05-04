@@ -482,8 +482,7 @@ var buildServerMessage = function( msg ) {
 // builds and returns a message based on the variables in @action
 var buildActionMessage = function( actionMsg ){
 	var player = actionMsg.player;
-	var userid = clientGame.game.players[player];
-	var name = getUsername(userid);
+	var name = getUsername(player);
 	var planetname = "";
 	if (actionMsg.planetid != undefined){
 		planetname = clientGame.game.board.planets[actionMsg.planetid].name;
@@ -822,7 +821,14 @@ var showInfoMenu = function(evt, type, id){
 		$('#info-text').css({'line-height': "150%"});
 		$('#info-points')[0].innerHTML = STRUCT_REQS[id].points;
 		$('#info-points').show();
-		$('#info-defense')[0].innerHTML = String(STRUCT_REQS[id].defense) + "/6";
+		if ( id == OBJ_MINE ){
+			$('#info-defense')[0].innerHTML = "∞";
+			$('#info-defense').css({'font-size': "22px", 'padding-top': '0px'});
+		}
+		else {
+			$('#info-defense')[0].innerHTML = String(STRUCT_REQS[id].defense) + "|6";
+			$('#info-defense').css({'font-size': "15px", 'padding-top': '4px'});
+		}
 		$('#info-defense').show();
 		var count = 0;
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
