@@ -1063,7 +1063,7 @@ var plotEndGame = function(type){
 	var data = [];
 	var options = {
     	series: {
-        	lines: { show: true, lineWidth: 3 },
+        	lines: { show: true, lineWidth: 4 },
 	    },
 	    xaxis: { tickSize: 1, tickDecimals: 0 },
 	    yaxis: { tickSize: 1, tickDecimals: 0 },
