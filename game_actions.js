@@ -2054,34 +2054,36 @@ var preProcessMission = function( game ){
 	var index = game.missionindex;
 	var round = game.round - 2;
 	if ( game.missions[round] && game.missions[round].length > 0 ){
-		var mission = game.missions[round][index];
-		var player = mission.player;
-		var planets = game.board.planets;
-		var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
-		var smuggler = game.board.agents[ smugglerid ];
-		var agentid = String(player) + String(mission.agenttype);
-		var agent = game.board.agents[ agentid ];
+		if ( game.missions[round][index].resolution.resolved != true ) {
+			var mission = game.missions[round][index];
+			var player = mission.player;
+			var planets = game.board.planets;
+			var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+			var smuggler = game.board.agents[ smugglerid ];
+			var agentid = String(player) + String(mission.agenttype);
+			var agent = game.board.agents[ agentid ];
 
-		if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
+			if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
 
-			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
-				moveAgent( game, agentid, mission.planetTo );
-				moveAgent( game, smugglerid, mission.planetTo );
+				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
+					moveAgent( game, agentid, mission.planetTo );
+					moveAgent( game, smugglerid, mission.planetTo );
+					game.board.agents[ smugglerid ].missionround = undefined;
+					game.board.agents[ smugglerid ].used = false;
+					game.board.agents[ smugglerid ].destination = undefined;
+				}
+				else {
+					game.missions[round][ index ].resolution.noflyblocked = true;
+					game.missions[round][ index ].resolution.resolved = true;
+				}
 			}
 			else {
-				game.missions[round][ index ].resolution.noflyblocked = true;
-				game.missions[round][ index ].resolution.resolved = true;
+				moveAgent( game, agentid, mission.planetTo );
 			}
+			agent.missionround = undefined;
+			agent.used = false;
+			agent.destination = undefined;
 		}
-		else {
-			moveAgent( game, agentid, mission.planetTo );
-		}
-
-		smuggler.missionround = undefined;
-		smuggler.used = false;
-		agent.missionround = undefined;
-		agent.used = false;
-		agent.destination = undefined;
 	}
 };
 
