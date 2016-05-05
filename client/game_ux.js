@@ -482,8 +482,11 @@ var buildServerMessage = function( msg ) {
 // builds and returns a message based on the variables in @action
 var buildActionMessage = function( actionMsg ){
 	var player = actionMsg.player;
-	var userid = clientGame.game.players[player];
-	var name = all_users[userid].name;
+	var name = getUsername(player);
+	var planetname = "";
+	if (actionMsg.planetid != undefined){
+		planetname = clientGame.game.board.planets[actionMsg.planetid].name;
+	}
 
 	messagesHtml = '<tr><td class="msg-action-td msg-action-p' + player + '" colspan="2" >';
 
@@ -492,11 +495,11 @@ var buildActionMessage = function( actionMsg ){
 		case ACT_PLACE:
 		case ACT_BUILD:
 			message += OBJ_ENGLISH[actionMsg.objecttype];
-			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			message += ' on ' + planetname;
 			break;
 		case ACT_RECRUIT:
 			message += AGT_ENGLISH[actionMsg.agenttype];
-			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			message += ' on ' + planetname;
 			break;
 		case ACT_RETIRE:
 			message += AGT_ENGLISH[actionMsg.agenttype];
@@ -504,11 +507,23 @@ var buildActionMessage = function( actionMsg ){
 		case ACT_REMOVE:
 		case ACT_REMOVE_FLEET:
 			message += OBJ_ENGLISH[actionMsg.objecttype];
-			message += ' at ' + clientGame.game.board.planets[actionMsg.planetid].name;
+			message += ' at ' + planetname;
 			break;
 		case ACT_MOVE_AGENT:
 			message += AGT_ENGLISH[actionMsg.agenttype] 
-					+ ' to ' + clientGame.game.board.planets[actionMsg.planetid].name;
+					+ ' to ' + planetname;
+			break;
+		case ACT_FLEET_ATTACK:
+		case ACT_BASE_ATTACK:
+			var targetPlayer = getUsername(actionMsg.targetPlayer);
+			var structure = OBJ_ENGLISH[actionMsg.objecttype];
+			message += targetPlayer + "'s " + structure + " on " + planetname + ".";
+			if (actionMsg.success){
+				message += " Target destroyed.";
+			}
+			else {
+				message += " Attempt failed.";
+			}
 			break;
 		default:
 			break;
@@ -806,7 +821,14 @@ var showInfoMenu = function(evt, type, id){
 		$('#info-text').css({'line-height': "150%"});
 		$('#info-points')[0].innerHTML = STRUCT_REQS[id].points;
 		$('#info-points').show();
-		$('#info-defense')[0].innerHTML = String(STRUCT_REQS[id].defense) + "/6";
+		if ( id == OBJ_MINE ){
+			$('#info-defense')[0].innerHTML = "∞";
+			$('#info-defense').css({'font-size': "22px", 'padding-top': '0px'});
+		}
+		else {
+			$('#info-defense')[0].innerHTML = String(STRUCT_REQS[id].defense) + "|6";
+			$('#info-defense').css({'font-size': "15px", 'padding-top': '4px'});
+		}
 		$('#info-defense').show();
 		var count = 0;
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
@@ -1041,7 +1063,7 @@ var plotEndGame = function(type){
 	var data = [];
 	var options = {
     	series: {
-        	lines: { show: true, lineWidth: 3 },
+        	lines: { show: true, lineWidth: 4 },
 	    },
 	    xaxis: { tickSize: 1, tickDecimals: 0 },
 	    yaxis: { tickSize: 1, tickDecimals: 0 },

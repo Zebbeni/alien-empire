@@ -429,6 +429,12 @@ var applyRetireAction = function( action, game ){
 	var id = String(player) + String(agenttype);
 
 	var agent = game.board.agents[id];
+
+	if (agent == undefined){
+		return { isIllegal: true,
+				 response: "Something went wrong. Please try again." };
+	}
+
 	var planetid = agent.planetid;
 
 	if (agent.player != player){
@@ -772,7 +778,7 @@ var applyMoveAgentAction = function( action, game ){
 			};
 	}
 
-	moveAgent( agent, agentid, planetid, planets );
+	moveAgent( game, agentid, planetid );
 	agent.used = true;
 
 	return { isIllegal: false };
@@ -830,6 +836,7 @@ var applyFleetAttack = function( action, game ){
 	var targetPlayer = action.targetPlayer;
 	var planet = game.board.planets[planetid];
 	var fleet = game.board.fleets[fleetid];
+	action.success = false;
 
 	if ( game.playerTurn != player ) {
 		return { isIllegal: true,
@@ -880,6 +887,7 @@ var applyFleetAttack = function( action, game ){
 							  game );
 
 			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+			action.success = true;
 		}
 	}
 	else if ( objecttype == cons.OBJ_BASE) {
@@ -898,6 +906,7 @@ var applyFleetAttack = function( action, game ){
 							  game );
 
 			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+			action.success = true;
 		}
 		// Do logic to attack base here
 	}
@@ -922,6 +931,7 @@ var applyFleetAttack = function( action, game ){
 							  game );
 
 			removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+			action.success = true;
 		}
 	}
 
@@ -938,6 +948,8 @@ var applyBaseAttack = function( action, game ){
 	var targetPlayer = action.targetPlayer;
 	var planet = game.board.planets[planetid];
 	var base = planet.base;
+
+	action.success = false;
 
 	if ( game.playerTurn != player ) {
 		return { isIllegal: true,
@@ -982,6 +994,7 @@ var applyBaseAttack = function( action, game ){
 						  game );
 
 		removeStructure(game, targetPlayer, objecttype, planetid, attackid);
+		action.success = true;
 	}
 
 	game.board.planets[planetid].base.used = true;
@@ -1308,7 +1321,7 @@ var applyMissionResolve = function( action, game ){
 	}
 
 	else if ( game.missions[round][index].resolution.nochoice ) {
-		moveAgent( agent, agentid, planetid, planets );
+		moveAgent( game, agentid, planetid );
 	}
 
 	else if ( !game.missions[round][ index ].resolution.agentmia ) {
@@ -1602,13 +1615,13 @@ var payPlayerUpkeep = function(player, resources, game){
 	}
 };
 
-var moveAgent = function( agent, agentid, planetid, planets ) {
-
+var moveAgent = function( game, agentid, planetid ) {
+	var planets = game.board.planets;
+	var agent = game.board.agents[ agentid ];
 	var index = planets[ agent.planetid ].agents.indexOf( agentid );
-	planets[ agent.planetid ].agents.splice( index, 1 );
-
-	agent.planetid = planetid;
-	planets[planetid].agents.push( agentid );
+	game.board.planets[ agent.planetid ].agents.splice( index, 1 );
+	game.board.agents[agentid].planetid = planetid;
+	game.board.planets[planetid].agents.push( agentid );
 };
 
 var moveFleet = function( game, fleetid, planetid) {
@@ -2052,8 +2065,8 @@ var preProcessMission = function( game ){
 		if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
 
 			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
-				moveAgent( agent, agentid, mission.planetTo, planets );
-				moveAgent( smuggler, smugglerid, mission.planetTo, planets);
+				moveAgent( game, agentid, mission.planetTo );
+				moveAgent( game, smugglerid, mission.planetTo );
 			}
 			else {
 				game.missions[round][ index ].resolution.noflyblocked = true;
@@ -2061,7 +2074,7 @@ var preProcessMission = function( game ){
 			}
 		}
 		else {
-			moveAgent( agent, agentid, mission.planetTo, planets );
+			moveAgent( game, agentid, mission.planetTo );
 		}
 
 		smuggler.missionround = undefined;
