@@ -36,13 +36,55 @@ button {
 	table-layout: fixed;
 }
 
+#login-div {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	background: transparent;
+	pointer-events: auto;
+}
+
+#login-center-div {
+	position: absolute;
+	width: 724px;
+	height: 200px;
+	left: 50%;
+	top: 45%;
+	margin-left: -362px;
+	margin-top: -100px;
+	background: transparent;
+}
+
 #text-title-div {
 	position: absolute;
 	width: 724px;
 	height: 101px;
+	left: 0px;
+	top: 0px;
+}
+
+#input-username-div {
+	position: relative;
+	top: 94px;
+	height: 106px;
+	width: 296px;
 	left: 50%;
-	top: 175px;
-	margin-left: -362px;
+	margin-left: -148px;
+}
+
+#input-username {
+	position: relative;
+	width: 220px;
+	height: 38px;
+	top: 38px;
+	left: 38px;
+	padding: 5px;
+	border-radius: 5px;
+	font-size: 18px;
+	color: white;
+	background: none;
 }
 
 #players-time-div, #github-div {
@@ -75,10 +117,6 @@ button {
 	font-style: normal;
 	font-size: 15pt;
 	top: 225px;
-}
-
-#login-div {
-	opacity: 0.0;
 }
 
 #logout-button {
@@ -458,28 +496,6 @@ button {
 
 #chat-input:hover, #staging-chat-input:hover{
 	background: rgba(255,255,255,0.5);
-}
-
-#input-username {
-	position: relative;
-	width: 220px;
-	height: 38px;
-	top: 38px;
-	left: 38px;
-	padding: 5px;
-	border-radius: 5px;
-	font-size: 18px;
-	color: white;
-	background: none;
-}
-
-#input-username-div {
-	position: absolute;
-	top: 270px;
-	height: 106px;
-	width: 296px;
-	left: 50%;
-	margin-left: -148px;
 }
 
 #copyright {

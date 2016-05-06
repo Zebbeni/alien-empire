@@ -13,16 +13,6 @@
         <div id="copyright">©2016 Andrew Albers</div>
         <div id="main-div">
             <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
-            <div id="login-div">
-                <div id="text-title-div"></div>
-                <div id="input-username-div">
-                    <form action="javascript:submitLogin();">
-                        <input id="input-username" type="text" placeholder="Enter a Username!" autocomplete="off" autofocus />
-                    </form>
-                </div>
-                <div id="players-time-div"></div>
-                <div id="github-div" onclick="location.href='https://github.com/Zebbeni/alien-empire'"></div>
-            </div>
             <div id="lobby-div" style="visibility: hidden">
                 <div id="lobby-title-div"></div>
                 <div id="users-wrapper-div">
@@ -69,6 +59,18 @@
                     <input type="button" id="staging-leave-button" value="Back" onclick="javascript:submitStagingLeave();"></input>
                 </div>
             </div>
+        </div>
+        <div id="login-div">
+            <div id="login-center-div">
+                <div id="text-title-div"></div>
+                <div id="input-username-div">
+                    <form action="javascript:submitLogin();">
+                        <input id="input-username" type="text" placeholder="Enter a Username!" autocomplete="off" autofocus />
+                    </form>
+                </div>
+            </div>
+            <div id="players-time-div"></div>
+            <div id="github-div" onclick="location.href='https://github.com/Zebbeni/alien-empire'"></div>
         </div>
         <div id="game-interface-div" style="display: none">
             <div id="your-turn-div" style="visibility: hidden">
