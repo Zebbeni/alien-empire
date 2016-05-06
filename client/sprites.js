@@ -76,11 +76,21 @@ var drawExplosion = function(x, y, scale){
 	num_objects_moving += 1;
 };
 
+var checkAndPlayAnimations = function( msg ){
+	if (msg.id == MSG_ACTION){
+		var message = msg.message;
+		if (message.actiontype == ACT_FLEET_ATTACK || message.actiontype == ACT_BASE_ATTACK){
+			triggerAttackSprite(message);
+		}
+	}
+};
+
 var triggerAttackSprite = function( action ){
 	var planetid = action.planetid;
 	var planet = clientGame.game.board.planets[planetid];
 	var drawX = tiles[planetid].x;
 	var drawY = tiles[planetid].y;
+	var attackid = action.choice;
 	switch (action.objecttype){
 		case OBJ_BASE:
 			if (planet.w == 2){
@@ -99,11 +109,30 @@ var triggerAttackSprite = function( action ){
 			}
 			break;
 		case OBJ_FLEET:
+			var fleetsContainer = board.getChildByName('fleetsContainer');
+			var fleetShape = fleetsContainer.getChildByName(OBJ_ENGLISH[OBJ_FLEET] + attackid);
+			drawX = fleetShape.x - 16;
+			drawY = fleetShape.y - 16;
+			if (action.success == true){
+				drawExplosion(drawX, drawY, 0.5);
+			}
+			else {
+				drawShield(drawX, drawY - 5, 0.5);
+			}
 			break;
 		case OBJ_MINE:
 		case OBJ_FACTORY:
 		case OBJ_EMBASSY:
-			
+			var resource = tiles[planetid].getChildByName("resource" + attackid);
+			var structure = resource.getChildByName("structure");
+			drawX = drawX + resource.x + structure.x - 17;
+			drawY = drawY + resource.y + structure.y + 10;
+			if (action.success == true){
+				drawExplosion(drawX, drawY + 5, 0.5);
+			}
+			else {
+				drawShield(drawX, drawY - 10, 0.5);
+			}
 			break;
 		default:
 			break;

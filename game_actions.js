@@ -2034,6 +2034,7 @@ var updateRound = function( game ){
 	game.missionindex = 0; // reset mission index to resolve
 	updateAgentsUsed( game );
 	updateFleetsUsed( game );
+	updateBasesUsed( game );
 	updateMissions( game, game.round );
 };
 
@@ -2126,6 +2127,16 @@ var updateFleetsUsed = function( game ){
 	var fleets = game.board.fleets;
 	for ( var id in fleets ){
 		fleets[id].used = false;
+	}
+};
+
+// to be called on round updates, resets all base used
+// attributes to false
+var updateBasesUsed = function( game ){
+	for (var i = 0; i < game.board.planets.length; i++){
+		if (game.board.planets[i].base != undefined){
+			game.board.planets[i].base.used = false;
+		}
 	}
 };
 

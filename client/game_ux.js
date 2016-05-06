@@ -524,7 +524,6 @@ var buildActionMessage = function( actionMsg ){
 			else {
 				message += " Attempt failed.";
 			}
-			triggerAttackSprite( actionMsg );
 			break;
 		default:
 			break;
