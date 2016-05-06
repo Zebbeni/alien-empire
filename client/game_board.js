@@ -73,6 +73,7 @@ var createBoard = function() {
 		drawBases();
 		drawAgents();
 		drawFleets();
+		drawSprites();
 
 		stage.addChild( board );
 		

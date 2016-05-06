@@ -55,7 +55,7 @@ var init_stage = function() {
 	});
 
 	createjs.Ticker.addEventListener("tick", tick);
-	createjs.Ticker.setFPS(30);
+	createjs.Ticker.setFPS(FRAMES_PER_SECOND);
 	
 };
 

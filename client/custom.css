@@ -8,6 +8,7 @@
 	background-position: top left;
 	outline: none;
     -webkit-appearance: none;
+    transition-property: none
 }
 
 td, div, input {

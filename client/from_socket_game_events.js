@@ -37,7 +37,7 @@ socket.on( 'game event', function(content, msg) {
     updateClientGame( content )
 	updateAll();
     updateGameMessages( msg );
-
+    checkAndPlayAnimations( msg );
 });
 
 

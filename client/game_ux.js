@@ -668,7 +668,7 @@ var updateTurnHelpMessage = function() {
 	        	$('#pending-action-div').transition({opacity: 0.0}, 500, function(){
 	        		$('#pending-action-div').hide();
 	        	});
-	    	},2500);
+	    	}, 2500);
 		});
 	}
 
