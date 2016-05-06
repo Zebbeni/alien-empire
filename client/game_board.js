@@ -51,6 +51,10 @@ var handleKeyDown = function( e ) {
 		case 40:
 			moveBoard(0, 1);
 			break;
+		case 32:
+			drawExplosion(500, 300, 1.0);
+			drawShield(800, 300, 1.0);
+			break;
 		default:
 			break;
 	}
@@ -73,6 +77,7 @@ var createBoard = function() {
 		drawBases();
 		drawAgents();
 		drawFleets();
+		drawSprites();
 
 		stage.addChild( board );
 		

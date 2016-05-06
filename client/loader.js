@@ -100,7 +100,10 @@ var load_assets = function() {
 			{src: s3url + "game/sabateur_red.png", id: "sabateur0"},
 			{src: s3url + "game/sabateur_blue.png", id: "sabateur1"},
 			{src: s3url + "game/sabateur_green.png", id: "sabateur2"},
-			{src: s3url + "game/sabateur_yellow.png", id: "sabateur3"}
+			{src: s3url + "game/sabateur_yellow.png", id: "sabateur3"},
+
+			{src: s3url + "game/explosion_sprite.png", id: "explosion_sprite"},
+			{src: s3url + "game/shield_sprite.png", id: "shield_sprite"}
 
 		];
 

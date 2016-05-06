@@ -3,6 +3,8 @@ var sWid = 212;
 var agtWid = 85;
 var agtSpace = 5;
 
+var FRAMES_PER_SECOND = 30;
+
 var offline = false; // checked by loader when creating settings for LoadQueue
 var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
 // var offline = true;
