@@ -1402,7 +1402,7 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				for ( var i = 0; i < choice.length; i++ ){
-					if ( planet_resources[i].num >= 2 ){
+					if ( planet_resources[choice[i]].num >= 2 ){
 						return { isIllegal: true,
 					 		 	 response: "One of these resources has already been increased"
 						};
@@ -1531,6 +1531,8 @@ var applyMissionResolve = function( action, game ){
 								  game );
 
 				removeStructure(game, targetPlayer, objecttype, planetid, idx);
+				action.choice = idx;
+				action.success = true;
 				var result = ' destroyed a ' + cons.OBJ_ENGLISH[objecttype] + ' for ' + points + ' point.';
 				game.missions[round][index].result = result;
 

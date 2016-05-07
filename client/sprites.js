@@ -79,7 +79,12 @@ var drawExplosion = function(x, y, scale){
 var checkAndPlayAnimations = function( msg ){
 	if (msg.id == MSG_ACTION){
 		var message = msg.message;
-		if (message.actiontype == ACT_FLEET_ATTACK || message.actiontype == ACT_BASE_ATTACK){
+		if ( message.actiontype == ACT_FLEET_ATTACK 
+			 || message.actiontype == ACT_BASE_ATTACK){
+			triggerAttackSprite(message);
+		}
+		else if ( message.actiontype == ACT_MISSION_RESOLVE 
+			      && message.agenttype == AGT_SABATEUR){
 			triggerAttackSprite(message);
 		}
 	}
@@ -114,10 +119,10 @@ var triggerAttackSprite = function( action ){
 			drawX = fleetShape.x - 16;
 			drawY = fleetShape.y - 16;
 			if (action.success == true){
-				drawExplosion(drawX, drawY, 0.5);
+				drawExplosion(drawX, drawY - 1, 0.5);
 			}
 			else {
-				drawShield(drawX, drawY - 5, 0.5);
+				drawShield(drawX, drawY - 6, 0.5);
 			}
 			break;
 		case OBJ_MINE:
@@ -128,10 +133,10 @@ var triggerAttackSprite = function( action ){
 			drawX = drawX + resource.x + structure.x - 17;
 			drawY = drawY + resource.y + structure.y + 10;
 			if (action.success == true){
-				drawExplosion(drawX, drawY + 5, 0.5);
+				drawExplosion(drawX - 2, drawY + 30, 0.5);
 			}
 			else {
-				drawShield(drawX, drawY - 10, 0.5);
+				drawShield(drawX - 2, drawY - 11, 0.5);
 			}
 			break;
 		default:
