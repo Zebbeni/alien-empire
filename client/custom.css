@@ -42,8 +42,8 @@ button {
 	height: 100%;
 	left: 0px;
 	top: 0px;
-	background: transparent;
 	pointer-events: auto;
+	opacity: 0.0;
 }
 
 #login-center-div {
@@ -51,10 +51,9 @@ button {
 	width: 724px;
 	height: 200px;
 	left: 50%;
-	top: 45%;
+	top: 38%;
 	margin-left: -362px;
 	margin-top: -100px;
-	background: transparent;
 }
 
 #text-title-div {
@@ -166,29 +165,29 @@ button {
 
 #main-div {
 	position: fixed;
-	top: 450px;
+	/*top: 450px;*/
+	top: 50%;
 	left: 50%;
 	width: 1000px;
 	height: 700px;
 	margin-left: -500px;
-	margin-top: -400px;
+	margin-top: -350px;
 }
 
 #lobby-div {
-	position: fixed;
+	position: absolute;
 	opacity: 0.0;
-	top: 425px;
+	top: -20px;
 	left: 50%;
 	width: 989px;
 	height: 698px;
 	margin-left: -494px;
-	margin-top: -400px;
 }
 
 #staging-div {
-	position: fixed;
+	position: absolute;
 	opacity: 0.0;
-	top: 350px;
+	top: 45%;
 	left: 50%;
 	width: 501px;
 	height: 599px;
@@ -335,6 +334,7 @@ button {
 	font-size: 15pt;
 	font-weight: 700;
 	color: white;
+	background-color: none;
 }
 
 #staging-leave-button:hover {
@@ -349,6 +349,7 @@ button {
 	bottom: 80px;
 	font-size: 18pt;
 	font-weight: 700;
+	background-color: none;
 	color: black;
 }
 

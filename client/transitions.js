@@ -2,13 +2,16 @@
 
 var moveToLogin = function() {
     $('#login-div')[0].style.visibility = "visible";
-    $('#login-div').transition({opacity: 1.0}, 1500 );
+    $('#input-username').focus();
+    $('#login-div').transition({opacity: 1.0}, 2000);
+    $('#login-center-div').transition({top: '40%'}, 2000);
 };
 
 var leaveLogin = function() {
     $('#login-div').transition({opacity: 0.0}, 500, function() {
         $('#login-div')[0].style.visibility = "hidden";
     });
+    $('#login-center-div').transition({top: '38%'}, 500);
 };
 
 var moveToLobby = function() {
@@ -17,15 +20,15 @@ var moveToLobby = function() {
     $('#logout-button')[0].style.visibility = "visible";
     $('#main-div')[0].style.visibility = "visible";
 
-    $("#lobby-div").transition({top: '450px', opacity: 1.0}, 1000);
+    $("#lobby-div").transition({top: '0px', opacity: 1.0}, 1000);
     $("#logout-button").transition({top: '-30px'}, 500);
-    $("#main-div").transition({top: '450px', opacity: 1.00}, 1000);
+    $("#main-div").transition({opacity: 1.00}, 1000);
     $('#copyright').show();
 };
 
 var leaveLobby = function() {
     $('#logout-button')[0].style.visibility = "hidden";
-    $('#lobby-div').transition({top: '425px', opacity: 0.00}, 1000, function() {
+    $('#lobby-div').transition({opacity: 0.00}, 1000, function() {
         $('#lobby-div')[0].style.visibility = "hidden";
     });
 };
@@ -36,28 +39,29 @@ var leaveLobby = function() {
 var moveToGame = function( fn ) {
     $('#screen-div')[0].style.visibility = "hidden";
     $("#logout-button").transition({top: '-60px'}, 500);
-    $("#staging-div").transition({top: '350px'}, 1000);
-    $("#main-div").transition({top: '350px', opacity: 0.00 }, 1000, function(){
+    $("#staging-div").transition({top: '45%'}, 1000);
+    $("#main-div").transition({opacity: 0.00 }, 1000, function(){
         $('#main-div')[0].style.visibility = "hidden";
         $("#staging-div")[0].style.visibility = "hidden";
         $("#lobby-div")[0].style.visibility = "hidden";
         $("#logout-button")[0].style.visibility = "hidden";
+        fn();
     });
-    $("#lobby-div").transition({top: '350px'}, 1000, fn );
+    $("#lobby-div").transition({top: '-20px'}, 1000);
 };
 
 var moveToGameStage = function() {
     $('#screen-div')[0].style.visibility = "visible";
     $("#screen-div").transition({opacity: 1.0}, 500);
     $('#staging-div')[0].style.visibility = "visible";
-    $("#staging-div").transition({top: '400px', opacity: 1.0}, 1000);
+    $("#staging-div").transition({top: '50%', opacity: 1.0}, 1000);
 };
 
 var hideGameStage = function() {
     $("#screen-div").transition({opacity: 0.0}, 500, function() {
         $('#screen-div')[0].style.visibility = "hidden";
     });
-    $("#staging-div").transition({top: '350px', opacity: 0.00}, 1000, function() {
+    $("#staging-div").transition({top: '45%', opacity: 0.00}, 1000, function() {
         $('#staging-div')[0].style.visibility = "hidden";
     });
 };
