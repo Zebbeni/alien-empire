@@ -3,6 +3,9 @@ A multiplayer boardgame using Node.js, Socket.io and CreateJS
 ![Screenshot](https://s3-us-west-2.amazonaws.com/alien-empire/github/github_image1.jpg "Alien Empire Login")
 ![Screenshot](https://s3-us-west-2.amazonaws.com/alien-empire/github/github_image2.jpg "Alien Empire In-Game")
 
+## Rules of Game
+[Link To Rules Here](https://docs.google.com/document/d/19lH2MSv1apYNZRlPkToDtWEJWAw4pzCKOaFdLl0r92A/pub)
+
 ## Running locally:
 1. Install npm dependencies
 2. >> node app.js
@@ -17,3 +20,4 @@ A multiplayer boardgame using Node.js, Socket.io and CreateJS
 ## Deploying (Admins only)
 1. To deploy: ~alien-empire >> modulus deploy
 2. project name: "Alien Empire"
+
