@@ -413,6 +413,7 @@ var toggleTradeRadio = function( player ){
 var showTradeMenu = function() {
 	$('#trade-menu-div')[0].style.visibility = "visible";
 	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 1000);
+	$('#trade-menu-div').css();
 	$('#trade-screen')[0].style.visibility = "visible";
 	$('#trade-screen').transition({ opacity: 1.00 }, 1000);
 };

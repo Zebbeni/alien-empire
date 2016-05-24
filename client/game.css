@@ -418,7 +418,7 @@
 
 #info-defense {
 	position: absolute;
-	top: -8px;
+	top: -7px;
 	right: 40px;
 	width: 30px;
 	height: 30px;
@@ -427,7 +427,7 @@
 	vertical-align: middle;
 	font-weight: bold;
 	font-size: 14px;
-	color: white;
+	color: black;
 }
 
 #info-title, #build-title, #upkeep-title{
@@ -896,6 +896,7 @@
 	width: 269px;
 	height: 191px;
 	margin-left: -134px;
+	pointer-events: auto;
 	background-position: -401px -149px;
 }
 
@@ -954,6 +955,8 @@
 	height: 25px;
 	background-repeat: no-repeat;
 	background-size: 100px 100px;
+	pointer-events: auto;
+	cursor: pointer;
 }
 
 #trade-radio-button0.radio-on: { background-position: 0 0; }
