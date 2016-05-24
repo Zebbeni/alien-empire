@@ -1212,8 +1212,7 @@ var applyBlockMission = function( action, game ){
 						var res = planet.resources[r];
 						
 						if ( res.structure != undefined 
-								&& res.structure.kind == cons.OBJ_EMBASSY
-							 	&& res.structure.player == mission.player ) {
+								&& res.structure.kind == cons.OBJ_EMBASSY ) {
 						
 							hasEmbassy = true;
 							break;
@@ -1481,12 +1480,24 @@ var applyMissionResolve = function( action, game ){
 
 				var planet_resources = game.board.planets[planetid].resources;
 				var resources = [0, 0, 0, 0];
+				var num_resources_collected = 0;
+				var has_opponent_embassy = false;
 				
 				for ( var r = 0; r < planet_resources.length; r++ ){
 					var res = planet_resources[r];
 					var struct = res.structure;
 					if (struct != undefined && struct.player != mission.player){
-						resources[res.kind] += 1;
+						if (res.num == 2 || struct.kind != cons.OBJ_MINE){
+							resources[res.kind] += 2;
+							num_resources_collected += 2;
+							if (struct.kind == cons.OBJ_EMBASSY){
+								has_opponent_embassy = true;
+							}
+						}
+						else {
+							resources[res.kind] += 1;
+							num_resources_collected += 1;
+						}
 					}
 				}
 
@@ -1507,11 +1518,19 @@ var applyMissionResolve = function( action, game ){
 					}
 				}
 
-				var points = addPointsLimited( mission.player, 
+				var points = 'no';
+				if (has_opponent_embassy){
+					points = addPointsLimited( mission.player, 
 											   planetid, 
 								  			   cons.PNT_ENVOY, 
 								  			   game );
-				var result = ' collected resources and gained ' + points + ' point.';
+					if (points == 0){
+						points = 'no';
+					}
+				}
+				
+				var result = ' collected ' + num_resources_collected 
+							 + ' resources and gained ' + points + ' point.';
 				game.missions[round][index].result = result;
 				break;
 

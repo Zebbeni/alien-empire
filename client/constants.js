@@ -184,8 +184,8 @@ var INFO_TEXT = {
 			info: 'Target a planet to place No-Fly Zones which fleets and agents cannot pass. If all borders blocked, structures there each worth +1 point.'
 		},
 		5: {
-			action: 'Target a planet with your embassy to gain resources and a point',
-			info: 'Target a planet occupied by your embassy. Gain one point. Also, for each opponent structure here, gain one resource of the type it occupies.'
+			action: 'Target a planet with an embassy to gain resources and a point',
+			info: 'Target a planet with an embassy. Collect resources equal to what opponents gain here. Take 1 point if occupied by an opponent embassy.'
 		},
 		6: {
 			action: 'Target a planet to place spy eyes, capable of blocking missions',
