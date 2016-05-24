@@ -10,10 +10,6 @@ A multiplayer boardgame using Node.js, Socket.io and CreateJS
 5. Navigate to localhost:8080
  - Use multiple browsers or multiple incognito tabs to simulate multiple users 
 
-## Deploying (admins only)
-1. To deploy: ~alien-empire >> modulus deploy
-2. project name: "Alien Empire"
-
 ## Rules
 - Link Here: [https://docs.google.com/document/d/19lH2MSv1apYNZRlPkToDtWEJWAw4pzCKOaFdLl0r92A/pub](https://docs.google.com/document/d/19lH2MSv1apYNZRlPkToDtWEJWAw4pzCKOaFdLl0r92A/pub)
 
