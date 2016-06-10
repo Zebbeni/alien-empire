@@ -2085,14 +2085,17 @@ var preProcessMission = function( game ){
 			var agentid = String(player) + String(mission.agenttype);
 			var agent = game.board.agents[ agentid ];
 
+			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON){
+				game.board.agents[ smugglerid ].missionround = undefined;
+				game.board.agents[ smugglerid ].used = false;
+				game.board.agents[ smugglerid ].destination = undefined;
+			}
+
 			if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
 
 				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
 					moveAgent( game, agentid, mission.planetTo );
 					moveAgent( game, smugglerid, mission.planetTo );
-					game.board.agents[ smugglerid ].missionround = undefined;
-					game.board.agents[ smugglerid ].used = false;
-					game.board.agents[ smugglerid ].destination = undefined;
 				}
 				else {
 					game.missions[round][ index ].resolution.noflyblocked = true;
@@ -2102,10 +2105,10 @@ var preProcessMission = function( game ){
 			else {
 				moveAgent( game, agentid, mission.planetTo );
 			}
-			agent.missionround = undefined;
-			agent.used = false;
-			agent.destination = undefined;
 		}
+		agent.missionround = undefined;
+		agent.used = false;
+		agent.destination = undefined;
 	}
 };
 
