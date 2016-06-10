@@ -2085,22 +2085,20 @@ var preProcessMission = function( game ){
 		var smuggler = game.board.agents[ smugglerid ];
 		var agentid = String(player) + String(mission.agenttype);
 		var agent = game.board.agents[ agentid ];
+		var hasSmuggler = false;
 
 		if ( mission.resolution.resolved != true ) {
 
 			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON){
+				hasSmuggler = true;
 				game.board.agents[ smugglerid ].missionround = undefined;
 				game.board.agents[ smugglerid ].used = false;
 				game.board.agents[ smugglerid ].destination = undefined;
+				moveAgent( game, smugglerid, mission.planetTo );
 			}
-
+			
 			if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
-
-				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
-					moveAgent( game, agentid, mission.planetTo );
-					moveAgent( game, smugglerid, mission.planetTo );
-				}
-				else {
+				if (!hasSmuggler){
 					game.missions[round][ index ].resolution.noflyblocked = true;
 					game.missions[round][ index ].resolution.resolved = true;
 				}
