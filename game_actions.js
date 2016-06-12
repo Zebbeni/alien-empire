@@ -1683,6 +1683,14 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
 					mission.resolution.agentmia = true;
 				}
 
+				var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+				var smuggler = game.board.agents[ smugglerid ];
+				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON) {
+					game.board.agents[ smugglerid ].used = false;
+					game.board.agents[ smugglerid ].missionround = undefined;
+					game.board.agents[ smugglerid ].destination = undefined;
+				}
+
 				return;
 			}	
 		}
