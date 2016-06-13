@@ -1060,6 +1060,7 @@ var applyLaunchMission = function( action, game ) {
 
 		smuggler.used = true;
 		smuggler.missionround = game.round;
+		smuggler.destination = planetid;
 	}
 
 	var newMission = {
@@ -1683,6 +1684,14 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
 					mission.resolution.agentmia = true;
 				}
 
+				var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+				var smuggler = game.board.agents[ smugglerid ];
+				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON) {
+					game.board.agents[ smugglerid ].used = false;
+					game.board.agents[ smugglerid ].missionround = undefined;
+					game.board.agents[ smugglerid ].destination = undefined;
+				}
+
 				return;
 			}	
 		}
@@ -1787,6 +1796,9 @@ var removeAgent = function(game, player, agenttype, status) {
 		var planetid = agent.planetid;
 		var index = game.board.planets[planetid].agents.indexOf(id);
 		game.board.planets[planetid].agents.splice( index, 1 );
+
+		agent.missionround = undefined;
+		agent.destination = undefined;
 
 		agent.status = status;
 		agent.used = false;
@@ -2075,29 +2087,30 @@ var updateMissionIndex = function(game, round) {
 var preProcessMission = function( game ){
 	var index = game.missionindex;
 	var round = game.round - 2;
-	if ( game.missions[round] && game.missions[round].length > 0 ){
-		if ( game.missions[round][index].resolution.resolved != true ) {
-			var mission = game.missions[round][index];
-			var player = mission.player;
-			var planets = game.board.planets;
-			var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
-			var smuggler = game.board.agents[ smugglerid ];
-			var agentid = String(player) + String(mission.agenttype);
-			var agent = game.board.agents[ agentid ];
 
-			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON){
+	if ( game.missions[round] && game.missions[round].length > 0 ){
+
+		var mission = game.missions[round][index];
+		var player = mission.player;
+		var planets = game.board.planets;
+		var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+		var smuggler = game.board.agents[ smugglerid ];
+		var agentid = String(player) + String(mission.agenttype);
+		var agent = game.board.agents[ agentid ];
+		var hasSmuggler = false;
+
+		if ( mission.resolution.resolved != true ) {
+
+			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
+				hasSmuggler = true;
 				game.board.agents[ smugglerid ].missionround = undefined;
 				game.board.agents[ smugglerid ].used = false;
 				game.board.agents[ smugglerid ].destination = undefined;
+				moveAgent( game, smugglerid, mission.planetTo );
 			}
-
+			
 			if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
-
-				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
-					moveAgent( game, agentid, mission.planetTo );
-					moveAgent( game, smugglerid, mission.planetTo );
-				}
-				else {
+				if (!hasSmuggler){
 					game.missions[round][ index ].resolution.noflyblocked = true;
 					game.missions[round][ index ].resolution.resolved = true;
 				}
