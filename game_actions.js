@@ -1060,6 +1060,7 @@ var applyLaunchMission = function( action, game ) {
 
 		smuggler.used = true;
 		smuggler.missionround = game.round;
+		smuggler.destination = planetid;
 	}
 
 	var newMission = {
@@ -1796,6 +1797,9 @@ var removeAgent = function(game, player, agenttype, status) {
 		var index = game.board.planets[planetid].agents.indexOf(id);
 		game.board.planets[planetid].agents.splice( index, 1 );
 
+		agent.missionround = undefined;
+		agent.destination = undefined;
+
 		agent.status = status;
 		agent.used = false;
 	}
@@ -2097,7 +2101,7 @@ var preProcessMission = function( game ){
 
 		if ( mission.resolution.resolved != true ) {
 
-			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON){
+			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
 				hasSmuggler = true;
 				game.board.agents[ smugglerid ].missionround = undefined;
 				game.board.agents[ smugglerid ].used = false;
