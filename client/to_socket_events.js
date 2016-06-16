@@ -44,6 +44,13 @@ var socket_leaveStaging = function() {
     console.log('you are leaving staging area');
 };
 
+var socket_returnGameToLobby = function() {
+    socket.emit('return game to lobby', clientGame.gameid, function(data) {
+        console.log('received return from game to lobby message', data);
+    });
+
+};
+
 var socket_requestNumPlayersStaging = function( num ) {
     socket.emit('request num players staging', clientGame.gameid, num, function(data) {
         console.log('recieved players requested confirmation', data);

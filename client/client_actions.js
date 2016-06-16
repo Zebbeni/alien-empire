@@ -40,6 +40,10 @@ var submitStagingPoints = function( num ){
     socket_requestPointsStaging( num );
 };
 
+var submitGameToLobby = function() {
+    socket_returnGameToLobby();
+};
+
 // deletes local info so it isn't repopulated on login as a different user
 var clearClientData = function() {
     all_users = [];
