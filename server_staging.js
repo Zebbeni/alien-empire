@@ -206,6 +206,16 @@ var userRequestNumPointsStaging = function( socket, io, users, gamesInfo, gameid
 											gamesInfo[gameid].requestedPoints);
 };
 
+var userReturnGameToLobby = function( socket, io, users, gamesInfo, gameid ){
+	var gameInfo = gamesInfo[gameid];
+	// we should keep track of users returning to the lobby 
+	// and close the game when all gone
+
+	users[socket.userid].status = cons.USR_ONLINE;
+
+	io.in('lobby').emit('user left game', users, gameInfo);
+};
+
 (function() {
 
 	module.exports = {
@@ -219,7 +229,8 @@ var userRequestNumPointsStaging = function( socket, io, users, gamesInfo, gameid
 		setUserReady: setUserReady,
 		userLeaveStaging: userLeaveStaging,
 		userRequestNumPlayersStaging: userRequestNumPlayersStaging,
-		userRequestNumPointsStaging: userRequestNumPointsStaging
+		userRequestNumPointsStaging: userRequestNumPointsStaging,
+		userReturnGameToLobby: userReturnGameToLobby
 	};
 
 }());

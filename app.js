@@ -83,6 +83,12 @@ io.sockets.on('connection', function(socket) {
 	
 	});
 
+	socket.on('return game to lobby', function( gameid ) {
+
+		staging.userReturnGameToLobby( socket, io, users, gamesInfo, gameid );
+
+	});
+
 	/**
 	 * This function serves as the channel through which all user actions
 	 * and gameInfo references are passed to the game_server module and 
