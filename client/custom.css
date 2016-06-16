@@ -474,6 +474,18 @@ button {
 	color: white;
 }
 
+.user-ingame-list-div, .user-staging-list-div {
+	font-style: italic;
+}
+
+.user-ingame-list-div {
+	color: rgb(131, 131, 131);
+}
+
+.user-staging-list-div {
+	color: rgb(170, 170, 170);
+}
+
 #users-scroll {
 	float: left;
 	height: 638px;

@@ -1058,6 +1058,11 @@ var showEndGameMenu = function() {
 	plotEndGame(PLOT_POINTS);
 };
 
+var leaveGameToLobby = function() {
+	transGameToLobby();
+	submitGameToLobby();
+};
+
 var plotEndGame = function(type){
 	var stats = clientGame.game.stats;
 	var data = [];

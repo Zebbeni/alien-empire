@@ -74,15 +74,17 @@ var userCreateGame = function(socket, io, users, gamesInfo) {
 
 	gamesInfo.push(gameInfo);
 
+	users[socket.userid].status = cons.USR_STAGING;
+
 	addUserToGame( gamesInfo[gameid], users[socket.userid] );
 
 	socket.join( roomId );
 
 	// emit a different function to the socket who created the game
 	// as they are also joining it
-	socket.emit('self joined game', gameInfo);
-	io.in('lobby').emit('new game added', gameInfo);
-	};
+	socket.emit('self joined game', users, gameInfo);
+	io.in('lobby').emit('new game added', users, gameInfo);
+};
 
 var userJoinGame = function(socket, users, gamesInfo, gameid, fn) {
 	var gameInfo = gamesInfo[gameid];
@@ -93,6 +95,8 @@ var userJoinGame = function(socket, users, gamesInfo, gameid, fn) {
 		addUserToGame( gamesInfo[gameid], users[socket.userid] );
 
 		socket.join( gameInfo.room );
+
+		users[socket.userid].status = cons.USR_STAGING;
 		
 		var username = users[socket.userid].name;
 
@@ -100,13 +104,13 @@ var userJoinGame = function(socket, users, gamesInfo, gameid, fn) {
 											 cons.MSG_SERVER, 
 											 username + " joined the game");
 
-		socket.emit('self joined game', gameInfo);
+		socket.emit('self joined game', users, gameInfo);
 		socket.broadcast.to(gameInfo.room).emit(
 										'room user joined staging', 
 										gameInfo.players, 
 										newMsg );
 
-		socket.in('lobby').emit('user joined game', gameInfo);
+		socket.in('lobby').emit('user joined game', users, gameInfo);
 
 		fn('true');
 	}
@@ -121,6 +125,8 @@ var setUserReady = function(socket, io, users, gamesInfo, fn) {
 
 	fn(returnValue);
 
+	users[socket.userid].status = cons.USR_INGAME;
+
 	io.in(gamesInfo[gameid].room).emit(
 						'room user ready staging', 
 						gamesInfo[gameid].ready);
@@ -131,7 +137,7 @@ var setUserReady = function(socket, io, users, gamesInfo, fn) {
 		gamesInfo[gameid].status = 2;
 		gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid, gamesInfo[gameid].requestedPoints );
 
-		io.in('lobby').emit('game starting', gamesInfo[gameid]);
+		io.in('lobby').emit('game starting', users, gamesInfo[gameid]);
 		io.in(gamesInfo[gameid].room).emit('room game starting', 
 											gamesInfo[gameid]);
 	}
@@ -145,19 +151,21 @@ var userLeaveStaging = function(socket, io, users, gamesInfo, gameid) {
 
 	socket.leave(gameInfo.room);
 
+	users[socket.userid].status = cons.USR_ONLINE;
+
 	var username = users[socket.userid].name;
 
 	var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
 										 cons.MSG_SERVER,
 										 username + " left the game");
 
-	socket.emit('self left game staging', gameInfo);
+	socket.emit('self left game staging', users, gameInfo);
 	socket.broadcast.to(gameInfo.room).emit(
 										'room user left staging',
 										gamesInfo[gameid].players, 
 										newMsg,
 										gamesInfo[gameid].ready);
-	io.in('lobby').emit('user left game', gameInfo);
+	io.in('lobby').emit('user left game', users, gameInfo);
 };
 
 var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gameid, num ) {
@@ -198,6 +206,16 @@ var userRequestNumPointsStaging = function( socket, io, users, gamesInfo, gameid
 											gamesInfo[gameid].requestedPoints);
 };
 
+var userReturnGameToLobby = function( socket, io, users, gamesInfo, gameid ){
+	var gameInfo = gamesInfo[gameid];
+	// we should keep track of users returning to the lobby 
+	// and close the game when all gone
+
+	users[socket.userid].status = cons.USR_ONLINE;
+
+	io.in('lobby').emit('user left game', users, gameInfo);
+};
+
 (function() {
 
 	module.exports = {
@@ -211,7 +229,8 @@ var userRequestNumPointsStaging = function( socket, io, users, gamesInfo, gameid
 		setUserReady: setUserReady,
 		userLeaveStaging: userLeaveStaging,
 		userRequestNumPlayersStaging: userRequestNumPlayersStaging,
-		userRequestNumPointsStaging: userRequestNumPointsStaging
+		userRequestNumPointsStaging: userRequestNumPointsStaging,
+		userReturnGameToLobby: userReturnGameToLobby
 	};
 
 }());

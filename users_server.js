@@ -29,7 +29,7 @@ var login = function(socket, users, messages, gamesInfo, name, fn) {
 				socket.userid = u;
 			}
 
-			users[u].status = 1;
+			users[u].status = cons.USR_ONLINE;
 
 			newUser = users[u];
 
@@ -79,7 +79,7 @@ var logout = function(socket, users, messages, fn){
 
 	fn('true');
 
-	users[socket.userid].status = 0; // 0: OFFLINE
+	users[socket.userid].status = cons.USR_OFFLINE; // 0: OFFLINE
 
 	socket.leave('lobby');
 
@@ -93,10 +93,10 @@ var logout = function(socket, users, messages, fn){
 
 var disconnect = function(socket, io, users, messages, gamesInfo) {
 	// if user hasn't already logged out
-	if (socket.userid != undefined && users[socket.userid].status != 0){
+	if (socket.userid != undefined && users[socket.userid].status != cons.USR_OFFLINE){
 
 		var username = socket.name;
-		users[socket.userid].status = 0; // 0: OFFLINE
+		users[socket.userid].status = cons.USR_OFFLINE; // 0: OFFLINE
 
 		var newMsg = helpers.addLobbyMessage( messages, 
 											  cons.MSG_SERVER, 
