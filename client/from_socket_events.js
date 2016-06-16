@@ -41,20 +41,20 @@ socket.on('new chat message', function(newMsg) {
     updateLobby(false, newMsg, false);
 });
 
-socket.on('new game added', function(games) {
-    updateLobby(false, false, games);
+socket.on('new game added', function(users, games) {
+    updateLobby(users, false, games);
 });
 
-socket.on('self joined game', function(game) {
+socket.on('self joined game', function(users, game) {
     status = USR_STAGING;
-    updateLobby(false, false, game);
+    updateLobby(users, false, game);
     initializeGameStage(game);
     updateGameStage(false, false, false);
     moveToGameStage();
 });
 
-socket.on('user joined game', function(game) {
-    updateLobby(false, false, game);
+socket.on('user joined game', function(users, game) {
+    updateLobby(users, false, game);
 });
 
 // This should only get sent to users in the correct staging room.
@@ -76,12 +76,12 @@ socket.on('room requested points changed', function(newMsg, requested, ready) {
     updateGameStage(false, newMsg, false);
 });
 
-socket.on('self left game staging', function(game) {
+socket.on('self left game staging', function(users, game) {
     status = USR_ONLINE;
     clientGame = null;
     hideGameStage();
     all_games[ game.gameid ] = game;
-    updateLobby(false, false, game);
+    updateLobby(users, false, game);
 });
 
 // This should only get sent to users in the correct staging room.
@@ -89,13 +89,13 @@ socket.on('room user left staging', function(players, newMsg, ready) {
     updateGameStage(players, newMsg, ready);
 });
 
-socket.on('game starting', function(game) {
-    updateLobby(false, false, game);
+socket.on('game starting', function(users, game) {
+    updateLobby(users, false, game);
 });
 
-socket.on('user left game', function(game) {
+socket.on('user left game', function(users, game) {
     all_games[ game.gameid ] = game;
-    updateLobby(false, false, game);
+    updateLobby(users, false, game);
 });
 
 socket.on('requested players changed', function(game) {
