@@ -1059,8 +1059,8 @@ var showEndGameMenu = function() {
 };
 
 var leaveGameToLobby = function() {
-	transGameToLobby();
 	submitGameToLobby();
+	transGameToLobby();
 };
 
 var plotEndGame = function(type){
