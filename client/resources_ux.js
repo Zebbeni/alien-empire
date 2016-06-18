@@ -399,6 +399,7 @@ var allowTradeMenuChanges = function( val ){
 };
 
 var handletradeArrow = function(player, res, val){
+	createjs.Sound.play("click1");
 	var value = parseInt($('#' + player + '-trade-res' + res)[0].innerHTML, 10);
 	if ( value + val <= 9 && value + val >= 0){
 		$('#' + player + '-trade-res' + res)[0].innerHTML = value + val;
@@ -406,11 +407,13 @@ var handletradeArrow = function(player, res, val){
 };
 
 var toggleTradeRadio = function( player ){
+	createjs.Sound.play("click2");
 	$('#trade-radio-button' + player).toggleClass('radio-on');
 	$('#trade-radio-button' + player).toggleClass('radio-off');
 };
 
 var showTradeMenu = function() {
+	createjs.Sound.play("click2");
 	$('#trade-menu-div')[0].style.visibility = "visible";
 	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 1000);
 	$('#trade-menu-div').css();
