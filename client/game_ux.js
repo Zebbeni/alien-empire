@@ -946,48 +946,49 @@ var createStructuresMenu = function() {
 var updateStructuresMenu = function() {
 
 	var structures = clientGame.game.structures[clientTurn];
+	if ( structures != undefined ){
+		for ( var i = 0; i < STRUCT_REQS[OBJ_MINE].max; i++ ){
+			if ( i < structures[OBJ_MINE] ){
+				$('#button-' + OBJ_MINE + '-' + i).removeClass('mine-button-used');
+			}
+			else {
+				$('#button-' + OBJ_MINE + '-' + i).addClass('mine-button-used');
+			}
+		}
 
-	for ( var i = 0; i < STRUCT_REQS[OBJ_MINE].max; i++ ){
-		if ( i < structures[OBJ_MINE] ){
-			$('#button-' + OBJ_MINE + '-' + i).removeClass('mine-button-used');
+		for ( var i = 0; i < STRUCT_REQS[OBJ_FLEET].max; i++ ){
+			if ( i < structures[OBJ_FLEET] ){
+				$('#button-' + OBJ_FLEET + '-' + i).removeClass('fleet-button-used');
+			}
+			else {
+				$('#button-' + OBJ_FLEET + '-' + i).addClass('fleet-button-used');
+			}
+		}
+
+		for ( var i = 0; i < STRUCT_REQS[OBJ_FACTORY].max; i++ ){
+			if (i < structures[OBJ_FACTORY] ) {
+				$('#button-' + OBJ_FACTORY + '-' + i).removeClass('factory-button-used');
+			}
+			else {
+				$('#button-' + OBJ_FACTORY + '-' + i).addClass('factory-button-used');
+			}
+		}
+
+		for ( var i = 0; i < STRUCT_REQS[OBJ_EMBASSY].max; i++ ){
+			if (i < structures[OBJ_EMBASSY] ){
+				$('#button-' + OBJ_EMBASSY + '-' + i).removeClass('embassy-button-used');
+			}
+			else {
+				$('#button-' + OBJ_EMBASSY + '-' + i).addClass('embassy-button-used');
+			}
+		}
+
+		if ( structures[OBJ_BASE] > 0 ){
+			$('#button-' + OBJ_BASE).removeClass('base-button-used');
 		}
 		else {
-			$('#button-' + OBJ_MINE + '-' + i).addClass('mine-button-used');
+			$('#button-' + OBJ_BASE).addClass('base-button-used');
 		}
-	}
-
-	for ( var i = 0; i < STRUCT_REQS[OBJ_FLEET].max; i++ ){
-		if ( i < structures[OBJ_FLEET] ){
-			$('#button-' + OBJ_FLEET + '-' + i).removeClass('fleet-button-used');
-		}
-		else {
-			$('#button-' + OBJ_FLEET + '-' + i).addClass('fleet-button-used');
-		}
-	}
-
-	for ( var i = 0; i < STRUCT_REQS[OBJ_FACTORY].max; i++ ){
-		if (i < structures[OBJ_FACTORY] ) {
-			$('#button-' + OBJ_FACTORY + '-' + i).removeClass('factory-button-used');
-		}
-		else {
-			$('#button-' + OBJ_FACTORY + '-' + i).addClass('factory-button-used');
-		}
-	}
-
-	for ( var i = 0; i < STRUCT_REQS[OBJ_EMBASSY].max; i++ ){
-		if (i < structures[OBJ_EMBASSY] ){
-			$('#button-' + OBJ_EMBASSY + '-' + i).removeClass('embassy-button-used');
-		}
-		else {
-			$('#button-' + OBJ_EMBASSY + '-' + i).addClass('embassy-button-used');
-		}
-	}
-
-	if ( structures[OBJ_BASE] > 0 ){
-		$('#button-' + OBJ_BASE).removeClass('base-button-used');
-	}
-	else {
-		$('#button-' + OBJ_BASE).addClass('base-button-used');
 	}
 };
 
