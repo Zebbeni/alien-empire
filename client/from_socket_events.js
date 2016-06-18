@@ -68,12 +68,12 @@ socket.on('room user ready staging', function(ready) {
 
 socket.on('room requested players changed', function(newMsg, requested, ready) {
     clientGame.requestedPlayers = requested;
-    updateGameStage(false, newMsg, false);
+    updateGameStage(false, newMsg, ready);
 });
 
 socket.on('room requested points changed', function(newMsg, requested, ready) {
     clientGame.requestedPoints = requested;
-    updateGameStage(false, newMsg, false);
+    updateGameStage(false, newMsg, ready);
 });
 
 socket.on('self left game staging', function(users, game) {
