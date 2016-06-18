@@ -21,18 +21,21 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('login', function(name, fn) {
 
+		console.log(name + " logged in");
 		users_server.login(socket, users, messages, gamesInfo, name, fn);
 
 	});
 
 	socket.on('logout', function(fn){
 
+		console.log(socket.name + " logged out");
 		users_server.logout(socket, users, messages, fn);
 
 	});
 
 	socket.on('disconnect', function(){
 
+		console.log(socket.name + " disconnected");
 		users_server.disconnect(socket, io, users, messages, gamesInfo);
 
 	});
@@ -40,6 +43,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('send chat message', function(msg, fn) {
 		fn('true');
 
+		console.log(socket.name + " sent a lobby message: " + msg);
 		var newMsg = helpers.addLobbyMessage( messages, 
 											  socket.userid, 
 											  msg);
@@ -49,42 +53,49 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('create game', function() {
 
+		console.log(socket.name + " created a game");
 		staging.userCreateGame(socket, io, users, gamesInfo);
 
 	});
 
 	socket.on('join game', function(gameid, fn) {
 
+		console.log(socket.name + " joined a game");
 		staging.userJoinGame(socket, users, gamesInfo, gameid, fn);
 
 	});
 
 	socket.on('ready game staging', function(fn) {
 
+		console.log(socket.name + " clicked staging ready");
 		staging.setUserReady(socket, io, users, gamesInfo, fn);
 
 	});
 
 	socket.on('leave game staging', function(gameid) {
 
+		console.log(socket.name + " left staging");
 		staging.userLeaveStaging(socket, io, users, gamesInfo, gameid);
 
 	});
 
 	socket.on('request num players staging', function( gameid, num ){
 
+		console.log(socket.name + " changed num players to " + num);
 		staging.userRequestNumPlayersStaging( socket, io, users, gamesInfo, gameid, num );
 	
 	});
 
 	socket.on('request num points staging', function( gameid, num ){
 
+		console.log(socket.name + " changed num points to " + num);
 		staging.userRequestNumPointsStaging( socket, io, users, gamesInfo, gameid, num );
 	
 	});
 
 	socket.on('return game to lobby', function( gameid ) {
 
+		console.log(socket.name + " returned from game to lobby");
 		staging.userReturnGameToLobby( socket, io, users, gamesInfo, gameid );
 
 	});
@@ -97,6 +108,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('do game action', function(gameid, action) {
 		var response = game_server.resolveAction( action, gamesInfo[gameid] );
 
+		console.log(socket.name + " did a game action");
 		if ( response.to == cons.EVENT_ONE ) {
 			socket.emit(response.evnt, response.content);
 		}
@@ -110,6 +122,8 @@ io.sockets.on('connection', function(socket) {
 
 	socket.on('send game message', function(msg, fn) {
 		fn('true');
+
+		console.log(socket.name + " sent a game message: " + msg);
 		var gameid = users[socket.userid].gameid;
 		var gameInfo = gamesInfo[gameid];
 

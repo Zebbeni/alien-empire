@@ -72,11 +72,20 @@ var userCreateGame = function(socket, io, users, gamesInfo) {
 					requestedPoints: 10 // 10 is default
 				};
 
+
+
 	gamesInfo.push(gameInfo);
 
 	users[socket.userid].status = cons.USR_STAGING;
 
 	addUserToGame( gamesInfo[gameid], users[socket.userid] );
+
+	var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
+									 cons.MSG_SERVER, 
+									 "Select the number of players who may join this game. Game begins when all players click Ready.");
+	var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
+									 cons.MSG_SERVER, 
+									 "------------------------------------");
 
 	socket.join( roomId );
 
@@ -176,6 +185,7 @@ var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gamei
 		&& gameInfo.requestedPlayers != num ) {
 
 		gameInfo.requestedPlayers = num;
+		gameInfo.ready = []; // reset ready, have users re-click this on a game setup change
 
 		var username = users[socket.userid].name;
 		var newMsg = helpers.addGameMessage( gamesInfo[gameid],
@@ -185,7 +195,8 @@ var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gamei
 											 + num);
 		io.in(gamesInfo[gameid].room).emit('room requested players changed', 
 											newMsg, 
-											gamesInfo[gameid].requestedPlayers);
+											gamesInfo[gameid].requestedPlayers,
+											gamesInfo[gameid].ready);
 		io.in('lobby').emit('requested players changed', gameInfo);
 	}
 };
@@ -193,17 +204,23 @@ var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gamei
 var userRequestNumPointsStaging = function( socket, io, users, gamesInfo, gameid, num ){
 	var gameInfo = gamesInfo[gameid];
 
-	gameInfo.requestedPoints = num;
+	if (gameInfo.players.indexOf(socket.userid) == 0
+		&& gameInfo.requestedPoints != num ) {
 
-	var username = users[socket.userid].name;
-	var newMsg = helpers.addGameMessage( gamesInfo[gameid],
-										 cons.MSG_SERVER,
-										 username 
-										 + " changed points to win to " 
-										 + num);
-	io.in(gamesInfo[gameid].room).emit('room requested points changed', 
-											newMsg, 
-											gamesInfo[gameid].requestedPoints);
+		gameInfo.requestedPoints = num;
+		gameInfo.ready = []; // reset ready, have users re-click this on a game setup change
+
+		var username = users[socket.userid].name;
+		var newMsg = helpers.addGameMessage( gamesInfo[gameid],
+											 cons.MSG_SERVER,
+											 username 
+											 + " changed points to win to " 
+											 + num);
+		io.in(gamesInfo[gameid].room).emit('room requested points changed', 
+												newMsg, 
+												gamesInfo[gameid].requestedPoints,
+												gamesInfo[gameid].ready);
+	}
 };
 
 var userReturnGameToLobby = function( socket, io, users, gamesInfo, gameid ){
