@@ -1069,7 +1069,7 @@
 
 .struct-button {
 	background-color: transparent;
-	background-size: 292px 84px;
+	background-size: 584px 84px;
 }
 
 .struct-mine-button {
@@ -1082,6 +1082,10 @@
 	background-position: -174px -50px;
 }
 
+.struct-mine-button:active {
+	background-position: -466px -50px;
+}
+
 .struct-factory-button {
 	width: 34px;
 	height: 50px;
@@ -1090,6 +1094,10 @@
 
 .struct-factory-button:hover {
 	background-position: -174px 0;
+}
+
+.struct-factory-button:active {
+	background-position: -466px 0;
 }
 
 .struct-embassy-button {
@@ -1102,6 +1110,10 @@
 	background-position: -245px 0;
 }
 
+.struct-embassy-button:active {
+	background-position: -537px 0;
+}
+
 .struct-fleet-button {
 	width: 42px;
 	height: 34px;
@@ -1110,6 +1122,10 @@
 
 .struct-fleet-button:hover {
 	background-position: -250px -50px;
+}
+
+.struct-fleet-button:active {
+	background-position: -542px -50px;
 }
 
 .struct-base-button {
@@ -1123,6 +1139,30 @@
 
 .struct-base-button:hover {
 	background-position: -70px 0;
+}
+
+.struct-base-button:active {
+	background-position: -362px 0;
+}
+
+.mine-button-used, .mine-button-used:hover, .mine-button-used:active {
+	background-position: -432px -50px;
+}
+
+.factory-button-used, .factory-button-used:hover, .factory-button-used:active {
+	background-position: -432px 0px;
+}
+
+.embassy-button-used, .embassy-button-used:hover, .embassy-button-used:active {
+	background-position: -500px 0;
+}
+
+.fleet-button-used, .fleet-button-used:hover, .fleet-button-used:active {
+	background-position: -500px -50px;
+}
+
+.base-button-used, .base-button-used:hover, .base-button-used:active {
+	background-position: -292px 0px;
 }
 
 #agents-table {

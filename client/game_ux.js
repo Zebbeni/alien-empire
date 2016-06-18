@@ -873,75 +873,50 @@ var hideInfoMenu = function() {
 
 var createStructuresMenu = function() {
 	var innerHTML = '';
-
 	innerHTML += '<div id="structures-menu-title" class="menu-title">Structures</div>';
-	innerHTML += '<div id="struct-mines-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-fleets-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-factories-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-embassies-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-base-div"></div>';
+	innerHTML += '<div id="struct-mines-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_MINE].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_MINE + '-' + i + '"'
+					+ 'class="struct-button struct-mine-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_MINE);">'
+				    + '</input></td>';
+	}
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-fleets-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_FLEET].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_FLEET + '-' + i + '"'
+					+ 'class="struct-button struct-fleet-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_FLEET);">'
+				    + '</input></td>';
+	}
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-factories-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_FACTORY].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_FACTORY + '-' + i + '"'
+					+ 'class="struct-button struct-factory-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);">'
+				    + '</input></td>';
+	}
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-embassies-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_EMBASSY].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_EMBASSY + '-' + i + '"'
+					+ 'class="struct-button struct-embassy-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);">'
+				    + '</input></td>';
+	}
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-base-div"><input type="button" '
+				+ 'id="button-' + OBJ_BASE + '"'
+				+ 'class="struct-button struct-base-button"'
+			    + 'onclick="javascript:clickStructureButton(OBJ_BASE);">'
+			    + '</input></div>';
 
 	$('#structures-menu-div')[0].innerHTML = innerHTML;
-
-	updateStructuresMenu();
-};
-
-var updateStructuresMenu = function() {
-
-	var structures = clientGame.game.structures[clientTurn];
-
-	var innerHTML = '<tr>';
-	for ( var i = 0; i < 4; i++ ){
-		innerHTML += (i < structures[OBJ_MINE] ? 
-				  '<td><input type="button" class="struct-button struct-mine-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_MINE);"></input></td>':
-				  '<td width="34px" height="34px"></td>');
-	}
-	innerHTML += '</tr>';
-	$('#struct-mines-div').find('.struct-table').html(innerHTML);
-
-	innerHTML = '<tr>';
-	for ( var i = 0; i < 3; i++ ){
-		innerHTML += (i < structures[OBJ_FLEET] ? 
-				  '<td><input type="button" class="struct-button struct-fleet-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);" '
-				  // + 'onmouseenter="javascript:showInfoMenu();" '
-				  // + 'onmouseout="javascript:hideInfoMenu();" '
-				  + '></input></td>':
-				  '<td width="42px" height="33px"></td>');
-	}
-	innerHTML += '</tr>';
-	$('#struct-fleets-div').find('.struct-table').html(innerHTML);
-
-	innerHTML = '<tr>';
-	for ( var i = 0; i < 3; i++ ){
-		innerHTML += (i < structures[OBJ_FACTORY] ? 
-				  '<td><input type="button" class="struct-button struct-factory-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);"></input></td>':
-				  '<td width="34px" height="50px"></td>');
-	}
-	innerHTML += '</tr>'
-	$('#struct-factories-div').find('.struct-table').html(innerHTML);
-
-	innerHTML = '<tr>';
-	for ( var i = 0; i < 5; i++ ){
-		innerHTML += (i < structures[OBJ_EMBASSY] ? 
-				  '<td><input type="button" class="struct-button struct-embassy-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);"></input></td>':
-				  '<td width="37px" height="50px"></td>');
-	}
-	innerHTML += '</tr>'
-	$('#struct-embassies-div').find('.struct-table').html(innerHTML);
-
-	innerHTML = (structures[OBJ_BASE] > 0 ? 
-			  '<input type="button" class="struct-button struct-base-button"'
-			  + 'onclick="javascript:clickStructureButton(OBJ_BASE);"></input>':
-			  '');
-	$('#struct-base-div').html(innerHTML);
 
 	$('.struct-mine-button').mouseenter(function(event){
 		showInfoMenu(event, "structure", OBJ_MINE);
@@ -966,6 +941,54 @@ var updateStructuresMenu = function() {
 	$('.struct-button').mouseleave(function(event){
 		hideInfoMenu(event);
 	});
+};
+
+var updateStructuresMenu = function() {
+
+	var structures = clientGame.game.structures[clientTurn];
+
+	for ( var i = 0; i < STRUCT_REQS[OBJ_MINE].max; i++ ){
+		if ( i < structures[OBJ_MINE] ){
+			$('#button-' + OBJ_MINE + '-' + i).removeClass('mine-button-used');
+		}
+		else {
+			$('#button-' + OBJ_MINE + '-' + i).addClass('mine-button-used');
+		}
+	}
+
+	for ( var i = 0; i < STRUCT_REQS[OBJ_FLEET].max; i++ ){
+		if ( i < structures[OBJ_FLEET] ){
+			$('#button-' + OBJ_FLEET + '-' + i).removeClass('fleet-button-used');
+		}
+		else {
+			$('#button-' + OBJ_FLEET + '-' + i).addClass('fleet-button-used');
+		}
+	}
+
+	for ( var i = 0; i < STRUCT_REQS[OBJ_FACTORY].max; i++ ){
+		if (i < structures[OBJ_FACTORY] ) {
+			$('#button-' + OBJ_FACTORY + '-' + i).removeClass('factory-button-used');
+		}
+		else {
+			$('#button-' + OBJ_FACTORY + '-' + i).addClass('factory-button-used');
+		}
+	}
+
+	for ( var i = 0; i < STRUCT_REQS[OBJ_EMBASSY].max; i++ ){
+		if (i < structures[OBJ_EMBASSY] ){
+			$('#button-' + OBJ_EMBASSY + '-' + i).removeClass('embassy-button-used');
+		}
+		else {
+			$('#button-' + OBJ_EMBASSY + '-' + i).addClass('embassy-button-used');
+		}
+	}
+
+	if ( structures[OBJ_BASE] > 0 ){
+		$('#button-' + OBJ_BASE).removeClass('base-button-used');
+	}
+	else {
+		$('#button-' + OBJ_BASE).addClass('base-button-used');
+	}
 };
 
 var createAgentsMenu = function() {
