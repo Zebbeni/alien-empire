@@ -105,7 +105,8 @@ var load_assets = function() {
 			{src: s3url + "game/explosion_sprite.png", id: "explosion_sprite"},
 			{src: s3url + "game/shield_sprite.png", id: "shield_sprite"},
 
-			{id:"click", src: s3url + "game/sounds/click1.ogg"}
+			{src: s3url + "sounds/click1.ogg", id:"click1"},
+			{src: s3url + "sounds/click2.ogg", id:"click2"}
 
 		];
 
@@ -115,12 +116,12 @@ var load_assets = function() {
 
 		loader = new createjs.LoadQueue(true, null, true);
 		
-		createjs.Sound.alternateExtensions = ["mp3"];
-		loader.installPlugin(createjs.Sound);
-		
 		if (offline) {
 			loader = new createjs.LoadQueue(false);
 		}
+
+		createjs.Sound.alternateExtensions = ["mp3"];
+		loader.installPlugin(createjs.Sound);
 
 		loader.addEventListener("complete", handleComplete);
 		loader.addEventListener("progress", handleProgress);
