@@ -45,8 +45,6 @@ var createResourcesMenu = function() {
 			   + 'onclick="javascript:drawTradeMenu(null);"></input>';
 
 	$('#resources-menu-div').html(innerHTML);
-
-	updateResourcesMenu();
 };
 
 var updateResourcesMenu = function() {
@@ -70,8 +68,6 @@ var updateResourcesMenu = function() {
 			else {
 				$(restd).removeClass(icons[i]).addClass('no-icon');
 			}
-			$(restd).unbind('hover');
-
 		}
 	}
 };
