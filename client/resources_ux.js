@@ -15,25 +15,36 @@ var createResourcesMenu = function() {
 	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 		
 		table = '<table class="fourtoone-menu-table" cellspacing="0">';
+		// create 4 to 1 menu
 		for ( var j = RES_METAL; j <= RES_FOOD; j++){
 			if ( i != j ){
-				table += '<td width="25px" height="25px"><input type="button" class="res-icon-button ' + icons[j] + '" onclick="javascript:tradeFourToOne(' + i + ',' + j + ')"></input></td>';
+				table += '<td width="25px" height="25px"><input type="button" class="res-icon ' + icons[j] + '" onclick="javascript:tradeFourToOne(' + i + ',' + j + ')"></input></td>';
 			}
 		}
-		table += '</table>'
+		table += '</table>';
 		
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
 				   + '<div class="gain-div"></div><div class="loss-div"></div>'
-				   + '<table class="resource-table" cellspacing="0"></table>'
-				   + '<input type="button" class="fourtoone-button" value="4 to 1" onclick="javascript:toggleFourToOneMenu(' + i + ');"></input>'
-				   + '<div id="res-change' + i + '" class="res-change"></div>'
-				   + '<div id="fourtoone-menu' + i + '" class="fourtoone-menu">' + table + '</div>'
-				   + '</div>';
+				   + '<table class="resource-table" cellspacing="0"><tr>';
+
+		for ( var n = 1; n <= 10; n++){
+			innerHTML += '<td id="res-table-icon-' + i + 'n' + n + '" '
+						+ 'class="res-icon no-icon"></td>';
+		}
+		innerHTML += '</tr></table>';
+		innerHTML += '<input type="button" class="fourtoone-button" '
+				   + 'value="4 to 1" '
+				   + 'onclick="javascript:toggleFourToOneMenu(' + i + ');">'
+				   + '</input>'
+		innerHTML += '<div id="res-change' + i + '" class="res-change"></div>';
+		innerHTML += '<div id="fourtoone-menu' + i + '" class="fourtoone-menu">'
+		           + table + '</div></div>';
 	}
 
-	innerHTML += '<input type="button" id="trade-button" value="Trade" onclick="javascript:drawTradeMenu(null);"></input>';
+	innerHTML += '<input type="button" id="trade-button" value="Trade" '
+			   + 'onclick="javascript:drawTradeMenu(null);"></input>';
 
-	$('#resources-menu-div')[0].innerHTML = innerHTML;
+	$('#resources-menu-div').html(innerHTML);
 
 	updateResourcesMenu();
 };
@@ -44,23 +55,24 @@ var updateResourcesMenu = function() {
 	var collect = clientGame.game.resourceCollect[clientTurn];
 	var upkeep = clientGame.game.resourceUpkeep[clientTurn];
 
-	for ( var i = 0; i <= RES_FOOD; i++ ){
+	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 
 		var resourceDiv = '#resource-div' + i;
-		$(resourceDiv).find('.gain-div')[0].innerHTML = '+' + collect[i];
-		$(resourceDiv).find('.loss-div')[0].innerHTML = '-' + upkeep[i];
+		$(resourceDiv).find('.gain-div').html('+' + collect[i]);
+		$(resourceDiv).find('.loss-div').html('-' + upkeep[i]);
 
 		var resources = clientGame.game.resources[clientTurn];
-		var innerHTML = '<tr>';
-		for ( var n = 0; n < 10; n++ ) {
-			innerHTML += (n < resources[i] ? 
-						  '<td class="' + icons[i] + '"></td>':
-						  '<td width="25px" height="25px"></td>');
+		for ( var n = 1; n <= 10; n++ ) {
+			var restd = '#res-table-icon-' + i + 'n' + n;
+			if ( n <= resources[i] ) {
+				$(restd).removeClass('no-icon').addClass(icons[i]);
+			}
+			else {
+				$(restd).removeClass(icons[i]).addClass('no-icon');
+			}
+			$(restd).unbind('hover');
 
 		}
-		innerHTML += '</tr>';
-
-		$(resourceDiv).find('.resource-table').html(innerHTML);
 	}
 };
 
