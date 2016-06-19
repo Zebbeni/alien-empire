@@ -25,6 +25,7 @@ var DOMimageMap = [
 	{ elmt: '.water-icon', path: 'interface/', img: 'res_water_icon'},
 	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
 	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
+	{ elmt: '.res-icon', path: 'interface/', img: 'res_icon'},
 	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
 	{ elmt: '.color-menu', path: 'interface/', img: 'menus_p', player: true},
 	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
@@ -538,7 +539,7 @@ var buildActionMessage = function( actionMsg ){
 // loops through and combines all concurrent messages from the same user into
 // one. Returns this as well as an updated value for @m (the message index)
 var buildChatMessage = function( msg, messages, m) {
-	
+
 	messagesHtml = ( msg.id == clientId ? '<tr><td class="msg-self-td" >' : '<td class="msg-user-td" >' );
 	messagesHtml += all_users[msg.id].name + '</td>';
 
@@ -806,7 +807,7 @@ var showInfoMenu = function(evt, type, id){
 	var left = String(evt.pageX - 400) + "px";
 	var top = String(evt.pageY - 190) + "px";
 	$('#info-div').css({"bottom": "150px", "left": left, "top": top});
-	$('#upkeep-title')[0].innerHTML = "Upkeep";
+	$('#upkeep-title').html("Upkeep");
 
 	var tds = ["metal-icon", "water-icon", "fuel-icon", "food-icon"];
 	var buildHTML = '<table><tr>';
@@ -816,56 +817,54 @@ var showInfoMenu = function(evt, type, id){
 		var backgroundPos = "0 " + String(-132 * (id - 1)) + "px";
 		$('#info-pic').removeClass().addClass('info-struct-'+ String(id));
 		$('#info-pic').css({"background-position": backgroundPos});
-		$('#build-title')[0].innerHTML = "Build";
-		$('#info-title')[0].innerHTML = OBJ_ENGLISH[id];
-		$('#info-text')[0].innerHTML = INFO_TEXT.structure[id].info;
+		$('#build-title').html("Build");
+		$('#info-title').html(OBJ_ENGLISH[id]);
+		$('#info-text').html(INFO_TEXT.structure[id].info);
 		$('#info-text').css({'line-height': "150%"});
-		$('#info-points')[0].innerHTML = STRUCT_REQS[id].points;
+		$('#info-points').html(STRUCT_REQS[id].points);
 		$('#info-points').show();
 		if ( id == OBJ_MINE ){
-			$('#info-defense')[0].innerHTML = "∞";
+			$('#info-defense').html("∞");
 			$('#info-defense').css({'font-size': "22px", 'padding-top': '0px'});
 		}
 		else {
-			$('#info-defense')[0].innerHTML = String(STRUCT_REQS[id].defense) + "|6";
+			$('#info-defense').html(String(STRUCT_REQS[id].defense) + "|6");
 			$('#info-defense').css({'font-size': "15px", 'padding-top': '4px'});
 		}
 		$('#info-defense').show();
 		var count = 0;
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 			for ( var r = 0; r < STRUCT_REQS[id].build[i]; r++ ){
-				buildHTML += '<td class="' +  tds[i] + '"></td>';
+				$('#build-info-res-' + count).removeClass("metal-icon water-icon fuel-icon food-icon no-icon").addClass(tds[i]);
 				count += 1;
 			}
-			for ( var r = 0; r < STRUCT_REQS[id].upkeep[i]; r++ ){
-				upkeepHTML += '<td class="' + tds[i] + '"></td>';
+			if ( STRUCT_REQS[id].upkeep[i] > 0 ){
+				$('#upkeep-info-res-' + 0).removeClass("metal-icon water-icon fuel-icon food-icon no-icon").addClass(tds[i]);
 			}
 		}
 		for ( var i = count; i < 6; i++){
-			buildHTML += '<td width="25px"></td>';
+			$('#build-info-res-' + i).removeClass("metal-icon water-icon fuel-icon food-icon").addClass('no-icon');
 		}
 		if ( id == OBJ_MINE ){
-			upkeepHTML += '<td width="25px" class="nocost-td">--</td><td></td>';
+			$('#upkeep-info-res-' + 0).removeClass("metal-icon water-icon fuel-icon food-icon").addClass('no-icon');
 		}
 	} else if (type == "agent"){
 		var backgroundPos = "0 " + String(-132 * (id + 4)) + "px";
 		$('#info-pic').removeClass().addClass('info-agent-'+ String(id));
 		$('#info-pic').css({"background-position": backgroundPos});
-		$('#build-title')[0].innerHTML = "Recruit";
-		$('#info-title')[0].innerHTML = AGT_ENGLISH[id];
-		$('#info-text')[0].innerHTML = INFO_TEXT.agent[id].info;
+		$('#build-title').html("Recruit");
+		$('#info-title').html(AGT_ENGLISH[id]);
+		$('#info-text').html(INFO_TEXT.agent[id].info);
 		$('#info-text').css({'line-height': "130%"});
 		$('#info-points').hide();
 		$('#info-defense').hide();
-		buildHTML += '<td class="nocost-td">No Cost</td>'
-		upkeepHTML += '<td class="food-icon"></td>';
+		for ( var i = 0; i < 6; i++ ){
+			$('#build-info-res-' + i).removeClass("metal-icon water-icon fuel-icon food-icon").addClass('no-icon');
+		}
+		$('#upkeep-info-res-' + 0).removeClass("metal-icon water-icon fuel-icon no-icon").addClass('food-icon');
 	}
-	buildHTML += '</tr></table>';
-	upkeepHTML += '</tr></table>';
-	$('#info-build')[0].innerHTML = buildHTML;
-	$('#info-upkeep')[0].innerHTML = upkeepHTML;
 	$('#info-div').show();
-	setInterfaceImages();
+	// setInterfaceImages();
 };
 
 var hideInfoMenu = function() {
