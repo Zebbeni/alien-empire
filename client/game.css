@@ -670,18 +670,19 @@
 
 #game-messages-wrapper-div {
 	position: absolute;
-	width: 350px;
+	width: 320px;
 	height: 160px;
-	bottom: 145px;
-	left: 0px;
+	bottom: 143px;
+	left: 2px;
 	pointer-events: auto;
 }
 
 #game-messages-div, #game-chat-input {
 	position: relative;
 	width: 100%;
-	background: rgba(0, 0, 0, 0.3);
+	background: rgba(0, 0, 0, 0.6);
 	margin: 2px;
+	font-size: 10pt;
 }
 
 #game-messages-div {

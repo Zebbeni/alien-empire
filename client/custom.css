@@ -420,6 +420,8 @@ button {
 	vertical-align: top;
 	padding-left: 5px;
 	padding-right: 5px;
+	font-size: 10pt;
+	line-height: 14pt;
 }
 
 .msg-server-td {

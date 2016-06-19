@@ -538,7 +538,7 @@ var buildActionMessage = function( actionMsg ){
 // loops through and combines all concurrent messages from the same user into
 // one. Returns this as well as an updated value for @m (the message index)
 var buildChatMessage = function( msg, messages, m) {
-
+	
 	messagesHtml = ( msg.id == clientId ? '<tr><td class="msg-self-td" >' : '<td class="msg-user-td" >' );
 	messagesHtml += all_users[msg.id].name + '</td>';
 
@@ -1132,12 +1132,12 @@ var createRoundMenu = function() {
 var updateRoundMenu = function() {
 
 	if (clientGame.game.phase == PHS_PLACING){
-		$('#round-td')[0].innerHTML = PHS_ENGLISH[PHS_PLACING];
-		$('#round-td').css({background: "rgba(255, 255, 100, 0.5"});
+		$('#round-td').html(PHS_ENGLISH[PHS_PLACING]);
+		$('#round-td').addClass('phase-td-current');
 	}
 	else {
-		$('#round-td')[0].innerHTML = 'Round ' + clientGame.game.round;
-		$('#round-td').css({background: "none"});
+		$('#round-td').html('Round ' + clientGame.game.round);
+		$('#round-td').removeClass('phase-td-current');
 	}
 
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
