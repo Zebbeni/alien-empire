@@ -1167,8 +1167,8 @@
 
 #agents-table {
 	position: absolute;
-	top: 31px;
-	left: 13px;
+	top: 32px;
+	left: 12px;
 	width: 216px;
 	height: 108px;
 }
@@ -1176,11 +1176,71 @@
 .agent-button {
 	width: 54px;
 	height: 54px;
-	background-color: transparent;
+	background-size: 216px 432px;
+	color: white;
+	text-align: center;
+	vertical-align: bottom;
+	table-layout: fixed;
+	margin-right: 1px;
+	margin-bottom: 1px;
+	padding: 0;
 }
 
-.agent-button:hover {
-	background-position: -54px 0;
+/* I bet we can set all this css in a javascript for loop */ 
+#agent-button-explorer { background-position: 0px 0px; }
+#agent-button-explorer:hover { background-position: -54px 0px; }
+#agent-button-explorer:active { background-position: -162px 0px; }
+#agent-button-explorer.agent-off, #agent-button-explorer.agent-off:hover, #agent-button-explorer.agent-off:active {
+	background-position: -108px 0px;
+}
+
+#agent-button-miner { background-position: 0px -54px; }
+#agent-button-miner:hover { background-position: -54px -54px; }
+#agent-button-miner:active { background-position: -162px -54px; }
+#agent-button-miner.agent-off, #agent-button-miner.agent-off:hover, #agent-button-miner.agent-off:active {
+	background-position: -108px -54px;
+}
+
+#agent-button-surveyor { background-position: 0px -108px; }
+#agent-button-surveyor:hover { background-position: -54px -108px; }
+#agent-button-surveyor:active { background-position: -162px -108px; }
+#agent-button-surveyor.agent-off, #agent-button-surveyor.agent-off:hover, #agent-button-surveyor.agent-off:active {
+	background-position: -108px -108px;
+}
+
+#agent-button-ambassador { background-position: 0px -162px; }
+#agent-button-ambassador:hover { background-position: -54px -162px; }
+#agent-button-ambassador:active { background-position: -162px -162px; }
+#agent-button-ambassador.agent-off, #agent-button-ambassador.agent-off:hover, #agent-button-ambassador.agent-off:active {
+	background-position: -108px -162px;
+}
+
+#agent-button-envoy { background-position: 0px -216px; }
+#agent-button-envoy:hover { background-position: -54px -216px; }
+#agent-button-envoy:active { background-position: -162px -216px; }
+#agent-button-envoy.agent-off, #agent-button-envoy.agent-off:hover, #agent-button-envoy.agent-off:active {
+	background-position: -108px -216px;
+}
+
+#agent-button-spy { background-position: 0px -270px; }
+#agent-button-spy:hover { background-position: -54px -270px; }
+#agent-button-spy:active { background-position: -162px -270px; }
+#agent-button-spy.agent-off, #agent-button-spy.agent-off:hover, #agent-button-spy.agent-off:active {
+	background-position: -108px -270px;
+}
+
+#agent-button-smuggler { background-position: 0px -324px; }
+#agent-button-smuggler:hover { background-position: -54px -324px; }
+#agent-button-smuggler:active { background-position: -162px -324px; }
+#agent-button-smuggler.agent-off, #agent-button-smuggler.agent-off:hover, #agent-button-smuggler.agent-off:active {
+	background-position: -108px -324px;
+}
+
+#agent-button-sabateur { background-position: 0px -378px; }
+#agent-button-sabateur:hover { background-position: -54px -378px; }
+#agent-button-sabateur:active { background-position: -162px -378px; }
+#agent-button-sabateur.agent-off, #agent-button-sabateur.agent-off:hover, #agent-button-sabateur.agent-off:active {
+	background-position: -108px -378px;
 }
 
 #resourcepackages-div {

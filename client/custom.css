@@ -5,7 +5,7 @@
 	font-size: 11pt;
 	background-size: auto 100%;
 	background-repeat: no-repeat;
-	background-position: top left;
+	/*background-position: top left;*/
 	outline: none;
     -webkit-appearance: none;
     transition-property: none
@@ -489,7 +489,7 @@ button {
 #users-scroll {
 	float: left;
 	height: 638px;
-	width: 200px;
+	width: 195px;
 	left: 20px;
 	top: 38px;
 }

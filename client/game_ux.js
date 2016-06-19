@@ -47,14 +47,15 @@ var DOMimageMap = [
 	{ elmt: '.struct-button', path: 'interface/', img: 'struct_buttons_p', player: true},
 	{ elmt: '.confirm-button', path: 'interface/', img: 'confirm_buttons'},
 	{ elmt: '.cancel-button', path: 'interface/', img: 'confirm_buttons'},
-	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
-	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
-	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
-	{ elmt: '#agent-button-ambassador', path: 'interface/', img: 'agentambassador_button'},
-	{ elmt: '#agent-button-envoy', path: 'interface/', img: 'agentenvoy_button'},
-	{ elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
-	{ elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
-	{ elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
+	{ elmt: '.agent-button', path: 'interface/', img: 'agent_buttons'},
+	// { elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
+	// { elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
+	// { elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
+	// { elmt: '#agent-button-ambassador', path: 'interface/', img: 'agentambassador_button'},
+	// { elmt: '#agent-button-envoy', path: 'interface/', img: 'agentenvoy_button'},
+	// { elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
+	// { elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
+	// { elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
 	{ elmt: '#game-end-menu', path: 'interface/', img: 'end_game_menu'}
 ];
 
@@ -918,6 +919,7 @@ var createStructuresMenu = function() {
 
 	$('#structures-menu-div')[0].innerHTML = innerHTML;
 
+	// do this with a for loop
 	$('.struct-mine-button').mouseenter(function(event){
 		showInfoMenu(event, "structure", OBJ_MINE);
 	});
@@ -994,16 +996,7 @@ var updateStructuresMenu = function() {
 
 var createAgentsMenu = function() {
 	var innerHTML = '<div id="agents-menu-title" class="menu-title">Agents</div>';
-	innerHTML += '<table id="agents-table"></table>';
-
-	$('#agents-menu-div')[0].innerHTML = innerHTML;
-
-	updateAgentsMenu();
-};
-
-var updateAgentsMenu = function() {
-	var innerHTML = '<tr>';
-
+	innerHTML += '<table id="agents-table"><tr>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-explorer" '
 				+ 'onclick="javascript:clickAgentButton(AGT_EXPLORER);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-miner" '
@@ -1012,9 +1005,7 @@ var updateAgentsMenu = function() {
 				+ 'onclick="javascript:clickAgentButton(AGT_SURVEYOR);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-smuggler" '
 				+ 'onclick="javascript:clickAgentButton(AGT_SMUGGLER);"></input></td>';
-
 	innerHTML += '</tr><tr>';
-
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-ambassador" '
 				+ 'onclick="javascript:clickAgentButton(AGT_AMBASSADOR);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-envoy" '
@@ -1023,11 +1014,11 @@ var updateAgentsMenu = function() {
 				+ 'onclick="javascript:clickAgentButton(AGT_SPY);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-sabateur" '
 				+ 'onclick="javascript:clickAgentButton(AGT_SABATEUR);"></input></td>';
+	innerHTML += '</tr></table>';
 
-	innerHTML += '</tr>';
+	$('#agents-menu-div')[0].innerHTML = innerHTML;
 
-	$('#agents-table').html(innerHTML);
-
+	// you can set all these with a for loop
 	$('#agent-button-explorer').mouseenter(function(event){
 		showInfoMenu(event, "agent", AGT_EXPLORER);
 	});
@@ -1063,6 +1054,31 @@ var updateAgentsMenu = function() {
 	$('.agent-button').mouseleave(function(event){
 		hideInfoMenu(event);
 	});
+};
+
+var updateAgentsMenu = function() {
+	if ( clientGame.game != undefined 
+		 && clientGame.game.board != undefined
+		 && clientGame.game.board.agents != undefined ){
+
+		for ( var agt = AGT_EXPLORER; agt <= AGT_SABATEUR; agt++){
+			var agentid = String(clientTurn) + String(agt);
+			var agent = clientGame.game.board.agents[agentid];
+			var status = agent.status;
+			if ( status == AGT_STATUS_ON || status == AGT_STATUS_DEAD ){
+				$('#agent-button-' + AGT_IMG[agt]).addClass('agent-off');
+				if ( status == AGT_STATUS_DEAD ) {
+					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'retired');
+				}
+				else if ( status == AGT_STATUS_ON ){
+					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'in use');
+				}
+			}
+			else {
+				$('#agent-button-' + AGT_IMG[agt]).removeClass('agent-off');
+			}
+		}
+	}
 };
 
 var showEndGameMenu = function() {
