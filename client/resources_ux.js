@@ -157,6 +157,9 @@ var updateResourcePkgMenu = function() {
 
 	$('#resourcepackages-div').show();
 
+	setInterfaceImage('.respkg-collect-div');
+	setInterfaceImage('.respkg-collect-div');
+	setInterfaceImage('.res-icon');
 };
 
 var allValuesEqualTo = function(array, val) {
@@ -384,7 +387,6 @@ var drawTradeMenu = function(player) {
 
 		allowTradeMenuChanges('none');
 	}
-	setInterfaceImages();
 	showTradeMenu();
 };
 

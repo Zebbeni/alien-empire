@@ -1,64 +1,58 @@
-var DOMimageMap = [
-	{ elmt: '#input-username-div', path: 'login/', img: 'login' },
-	{ elmt: '#text-title-div', path: 'login/', img: 'title'},
-	{ elmt: '#players-time-div', path: 'login/', img: 'players_time' },
-	{ elmt: '#github-div', path: 'login/', img: 'github' },
-	{ elmt: '#lobby-div', path: 'lobby/', img: 'lobby_menu' },
-	{ elmt: '#lobby-title-div', path: 'login/', img: 'title'},
-	{ elmt: '#create-game-button', path: 'lobby/', img: 'createnew_button' },
-	{ elmt: '#resume-game-button', path: 'lobby/', img: 'resume_button' },
-	{ elmt: '.game-button', path: 'lobby/', img: 'joingame_button' },
-	{ elmt: '.send-message-button', path: 'lobby/', img: 'sendmessage_button' },
-	{ elmt: '#staging-div', path: 'staging/', img: 'staging_menu' },
-	{ elmt: '.staging-playernum-button', path: 'staging/', img: 'player_button' },
-	{ elmt: '.staging-playernum-selected', path: 'staging/', img: 'player_button' },
-	{ elmt: '.staging-pointnum-button', path: 'staging/', img: 'point_button' },
-	{ elmt: '.staging-pointnum-selected', path: 'staging/', img: 'point_button' },
-	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
-	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
-	{ elmt: '#points-remaining', path: 'interface/', img: 'points_remaining'},
-	{ elmt: '.player-div', path: 'interface/', img: 'player_menu'},
-	{ elmt: '#done-button', path: 'interface/', img: 'end_buttons'},
-	{ elmt: '.player-trade-request-div', path: 'interface/', img: 'request_trade', ext: '.gif'},
-	{ elmt: '.player-start-icon', path: 'interface/', img: 'player_start'},
-	{ elmt: '.metal-icon', path: 'interface/', img: 'res_metal_icon'},
-	{ elmt: '.water-icon', path: 'interface/', img: 'res_water_icon'},
-	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
-	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
-	{ elmt: '.res-icon', path: 'interface/', img: 'res_icon'},
-	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
-	{ elmt: '.color-menu', path: 'interface/', img: 'menus_p', player: true},
-	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
-	{ elmt: '.trade-arrow-up', path: 'interface/', img: 'trade_arrow_button'},
-	{ elmt: '.trade-arrow-down', path: 'interface/', img: 'trade_arrow_button'},
-	{ elmt: '.trade-radio-button', path: 'interface/', img: 'trade_radio_button'},
-	{ elmt: '#trade-button-yes', path: 'interface/', img: 'color_buttons'},
-	{ elmt: '#trade-button-no', path: 'interface/', img: 'color_buttons'},
-	{ elmt: '.action-button', path: 'interface/', img: 'color_buttons'},
-	{ elmt: '.action-menu', path: 'interface/', img: 'action_menu'},
-	{ elmt: '.mission-arrow', path: 'interface/', img: 'mission_arrows'},
-	{ elmt: '.actor-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
-	{ elmt: '#info-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
-	{ elmt: '#info-points', path: 'interface/', img: 'points'},
-	{ elmt: '#info-defense', path: 'interface/', img: 'defense'},
-	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
-	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
-	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
-	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
-	{ elmt: '.struct-button', path: 'interface/', img: 'struct_buttons_p', player: true},
-	{ elmt: '.confirm-button', path: 'interface/', img: 'confirm_buttons'},
-	{ elmt: '.cancel-button', path: 'interface/', img: 'confirm_buttons'},
-	{ elmt: '.agent-button', path: 'interface/', img: 'agent_buttons'},
-	// { elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
-	// { elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
-	// { elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
-	// { elmt: '#agent-button-ambassador', path: 'interface/', img: 'agentambassador_button'},
-	// { elmt: '#agent-button-envoy', path: 'interface/', img: 'agentenvoy_button'},
-	// { elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
-	// { elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
-	// { elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
-	{ elmt: '#game-end-menu', path: 'interface/', img: 'end_game_menu'}
-];
+var imgPx = '2x_';
+
+var DOMimageMap = {
+	'#input-username-div': { path: 'login/', img: 'login' },
+	'#text-title-div': { path: 'login/', img: 'title'},
+	'#players-time-div': { path: 'login/', img: 'players_time' },
+	'#github-div': { path: 'login/', img: 'github' },
+	'#lobby-div': { path: 'lobby/', img: 'lobby_menu' },
+	'#lobby-title-div': { path: 'login/', img: 'title'},
+	'#create-game-button': { path: 'lobby/', img: 'createnew_button' },
+	'#resume-game-button': { path: 'lobby/', img: 'resume_button' },
+	'.game-button': { path: 'lobby/', img: 'joingame_button' },
+	'.send-message-button': { path: 'lobby/', img: 'sendmessage_button' },
+	'#staging-div': { path: 'staging/', img: 'staging_menu' },
+	'.staging-playernum-button': { path: 'staging/', img: 'player_button' },
+	'.staging-playernum-selected': { path: 'staging/', img: 'player_button' },
+	'.staging-pointnum-button': { path: 'staging/', img: 'point_button' },
+	'.staging-pointnum-selected': { path: 'staging/', img: 'point_button' },
+	'#staging-ready-button': { path: 'staging/', img: 'ready_button' },
+	'#staging-leave-button': { path: 'staging/', img: 'back_button' },
+	'#points-remaining': { path: 'interface/', img: 'points_remaining'},
+	'.player-div': { path: 'interface/', img: 'player_menu'},
+	'#done-button': { path: 'interface/', img: 'end_buttons'},
+	'.player-trade-request-div': { path: 'interface/', img: 'request_trade', ext: '.gif'},
+	'.player-start-icon': { path: 'interface/', img: 'player_start'},
+	'.metal-icon': { path: 'interface/', img: 'res_metal_icon'},
+	'.water-icon': { path: 'interface/', img: 'res_water_icon'},
+	'.fuel-icon': { path: 'interface/', img: 'res_fuel_icon'},
+	'.food-icon': { path: 'interface/', img: 'res_food_icon'},
+	'.res-icon': { path: 'interface/', img: 'res_icon'},
+	'.points-icon': { path: 'interface/', img: 'points_icon'},
+	'.color-menu': { path: 'interface/', img: 'menus_p', player: true},
+	'#trade-button': { path: 'interface/', img: 'trade_button'},
+	'.trade-arrow-up': { path: 'interface/', img: 'trade_arrow_button'},
+	'.trade-arrow-down': { path: 'interface/', img: 'trade_arrow_button'},
+	'.trade-radio-button': { path: 'interface/', img: 'trade_radio_button'},
+	'#trade-button-yes': { path: 'interface/', img: 'color_buttons'},
+	'#trade-button-no': { path: 'interface/', img: 'color_buttons'},
+	'.action-button': { path: 'interface/', img: 'color_buttons'},
+	'.action-menu': { path: 'interface/', img: 'action_menu'},
+	'.mission-arrow': { path: 'interface/', img: 'mission_arrows'},
+	'.actor-pic': { path: 'interface/', img: 'agents_structures', ext: '.jpg'},
+	'#info-pic': { path: 'interface/', img: 'agents_structures', ext: '.jpg'},
+	'#info-points': { path: 'interface/', img: 'points'},
+	'#info-defense': { path: 'interface/', img: 'defense'},
+	'.fourtoone-button': { path: 'interface/', img: '4to1_button'},
+	'.respkg-collect-div': { path: 'interface/', img: 'collect_menu'},
+	'.respkg-upkeep-div': { path: 'interface/', img: 'upkeep_menu'},
+	'.respkg-arrow-div': { path: 'interface/', img: 'resources_arrow', ext: '.gif'},
+	'.struct-button': { path: 'interface/', img: 'struct_buttons_p', player: true},
+	'.confirm-button': { path: 'interface/', img: 'confirm_buttons'},
+	'.cancel-button': { path: 'interface/', img: 'confirm_buttons'},
+	'.agent-button': { path: 'interface/', img: 'agent_buttons'},
+	'#game-end-menu': { path: 'interface/', img: 'end_game_menu'}
+};
 
 $.fn.preload = function() {
 	this.each(function(){
@@ -80,6 +74,8 @@ var createInterface = function() {
 	createBottomBarMenus();
 	createRoundMenu();
 	createActionMenu();
+
+	setInterfaceImages();
 }
 /**
  * Updates menus and board interactivity when a game action occurs.
@@ -120,7 +116,7 @@ var updateInterface = function() {
 	updateResourcePkgMenu();
 	updateResourceAnimations();
 
-	setInterfaceImages();
+	// setInterfaceImages();
 
 	if (clientGame.game.isEnded){
 		showEndGameMenu();
@@ -1569,16 +1565,18 @@ var updateActionMenu = function( actortype, id ){
  */
 var setInterfaceImages = function() {
 
-	var px = window.devicePixelRatio > 1.0 ? '2x_' : '1x_';
+	imgPx = window.devicePixelRatio > 1.0 ? '2x_' : '1x_';
 
-	for (var i = 0; i < DOMimageMap.length; i++){
-		var element = DOMimageMap[i];
-
-		var name = element.elmt;
-		var img = element.img;
-		var player = element.player ? String(clientTurn) : '';
-		var path = s3url + element.path + px + img + player;
-		var ext = element.ext == undefined ? '.png' : element.ext;
-		$( name ).css("background-image", 'url(' + path + ext + ')');
+	for (var name in DOMimageMap){
+		setInterfaceImage(name);
 	}
+};
+
+var setInterfaceImage = function(name) {
+	var element = DOMimageMap[name];
+	var img = element.img;
+	var player = element.player ? String(clientTurn) : '';
+	var path = s3url + element.path + imgPx + img + player;
+	var ext = element.ext == undefined ? '.png' : element.ext;
+	$( name ).css("background-image", 'url(' + path + ext + ')');
 };
