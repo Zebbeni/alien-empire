@@ -612,11 +612,10 @@
 .food-icon { background-position: 0px -75px; }
 .no-icon { background-position: 0px -100px; }
 
-.metal-icon:hover { background-position: -25px 0px; }
-.water-icon:hover { background-position: -25px -25px; }
-.fuel-icon:hover { background-position: -25px -50px; }
-.food-icon:hover { background-position: -25px -75px; }
-.no-icon:hover { background-position: 0px -100px; }
+.metal-icon-button:hover { background-position: -25px 0px; }
+.water-icon-button:hover { background-position: -25px -25px; }
+.fuel-icon-button:hover { background-position: -25px -50px; }
+.food-icon-button:hover { background-position: -25px -75px; }
 
 .player-trade-request-div {
 	position: absolute;

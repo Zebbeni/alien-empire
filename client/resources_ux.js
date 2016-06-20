@@ -3,14 +3,12 @@
  * menu items in game ux 
  */
 
-// var collectedPkgs = []; // indexes of package collections the ux has animated
+var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
 
 var createResourcesMenu = function() {
 	
 	var innerHTML = '<div id="resources-menu-title" class="menu-title">Resources</div>';
 	clientGame.game.collectedPkgs = []; // indices of packages the ux has animated
-
-	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
 
 	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 		
@@ -18,7 +16,10 @@ var createResourcesMenu = function() {
 		// create 4 to 1 menu
 		for ( var j = RES_METAL; j <= RES_FOOD; j++){
 			if ( i != j ){
-				table += '<td width="25px" height="25px"><input type="button" class="res-icon ' + icons[j] + '" onclick="javascript:tradeFourToOne(' + i + ',' + j + ')"></input></td>';
+				table += '<td width="25px" height="25px"><input type="button" '
+					   + 'class="res-icon ' + icons[j] + ' ' 
+					   + icons[j] + '-button" '
+					   + 'onclick="javascript:tradeFourToOne(' + i + ',' + j + ')"></input></td>';
 			}
 		}
 		table += '</table>';
@@ -49,7 +50,6 @@ var createResourcesMenu = function() {
 
 var updateResourcesMenu = function() {
 
-	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
 	var collect = clientGame.game.resourceCollect[clientTurn];
 	var upkeep = clientGame.game.resourceUpkeep[clientTurn];
 
@@ -92,7 +92,6 @@ var updateResourcePkgMenu = function() {
 				 	  && !allValuesEqualTo(pkg.resources, 0) ) ) ) {
 
 			message = pkg.message;
-
 			pkg_id = 'respk-collect-id' + count;
 
 			if (pkg.pkgtype == PKG_UPKEEP) {
@@ -124,18 +123,15 @@ var updateResourcePkgMenu = function() {
 					+ '<table class="respkg-resources-table">';
 
 			for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-				var icon_class = RES_ENGLISH[i] + '-icon';
-
 				html += '<tr class="respkg-num-tr">'
 						+ '<td class="respkg-num-td ' + td_class + '">' 
 						+ sign + String(Math.abs(pkg.resources[i])) 
 						+ '</td>'
-						+ '<td class="' + icon_class + '" ></td>'
+						+ '<td class="res-icon ' + icons[i] + '" ></td>'
 						+ '</tr>';
 			}
 
 			html += '</table></div></div></div>';
-
 			count += 1;
 		}
 
@@ -152,14 +148,14 @@ var updateResourcePkgMenu = function() {
 		}
 	}
 
-	$('#resourcepackages-div')[0].innerHTML = html;
+	$('#resourcepackages-div').html(html);
 
 	for ( var c = 0; c < count; c++ ){
 		var xpos = c * 70;
 		$('#respk-collect-id' + c).css({left: xpos});
 	}
 
-	$('#resourcepackages-div')[0].style.visibility = "visible";
+	$('#resourcepackages-div').show();
 
 };
 
