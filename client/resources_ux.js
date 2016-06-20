@@ -158,7 +158,8 @@ var updateResourcePkgMenu = function() {
 	$('#resourcepackages-div').show();
 
 	setInterfaceImage('.respkg-collect-div');
-	setInterfaceImage('.respkg-collect-div');
+	setInterfaceImage('.respkg-upkeep-div');
+	setInterfaceImage('.respkg-arrow-div');
 	setInterfaceImage('.res-icon');
 };
 

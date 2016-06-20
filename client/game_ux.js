@@ -698,24 +698,26 @@ var createPlayerStatsMenus = function() {
 		var points = clientGame.game.points[i];
 
 		innerHTML += '<div class="player-id-div">' + username + '</div>';
-		innerHTML += '<div class="player-trade-request-div" onclick="javascript:drawTradeMenu(' + i + ')">Requesting Trade</div>';
+		innerHTML += '<div class="player-trade-request-div" '
+				   + 'style="display: none" '
+				   + 'onclick="javascript:drawTradeMenu(' + i + ')">'
+				   + 'Requesting Trade</div>';
 		innerHTML += '<div class="player-points-div"></div>';
-		innerHTML += '<div class="player-start-icon"></div>';
+		innerHTML += '<div class="player-start-icon" style="display: none"></div>';
 		innerHTML += '<div class="player-stats-div">';
 		
 		innerHTML += '<table class="player-stats-table"><tr>';
-		innerHTML += '<td class="metal-icon"></td>';
-		innerHTML += '<td class="water-icon"></td>';
-		innerHTML += '<td class="fuel-icon"></td>';
-		innerHTML += '<td class="food-icon"></td>';
+		innerHTML += '<td class="res-icon metal-icon"></td>';
+		innerHTML += '<td class="res-icon water-icon"></td>';
+		innerHTML += '<td class="res-icon fuel-icon"></td>';
+		innerHTML += '<td class="res-icon food-icon"></td>';
 
 		innerHTML += '</tr></table>';
 		innerHTML += '</div>';
 		innerHTML += '</div>';
 	}
 
-	$('#players-wrapper-div')[0].innerHTML = innerHTML;
-	$('#players-wrapper-div')[0].style.visibility = "visible";
+	$('#players-wrapper-div').html(innerHTML);
 };
 
 var createActionMenu = function() {
@@ -745,27 +747,27 @@ var updatePlayerStatsMenus = function() {
 		var resources = clientGame.game.resources[i];
 		var points = clientGame.game.points[i];
 
-		$(playerDiv).find('.metal-icon')[0].innerHTML = resources[RES_METAL];
-		$(playerDiv).find('.water-icon')[0].innerHTML = resources[RES_WATER];
-		$(playerDiv).find('.fuel-icon')[0].innerHTML = resources[RES_FUEL];
-		$(playerDiv).find('.food-icon')[0].innerHTML = resources[RES_FOOD];
-		$(playerDiv).find('.player-points-div')[0].innerHTML = points[PNT_TOTAL];
+		$(playerDiv).find('.metal-icon').html(resources[RES_METAL]);
+		$(playerDiv).find('.water-icon').html(resources[RES_WATER]);
+		$(playerDiv).find('.fuel-icon').html(resources[RES_FUEL]);
+		$(playerDiv).find('.food-icon').html(resources[RES_FOOD]);
+		$(playerDiv).find('.player-points-div').html(points[PNT_TOTAL]);
 
 		if ( i != clientTurn 
 			 && clientGame.game.trades[i] != undefined
 			 && clientGame.game.trades[i].offered_to.indexOf(clientTurn) != -1
 			 && clientGame.game.trades[i].declined.indexOf(clientTurn) == -1 ) {
-			$(playerDiv).find('.player-trade-request-div')[0].style.visibility = "visible";
+			$(playerDiv).find('.player-trade-request-div').show();
 		}
 		else {
-			$(playerDiv).find('.player-trade-request-div')[0].style.visibility = "hidden";
+			$(playerDiv).find('.player-trade-request-div').hide();
 		}
 
 		if ( i == clientGame.game.playerOffset ){
-			$(playerDiv).find('.player-start-icon')[0].style.visibility = "visible";
+			$(playerDiv).find('.player-start-icon').show();
 		}
 		else {
-			$(playerDiv).find('.player-start-icon')[0].style.visibility = "hidden";
+			$(playerDiv).find('.player-start-icon').hide();
 		}
 	}
 };
