@@ -371,7 +371,7 @@ var drawTradeMenu = function(player) {
 			}
 		}
 		playersHtml += "</tr></table>";
-		$('#trade-offers-div')[0].innerHTML = playersHtml;
+		$('#trade-offers-div').html(playersHtml);
 		$('#trade-button-yes').prop('value', 'Accept Trade');
 		$('#trade-button-yes').css('pointer-events', 'auto');
 		$('#trade-button-yes').off().click( function() { 
@@ -408,7 +408,7 @@ var handletradeArrow = function(player, res, val){
 	createjs.Sound.play("click1");
 	var value = parseInt($('#' + player + '-trade-res' + res)[0].innerHTML, 10);
 	if ( value + val <= 9 && value + val >= 0){
-		$('#' + player + '-trade-res' + res)[0].innerHTML = value + val;
+		$('#' + player + '-trade-res' + res).html(value + val);
 	}
 };
 

@@ -336,7 +336,7 @@ var displayConfirmMessage = function() {
 			break;
 	}
 
-	$('#your-action-message-div')[0].innerHTML = message;
+	$('#your-action-message-div').html(message);
 };
 
 var displayIncludeSmugglerMenu = function(){
@@ -628,7 +628,7 @@ var updateTurnHelpMessage = function() {
 		$('#pending-action-div').hide();
 	}
 	else {
-		$('#pending-action-div')[0].innerHTML = message;
+		$('#pending-action-div').html(message);
 		$('#pending-action-div').css({opacity: 0.0});
 		$('#pending-action-div').show();
 		$('#pending-action-div').transition({opacity: 1.0}, 500, function(){
@@ -645,9 +645,9 @@ var updateTurnHelpMessage = function() {
 
 var updatePointsRemainingMenu = function() {
 	var points_remaining = clientGame.game.points_remaining;
-	$('#points-remaining-explore')[0].innerHTML = points_remaining[PNT_EXPLORE];
-	$('#points-remaining-envoy')[0].innerHTML = points_remaining[PNT_ENVOY];
-	$('#points-remaining-destroy')[0].innerHTML = points_remaining[PNT_DESTROY];
+	$('#points-remaining-explore').html(points_remaining[PNT_EXPLORE]);
+	$('#points-remaining-envoy').html(points_remaining[PNT_ENVOY]);
+	$('#points-remaining-destroy').html(points_remaining[PNT_DESTROY]);
 };
 
 /**
@@ -755,7 +755,7 @@ var updateBottomBarMenus = function() {
 };
 
 var showIllegalMenu = function( response ){
-	$('#illegal-menu-div')[0].innerHTML = response;
+	$('#illegal-menu-div').html(response);
 	$('#illegal-menu-div').css({opacity: 0});
 	$('#illegal-menu-div').show();
 	$('#illegal-menu-div').transition({opacity: 1}, 500, function(){
@@ -883,7 +883,7 @@ var createStructuresMenu = function() {
 			    + 'onclick="javascript:clickStructureButton(OBJ_BASE);">'
 			    + '</input></div>';
 
-	$('#structures-menu-div')[0].innerHTML = innerHTML;
+	$('#structures-menu-div').html(innerHTML);
 
 	// do this with a for loop
 	$('.struct-mine-button').mouseenter(function(event){
@@ -982,7 +982,7 @@ var createAgentsMenu = function() {
 				+ 'onclick="javascript:clickAgentButton(AGT_SABATEUR);"></input></td>';
 	innerHTML += '</tr></table>';
 
-	$('#agents-menu-div')[0].innerHTML = innerHTML;
+	$('#agents-menu-div').html(innerHTML);
 
 	// you can set all these with a for loop
 	$('#agent-button-explorer').mouseenter(function(event){
@@ -1052,7 +1052,7 @@ var showEndGameMenu = function() {
 	$('#game-end-menu').css({opacity: '0.0'});
 	var winner = clientGame.game.winner
 	$('#winner-div').css({opacity: '0.0', color: color[winner]});
-	$('#winner-div')[0].innerHTML = getUsername(winner) + " Wins!";
+	$('#winner-div').html(getUsername(winner) + " Wins!");
 	$('#game-end-div').show();
 	$('#game-end-div').transition({opacity: 0.0}, 500, function(){
 		$('#game-end-div').transition({opacity: 1.0}, 500, function(){
@@ -1091,7 +1091,7 @@ var plotEndGame = function(type){
 
 var createRoundMenu = function() {
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
-		$('#phase-td' + i)[0].innerHTML = PHS_ENGLISH[i];
+		$('#phase-td' + i).html(PHS_ENGLISH[i]);
 	};
 };
 
@@ -1202,12 +1202,12 @@ var updateMissionsMenu = function(round, index) {
 	$('#mission-button-2').hide();
 	$('#mission-button-3').hide();
 
-	$('#mission-name')[0].innerHTML = 'Round ' + String(missionRound + 2);
+	$('#mission-name').html('Round ' + String(missionRound + 2));
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
 		$('#mission-agent-div').removeClass().addClass('actor-pic actor-struct-1');
-		$('#mission-location')[0].innerHTML = '- - -';
-		$('#mission-label')[0].innerHTML = 'Mission';
-		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
+		$('#mission-location').html('- - -');
+		$('#mission-label').html('Mission');
+		$('#mission-text').html('No missions to resolve this round');
 		if ( nowRound == clientGame.game.round && nowIndex == clientGame.game.missionindex ){
 			$('#mission-button-3').show();
 			$('#mission-button-3').attr('value', 'Okay');
@@ -1227,9 +1227,9 @@ var updateMissionsMenu = function(round, index) {
 		var message = "";
 		var picClass = 'actor-agent-' + agenttype;
 		$('#mission-agent-div').removeClass().addClass('actor-pic ' + picClass);
-		$('#mission-location')[0].innerHTML = AGT_ENGLISH[agenttype] + ' to ' + planetname;
-		$('#mission-label')[0].innerHTML = 'Mission (' + String( missionindex + 1 ) 
-										    + ' of ' + missions[missionRound].length + ')';
+		$('#mission-location').html(AGT_ENGLISH[agenttype] + ' to ' + planetname);
+		$('#mission-label').html('Mission (' + String( missionindex + 1 ) 
+										    + ' of ' + missions[missionRound].length + ')');
 		$('#mission-div').removeClass().addClass('action-menu mission-div-p' + player);
 		$('#mission-name').attr('value', AGT_ENGLISH[agenttype]);
 		$('#mission-button-3').hide(); // Hide the view all missions button by default
@@ -1277,7 +1277,7 @@ var updateMissionsMenu = function(round, index) {
 				message = name + mission.result;
 			}
 
-			$('#mission-text')[0].innerHTML = message;
+			$('#mission-text').html(message);
 
 			if ( nowIndex == clientGame.game.missionindex && nowRound == clientGame.game.round ) {
 				if ( clientGame.game.missionViewed[clientTurn] == false ) {
@@ -1304,14 +1304,14 @@ var updateMissionsMenu = function(round, index) {
 				}
 				else {
 					$('#missions-phase-div').show();
-					$('#mission-text')[0].innerHTML = "Mission pending. Would you like to block this mission?";
+					$('#mission-text').html("Mission pending. Would you like to block this mission?");
 					$('#mission-button-1').attr('value', 'Block');
 					$('#mission-button-1').show();
 					$('#mission-button-1').off().click( function() {
 						blockMissionAction(true);
 					});
 					if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
-						$('#mission-text')[0].innerHTML = "Mission Pending. Use a spy eye to block or collect resources from this mission?";
+						$('#mission-text').html("Mission Pending. Use a spy eye to block or collect resources from this mission?");
 						$('#mission-button-2').attr('value', 'Collect');
 						$('#mission-button-2').show();
 						$('#mission-button-2').off().click( function() {
@@ -1326,7 +1326,7 @@ var updateMissionsMenu = function(round, index) {
 				}
 			}
 			else {
-				$('#mission-text')[0].innerHTML = "Mission pending, waiting on spy actions...";
+				$('#mission-text').html("Mission pending, waiting on spy actions...");
 			}
 		}
 
@@ -1334,7 +1334,7 @@ var updateMissionsMenu = function(round, index) {
 		else if ( mission.waitingOnResolve ) {
 			// and if this is actually this client's mission
 			if ( clientTurn != player ) {
-				$('#mission-text')[0].innerHTML = "Mission pending";
+				$('#mission-text').html("Mission pending");
 			}
 			else {
 				setPendingAction( ACT_MISSION_RESOLVE );
@@ -1384,7 +1384,7 @@ var updateMissionsMenu = function(round, index) {
 						default:
 							break;
 					}
-					$('#mission-text')[0].innerHTML = messageHtml;
+					$('#mission-text').html(messageHtml);
 					$('#mission-button-3').show();
 					$('#mission-button-3').attr('value', 'Done');
 					$('#mission-button-3').off().click( function() {
@@ -1438,26 +1438,26 @@ var updateActionMenu = function( actortype, id ){
 	if ( actortype == 'agent' ){
 		picClass += 'agent-' + pendingAction.agenttype;
 		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
-		$('#action-name')[0].innerHTML = AGT_ENGLISH[id];
+		$('#action-name').html(AGT_ENGLISH[id]);
 
 		var agentid = String(clientTurn) + String(id);
 		var planetid = clientGame.game.board.agents[agentid].planetid;
 		var agent = clientGame.game.board.agents[agentid];
 		locationText += clientGame.game.board.planets[planetid].name;
-		$('#action-location')[0].innerHTML = locationText;
-		$('#action-label')[0].innerHTML = 'Mission';
+		$('#action-location').html(locationText);
+		$('#action-label').html('Mission');
 
 		if ( agent.used == true ){
 			if (agent.destination != undefined){
 				var planetname = clientGame.game.board.planets[agent.destination].name;
-				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' is on mission to ' + planetname;
+				$('#action-text').html(AGT_ENGLISH[id] + ' is on mission to ' + planetname);
 			}
 			else {
-				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' already moved this turn';
+				$('#action-text').html(AGT_ENGLISH[id] + ' already moved this turn');
 			}
 		}
 		else {
-			$('#action-text')[0].innerHTML = INFO_TEXT.agent[id].action;
+			$('#action-text').html(INFO_TEXT.agent[id].action);
 		}
 		$('#action-button-1').attr('value', 'Move');
 		$('#action-button-1').show();
@@ -1481,13 +1481,13 @@ var updateActionMenu = function( actortype, id ){
 		if ( pendingAction.actiontype != ACT_BASE_ATTACK 
 			 && pendingAction.actiontype != ACT_FLEET_ATTACK) {
 			
-			$('#action-name')[0].innerHTML = OBJ_ENGLISH[OBJ_FLEET];
+			$('#action-name').html(OBJ_ENGLISH[OBJ_FLEET]);
 
 			var planetid = pendingAction.planetid;
 			locationText += clientGame.game.board.planets[planetid].name;
-			$('#action-location')[0].innerHTML = locationText;
-			$('#action-label')[0].innerHTML = 'Action';
-			$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_FLEET].action;
+			$('#action-location').html(locationText);
+			$('#action-label').html('Action');
+			$('#action-text').html(INFO_TEXT.structure[OBJ_FLEET].action);
 
 			$('#action-button-1').attr('value', 'Move');
 			$('#action-button-1').show();
@@ -1507,13 +1507,13 @@ var updateActionMenu = function( actortype, id ){
 	else if ( actortype == 'base'){
 		picClass += 'struct-' + OBJ_BASE;
 		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
-		$('#action-name')[0].innerHTML = OBJ_ENGLISH[OBJ_BASE];
+		$('#action-name').html(OBJ_ENGLISH[OBJ_BASE]);
 
 		var planetid = pendingAction.planetid;
 		locationText += clientGame.game.board.planets[planetid].name;
-		$('#action-location')[0].innerHTML = locationText;
-		$('#action-label')[0].innerHTML = 'Action';
-		$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_BASE].action;
+		$('#action-location').html(locationText);
+		$('#action-label').html('Action');
+		$('#action-text').html(INFO_TEXT.structure[OBJ_BASE].action);
 
 		$('#action-button-1').hide();
 		$('#action-button-2').prop('value', 'Attack');
@@ -1521,8 +1521,7 @@ var updateActionMenu = function( actortype, id ){
 											hideActionMenu();
 											setPendingAction( ACT_BASE_ATTACK );
 											updateBoardInteractivity();
-											// updateTurnHelpMessage();
-										} );
+		} );
 	}
 };
 
