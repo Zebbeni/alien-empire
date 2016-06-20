@@ -276,15 +276,21 @@ var drawTradeMenu = function(player) {
 			$('#opponent-trade-res' + i).html(0);
 		}
 		var playersHtml = "<table><tr>";
+		var count = 0;
 		for ( var p = 0; p < 4; p++ ){
 			if ( p < clientGame.game.players.length ){
 				if ( p != clientTurn){
+					// AAAGh not sure what to do here. 
+					$('#trade-radio-n' + count).removeClass('radio-off trade-radio-p' + p).addClass('radio-on');
 					playersHtml += '<td class="trade-radio-button radio-on" id="trade-radio-button' + p + '"';
 					playersHtml += 'onclick="javascript:toggleTradeRadio(' + p + ')"></td>';
+					count += 1;
 				}
 			}
 			else {
-				playersHtml += '<td style="width: 25px height:25px"></td>';
+				// Aaugh Not sure what to do here either!
+				$('#trade-radio-n' + count).off();
+				count += 1;
 			}
 		}
 		playersHtml += "</tr></table>";
