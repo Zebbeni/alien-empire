@@ -178,11 +178,11 @@ var handleClickAgent = function( agenttype ) {
 };
 
 var showAgentRetireMenu = function() {
-	$('#agent-retire-div')[0].style.visibility = "visible";
+	$('#agent-retire-div').show();
 };
 
 var hideAgentRetireMenu = function() {
-	$('#agent-retire-div')[0].style.visibility = "hidden";
+	$('#agent-retire-div').hide();
 };
 
 var updateAgentRetireMenu = function( agenttype ){
@@ -191,16 +191,16 @@ var updateAgentRetireMenu = function( agenttype ){
 	var planetid = agent.planetid;
 	var planet = clientGame.game.board.planets[planetid];
 	$('#agent-retire-pic').removeClass().addClass('actor-pic actor-agent-' + agenttype);
-	$('#agent-retire-name')[0].innerHTML = AGT_ENGLISH[agenttype];
+	$('#agent-retire-name').html(AGT_ENGLISH[agenttype]);
 	$('#agent-retire-div').addClass('action-div-p' + clientTurn);
-	$('#agent-retire-location')[0].innerHTML = 'Location: ' + planet.name;
+	$('#agent-retire-location').html('Location: ' + planet.name);
 	if (agent.used) {
 		var dest_id = agent.destination;
 		var dest = clientGame.game.board.planets[dest_id].name
-		$('#agent-retire-text')[0].innerHTML = 'Currently on mission to ' + dest;
+		$('#agent-retire-text').html('Currently on mission to ' + dest);
 	}
 	else {
-		$('#agent-retire-text')[0].innerHTML = 'Not on mission';
+		$('#agent-retire-text').html('Not on mission');
 	}
 	$('#agent-retire-button').click( function() { 
 											hideAgentRetireMenu();

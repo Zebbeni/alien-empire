@@ -1,7 +1,7 @@
 //update lobby stage, make it visible, and hide login stage
 
 var moveToLogin = function() {
-    $('#login-div')[0].style.visibility = "visible";
+    $('#login-div').show();
     $('#input-username').focus();
     $('#login-div').transition({opacity: 1.0}, 2000);
     $('#login-center-div').transition({top: '40%'}, 2000);
@@ -9,16 +9,16 @@ var moveToLogin = function() {
 
 var leaveLogin = function() {
     $('#login-div').transition({opacity: 0.0}, 500, function() {
-        $('#login-div')[0].style.visibility = "hidden";
+        $('#login-div').hide();
     });
     $('#login-center-div').transition({top: '38%'}, 500);
 };
 
 var moveToLobby = function() {
 
-    $('#lobby-div')[0].style.visibility = "visible";
-    $('#logout-button')[0].style.visibility = "visible";
-    $('#main-div')[0].style.visibility = "visible";
+    $('#lobby-div').show();
+    $('#logout-button').show();
+    $('#main-div').show();
 
     $("#lobby-div").transition({top: '0px', opacity: 1.0}, 1000);
     $("#logout-button").transition({top: '-30px'}, 500);
@@ -27,9 +27,9 @@ var moveToLobby = function() {
 };
 
 var leaveLobby = function() {
-    $('#logout-button')[0].style.visibility = "hidden";
+    $('#logout-button').hide();
     $('#lobby-div').transition({opacity: 0.00}, 1000, function() {
-        $('#lobby-div')[0].style.visibility = "hidden";
+        $('#lobby-div').hide();
     });
 };
 
@@ -37,38 +37,37 @@ var leaveLobby = function() {
  * Hide the lobby and perform some function after the last animation is complete.
  */
 var moveToGame = function( fn ) {
-    $('#screen-div')[0].style.visibility = "hidden";
+    $('#screen-div').hide();
     $("#logout-button").transition({top: '-60px'}, 500);
     $("#staging-div").transition({top: '45%'}, 1000);
     $("#main-div").transition({opacity: 0.00 }, 1000, function(){
         $('#main-div')[0].style.visibility = "hidden";
-        $("#staging-div")[0].style.visibility = "hidden";
-        $("#lobby-div")[0].style.visibility = "hidden";
-        $("#logout-button")[0].style.visibility = "hidden";
+        $("#staging-div").hide();
+        $("#lobby-div").hide();
+        $("#logout-button").hide();
         fn();
     });
     $("#lobby-div").transition({top: '-20px'}, 1000);
 };
 
 var moveToGameStage = function() {
-    $('#screen-div')[0].style.visibility = "visible";
+    $('#screen-div').show();
     $("#screen-div").transition({opacity: 1.0}, 500);
-    $('#staging-div')[0].style.visibility = "visible";
+    $('#staging-div').show();
     $("#staging-div").transition({top: '50%', opacity: 1.0}, 1000);
 };
 
 var hideGameStage = function() {
     $("#screen-div").transition({opacity: 0.0}, 500, function() {
-        $('#screen-div')[0].style.visibility = "hidden";
+        $('#screen-div').hide();
     });
     $("#staging-div").transition({top: '45%', opacity: 0.00}, 1000, function() {
-        $('#staging-div')[0].style.visibility = "hidden";
+        $('#staging-div').hide();
     });
 };
 
 // Revisit these two functions when you actually create the nice game interface
 var moveToGameInterface = function() {
-    $('#game-messages-wrapper-div')[0].style.visibility = "visible";
     $('#game-interface-div').show();
     $('#game-interface-div').transition({opacity: 1.0}, 2000 );
     $('#game-end-div').hide();
@@ -76,11 +75,6 @@ var moveToGameInterface = function() {
 };
 
 var leaveGameInterface = function() {
-    $('#your-turn-div')[0].style.visibility = "hidden";
-    $('#pending-action-div')[0].style.visibility = "hidden";
-    $('#done-button')[0].style.visibility = "hidden";
-    $('#players-wrapper-div')[0].style.visibility = "hidden";
-    $('#game-messages-wrapper-div')[0].style.visibility = "hidden";
     $('.phase-div').hide();
     $('#game-interface-div').transition({opacity: 0.0}, 1000, function() {
         $('#game-interface-div').hide();

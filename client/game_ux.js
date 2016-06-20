@@ -116,37 +116,8 @@ var updateInterface = function() {
 	updateResourcePkgMenu();
 	updateResourceAnimations();
 
-	// setInterfaceImages();
-
 	if (clientGame.game.isEnded){
 		showEndGameMenu();
-	}
-};
-
-var clickBuildButton = function() {
-	if ( clientGame.game.round != 0 ) {
-		updateBoardInteractivity();
-		$('#recruit-buttons-div')[0].style.visibility = "hidden";
-	}
-};
-
-var clickRecruitButton = function() {
-	if ( clientGame.game.round != 0 ) {
-		updateBoardInteractivity();
-		$('#build-buttons-div')[0].style.visibility = "hidden";
-	}
-};
-
-/**
- * Simple function, hides a menu with a given id if visible, makes
- * it visible if it's hidden
- */
-var toggleMenu = function( menuid, val ) {
-	if ( val == MENU_ON || (val != MENU_OFF && $(menuid)[0].style.visibility == "hidden" )) {
-		$(menuid)[0].style.visibility = "visible";  
-	}
-	else {
-		$(menuid)[0].style.visibility = "hidden";
 	}
 };
 
@@ -173,7 +144,7 @@ var hideYourTurnMenu = function() {
 	$('#done-button').off();
 	$('#done-button').attr('value', 'Waiting');
 	$("#your-turn-div").transition({ opacity: 0.00, top: "28%"}, 500, function(){
-		$('#your-turn-div')[0].style.visibility = "hidden";
+		$('#your-turn-div').hide();
 	});
 };
 
@@ -187,7 +158,7 @@ var displayConfirmMenu = function() {
 	}
 	else {
 		displayConfirmMessage();
-		$('#confirm-action-div')[0].style.visibility = "visible";
+		$('#confirm-action-div').show();
 		$("#confirm-action-div").transition({ opacity: 1.00, top: "40%"}, 500 );
 	}
 };
@@ -195,7 +166,7 @@ var displayConfirmMenu = function() {
 var hideConfirmMenu = function() {
 	$("#confirm-action-div").transition({ opacity: 0.00, top: "38%"}, 500, 
 		function(){
-			$('#confirm-action-div')[0].style.visibility = "hidden";
+			$('#confirm-action-div').hide();
 		});
 };
 
@@ -369,14 +340,14 @@ var displayConfirmMessage = function() {
 };
 
 var displayIncludeSmugglerMenu = function(){
-	$('#include-smuggler-div')[0].style.visibility = "visible";
+	$('#include-smuggler-div').show();
 	$("#include-smuggler-div").transition({ opacity: 1.00, top: "40%"}, 500 );	
 };
 
 var hideIncludeSmugglerMenu = function() {
 	$("#include-smuggler-div").transition({ opacity: 0.00, top: "38%"}, 500, 
 		function(){
-			$('#include-smuggler-div')[0].style.visibility = "hidden";
+			$('#include-smuggler-div').hide();
 		});
 };
 
@@ -559,8 +530,7 @@ var buildChatMessage = function( msg, messages, m) {
  * Display your turn menu (and fades back out after a few seconds)
  */
 var displayEndTurn = function() {
-	$('#your-turn-div')[0].style.visibility = "visible";
-	$('#done-button')[0].style.visibility = "visible";
+	$('#your-turn-div').show();
 	$('#done-button').attr('value', 'End Turn');
 	$('#done-button').off().click(function(){
 		if ( clientGame.game.phase != PHS_PLACING ) {
@@ -570,7 +540,7 @@ var displayEndTurn = function() {
 	$('#done-button').removeClass().addClass('end-turn-button');
 	$("#your-turn-div").transition({ opacity: 1.00, top: "30%"}, 500, function() {
 		$("#your-turn-div").delay(3000).transition({ opacity: 0.00, top: "28%"}, 500, function(){
-			$('#your-turn-div')[0].style.visibility = "hidden";
+			$('#your-turn-div').hide();
 		});
 	});
 };
@@ -584,7 +554,7 @@ var displayCancelAction = function() {
 };
 
 var createTurnHelpMessage = function() {
-	$('#pending-action-div')[0].style.visibility = "visible";
+	$('#pending-action-div').show();
 };
 
 var updateTurnHelpMessage = function() {
@@ -862,7 +832,6 @@ var showInfoMenu = function(evt, type, id){
 		$('#upkeep-info-res-' + 0).removeClass("metal-icon water-icon fuel-icon no-icon").addClass('food-icon');
 	}
 	$('#info-div').show();
-	// setInterfaceImages();
 };
 
 var hideInfoMenu = function() {
@@ -1446,12 +1415,12 @@ var viewMissionAction = function() {
 };
 
 var showActionMenu = function() {
-	$('#action-div')[0].style.visibility = "visible";
+	$('#action-div').show();
 };
 
 var hideActionMenu = function() {
-	$('#action-div')[0].style.visibility = "hidden";
-	$('#action-button-1')[0].style.visibility = "hidden";
+	$('#action-div').hide();
+	$('#action-button-1').hide();
 };
 
 var cancelAction = function() {
@@ -1491,7 +1460,7 @@ var updateActionMenu = function( actortype, id ){
 			$('#action-text')[0].innerHTML = INFO_TEXT.agent[id].action;
 		}
 		$('#action-button-1').attr('value', 'Move');
-		$('#action-button-1')[0].style.visibility = "visible";
+		$('#action-button-1').show();
 		$('#action-button-1').off().click( function() { 
 											hideActionMenu();
 											setPendingAction( ACT_MOVE_AGENT );
@@ -1521,19 +1490,17 @@ var updateActionMenu = function( actortype, id ){
 			$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_FLEET].action;
 
 			$('#action-button-1').attr('value', 'Move');
-			$('#action-button-1')[0].style.visibility = "visible";
+			$('#action-button-1').show();
 			$('#action-button-1').off().click( function() { 
 												hideActionMenu();
 												setPendingAction( ACT_FLEET_MOVE );
 												updateBoardInteractivity();
-												// updateTurnHelpMessage();
 											} );
 			$('#action-button-2').attr('value', 'Attack');
 			$('#action-button-2').off().click( function() { 
 												hideActionMenu();
 												setPendingAction( ACT_FLEET_ATTACK );
 												updateBoardInteractivity();
-												// updateTurnHelpMessage();
 											} );
 		}
 	}
@@ -1548,7 +1515,7 @@ var updateActionMenu = function( actortype, id ){
 		$('#action-label')[0].innerHTML = 'Action';
 		$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_BASE].action;
 
-		$('#action-button-1')[0].style.visibility = "hidden";
+		$('#action-button-1').hide();
 		$('#action-button-2').prop('value', 'Attack');
 		$('#action-button-2').off().click( function() { 
 											hideActionMenu();

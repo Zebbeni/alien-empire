@@ -619,7 +619,6 @@
 
 .player-trade-request-div {
 	position: absolute;
-	visibility: hidden;
 	width: 222px;
 	height: 24px;
 	top: 33px;
@@ -809,7 +808,7 @@
 
 .fourtoone-menu {
 	position: absolute;
-	visibility: hidden;
+	display: none;
 	float: left;
 	left: 380px;
 	height: 25px;

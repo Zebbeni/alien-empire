@@ -214,9 +214,9 @@ var animateResourceChange = function( pkg ) {
 
 		$('#res-change' + i).text(value);
 		$('#res-change' + i).css({left: leftpos, top: "0px", opacity: "1.00"});
-		$('#res-change' + i)[0].style.visibility = "visible";
+		$('#res-change' + i).show();
 		$('#res-change' + i).transition({ opacity: 0.00, top: "-15px"}, 2000, function(){
-			$( this )[0].style.visibility = "hidden";
+			$( this ).hide();
 		});
 	}
 };
@@ -237,7 +237,7 @@ var tradeFourToOne = function( paykind, getkind ){
 var toggleFourToOneMenu = function( res ){
 	for ( var i = RES_METAL; i <= RES_FOOD; i++){
 		if ( i == res){
-			if ( $('#fourtoone-menu' + i)[0].style.visibility == "visible"){
+			if ( $('#fourtoone-menu' + i).is(":visible") ){
 				hideFourToOneMenu( i );
 			}
 			else {
@@ -251,15 +251,13 @@ var toggleFourToOneMenu = function( res ){
 };
 
 var hideFourToOneMenu = function( res ){
-	if ( $('#fourtoone-menu' + res)[0].style.visibility == "visible"){
-		$('#fourtoone-menu' + res).transition({ opacity: 0.00}, 250, function(){
-			$( this )[0].style.visibility = "hidden";
-		});
-	}
+	$('#fourtoone-menu' + res).transition({ opacity: 0.00}, 250, function(){
+		$( this ).hide();
+	});
 };
 
 var showFourToOneMenu = function( res ){
-	$('#fourtoone-menu' + res)[0].style.visibility = "visible";
+	$('#fourtoone-menu' + res).show();
 	$('#fourtoone-menu' + res).transition({ opacity: 1.00}, 250);
 };
 
@@ -274,8 +272,8 @@ var drawTradeMenu = function(player) {
 		allowTradeMenuChanges('auto');
 
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-			$('#player-trade-res' + i)[0].innerHTML = 0;
-			$('#opponent-trade-res' + i)[0].innerHTML = 0;
+			$('#player-trade-res' + i).html(0);
+			$('#opponent-trade-res' + i).html(0);
 		}
 		var playersHtml = "<table><tr>";
 		for ( var p = 0; p < 4; p++ ){
@@ -290,7 +288,7 @@ var drawTradeMenu = function(player) {
 			}
 		}
 		playersHtml += "</tr></table>";
-		$('#trade-offers-div')[0].innerHTML = playersHtml;
+		$('#trade-offers-div').html(playersHtml);
 		$('#trade-button-yes').prop('value', 'Submit Request');
 		$('#trade-button-yes').css('pointer-events', 'auto');
 		$('#trade-button-yes').off().click( function() { 
@@ -351,8 +349,8 @@ var drawTradeMenu = function(player) {
 		var offered_to = trade.offered_to;
 
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-			$('#player-trade-res' + i)[0].innerHTML = requester_resources[i];
-			$('#opponent-trade-res' + i)[0].innerHTML = opponent_resources[i];
+			$('#player-trade-res' + i).html(requester_resources[i]);
+			$('#opponent-trade-res' + i).html(opponent_resources[i]);
 		}
 		var playersHtml = "<table><tr>";
 		for ( var p = 0; p < 4; p++ ){
@@ -388,6 +386,7 @@ var drawTradeMenu = function(player) {
 
 		allowTradeMenuChanges('none');
 	}
+	setInterfaceImage('.trade-radio-button');
 	showTradeMenu();
 };
 
@@ -421,18 +420,18 @@ var toggleTradeRadio = function( player ){
 
 var showTradeMenu = function() {
 	createjs.Sound.play("click2");
-	$('#trade-menu-div')[0].style.visibility = "visible";
+	$('#trade-menu-div').show();
 	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 1000);
 	$('#trade-menu-div').css();
-	$('#trade-screen')[0].style.visibility = "visible";
+	$('#trade-screen').show();
 	$('#trade-screen').transition({ opacity: 1.00 }, 1000);
 };
 
 var hideTradeMenu = function() {
 	$('#trade-menu-div').transition({opacity: 0.00,top: "38%"}, 1000,function(){
-		$( this )[0].style.visibility = "hidden";
+		$( this ).hide();
 	});
 	$('#trade-screen').transition({ opacity: 0.00}, 1000, function(){
-		$( this )[0].style.visibility = "hidden";
+		$( this ).hide();
 	});
 };
