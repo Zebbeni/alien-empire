@@ -32,6 +32,15 @@ var initBases = function() {
 		baseimage.y = 0;
 		base.addChild(baseimage);
 
+		var basetext = new createjs.Text('Used', "normal 20px Play", "white");
+		basetext.name = "basetext";
+		basetext.textAlign = "center";
+		basetext.x = 70;
+		basetext.y = 60;
+		basetext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 2, 2, 1);
+		basetext.alpha = 0.0;
+		base.addChild(basetext);
+
 		base.scaleX = 0.80;
 		base.scaleY = 0.80;
 		base.used = false;
@@ -144,8 +153,8 @@ var updateBases = function( planetid ) {
 			fadeIn(base, 500, true, false);
 		}
 		else if (base.used != used){
-
-			baseimage = base.getChildByName('baseimage');
+			var basetext = base.getChildByName('basetext');
+			var baseimage = base.getChildByName('baseimage');
 			baseimage.graphics.clear();
 			var baseImg = loader.getResult( 'structures' + String(player) );
 
@@ -153,13 +162,17 @@ var updateBases = function( planetid ) {
 				baseimage.graphics.beginBitmapFill( baseImg, "no-repeat" ).drawRect( 584, 0, 140, 140);
 				baseimage.x = -584;
 				baseimage.y = 0;
-				base.addChild(baseimage);
+				basetext.alpha = 1.0;
+				// base.addChild(baseimage);
+				// basetext.visible = true;
 			}
 			else {
 				baseimage.graphics.beginBitmapFill( baseImg, "no-repeat" ).drawRect( 0, 0, 140, 140);
 				baseimage.x = 0;
 				baseimage.y = 0;
-				base.addChild(baseimage);
+				basetext.alpha = 0.0;
+				// base.addChild(baseimage);
+				// basetext.visible = false;
 			}
 			base.used = used;
 		}

@@ -26,6 +26,15 @@ var initFleets = function() {
 		fleetimage.y = -100;
 		fleetshape.addChild(fleetimage);
 
+		var fleettext = new createjs.Text('Used', "normal 20px Play", "white");
+		fleettext.name = "fleettext";
+		fleettext.textAlign = "center";
+		fleettext.x = 42;
+		fleettext.y = 21;
+		fleettext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 2, 2, 1);
+		fleettext.alpha = 0.0;
+		fleetshape.addChild(fleettext);
+
 		fleetshape.visible = false;
 		fleetshape.mouseEnabled = true;
 		fleetshape.scaleX = 0.75;
@@ -95,18 +104,21 @@ var updateFleets = function(planetid) {
 			if ( fleetshape.visible ){
 				if ( fleetshape.used != fleet.used ){
 
+					var fleettext = fleetshape.getChildByName('fleettext');
 					var fleetimage = fleetshape.getChildByName('fleetimage');
+					var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
 					fleetimage.graphics.clear();
+
 					if ( fleet.used ){
-						var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
 						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(1000, 100, 84, 68);
 						fleetimage.x = -1000;
 						fleetimage.y = -100;
+						fleettext.alpha = 1.0;
 					} else {
-						var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
 						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(416, 100, 84, 68);
 						fleetimage.x = -416;
 						fleetimage.y = -100;
+						fleettext.alpha = 0.0;
 					}
 				}
 				fleetshape.used = fleet.used;
