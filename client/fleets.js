@@ -19,6 +19,7 @@ var initFleets = function() {
 		fleetshape.fleetid = fleetid;
 
 		var fleetimage = new createjs.Shape();
+		fleetimage.name = 'fleetimage';
 		var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
 		fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(416, 100, 84, 68);
 		fleetimage.x = -416;
@@ -29,6 +30,8 @@ var initFleets = function() {
 		fleetshape.mouseEnabled = true;
 		fleetshape.scaleX = 0.75;
 		fleetshape.scaleY = 0.75;
+
+		fleetshape.used = false;
 
 		fleetshape.on("mouseover", function() {
 			selectFleet( this.name );
@@ -87,6 +90,13 @@ var updateFleets = function(planetid) {
 
 			placeY = fleetsY + ( rowNum * yDist );
 			placeX = fleetsX + xOffset + (xDist * rowIndex);
+
+			if ( fleetshape.visible ){
+				if ( fleetshape.used != fleets[fleetid].used ){
+					fleetshape.alpha = fleets[fleetid].used ? 0.65 : 1.0;
+				}
+				fleetshape.used = fleets[fleetid].used;
+			}
 
 			if ( !fleetshape.visible ) {
 				fleetshape.x = placeX;

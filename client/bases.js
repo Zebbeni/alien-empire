@@ -120,6 +120,7 @@ var updateBases = function( planetid ) {
 		var basesContainer = board.getChildByName("basesContainer");
 		var player = planet.base.player;
 		var base = basesContainer.getChildByName("base" + player);
+		var used = planet.base.used;
 
 		base.planetid = planetid;
 		base.player = player;
@@ -138,6 +139,9 @@ var updateBases = function( planetid ) {
 			}
 
 			fadeIn(base, 500, true, false);
+		}
+		else {
+			base.alpha = used ? 0.65 : 1.0;
 		}
 	}
 };
