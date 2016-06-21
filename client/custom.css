@@ -5,7 +5,7 @@
 	font-size: 11pt;
 	background-size: auto 100%;
 	background-repeat: no-repeat;
-	background-position: top left;
+	/*background-position: top left;*/
 	outline: none;
     -webkit-appearance: none;
     transition-property: none
@@ -165,7 +165,6 @@ button {
 
 #main-div {
 	position: fixed;
-	/*top: 450px;*/
 	top: 50%;
 	left: 50%;
 	width: 1000px;
@@ -420,6 +419,8 @@ button {
 	vertical-align: top;
 	padding-left: 5px;
 	padding-right: 5px;
+	font-size: 10pt;
+	line-height: 14pt;
 }
 
 .msg-server-td {
@@ -489,7 +490,7 @@ button {
 #users-scroll {
 	float: left;
 	height: 638px;
-	width: 200px;
+	width: 195px;
 	left: 20px;
 	top: 38px;
 }

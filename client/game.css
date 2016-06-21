@@ -491,12 +491,6 @@
 	padding: 0px;
 }
 
-.nocost-td {
-	width: 50px;
-	padding-left: 5px;
-	color: white;
-}
-
 #resource-phase-div, #upkeep-phase-div {
 	width: 100px;
 	height: 25px;
@@ -600,18 +594,31 @@
 	padding: 0px;
 }
 
-.metal-icon, .water-icon, .fuel-icon, .food-icon, .points-icon {
+.res-icon, .metal-icon, .water-icon, .fuel-icon, .food-icon, .points-icon {
 	width: 25px;
 	height: 25px;
 	font-size: 17px; 
 	padding: 0px;
 	text-align: center;
 	vertical-align: middle;
+	color: white;
+	background-size: 50px 100px;
+	background-color: transparent;
 }
+
+.metal-icon { background-position: 0px 0px; }
+.water-icon { background-position: 0px -25px; }
+.fuel-icon { background-position: 0px -50px; }
+.food-icon { background-position: 0px -75px; }
+.no-icon { background-position: 0px -100px; }
+
+.metal-icon-button:hover { background-position: -25px 0px; }
+.water-icon-button:hover { background-position: -25px -25px; }
+.fuel-icon-button:hover { background-position: -25px -50px; }
+.food-icon-button:hover { background-position: -25px -75px; }
 
 .player-trade-request-div {
 	position: absolute;
-	visibility: hidden;
 	width: 222px;
 	height: 24px;
 	top: 33px;
@@ -650,18 +657,6 @@
 	height: 31px;
 }
 
-.res-icon-button {
-	background-color: transparent;
-}
-
-.res-icon-button:hover {
-	background-position: -25px 0;
-}
-
-.metal-icon, .water-icon, .fuel-icon, .food-icon {
-	color: white;
-}
-
 .points-icon {
 	color: black;
 	margin-left: 10px;
@@ -670,18 +665,19 @@
 
 #game-messages-wrapper-div {
 	position: absolute;
-	width: 350px;
+	width: 320px;
 	height: 160px;
-	bottom: 145px;
-	left: 0px;
+	bottom: 143px;
+	left: 2px;
 	pointer-events: auto;
 }
 
 #game-messages-div, #game-chat-input {
 	position: relative;
 	width: 100%;
-	background: rgba(0, 0, 0, 0.3);
+	background: rgba(0, 0, 0, 0.6);
 	margin: 2px;
+	font-size: 10pt;
 }
 
 #game-messages-div {
@@ -812,7 +808,7 @@
 
 .fourtoone-menu {
 	position: absolute;
-	visibility: hidden;
+	display: none;
 	float: left;
 	left: 380px;
 	height: 25px;
@@ -950,6 +946,10 @@
 	height: 25px;
 }
 
+#trade-radio-table {
+	table-layout: fixed;
+}
+
 .trade-radio-button {
 	width: 25px;
 	height: 25px;
@@ -1069,7 +1069,7 @@
 
 .struct-button {
 	background-color: transparent;
-	background-size: 292px 84px;
+	background-size: 584px 84px;
 }
 
 .struct-mine-button {
@@ -1082,6 +1082,10 @@
 	background-position: -174px -50px;
 }
 
+.struct-mine-button:active {
+	background-position: -466px -50px;
+}
+
 .struct-factory-button {
 	width: 34px;
 	height: 50px;
@@ -1090,6 +1094,10 @@
 
 .struct-factory-button:hover {
 	background-position: -174px 0;
+}
+
+.struct-factory-button:active {
+	background-position: -466px 0;
 }
 
 .struct-embassy-button {
@@ -1102,6 +1110,10 @@
 	background-position: -245px 0;
 }
 
+.struct-embassy-button:active {
+	background-position: -537px 0;
+}
+
 .struct-fleet-button {
 	width: 42px;
 	height: 34px;
@@ -1110,6 +1122,10 @@
 
 .struct-fleet-button:hover {
 	background-position: -250px -50px;
+}
+
+.struct-fleet-button:active {
+	background-position: -542px -50px;
 }
 
 .struct-base-button {
@@ -1125,10 +1141,34 @@
 	background-position: -70px 0;
 }
 
+.struct-base-button:active {
+	background-position: -362px 0;
+}
+
+.mine-button-used, .mine-button-used:hover, .mine-button-used:active {
+	background-position: -432px -50px;
+}
+
+.factory-button-used, .factory-button-used:hover, .factory-button-used:active {
+	background-position: -432px 0px;
+}
+
+.embassy-button-used, .embassy-button-used:hover, .embassy-button-used:active {
+	background-position: -500px 0;
+}
+
+.fleet-button-used, .fleet-button-used:hover, .fleet-button-used:active {
+	background-position: -500px -50px;
+}
+
+.base-button-used, .base-button-used:hover, .base-button-used:active {
+	background-position: -292px 0px;
+}
+
 #agents-table {
 	position: absolute;
-	top: 31px;
-	left: 13px;
+	top: 32px;
+	left: 12px;
 	width: 216px;
 	height: 108px;
 }
@@ -1136,11 +1176,71 @@
 .agent-button {
 	width: 54px;
 	height: 54px;
-	background-color: transparent;
+	background-size: 216px 432px;
+	color: white;
+	text-align: center;
+	vertical-align: bottom;
+	table-layout: fixed;
+	margin-right: 1px;
+	margin-bottom: 1px;
+	padding: 0;
 }
 
-.agent-button:hover {
-	background-position: -54px 0;
+/* I bet we can set all this css in a javascript for loop */ 
+#agent-button-explorer { background-position: 0px 0px; }
+#agent-button-explorer:hover { background-position: -54px 0px; }
+#agent-button-explorer:active { background-position: -162px 0px; }
+#agent-button-explorer.agent-off, #agent-button-explorer.agent-off:hover, #agent-button-explorer.agent-off:active {
+	background-position: -108px 0px;
+}
+
+#agent-button-miner { background-position: 0px -54px; }
+#agent-button-miner:hover { background-position: -54px -54px; }
+#agent-button-miner:active { background-position: -162px -54px; }
+#agent-button-miner.agent-off, #agent-button-miner.agent-off:hover, #agent-button-miner.agent-off:active {
+	background-position: -108px -54px;
+}
+
+#agent-button-surveyor { background-position: 0px -108px; }
+#agent-button-surveyor:hover { background-position: -54px -108px; }
+#agent-button-surveyor:active { background-position: -162px -108px; }
+#agent-button-surveyor.agent-off, #agent-button-surveyor.agent-off:hover, #agent-button-surveyor.agent-off:active {
+	background-position: -108px -108px;
+}
+
+#agent-button-ambassador { background-position: 0px -162px; }
+#agent-button-ambassador:hover { background-position: -54px -162px; }
+#agent-button-ambassador:active { background-position: -162px -162px; }
+#agent-button-ambassador.agent-off, #agent-button-ambassador.agent-off:hover, #agent-button-ambassador.agent-off:active {
+	background-position: -108px -162px;
+}
+
+#agent-button-envoy { background-position: 0px -216px; }
+#agent-button-envoy:hover { background-position: -54px -216px; }
+#agent-button-envoy:active { background-position: -162px -216px; }
+#agent-button-envoy.agent-off, #agent-button-envoy.agent-off:hover, #agent-button-envoy.agent-off:active {
+	background-position: -108px -216px;
+}
+
+#agent-button-spy { background-position: 0px -270px; }
+#agent-button-spy:hover { background-position: -54px -270px; }
+#agent-button-spy:active { background-position: -162px -270px; }
+#agent-button-spy.agent-off, #agent-button-spy.agent-off:hover, #agent-button-spy.agent-off:active {
+	background-position: -108px -270px;
+}
+
+#agent-button-smuggler { background-position: 0px -324px; }
+#agent-button-smuggler:hover { background-position: -54px -324px; }
+#agent-button-smuggler:active { background-position: -162px -324px; }
+#agent-button-smuggler.agent-off, #agent-button-smuggler.agent-off:hover, #agent-button-smuggler.agent-off:active {
+	background-position: -108px -324px;
+}
+
+#agent-button-sabateur { background-position: 0px -378px; }
+#agent-button-sabateur:hover { background-position: -54px -378px; }
+#agent-button-sabateur:active { background-position: -162px -378px; }
+#agent-button-sabateur.agent-off, #agent-button-sabateur.agent-off:hover, #agent-button-sabateur.agent-off:active {
+	background-position: -108px -378px;
 }
 
 #resourcepackages-div {

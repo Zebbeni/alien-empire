@@ -34,7 +34,7 @@ var displayUsers = function() {
             }
         }
     }
-    $('#users-scroll')[0].innerHTML = usersScrollItems;
+    $('#users-scroll').html(usersScrollItems);
 };
 
 var displayGames = function() {
@@ -56,10 +56,12 @@ var displayGames = function() {
             gamesHtml += ' onclick="javascript:submitJoinGame(' + g + ')"></input>';
         }
     }
-    $('#games-list-div')[0].innerHTML = gamesHtml;
+    $('#games-list-div').html(gamesHtml);
 
     // update .game-button here, it won't get updated if we only do it onload
-    setInterfaceImages();
+    setInterfaceImage('.game-button');
+    setInterfaceImage('#staging-ready-button');
+    setInterfaceImage('#staging-leave-button');
 };
 
 var displayMessages = function() {

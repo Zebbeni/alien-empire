@@ -197,7 +197,7 @@ var INFO_TEXT = {
 		},
 		8: {
 			action: 'Target a planet to destroy an opponent structure there',
-			info: 'Target a planet. On arrival, choose one opponent factory, embassy, base, or fleet. Structure is destroyed. Earns 1 point'
+			info: 'Target a planet. On arrival, choose one opponent factory, embassy, base, or fleet. Structure is destroyed. Earns 1 destruction point.'
 		}
 	},
 	structure: {
