@@ -6,7 +6,7 @@ var initBases = function() {
 
 	for ( var p = 0; p < clientGame.game.players.length; p++){
 
-		var base = new createjs.Shape();
+		var base = new createjs.Container();
 		base.name = "base" + p;
 		base.planetid = undefined;
 		base.player = p;
@@ -24,14 +24,17 @@ var initBases = function() {
 			handleClickBase( this.planetid, this.player );
 		});
 
+		baseimage = new createjs.Shape();
+		baseimage.name = 'baseimage';
 		var baseImg = loader.getResult( 'structures' + String(p) );
-		base.graphics.beginBitmapFill( baseImg, 
-									   "no-repeat" ).drawRect( 0,
-									   						   0,
-									   						   140, 
-									   						   140);
+		baseimage.graphics.beginBitmapFill( baseImg, "no-repeat" ).drawRect( 0, 0, 140, 140);
+		baseimage.x = 0;
+		baseimage.y = 0;
+		base.addChild(baseimage);
+
 		base.scaleX = 0.80;
 		base.scaleY = 0.80;
+		base.used = false;
 
 		basesContainer.addChild(base);
 	}
@@ -140,8 +143,25 @@ var updateBases = function( planetid ) {
 
 			fadeIn(base, 500, true, false);
 		}
-		else {
-			base.alpha = used ? 0.65 : 1.0;
+		else if (base.used != used){
+
+			baseimage = base.getChildByName('baseimage');
+			baseimage.graphics.clear();
+			var baseImg = loader.getResult( 'structures' + String(player) );
+
+			if ( used ){
+				baseimage.graphics.beginBitmapFill( baseImg, "no-repeat" ).drawRect( 584, 0, 140, 140);
+				baseimage.x = -584;
+				baseimage.y = 0;
+				base.addChild(baseimage);
+			}
+			else {
+				baseimage.graphics.beginBitmapFill( baseImg, "no-repeat" ).drawRect( 0, 0, 140, 140);
+				baseimage.x = 0;
+				baseimage.y = 0;
+				base.addChild(baseimage);
+			}
+			base.used = used;
 		}
 	}
 };

@@ -102,13 +102,11 @@ var updateFleets = function(planetid) {
 						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(1000, 100, 84, 68);
 						fleetimage.x = -1000;
 						fleetimage.y = -100;
-						// fleetshape.addChild(fleetimage);
 					} else {
 						var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
 						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(416, 100, 84, 68);
 						fleetimage.x = -416;
 						fleetimage.y = -100;
-						// fleetshape.addChild(fleetimage);
 					}
 				}
 				fleetshape.used = fleet.used;
