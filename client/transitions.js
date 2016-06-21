@@ -41,7 +41,7 @@ var moveToGame = function( fn ) {
     $("#logout-button").transition({top: '-60px'}, 500);
     $("#staging-div").transition({top: '45%'}, 1000);
     $("#main-div").transition({opacity: 0.00 }, 1000, function(){
-        $('#main-div')[0].style.visibility = "hidden";
+        $('#main-div').hide();
         $("#staging-div").hide();
         $("#lobby-div").hide();
         $("#logout-button").hide();

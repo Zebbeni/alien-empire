@@ -59,7 +59,9 @@ var displayGames = function() {
     $('#games-list-div').html(gamesHtml);
 
     // update .game-button here, it won't get updated if we only do it onload
-    setInterfaceImages();
+    setInterfaceImage('.game-button');
+    setInterfaceImage('#staging-ready-button');
+    setInterfaceImage('#staging-leave-button');
 };
 
 var displayMessages = function() {

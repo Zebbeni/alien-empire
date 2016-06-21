@@ -74,7 +74,6 @@ var createInterface = function() {
 	createBottomBarMenus();
 	createRoundMenu();
 	createActionMenu();
-
 	setInterfaceImages();
 }
 /**
@@ -1203,6 +1202,8 @@ var updateMissionsMenu = function(round, index) {
 	$('#mission-button-3').hide();
 
 	$('#mission-name').html('Round ' + String(missionRound + 2));
+
+	// if no missions to resolve this round
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
 		$('#mission-agent-div').removeClass().addClass('actor-pic actor-struct-1');
 		$('#mission-location').html('- - -');
@@ -1216,7 +1217,6 @@ var updateMissionsMenu = function(round, index) {
 			});
 		}
 	}
-
 	else {
 		var mission = missions[ missionRound ][ missionindex ];
 		var player = mission.player;
@@ -1393,9 +1393,6 @@ var updateMissionsMenu = function(round, index) {
 				}
 			}
 		}
-		else {
-
-		}
 	}
 };
 
@@ -1455,6 +1452,7 @@ var updateActionMenu = function( actortype, id ){
 			else {
 				$('#action-text').html(AGT_ENGLISH[id] + ' already moved this turn');
 			}
+			$('#action-button-3').attr('value', 'Close');
 		}
 		else {
 			$('#action-text').html(INFO_TEXT.agent[id].action);
