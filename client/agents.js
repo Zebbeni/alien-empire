@@ -102,6 +102,9 @@ var updateAgents = function(planetid) {
 				num_objects_moving += 1;
 				createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
 			}
+			if ( player == clientTurn ){
+				agentContainer.alpha = agent.used ? 0.65 : 1.0;
+			}
 		} 
 		else {
 			agentContainer.x = newAgentX;
