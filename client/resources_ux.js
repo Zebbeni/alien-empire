@@ -275,7 +275,7 @@ var drawTradeMenu = function(player) {
 			$('#player-trade-res' + i).html(0);
 			$('#opponent-trade-res' + i).html(0);
 		}
-		var playersHtml = "<table><tr>";
+		var playersHtml = '<table id="trade-radio-table"><tr>';
 		for ( var p = 0; p < 4; p++ ){
 			if ( p < clientGame.game.players.length ){
 				if ( p != clientTurn){

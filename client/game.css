@@ -946,6 +946,10 @@
 	height: 25px;
 }
 
+#trade-radio-table {
+	table-layout: fixed;
+}
+
 .trade-radio-button {
 	width: 25px;
 	height: 25px;
