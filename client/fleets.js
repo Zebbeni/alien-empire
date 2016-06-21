@@ -85,17 +85,33 @@ var updateFleets = function(planetid) {
 
 		var fleetid = planet.fleets[i];
 		var fleetshape = fleetsContainer.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
+		var fleet = fleets[fleetid];
 
-		if( fleets[fleetid].planetid == planetid ){
+		if( fleet.planetid == planetid ){
 
 			placeY = fleetsY + ( rowNum * yDist );
 			placeX = fleetsX + xOffset + (xDist * rowIndex);
 
 			if ( fleetshape.visible ){
-				if ( fleetshape.used != fleets[fleetid].used ){
-					fleetshape.alpha = fleets[fleetid].used ? 0.65 : 1.0;
+				if ( fleetshape.used != fleet.used ){
+
+					var fleetimage = fleetshape.getChildByName('fleetimage');
+					fleetimage.graphics.clear();
+					if ( fleet.used ){
+						var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
+						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(1000, 100, 84, 68);
+						fleetimage.x = -1000;
+						fleetimage.y = -100;
+						// fleetshape.addChild(fleetimage);
+					} else {
+						var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
+						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(416, 100, 84, 68);
+						fleetimage.x = -416;
+						fleetimage.y = -100;
+						// fleetshape.addChild(fleetimage);
+					}
 				}
-				fleetshape.used = fleets[fleetid].used;
+				fleetshape.used = fleet.used;
 			}
 
 			if ( !fleetshape.visible ) {
