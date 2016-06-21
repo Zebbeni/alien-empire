@@ -163,16 +163,12 @@ var updateBases = function( planetid ) {
 				baseimage.x = -584;
 				baseimage.y = 0;
 				basetext.alpha = 1.0;
-				// base.addChild(baseimage);
-				// basetext.visible = true;
 			}
 			else {
 				baseimage.graphics.beginBitmapFill( baseImg, "no-repeat" ).drawRect( 0, 0, 140, 140);
 				baseimage.x = 0;
 				baseimage.y = 0;
 				basetext.alpha = 0.0;
-				// base.addChild(baseimage);
-				// basetext.visible = false;
 			}
 			base.used = used;
 		}

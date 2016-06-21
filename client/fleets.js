@@ -120,8 +120,9 @@ var updateFleets = function(planetid) {
 						fleetimage.y = -100;
 						fleettext.alpha = 0.0;
 					}
+					
+					fleetshape.used = fleet.used;
 				}
-				fleetshape.used = fleet.used;
 			}
 
 			if ( !fleetshape.visible ) {
