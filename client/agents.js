@@ -4,6 +4,11 @@
  * current planetid (either a number or undefined). 
  */
 
+var FULL_ALPHA = 1.0;
+var HALF_ALPHA = 0.5;
+var SEMI_ALPHA = 0.17;
+var NO_ALPHA = 0.0;
+
 var initAgents = function() {
 
 	//create container to store all agent shapes
@@ -25,29 +30,44 @@ var initAgents = function() {
 		agentContainer.agenttype = agenttype;
 
 		var agentshape = new createjs.Shape();
-		var agentImg = loader.getResult( AGT_IMG[ agenttype ] + player );
-		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 103, 103);
+		agentshape.name = "agentshape";
+
+		var yOffset = 108 * (agenttype - 1);
+
+		var agentImg = loader.getResult( "agents" + player );
+		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, yOffset, 108, 108);
 		agentshape.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
+		agentshape.x = 0;
+		agentshape.y = -1 * yOffset;
 
-		agentshape.scaleX = 0.85;
-		agentshape.scaleY = 0.85;
+		var darkshape = new createjs.Shape();
+		darkshape.name = "darkshape";
+		darkshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(108, yOffset, 108, 108);
+		darkshape.x = -108;
+		darkshape.y = -1 * yOffset;
+		darkshape.alpha = SEMI_ALPHA;
 
-		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 18px Play", "white");
+		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 20px Play", "white");
 		agenttext.name = "agenttext";
 		agenttext.textAlign = "center";
-		agenttext.x = 43;
-		agenttext.y = 65;
+		agenttext.x = 55;
+		agenttext.y = 81;
 		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 3, 3, 1);
 
 		agentContainer.visible = false;
 		agentContainer.mouseEnabled = false;
+		agentContainer.used = false;
 
 		agentContainer.on("mouseover", function() {
 			selectAgent( this.name );
+			this.getChildByName("darkshape").alpha = this.used ? HALF_ALPHA : NO_ALPHA;
+			this.getChildByName("agentshape").alpha = FULL_ALPHA;
 		});
 
 		agentContainer.on("mouseout", function() {
 			hideSelection();
+			this.getChildByName("darkshape").alpha = this.used ? FULL_ALPHA : SEMI_ALPHA;
+			this.getChildByName("agentshape").alpha = this.used ? NO_ALPHA : FULL_ALPHA;
 		});
 
 		agentContainer.on("click", function() {
@@ -55,9 +75,12 @@ var initAgents = function() {
 		});
 
 		agentContainer.addChild( agentshape );
+		agentContainer.addChild( darkshape );
 		agentContainer.addChild( agenttext );
-
 		agentsContainer.addChild(agentContainer);
+
+		agentContainer.scaleX = 0.81;
+		agentContainer.scaleY = 0.81;
 	}
 
 	board.addChild(agentsContainer);
@@ -102,8 +125,10 @@ var updateAgents = function(planetid) {
 				num_objects_moving += 1;
 				createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
 			}
-			if ( player == clientTurn ){
-				agentContainer.alpha = agent.used ? 0.65 : 1.0;
+			if ( player == clientTurn && agentContainer.used != agent.used ){
+				agentContainer.getChildByName("darkshape").alpha = agent.used ? FULL_ALPHA : SEMI_ALPHA;
+				agentContainer.getChildByName("agentshape").alpha = this.used ? NO_ALPHA : FULL_ALPHA;
+				agentContainer.used = agent.used;
 			}
 		} 
 		else {

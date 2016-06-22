@@ -1452,26 +1452,30 @@ var updateActionMenu = function( actortype, id ){
 			else {
 				$('#action-text').html(AGT_ENGLISH[id] + ' already moved this turn');
 			}
+			$('#action-button-1').hide();
+			$('#action-button-2').hide();
 			$('#action-button-3').attr('value', 'Close');
 		}
 		else {
 			$('#action-text').html(INFO_TEXT.agent[id].action);
+			$('#action-button-1').attr('value', 'Move');
+			$('#action-button-1').show();
+			$('#action-button-1').off().click( function() { 
+												hideActionMenu();
+												setPendingAction( ACT_MOVE_AGENT );
+												updateBoardInteractivity();
+												updateTurnHelpMessage();
+											} );
+			$('#action-button-2').attr('value', 'Mission');
+			$('#action-button-2').show();
+			$('#action-button-2').off().click( function() { 
+												hideActionMenu();
+												setPendingAction( ACT_LAUNCH_MISSION );
+												updateBoardInteractivity();
+												updateTurnHelpMessage();
+											} );
 		}
-		$('#action-button-1').attr('value', 'Move');
-		$('#action-button-1').show();
-		$('#action-button-1').off().click( function() { 
-											hideActionMenu();
-											setPendingAction( ACT_MOVE_AGENT );
-											updateBoardInteractivity();
-											updateTurnHelpMessage();
-										} );
-		$('#action-button-2').attr('value', 'Mission');
-		$('#action-button-2').off().click( function() { 
-											hideActionMenu();
-											setPendingAction( ACT_LAUNCH_MISSION );
-											updateBoardInteractivity();
-											updateTurnHelpMessage();
-										} );
+
 	}
 	else if ( actortype == 'fleet'){
 		picClass += 'struct-' + OBJ_FLEET;
@@ -1495,6 +1499,7 @@ var updateActionMenu = function( actortype, id ){
 												updateBoardInteractivity();
 											} );
 			$('#action-button-2').attr('value', 'Attack');
+			$('#action-button-2').show();
 			$('#action-button-2').off().click( function() { 
 												hideActionMenu();
 												setPendingAction( ACT_FLEET_ATTACK );
@@ -1515,6 +1520,7 @@ var updateActionMenu = function( actortype, id ){
 
 		$('#action-button-1').hide();
 		$('#action-button-2').prop('value', 'Attack');
+		$('#action-button-2').show();
 		$('#action-button-2').off().click( function() { 
 											hideActionMenu();
 											setPendingAction( ACT_BASE_ATTACK );
