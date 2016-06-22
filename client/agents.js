@@ -4,6 +4,11 @@
  * current planetid (either a number or undefined). 
  */
 
+var U_ALPHA = 1.0;
+var U_HOVER = 0.5;
+var ALPHA = 0.1;
+var HOVER = 0.0;
+
 var initAgents = function() {
 
 	//create container to store all agent shapes
@@ -35,25 +40,32 @@ var initAgents = function() {
 		agentshape.x = 0;
 		agentshape.y = -1 * yOffset;
 
+		var darkshape = new createjs.Shape();
+		darkshape.name = "darkshape";
+		darkshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(108, yOffset, 108, 108);
+		darkshape.x = -108;
+		darkshape.y = -1 * yOffset;
+		darkshape.alpha = ALPHA;
+
 		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 20px Play", "white");
 		agenttext.name = "agenttext";
 		agenttext.textAlign = "center";
-		agenttext.x = 50;
-		agenttext.y = 76;
+		agenttext.x = 55;
+		agenttext.y = 80;
 		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 3, 3, 1);
 
 		agentContainer.visible = false;
 		agentContainer.mouseEnabled = false;
-
-		agentContainer.scaleX = 0.81;
-		agentContainer.scaleY = 0.81;
+		agentContainer.used = false;
 
 		agentContainer.on("mouseover", function() {
 			selectAgent( this.name );
+			this.getChildByName("darkshape").alpha = this.used ? U_HOVER : HOVER;
 		});
 
 		agentContainer.on("mouseout", function() {
 			hideSelection();
+			this.getChildByName("darkshape").alpha = this.used ? U_ALPHA : ALPHA;
 		});
 
 		agentContainer.on("click", function() {
@@ -61,9 +73,12 @@ var initAgents = function() {
 		});
 
 		agentContainer.addChild( agentshape );
+		agentContainer.addChild( darkshape );
 		agentContainer.addChild( agenttext );
-
 		agentsContainer.addChild(agentContainer);
+
+		agentContainer.scaleX = 0.81;
+		agentContainer.scaleY = 0.81;
 	}
 
 	board.addChild(agentsContainer);
@@ -108,8 +123,10 @@ var updateAgents = function(planetid) {
 				num_objects_moving += 1;
 				createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
 			}
-			if ( player == clientTurn ){
-				agentContainer.alpha = agent.used ? 0.65 : 1.0;
+			if ( player == clientTurn && agentContainer.used != agent.used ){
+				var darkshape = agentContainer.getChildByName("darkshape");
+				darkshape.alpha = agent.used ? U_ALPHA : ALPHA;
+				agentContainer.used = agent.used;
 			}
 		} 
 		else {
