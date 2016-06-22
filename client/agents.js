@@ -25,22 +25,28 @@ var initAgents = function() {
 		agentContainer.agenttype = agenttype;
 
 		var agentshape = new createjs.Shape();
-		var agentImg = loader.getResult( AGT_IMG[ agenttype ] + player );
-		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 103, 103);
+		agentshape.name = "agentshape";
+
+		var yOffset = 108 * (agenttype - 1);
+
+		var agentImg = loader.getResult( "agents" + player );
+		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, yOffset, 108, 108);
 		agentshape.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
+		agentshape.x = 0;
+		agentshape.y = -1 * yOffset;
 
-		agentshape.scaleX = 0.85;
-		agentshape.scaleY = 0.85;
-
-		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 18px Play", "white");
+		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 20px Play", "white");
 		agenttext.name = "agenttext";
 		agenttext.textAlign = "center";
-		agenttext.x = 43;
-		agenttext.y = 65;
+		agenttext.x = 50;
+		agenttext.y = 76;
 		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 3, 3, 1);
 
 		agentContainer.visible = false;
 		agentContainer.mouseEnabled = false;
+
+		agentContainer.scaleX = 0.81;
+		agentContainer.scaleY = 0.81;
 
 		agentContainer.on("mouseover", function() {
 			selectAgent( this.name );
