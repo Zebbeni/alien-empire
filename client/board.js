@@ -5,7 +5,7 @@
 var zoomBoard = function(magnify) {
 
 	scale = scale + magnify;
-	scale = Math.min(scale, 0.7);
+	scale = Math.min(scale, 0.65);
 	scale = Math.max(scale, 0.4);
 
 	centerBoard();

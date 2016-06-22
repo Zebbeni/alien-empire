@@ -20,7 +20,7 @@ var setGlobals = function() {
 	board = new createjs.Container();
 	tiles = [];
 	fleetshapes = {};
-	scale = 0.65;
+	scale = 0.60;
 };
 
 var handleKeyUp = function( e ) {

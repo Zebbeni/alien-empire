@@ -4,10 +4,10 @@
  * current planetid (either a number or undefined). 
  */
 
-var U_ALPHA = 1.0;
-var U_HOVER = 0.5;
-var ALPHA = 0.1;
-var HOVER = 0.0;
+var FULL_ALPHA = 1.0;
+var HALF_ALPHA = 0.5;
+var SEMI_ALPHA = 0.17;
+var NO_ALPHA = 0.0;
 
 var initAgents = function() {
 
@@ -45,13 +45,13 @@ var initAgents = function() {
 		darkshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(108, yOffset, 108, 108);
 		darkshape.x = -108;
 		darkshape.y = -1 * yOffset;
-		darkshape.alpha = ALPHA;
+		darkshape.alpha = SEMI_ALPHA;
 
 		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 20px Play", "white");
 		agenttext.name = "agenttext";
 		agenttext.textAlign = "center";
 		agenttext.x = 55;
-		agenttext.y = 80;
+		agenttext.y = 81;
 		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 3, 3, 1);
 
 		agentContainer.visible = false;
@@ -60,12 +60,14 @@ var initAgents = function() {
 
 		agentContainer.on("mouseover", function() {
 			selectAgent( this.name );
-			this.getChildByName("darkshape").alpha = this.used ? U_HOVER : HOVER;
+			this.getChildByName("darkshape").alpha = this.used ? HALF_ALPHA : NO_ALPHA;
+			this.getChildByName("agentshape").alpha = FULL_ALPHA;
 		});
 
 		agentContainer.on("mouseout", function() {
 			hideSelection();
-			this.getChildByName("darkshape").alpha = this.used ? U_ALPHA : ALPHA;
+			this.getChildByName("darkshape").alpha = this.used ? FULL_ALPHA : SEMI_ALPHA;
+			this.getChildByName("agentshape").alpha = this.used ? NO_ALPHA : FULL_ALPHA;
 		});
 
 		agentContainer.on("click", function() {
@@ -124,8 +126,8 @@ var updateAgents = function(planetid) {
 				createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
 			}
 			if ( player == clientTurn && agentContainer.used != agent.used ){
-				var darkshape = agentContainer.getChildByName("darkshape");
-				darkshape.alpha = agent.used ? U_ALPHA : ALPHA;
+				agentContainer.getChildByName("darkshape").alpha = agent.used ? FULL_ALPHA : SEMI_ALPHA;
+				agentContainer.getChildByName("agentshape").alpha = this.used ? NO_ALPHA : FULL_ALPHA;
 				agentContainer.used = agent.used;
 			}
 		} 
