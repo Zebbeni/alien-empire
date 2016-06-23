@@ -121,6 +121,7 @@ var updateInterface = function() {
 };
 
 var clickStructureButton = function( objecttype ){
+	playSound('click1', 0.1);
 	if ( clientGame.game.phase == PHS_BUILD ) {
 		setPendingAction( ACT_BUILD );
 		setPendingObject(objecttype);
@@ -130,6 +131,7 @@ var clickStructureButton = function( objecttype ){
 };
 
 var clickAgentButton = function( agenttype ){
+	playSound('click1', 0.1);
 	if ( clientGame.game.phase == PHS_BUILD ) {
 		setPendingAction( ACT_RECRUIT );
 		setPendingAgent(agenttype);
@@ -374,11 +376,13 @@ var includeSmuggler = function( include ){
 };
 
 var confirmPendingAction = function() {
+	playSound("click1", 0.1);
 	hideConfirmMenu();
 	submitAction();
 };
 
 var cancelPendingAction = function() {
+	playSound("click1", 0.1);
 	if(clientGame.game.round != 0 && clientGame.game.phase != PHS_MISSIONS) {
 		clearPendingAction();
 		updateBoardInteractivity();
@@ -532,6 +536,7 @@ var displayEndTurn = function() {
 	$('#your-turn-div').show();
 	$('#done-button').attr('value', 'End Turn');
 	$('#done-button').off().click(function(){
+		playSound('musicbox1', 0.2);
 		if ( clientGame.game.phase != PHS_PLACING ) {
 			submitTurnDone();
 		}
@@ -779,6 +784,8 @@ var showInfoMenu = function(evt, type, id){
 	var tds = ["metal-icon", "water-icon", "fuel-icon", "food-icon"];
 	var buildHTML = '<table><tr>';
 	var upkeepHTML = '<table><tr>';
+
+	playSound("flit", 0.1);
 	
 	if ( type == "structure"){
 		var backgroundPos = "0 " + String(-132 * (id - 1)) + "px";
@@ -1117,6 +1124,8 @@ var updateRoundMenu = function() {
 
 var updatePhaseMenus = function() {
 
+	var prevShowing = $('#missions-phase-div').is(":visible");
+
 	$('#missions-phase-div').hide();
 	$('#resource-phase-div').hide();
 	$('#upkeep-phase-div').hide();
@@ -1124,6 +1133,9 @@ var updatePhaseMenus = function() {
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
 			updateMissionsMenu(undefined, undefined);
+			if ( !prevShowing ){
+				playSound("flutter2", 0.2);
+			}
 			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
@@ -1134,6 +1146,9 @@ var updatePhaseMenus = function() {
 			break;
 		default:
 			break;
+	}
+	if ( prevShowing && $('#missions-phase-div').is(":visible") == false){
+		playSound("flutter1", 0.2);
 	}
 };
 
@@ -1213,6 +1228,7 @@ var updateMissionsMenu = function(round, index) {
 			$('#mission-button-3').show();
 			$('#mission-button-3').attr('value', 'Okay');
 			$('#mission-button-3').off().click( function() {
+				playSound("click1", 0.1);
 				submitMissionsViewed();
 			});
 		}
@@ -1284,6 +1300,7 @@ var updateMissionsMenu = function(round, index) {
 					$('#mission-button-3').show();
 					$('#mission-button-3').attr('value', 'Okay');
 					$('#mission-button-3').off().click( function() {
+						playSound("click1", 0.1);
 						viewMissionAction();
 					});
 				}
@@ -1308,6 +1325,7 @@ var updateMissionsMenu = function(round, index) {
 					$('#mission-button-1').attr('value', 'Block');
 					$('#mission-button-1').show();
 					$('#mission-button-1').off().click( function() {
+						playSound("click1", 0.1);
 						blockMissionAction(true);
 					});
 					if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
@@ -1315,12 +1333,14 @@ var updateMissionsMenu = function(round, index) {
 						$('#mission-button-2').attr('value', 'Collect');
 						$('#mission-button-2').show();
 						$('#mission-button-2').off().click( function() {
+							playSound("click1", 0.1);
 							blockMissionAction(null);
 						});
 					}
 					$('#mission-button-3').attr('value', 'Allow');
 					$('#mission-button-3').show();
 					$('#mission-button-3').off().click( function() {
+						playSound("click1", 0.1);
 						blockMissionAction( false );
 					});
 				}
@@ -1412,10 +1432,12 @@ var viewMissionAction = function() {
 };
 
 var showActionMenu = function() {
+	playSound("flit", 0.2);
 	$('#action-div').show();
 };
 
 var hideActionMenu = function() {
+	playSound("flit", 0.2);
 	$('#action-div').hide();
 	$('#action-button-1').hide();
 };
