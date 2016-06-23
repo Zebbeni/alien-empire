@@ -12,6 +12,7 @@ var fadeIn = function(container, time, drop, override){
 
 	createjs.Tween.get(container, {override: override}).to({ alpha:1}, time ).call(handleTweenComplete);
 	if (drop) {
+		playSound("flutter3", 0.2);
 		container.y = container.y - DROP_DIST;
 		createjs.Tween.get(container).to({ y:container.y + DROP_DIST}, time );
 	}

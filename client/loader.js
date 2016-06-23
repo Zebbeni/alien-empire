@@ -114,10 +114,13 @@ var load_assets = function() {
 			{src: s3url + "sounds/click2.ogg", id:"click2"},
 			{src: s3url + "sounds/flutter1.ogg", id:"flutter1"},
 			{src: s3url + "sounds/flutter2.ogg", id:"flutter2"},
-			{src: s3url + "sounds/arpeggio1.ogg", id:"arpeggio1"},
-			{src: s3url + "sounds/arpeggio2.ogg", id:"arpeggio2"},
+			{src: s3url + "sounds/flutter3.ogg", id:"flutter3"},
+			// {src: s3url + "sounds/arpeggio1.ogg", id:"arpeggio1"},
+			// {src: s3url + "sounds/arpeggio2.ogg", id:"arpeggio2"},
 			{src: s3url + "sounds/chirp1.ogg", id:"chirp1"},
 			{src: s3url + "sounds/flit.ogg", id:"flit"},
+			{src: s3url + "sounds/strings.ogg", id:"strings"},
+			// {src: s3url + "sounds/wave.ogg", id:"wave"},
 			{src: s3url + "sounds/musicbox1.ogg", id:"musicbox1"},
 			{src: s3url + "sounds/musicbox2.ogg", id:"musicbox2"}
 
@@ -195,4 +198,6 @@ var handleComplete = function() {
 	stage.removeChild(loadProgress);
 	submitLoadingDone();
 	stage.update();
+
+	playMusic("strings", 0.1, 60000);
 };
