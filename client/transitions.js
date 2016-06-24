@@ -19,11 +19,12 @@ var moveToLobby = function() {
     $('#lobby-div').show();
     $('#logout-button').show();
     $('#main-div').show();
-
     $("#lobby-div").transition({top: '0px', opacity: 1.0}, 1000);
     $("#logout-button").transition({top: '-30px'}, 500);
     $("#main-div").transition({opacity: 1.00}, 1000);
     $('#copyright').show();
+
+    playLobbySound('flutter2', 0.2);
 };
 
 var leaveLobby = function() {
@@ -31,6 +32,7 @@ var leaveLobby = function() {
     $('#lobby-div').transition({opacity: 0.00}, 1000, function() {
         $('#lobby-div').hide();
     });
+    playLobbySound('flutter1', 0.2);
 };
 
 /**
@@ -48,6 +50,8 @@ var moveToGame = function( fn ) {
         fn();
     });
     $("#lobby-div").transition({top: '-20px'}, 1000);
+
+    playLobbySound('flutter1', 0.2);
 };
 
 var moveToGameStage = function() {
@@ -55,6 +59,7 @@ var moveToGameStage = function() {
     $("#screen-div").transition({opacity: 1.0}, 500);
     $('#staging-div').show();
     $("#staging-div").transition({top: '50%', opacity: 1.0}, 1000);
+    playLobbySound('flutter2', 0.2);
 };
 
 var hideGameStage = function() {
@@ -64,6 +69,7 @@ var hideGameStage = function() {
     $("#staging-div").transition({top: '45%', opacity: 0.00}, 1000, function() {
         $('#staging-div').hide();
     });
+    playLobbySound('flutter1', 0.2);
 };
 
 // Revisit these two functions when you actually create the nice game interface

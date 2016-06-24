@@ -536,7 +536,7 @@ var displayEndTurn = function() {
 	$('#your-turn-div').show();
 	$('#done-button').attr('value', 'End Turn');
 	$('#done-button').off().click(function(){
-		playSound('musicbox1', 0.2);
+		playSound('musicbox2', 0.1);
 		if ( clientGame.game.phase != PHS_PLACING ) {
 			submitTurnDone();
 		}
@@ -785,7 +785,7 @@ var showInfoMenu = function(evt, type, id){
 	var buildHTML = '<table><tr>';
 	var upkeepHTML = '<table><tr>';
 
-	playSound("flit", 0.1);
+	playSound("plink", 0.05);
 	
 	if ( type == "structure"){
 		var backgroundPos = "0 " + String(-132 * (id - 1)) + "px";
@@ -1432,12 +1432,12 @@ var viewMissionAction = function() {
 };
 
 var showActionMenu = function() {
-	playSound("flit", 0.2);
+	playSound("flutter2", 0.05);
 	$('#action-div').show();
 };
 
 var hideActionMenu = function() {
-	playSound("flit", 0.2);
+	playSound("flutter1", 0.05);
 	$('#action-div').hide();
 	$('#action-button-1').hide();
 };
@@ -1482,7 +1482,7 @@ var updateActionMenu = function( actortype, id ){
 			$('#action-text').html(INFO_TEXT.agent[id].action);
 			$('#action-button-1').attr('value', 'Move');
 			$('#action-button-1').show();
-			$('#action-button-1').off().click( function() { 
+			$('#action-button-1').off().click( function() {
 												hideActionMenu();
 												setPendingAction( ACT_MOVE_AGENT );
 												updateBoardInteractivity();

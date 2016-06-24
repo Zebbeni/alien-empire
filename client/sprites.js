@@ -62,6 +62,7 @@ var drawShield = function(x, y, scale){
 	shield.scaleX = scale;
 	shield.scaleY = scale;
   	shield.gotoAndPlay("show");
+  	playSound("shield", 0.5);
 	num_objects_moving += 1;
 };
 
@@ -73,6 +74,7 @@ var drawExplosion = function(x, y, scale){
 	explosion.scaleX = scale;
 	explosion.scaleY = scale;
   	explosion.gotoAndPlay("show");
+  	playSound("explosion", 0.5);
 	num_objects_moving += 1;
 };
 

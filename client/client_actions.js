@@ -1,11 +1,13 @@
 // javascript functions called from UX
 
 var submitLogin = function() {
+    playSound("click1", 0.05);
     var name = $('#input-username')[0].value;
     socket_login(name);
 };
 
 var submitLogout = function() {
+    playSound("click1", 0.05);
     clearClientData();
     socket_logout();
 };
@@ -25,22 +27,27 @@ var submitJoinGame = function(gameId) {
 };
 
 var submitStagingReady = function(){
+    playSound("click1", 0.05);
     socket_readyStaging();
 };
 
 var submitStagingLeave = function(){
+    playSound("click1", 0.05);
     socket_leaveStaging();
 };
 
 var submitStagingNumPlayers = function( num ){
+    playSound("click1", 0.05);
     socket_requestNumPlayersStaging( num );
 };
 
 var submitStagingPoints = function( num ){
+    playSound("click1", 0.05);
     socket_requestPointsStaging( num );
 };
 
 var submitGameToLobby = function() {
+    playSound("click1", 0.05);
     socket_returnGameToLobby();
 };
 

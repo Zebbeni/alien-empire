@@ -9,6 +9,7 @@ $(document).ready(function() {
 	document.addEventListener('keyup', handleKeyUp, false);
 	document.addEventListener('keydown', handleKeyDown, false);
 
+	loadLobby();
 });
 
 /**
