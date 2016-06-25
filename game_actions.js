@@ -1355,8 +1355,15 @@ var applyMissionResolve = function( action, game ){
 				break;
 
 			case cons.AGT_MINER:
-				
+
 				var resid = action.resourceid;
+				
+				if ( resid == undefined ) {
+					return { isIllegal: true,
+						 	 response: "You must choose a resource to collect"
+					};
+				}
+
 				var resource = game.board.planets[planetid].resources[resid];
 				var resource_kind = resource.kind;
 				

@@ -1566,11 +1566,11 @@ var initSettingsButtons = function(){
 var toggleRules = function(){
 	if ($('#rules-div').is(":visible") ){
 		$('#rules-div').hide();
-		playSound("flutter1", 0.2);
+		playSound("flit", 0.2);
 	}
 	else {
 		$('#rules-div').show();
-		playSound("flutter2", 0.2);
+		playSound("flit", 0.2);
 	}
 };
 
