@@ -51,6 +51,7 @@ var DOMimageMap = {
 	'.confirm-button': { path: 'interface/', img: 'confirm_buttons'},
 	'.cancel-button': { path: 'interface/', img: 'confirm_buttons'},
 	'.agent-button': { path: 'interface/', img: 'agent_buttons'},
+	'.settings-button': { path: 'interface/', img: 'settings_buttons'},
 	'#game-end-menu': { path: 'interface/', img: 'end_game_menu'}
 };
 
@@ -1549,6 +1550,50 @@ var updateActionMenu = function( actortype, id ){
 											updateBoardInteractivity();
 		} );
 	}
+};
+
+var initSettingsButtons = function(){
+	$('.settings-button').each(function(){
+		$( this ).click( function(){
+			playSound('click1', 0.1);
+		});
+		$( this ).hover( function(){
+			playSound('plink', 0.05);
+		});
+	});
+};
+
+var toggleRules = function(){
+	if ($('#rules-div').is(":visible") ){
+		$('#rules-div').hide();
+		playSound("flutter1", 0.2);
+	}
+	else {
+		$('#rules-div').show();
+		playSound("flutter2", 0.2);
+	}
+};
+
+var updateSoundButton = function(){
+	$('.sound-button').each(function(){
+		if (SOUND_ON){
+			$( this ).removeClass('sound-button-off').addClass('sound-button-on');
+		}
+		else {
+			$( this ).removeClass('sound-button-on').addClass('sound-button-off');
+		}
+	});
+};
+
+var updateMusicButton = function(){
+	$('.music-button').each(function(){
+		if (MUSIC_ON){
+			$( this ).removeClass('music-button-off').addClass('music-button-on');
+		}
+		else {
+			$( this ).removeClass('music-button-on').addClass('music-button-off');
+		}
+	});
 };
 
 /** 

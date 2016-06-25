@@ -23,6 +23,7 @@ var moveToLobby = function() {
     $("#logout-button").transition({top: '-30px'}, 500);
     $("#main-div").transition({opacity: 1.00}, 1000);
     $('#copyright').show();
+    initSettingsButtons();
 
     playLobbySound('flutter2', 0.2);
 };
@@ -77,11 +78,13 @@ var moveToGameInterface = function() {
     $('#game-interface-div').show();
     $('#game-interface-div').transition({opacity: 1.0}, 2000 );
     $('#game-end-div').hide();
+    $('#rules-div').hide();
     $('#copyright').hide();
 };
 
 var leaveGameInterface = function() {
     $('.phase-div').hide();
+    $('#rules-div').hide();
     $('#game-interface-div').transition({opacity: 0.0}, 1000, function() {
         $('#game-interface-div').hide();
     });

@@ -14,6 +14,10 @@
         <div id="main-div">
             <input type="button" id="logout-button" style="display: none" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="lobby-div" style="display: none">
+                <div id="lobby-settings-div"><table><tr>
+                    <td class="sound-button sound-button-on settings-button" onclick="javascript:toggleSound();"></td>
+                    <td class="music-button music-button-on settings-button" onclick="javascript:toggleMusic();"></td>
+                </tr></table></div>
                 <div id="lobby-title-div"></div>
                 <div id="users-wrapper-div">
                     <div id="users-scroll"></div>
@@ -170,6 +174,15 @@
                     <input type="button" id="smuggler-cancel-button" class="cancel-button" value="✕" onclick="javascript:includeSmuggler(false);"></input>
                 </div>
             </div>
+            <div id="settings-div">
+                <table>
+                    <tr><td class="rules-button settings-button" onclick="javascript:toggleRules();"></td></tr>
+                    <tr><td class="zoomin-button settings-button" onclick="javascript:zoomBoard(0.05);"></td></tr>
+                    <tr><td class="zoomout-button settings-button" onclick="javascript:zoomBoard(-0.05);"></td></tr>
+                    <tr><td class="sound-button sound-button-on settings-button" onclick="javascript:toggleSound();"></td></tr>
+                    <tr><td class="music-button music-button-on settings-button" onclick="javascript:toggleMusic();"></td></tr>
+                </table>
+            </div>
             <div id="info-div" class="color-menu" style="display: none">
                 <div id="info-title" class="menu-title"></div>
                 <div id="info-pic" class="info-pic"></div>
@@ -240,6 +253,9 @@
                 <div id="trade-offers-div"></div>
                 <input type="button" id="trade-button-yes"></input>
                 <input type="button" id="trade-button-no" onclick="javascript:hideTradeMenu();"></input>
+            </div>
+            <div id="rules-div" style="display: none">
+                <iframe id="rules-iframe" onclick="javascript:toggleRules();" src="https://s3-us-west-2.amazonaws.com/alien-empire/interface/AlienEmpireRules.html"></iframe>
             </div>
             <div id="illegal-menu-div" onclick="javascript:hideIllegalMenu();"></div>
             <div id="game-end-div" style="display: none">

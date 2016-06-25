@@ -1375,6 +1375,71 @@
 	background: rgba(0, 0, 0, .7);
 }
 
+#settings-div {
+	position: absolute;
+	width: 35px;
+	height: 175px;
+	top: 50px;
+	left: 10px;
+	background: transparent;
+	pointer-events: auto;
+}
+
+.settings-button {
+	width: 35px;
+	height: 35px;
+	padding: 0px;
+	background-color: transparent;
+	background-size: 105px 245px;
+	cursor: pointer;
+}
+
+.rules-button { background-position: 0px 0px; }
+.rules-button:hover { background-position: -35px 0px; }
+.rules-button:active { background-position: -70px 0px; }
+.zoomin-button { background-position: 0px -35px; }
+.zoomin-button:hover { background-position: -35px -35px; }
+.zoomin-button:active { background-position: -70px -35px; }
+.zoomout-button { background-position: 0px -70px; }
+.zoomout-button:hover { background-position: -35px -70px; }
+.zoomout-button:active { background-position: -70px -70px; }
+.sound-button-on { background-position: 0px -105px; }
+.sound-button-on:hover { background-position: -35px -105px; }
+.sound-button-on:active { background-position: -70px -105px; }
+.music-button-on { background-position: 0px -140px; }
+.music-button-on:hover { background-position: -35px -140px; }
+.music-button-on:active { background-position: -70px -140px; }
+.sound-button-off { background-position: 0px -175px; }
+.sound-button-off:hover { background-position: -35px -175px; }
+.sound-button-off:active { background-position: -70px -175px; }
+.music-button-off { background-position: 0px -210px; }
+.music-button-off:hover { background-position: -35px -210px; }
+.music-button-off:active { background-position: -70px -210px; }
+
+#rules-div {
+	position: absolute;
+	width: 400px;
+	height: 500px;
+	left: 55px;
+	top: 50px;
+	border-radius: 20px;
+	pointer-events: auto;
+	background: rgba(255, 255, 255, 0.8);
+}
+
+#rules-div:hover {
+	background: rgba(255, 255, 255, 0.95);
+}
+
+#rules-iframe {
+	position: relative;
+	width: 400px;
+	height: 500px;
+	top: 0px;
+	left: 0px;
+	cursor: pointer;
+}
+
 #game-end-menu {
 	position: absolute;
 	width: 608px;

@@ -118,6 +118,18 @@ button {
 	top: 225px;
 }
 
+#lobby-settings-div {
+	position: absolute;
+	width: 70px;
+	height: 35px;
+	left: 50%;
+	top: -40px;
+	margin-left: -494px;
+	background: transparent;
+	pointer-events: auto;
+}
+
+
 #logout-button {
 	position: relative;
 	left: 94%;
