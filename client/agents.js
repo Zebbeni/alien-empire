@@ -121,9 +121,12 @@ var updateAgents = function(planetid) {
 		var newAgentY = tiles[planetid].y + agentsY;
 
 		if( agentContainer.visible ){
-			if ( newAgentX != agentContainer.x || Math.abs(newAgentY - agentContainer.y) < 50 ) {
-				num_objects_moving += 1;
-				createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
+			if ( newAgentX != agentContainer.x || Math.abs(newAgentY - agentContainer.y) > 50 ) {
+				if ( !createjs.Tween.hasActiveTweens(agentContainer) ){
+					num_objects_moving += 1;
+					createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
+					playSound("whoosh1", 0.1);
+				}
 			}
 			if ( player == clientTurn && agentContainer.used != agent.used ){
 				agentContainer.getChildByName("darkshape").alpha = agent.used ? FULL_ALPHA : SEMI_ALPHA;
