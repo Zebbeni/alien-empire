@@ -194,6 +194,10 @@ var animateResourceChange = function( pkg ) {
 	var clientResources = clientGame.game.resources[clientTurn];
 	var sign = "+";
 
+	if ( pkg.pkgtype != PKG_BUILD ){
+		playSound("chirp1", 0.1);
+	}
+
 	if (pkg.pkgtype == PKG_UPKEEP || pkg.pkgtype ==  PKG_BUILD) {
 		sign = "-";
 		$('.res-change').each( function() {
@@ -235,6 +239,7 @@ var tradeFourToOne = function( paykind, getkind ){
 };
 
 var toggleFourToOneMenu = function( res ){
+	playSound("click1", 0.1);
 	for ( var i = RES_METAL; i <= RES_FOOD; i++){
 		if ( i == res){
 			if ( $('#fourtoone-menu' + i).is(":visible") ){
@@ -324,7 +329,7 @@ var drawTradeMenu = function(player) {
 			var checker = setInterval( function(){ 
 				var trade = clientGame.game.trades[clientTurn];
 				if (trade == undefined) {
-					hideTradeMenu();
+					hideTradeMenu(false);
 					clearInterval(checker);
 				}
 				else if ( trade.offered_to.length == trade.declined.length ){
@@ -338,7 +343,7 @@ var drawTradeMenu = function(player) {
 			if (clientGame.game.trades[clientTurn] != undefined){
 				submitTradeCancel(); 
 			}
-			hideTradeMenu();
+			hideTradeMenu(true);
 		});
 	}
 	else {
@@ -376,12 +381,12 @@ var drawTradeMenu = function(player) {
 		$('#trade-button-yes').css('pointer-events', 'auto');
 		$('#trade-button-yes').off().click( function() { 
 			submitTradeAccept(player);
-			hideTradeMenu();
+			hideTradeMenu(false);
 		});
 		$('#trade-button-no').prop('value', 'Decline');
 		$('#trade-button-no').off().click( function() { 
 			submitTradeDecline(player);
-			hideTradeMenu();
+			hideTradeMenu(true);
 		});
 
 		allowTradeMenuChanges('none');
@@ -405,7 +410,7 @@ var allowTradeMenuChanges = function( val ){
 };
 
 var handletradeArrow = function(player, res, val){
-	createjs.Sound.play("click1");
+	playSound("click1", 0.1);
 	var value = parseInt($('#' + player + '-trade-res' + res)[0].innerHTML, 10);
 	if ( value + val <= 9 && value + val >= 0){
 		$('#' + player + '-trade-res' + res).html(value + val);
@@ -413,25 +418,28 @@ var handletradeArrow = function(player, res, val){
 };
 
 var toggleTradeRadio = function( player ){
-	createjs.Sound.play("click2");
+	playSound("click1", 0.1);
 	$('#trade-radio-button' + player).toggleClass('radio-on');
 	$('#trade-radio-button' + player).toggleClass('radio-off');
 };
 
 var showTradeMenu = function() {
-	createjs.Sound.play("click2");
+	playSound("flutter2", 0.2);
 	$('#trade-menu-div').show();
-	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 1000);
+	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 500);
 	$('#trade-menu-div').css();
 	$('#trade-screen').show();
-	$('#trade-screen').transition({ opacity: 1.00 }, 1000);
+	$('#trade-screen').transition({ opacity: 1.00 }, 500);
 };
 
-var hideTradeMenu = function() {
-	$('#trade-menu-div').transition({opacity: 0.00,top: "38%"}, 1000,function(){
+var hideTradeMenu = function(doSound) {
+	if ( doSound ){
+		playSound("flutter1", 0.2);
+	}
+	$('#trade-menu-div').transition({opacity: 0.00,top: "38%"}, 500,function(){
 		$( this ).hide();
 	});
-	$('#trade-screen').transition({ opacity: 0.00}, 1000, function(){
+	$('#trade-screen').transition({ opacity: 0.00}, 500, function(){
 		$( this ).hide();
 	});
 };
