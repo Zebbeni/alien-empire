@@ -4,6 +4,7 @@ var prevWidth = 0;
 var prevHeight = 0;
 var pixelRatio = 1.0;
 var num_objects_moving = 0; // number of objects being animated
+var fpsLabel;
 
 /**
  * Periodically checks to see if window has been resized. 
@@ -22,8 +23,11 @@ window.addEventListener("focus", function(){ refresh(); }, false);
  */
 var init_stage = function() {
 	
+	allSnapToPixel();
+
 	stage = new createjs.Stage("gameCanvas");
 	stage.enableMouseOver(50);
+	stage.snapToPixel = true;
 
 	init_background();
 
@@ -56,25 +60,39 @@ var init_stage = function() {
 
 	createjs.Ticker.addEventListener("tick", tick);
 	createjs.Ticker.setFPS(FRAMES_PER_SECOND);
-	
+};
+
+var allSnapToPixel = function(){
+	createjs.Container.prototype.snapToPixel = true;
+	createjs.Shape.prototype.snapToPixel = true;
+	createjs.Text.prototype.snapToPixel = true;
+	createjs.Stage.prototype.snapToPixel = true;
 };
 
 var tick = function(event) {
-	if (num_objects_moving > 0) {
-		stage.update(event);
-		// console.log("objects moving: ", num_objects_moving);
+	if ( fpsLabel ){
+		fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
 	}
+	// if (num_objects_moving > 0) {
+	stage.update(event);
+	// }
 };
 
 var init_background = function() {
 	background = new createjs.Shape();
-	
 	stage.addChild(background);
 
 	backLoader = new createjs.LoadQueue(false);
 	backLoader.loadFile({src: s3url + "images/space_background.jpg", id: "space_background"});
 	
 	backLoader.addEventListener("complete", drawBackground);
+
+	// add a text object to output the current FPS:
+	fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
+	fpsLabel.name = "fpsLabel";
+	stage.addChild(fpsLabel);
+	fpsLabel.x = 10;
+	fpsLabel.y = 20;
 };
 
 var drawBackground = function() {
@@ -84,6 +102,7 @@ var drawBackground = function() {
 	backgroundH = backgroundImg.height;
 
 	background.graphics.beginBitmapFill(backgroundImg).drawRect(0, 0, backgroundW, backgroundH);
+	background.snapToPixel = true;
 	updateCanvasSize();
 };
 
