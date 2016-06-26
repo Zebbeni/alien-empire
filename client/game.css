@@ -114,7 +114,7 @@
 }
 
 #pending-action-div {
-	top: 50px;
+	top: 70px;
 	font-size: 15px;
 }
 
@@ -594,6 +594,50 @@
 	padding: 0px;
 }
 
+.player-stat-flags-div {
+	position: absolute;
+	top: 9px;
+	left: 26px;
+	width: 222px;
+	height: 48px;
+}
+
+.trade-flag-on {
+	top: 33px;
+}
+
+.player-trade-request-div {
+	position: absolute;
+	width: 222px;
+	height: 24px;
+	top: 0px;
+	left: 0px;
+	padding-left: 15px;
+	font-weight: bold;
+}
+
+.player-trade-request-div:hover {
+	background-position: -222px 0;
+	cursor: pointer;
+}
+
+.pending-action-stat-div {
+	position: absolute;
+	width: 199px;
+	height: 24px;
+	right: 0px;
+	top: 24px;
+	padding-left: 25px;
+	font-weight: normal;
+}
+
+.pending-action-stat-div, .player-trade-request-div {
+	padding-top: 1px;
+	text-align: center;
+	vertical-align: middle;
+	pointer-events: auto;
+}
+
 .res-icon, .metal-icon, .water-icon, .fuel-icon, .food-icon, .points-icon {
 	width: 25px;
 	height: 25px;
@@ -617,24 +661,7 @@
 .fuel-icon-button:hover { background-position: -25px -50px; }
 .food-icon-button:hover { background-position: -25px -75px; }
 
-.player-trade-request-div {
-	position: absolute;
-	width: 222px;
-	height: 24px;
-	top: 33px;
-	left: 26px;
-	padding-top: 1px;
-	padding-left: 15px;
-	text-align: center;
-	vertical-align: middle;
-	font-weight: bold;
-	pointer-events: auto;
-}
 
-.player-trade-request-div:hover {
-	background-position: -222px 0;
-	cursor: pointer;
-}
 
 .player-points-div {
 	position: absolute;

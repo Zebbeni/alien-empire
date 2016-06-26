@@ -52,6 +52,7 @@ var DOMimageMap = {
 	'.cancel-button': { path: 'interface/', img: 'confirm_buttons'},
 	'.agent-button': { path: 'interface/', img: 'agent_buttons'},
 	'.settings-button': { path: 'interface/', img: 'settings_buttons'},
+	'.pending-action-stat-div': {path: 'interface/', img: 'pending_action'},
 	'#game-end-menu': { path: 'interface/', img: 'end_game_menu'}
 };
 
@@ -673,10 +674,13 @@ var createPlayerStatsMenus = function() {
 		var points = clientGame.game.points[i];
 
 		innerHTML += '<div class="player-id-div">' + username + '</div>';
+		innerHTML += '<div class="player-stat-flags-div">';
 		innerHTML += '<div class="player-trade-request-div" '
 				   + 'style="display: none" '
 				   + 'onclick="javascript:drawTradeMenu(' + i + ')">'
-				   + 'Requesting Trade</div>';
+				   + 'Requests Trade</div>';
+		innerHTML += '<div class="pending-action-stat-div"></div>'
+		innerHTML += '</div>';
 		innerHTML += '<div class="player-points-div"></div>';
 		innerHTML += '<div class="player-start-icon" style="display: none"></div>';
 		innerHTML += '<div class="player-stats-div">';
@@ -733,9 +737,11 @@ var updatePlayerStatsMenus = function() {
 			 && clientGame.game.trades[i].offered_to.indexOf(clientTurn) != -1
 			 && clientGame.game.trades[i].declined.indexOf(clientTurn) == -1 ) {
 			$(playerDiv).find('.player-trade-request-div').show();
+			$(playerDiv).find('.player-stat-flags-div').addClass('trade-flag-on');
 		}
 		else {
 			$(playerDiv).find('.player-trade-request-div').hide();
+			$(playerDiv).find('.player-stat-flags-div').removeClass('trade-flag-on');
 		}
 
 		if ( i == clientGame.game.playerOffset ){
@@ -743,6 +749,60 @@ var updatePlayerStatsMenus = function() {
 		}
 		else {
 			$(playerDiv).find('.player-start-icon').hide();
+		}
+
+		var pendingFlag = $(playerDiv).find('.player-stat-flags-div').find('.pending-action-stat-div');
+		switch(clientGame.game.phase) {
+			case PHS_PLACING:
+				if (clientGame.game.playerTurn == i){
+					pendingFlag.show();
+					pendingFlag.html('Placing starting mine...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_MISSIONS:
+				pendingFlag.hide();
+				break;
+			case PHS_RESOURCE:
+				if ( !clientGame.game.phaseDone[i] ){
+					pendingFlag.show();
+					pendingFlag.html('Collecting Resources...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_UPKEEP:
+				if ( !clientGame.game.phaseDone[i] ){
+					pendingFlag.show();
+					pendingFlag.html('Paying Upkeep...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_BUILD:
+				if (clientGame.game.playerTurn == i){
+					pendingFlag.show();
+					pendingFlag.html('Building & Recruiting...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_ACTIONS:
+				if (clientGame.game.playerTurn == i){
+					pendingFlag.show();
+					pendingFlag.html('Launching Actions...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			default:
+				break;
 		}
 	}
 };
