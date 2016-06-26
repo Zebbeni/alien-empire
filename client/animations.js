@@ -1,5 +1,4 @@
 var fadeIn = function(container, time, drop, override){
-	console.log("num_active_tweens on " + container.name + ": " + createjs.Tween.hasActiveTweens(container));
 	if (override){
 		var num_existing_tweens = createjs.Tween.hasActiveTweens(container);
 		if ( num_existing_tweens ){

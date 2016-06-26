@@ -42,6 +42,7 @@ var initSelection = function() {
 								   (2 * sWid) - strokeWid );
  	largeborder.mouseEnabled = false;
 	planetselection.addChild(largeborder);
+	largeborder.cache(-1 * strokeWid, -1 * strokeWid, 2 * sWid + strokeWid, 2 * sWid + strokeWid);
 
  	var smallborder = new createjs.Shape();
  	smallborder.name = "smallborder";
@@ -53,6 +54,7 @@ var initSelection = function() {
 								   sWid - strokeWid, 
 								   sWid - strokeWid );
  	smallborder.mouseEnabled = false;
+ 	smallborder.cache(-1 * strokeWid, -1 * strokeWid,sWid+strokeWid, sWid + strokeWid);
  	planetselection.addChild(smallborder);
 
  	planetselection.mouseEnabled = false;
@@ -70,13 +72,15 @@ var setSelection = function(x, y) {
 
  	board.setChildIndex( selection, 
 						 board.getNumChildren() - 1);
-
- 	fadeIn(selection, 250, false, true);
+ 	selection.alpha = 1.0;
+ 	selection.visible = true;
+ 	// fadeIn(selection, 250, false, true);
  };
 
  var hideSelection = function() {
  	var selection = board.getChildByName('selection');
  	selection.visible = false;
+ 	// selection.visible = false;
  };
 
 var setPlanetSelection = function( planetid ) {

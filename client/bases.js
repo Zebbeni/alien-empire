@@ -41,6 +41,10 @@ var initBases = function() {
 		basetext.alpha = 0.0;
 		base.addChild(basetext);
 
+		var hit = new createjs.Shape();
+		hit.graphics.beginFill("000").drawRect(0,0,140,140);
+		base.hitArea = hit;
+
 		base.scaleX = 0.80;
 		base.scaleY = 0.80;
 		base.used = false;
