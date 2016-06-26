@@ -349,8 +349,7 @@ var initPlanet = function ( planetid ) {
 	var picture = new createjs.Shape();
 	picture.name = "picture";
 	planet.addChild(picture);
-
-	planet.hitArea = tiles[planetid].getChildByName("stars");
+	
 	planet.mouseChildren = false;
 	planet.mouseEnabled = true;
 	planet.alpha = 0;
@@ -399,6 +398,7 @@ var initPlanet = function ( planetid ) {
 			break;
 	}
 
+	planet.hitArea = tiles[planetid].getChildByName("stars");
 	tiles[planetid].addChild( planet );
 };
 
@@ -448,6 +448,7 @@ var initNametext = function( planetid ) {
 	nametext.textAlign = "center";
 	nametext.shadow = new createjs.Shadow("rgba(0,0,0,0.3)", 1, 1, 1);
 	nametext.x = ( sWid * planets[planetid].w ) / 2.0;
+	nametext.mouseEnabled = false;
 
 	switch ( planets[planetid].w ) {
 		case 1:

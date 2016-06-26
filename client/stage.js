@@ -4,7 +4,7 @@ var prevWidth = 0;
 var prevHeight = 0;
 var pixelRatio = 1.0;
 var num_objects_moving = 0; // number of objects being animated
-var fpsLabel;
+// var fpsLabel;
 
 /**
  * Periodically checks to see if window has been resized. 
@@ -70,12 +70,12 @@ var allSnapToPixel = function(){
 };
 
 var tick = function(event) {
-	if ( fpsLabel ){
-		fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
-	}
-	// if (num_objects_moving > 0) {
-	stage.update(event);
+	// if ( fpsLabel ){
+	// 	fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
 	// }
+	if (num_objects_moving > 0) {
+		stage.update(event);
+	}
 };
 
 var init_background = function() {
@@ -88,11 +88,11 @@ var init_background = function() {
 	backLoader.addEventListener("complete", drawBackground);
 
 	// add a text object to output the current FPS:
-	fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
-	fpsLabel.name = "fpsLabel";
-	stage.addChild(fpsLabel);
-	fpsLabel.x = 10;
-	fpsLabel.y = 20;
+	// fpsLabel = new createjs.Text("-- fps", "bold 18px Arial", "#000");
+	// fpsLabel.name = "fpsLabel";
+	// stage.addChild(fpsLabel);
+	// fpsLabel.x = 10;
+	// fpsLabel.y = 20;
 };
 
 var drawBackground = function() {

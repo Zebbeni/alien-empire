@@ -28,6 +28,11 @@ var initFleets = function() {
 
 		fleetshape.visible = false;
 		fleetshape.mouseEnabled = true;
+
+		var hit = new createjs.Shape();
+		hit.graphics.beginFill("000").drawRect(0,0,84,68);
+		fleetshape.hitArea = hit;
+
 		fleetshape.scaleX = 0.75;
 		fleetshape.scaleY = 0.75;
 

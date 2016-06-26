@@ -58,6 +58,10 @@ var initAgents = function() {
 		agentContainer.mouseEnabled = false;
 		agentContainer.used = false;
 
+		var hit = new createjs.Shape();
+		hit.graphics.beginFill("000").drawRect(0,0,108,108);
+		agentContainer.hitArea = hit;
+
 		agentContainer.on("mouseover", function() {
 			selectAgent( this.name );
 			this.getChildByName("darkshape").alpha = this.used ? HALF_ALPHA : NO_ALPHA;
