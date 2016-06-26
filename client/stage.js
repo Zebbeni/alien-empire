@@ -73,9 +73,9 @@ var tick = function(event) {
 	// if ( fpsLabel ){
 	// 	fpsLabel.text = Math.round(createjs.Ticker.getMeasuredFPS()) + " fps";
 	// }
-	if (num_objects_moving > 0) {
-		stage.update(event);
-	}
+	// if (num_objects_moving > 0) {
+	stage.update(event);
+	// }
 };
 
 var init_background = function() {

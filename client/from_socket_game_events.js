@@ -1,6 +1,6 @@
 // This should only get sent to users in the correct staging room.
 socket.on('new game message', function(newMsg) {
-    playLobbySound("chime", 0.1);
+    // playLobbySound("chime", 0.1);
     if ( clientGame.status == GAME_STAGING) {
         updateGameStage(false, newMsg);
     } 
@@ -10,7 +10,7 @@ socket.on('new game message', function(newMsg) {
 });
 
 socket.on('room game starting', function(gameInfo) {
-    playLobbySound("chime", 0.1);
+    // playLobbySound("chime", 0.1);
     updateClientGame( gameInfo );
     addProgressBar();
     moveToGame( load_assets );
