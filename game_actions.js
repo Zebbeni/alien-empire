@@ -1235,7 +1235,6 @@ var applyBlockMission = function( action, game ){
 						var res = planet.resources[r];
 						
 						if ( res.structure != undefined 
-								&& res.structure.kind != cons.OBJ_MINE
 							 	&& res.structure.player != mission.player ) {
 						
 							possibleTarget = true;
