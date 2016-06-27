@@ -1,3 +1,19 @@
+h1 { color: black; font-family:"Cinzel Decorative", serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 24px; }
+h2 { color: black; font-family:"Cinzel Decorative", serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 14px; }
+.p, p { color: black; font-family:Play; font-style: normal; font-weight: normal; text-decoration: none; font-size: 12px; margin: 0px;}
+.s1 { color: #00A3D7; font-family:Play; font-style: normal; font-weight: normal; text-decoration: none; font-size: 12px; }
+h3 { color: black; font-family:Play; font-style: normal; font-weight: bold; text-decoration: none; font-size: 12px; margin-top: 10px;}
+.s3 { color: #B51A00; font-family:Play; font-style: normal; font-weight: bold; text-decoration: none; font-size: 12px; }
+.s4 { color: #B51A00; font-family:Play; font-style: normal; font-weight: normal; text-decoration: none; font-size: 12px; }
+li {display: block; }
+#l1 {padding-left: 0px; }
+#l1> li:before {content: "• "; color: black; font-family:Play; font-style: normal; font-weight: normal; text-decoration: none; font-size: 12px; }
+li {display: block; }
+#l2 {padding-left: 0px;counter-reset: d1 0; }
+li:before {counter-increment: d1; content: counter(d1, decimal)") "; color: black; font-family:Play; font-style: normal; font-weight: bold; text-decoration: none; font-size: 12px; }
+#l3 {padding-left: 0px; }
+li:before {content: "• "; color: black; font-family:Play; font-style: normal; font-weight: bold; text-decoration: none; font-size: 12px; }
+
 #game-canvas-div {
 	float: left;
 	position: fixed;
@@ -116,6 +132,15 @@
 #pending-action-div {
 	top: 70px;
 	font-size: 15px;
+}
+
+#phase-explain-div {
+	position: absolute;
+	padding: 10px;
+	width: 300px;
+	background: rgba(255, 255, 255, 0.9);
+	border-radius: 10px;
+	cursor: pointer;
 }
 
 #your-action-message-div, #include-smuggler-message-div {
@@ -629,6 +654,7 @@
 	top: 24px;
 	padding-left: 25px;
 	font-weight: normal;
+	cursor: pointer;
 }
 
 .pending-action-stat-div, .player-trade-request-div {
@@ -1444,6 +1470,7 @@
 .music-button-off:active { background-position: -70px -210px; }
 
 #rules-div {
+	padding: 10px;
 	position: absolute;
 	width: 400px;
 	height: 500px;
@@ -1460,8 +1487,8 @@
 
 #rules-iframe {
 	position: relative;
-	width: 400px;
-	height: 500px;
+	width: 380px;
+	height: 480px;
 	top: 0px;
 	left: 0px;
 	cursor: pointer;

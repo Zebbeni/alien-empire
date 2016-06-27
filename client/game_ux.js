@@ -645,8 +645,18 @@ var updateTurnHelpMessage = function() {
 	    	}, 2500);
 		});
 	}
+};
 
-	
+showPhaseExplain = function(evt){
+	var left = String(evt.pageX - 150) + "px";
+	var top = String(evt.pageY + 5) + "px";
+	$('#phase-explain-div').css({"left": left, "top": top});
+	$('#phase-explain-div').html(PHS_EXPLAIN[clientGame.game.phase]);
+	$('#phase-explain-div').show();
+};
+
+hidePhaseExplain = function(evt){
+	$('#phase-explain-div').hide();
 };
 
 var updatePointsRemainingMenu = function() {
@@ -679,7 +689,7 @@ var createPlayerStatsMenus = function() {
 				   + 'style="display: none" '
 				   + 'onclick="javascript:drawTradeMenu(' + i + ')">'
 				   + 'Requests Trade</div>';
-		innerHTML += '<div class="pending-action-stat-div"></div>'
+		innerHTML += '<div class="pending-action-stat-div" onmouseover=""></div>'
 		innerHTML += '</div>';
 		innerHTML += '<div class="player-points-div"></div>';
 		innerHTML += '<div class="player-start-icon" style="display: none"></div>';
@@ -752,6 +762,12 @@ var updatePlayerStatsMenus = function() {
 		}
 
 		var pendingFlag = $(playerDiv).find('.player-stat-flags-div').find('.pending-action-stat-div');
+		pendingFlag.off().mouseenter( function(event){
+			showPhaseExplain(event);
+		});
+		pendingFlag.mouseleave( function(event){
+			hidePhaseExplain(event);
+		});
 		switch(clientGame.game.phase) {
 			case PHS_PLACING:
 				if (clientGame.game.playerTurn == i){
@@ -1104,7 +1120,7 @@ var updateAgentsMenu = function() {
 					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'retired');
 				}
 				else if ( status == AGT_STATUS_ON ){
-					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'in use');
+					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'active');
 				}
 			}
 			else {
