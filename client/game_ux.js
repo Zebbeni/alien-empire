@@ -5,7 +5,7 @@ var DOMimageMap = {
 	'#text-title-div': { path: 'login/', img: 'title'},
 	'#players-time-div': { path: 'login/', img: 'players_time' },
 	'#github-div': { path: 'login/', img: 'github' },
-	'#lobby-div': { path: 'lobby/', img: 'lobby_menu' },
+	'#lobby-div': { path: 'lobby/', img: 'lobby_menu_v2' },
 	'#lobby-title-div': { path: 'login/', img: 'title'},
 	'#create-game-button': { path: 'lobby/', img: 'createnew_button' },
 	'#resume-game-button': { path: 'lobby/', img: 'resume_button' },
