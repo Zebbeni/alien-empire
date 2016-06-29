@@ -19,7 +19,7 @@ var moveToLobby = function() {
     $('#lobby-div').show();
     $('#logout-button').show();
     $('#main-div').show();
-    $("#lobby-div").transition({top: '0px', opacity: 1.0}, 1000);
+    $("#lobby-div").transition({top: '50px', opacity: 1.0}, 1000);
     $("#logout-button").transition({top: '-30px'}, 500);
     $("#main-div").transition({opacity: 1.00}, 1000);
     $('#copyright').show();
@@ -30,7 +30,7 @@ var moveToLobby = function() {
 
 var leaveLobby = function() {
     $('#logout-button').hide();
-    $('#lobby-div').transition({opacity: 0.00}, 1000, function() {
+    $('#lobby-div').transition({top: '30px', opacity: 0.00}, 1000, function() {
         $('#lobby-div').hide();
     });
     playLobbySound('flutter1', 0.2);
@@ -50,7 +50,7 @@ var moveToGame = function( fn ) {
         $("#logout-button").hide();
         fn();
     });
-    $("#lobby-div").transition({top: '-20px'}, 1000);
+    $("#lobby-div").transition({top: '30px'}, 1000);
 
     playLobbySound('flutter1', 0.2);
 };

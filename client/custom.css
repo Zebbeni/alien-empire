@@ -176,22 +176,23 @@ button {
 }
 
 #main-div {
-	position: fixed;
+	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: 1000px;
-	height: 700px;
-	margin-left: -500px;
+	padding: 0px;
+	width: 1050px;
+	height: 650px;
+	margin-left: -525px;
 	margin-top: -350px;
 }
 
 #lobby-div {
 	position: absolute;
 	opacity: 0.0;
-	top: -20px;
+	top: 30px;
 	left: 50%;
-	width: 989px;
-	height: 698px;
+	width: 987px;
+	height: 620px;
 	margin-left: -494px;
 }
 
@@ -238,7 +239,7 @@ button {
 #users-wrapper-div, #messages-wrapper-div, #games-wrapper-div {
 	position: relative;
 	float: left;
-	height: 700px;
+	height: 624px;
 }
 
 #users-wrapper-div {
@@ -260,7 +261,7 @@ button {
 	left: 18px;
 	top: 60px;
 	width: 358px;
-	height: 530px;
+	height: 460px;
 }
 
 .game-button {
@@ -376,12 +377,11 @@ button {
 }
 
 #chat-input {
-	position: relative;
-	float: left;
+	position: absolute;
 	width: 301px;
 	height: 58px;
 	left: 18px;
-	top: 46px;
+	top: 502px;
 	padding: 5px;
 	overflow-y: scroll;
 	color: black;
@@ -400,8 +400,8 @@ button {
 }
 
 #send-message-lobby {
-	top: 54px;
-	left: 16px;
+	top: 36px;
+	left: 15px;
 }
 
 #send-message-staging {
@@ -501,7 +501,7 @@ button {
 
 #users-scroll {
 	float: left;
-	height: 638px;
+	height: 560px;
 	width: 195px;
 	left: 20px;
 	top: 38px;
@@ -525,7 +525,8 @@ button {
 }
 
 #copyright {
-	position: fixed; bottom: 10px;
+	position: absolute; 
+	bottom: 6px;
 	display: block;
 	font-size: 9pt;
 	/*color: rgba(161, 233, 210, .8);*/
