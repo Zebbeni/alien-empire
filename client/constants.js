@@ -313,14 +313,14 @@ var STRUCT_REQS = {
 };
 
 var AGT_REQS = {
-	1: { STRUCT: "Factory" },
-	2: { STRUCT: "Factory" },
-	3: { STRUCT: "Factory" },
-	4: { STRUCT: "Embassy" },
-	5: { STRUCT: "Embassy" },
-	6: { STRUCT: "Embassy" },
-	7: { STRUCT: "Base" },
-	8: { STRUCT: "Base" },
+	1: { STRUCT: "Factory", objecttype: 2 },
+	2: { STRUCT: "Factory", objecttype: 2 },
+	3: { STRUCT: "Factory", objecttype: 2 },
+	4: { STRUCT: "Embassy", objecttype: 3 },
+	5: { STRUCT: "Embassy", objecttype: 3 },
+	6: { STRUCT: "Embassy", objecttype: 3 },
+	7: { STRUCT: "Base", objecttype: 4 },
+	8: { STRUCT: "Base", objecttype: 4 },
 };
 
 PLOT_POINTS = 0;

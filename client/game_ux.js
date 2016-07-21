@@ -1126,11 +1126,22 @@ var updateAgentsMenu = function() {
 					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'active');
 				}
 			}
+			else if ( isAgentAvailableToRecruit(agt) == false ) {
+				$('#agent-button-' + AGT_IMG[agt]).addClass('agent-off');
+			}
 			else {
 				$('#agent-button-' + AGT_IMG[agt]).removeClass('agent-off');
 			}
 		}
 	}
+};
+
+var isAgentAvailableToRecruit = function( agt ){
+	var objecttype = AGT_REQS[agt].objecttype;
+	if (clientGame.game.structures[clientTurn][objecttype] < STRUCT_REQS[objecttype].max) {
+		return true
+	}
+	return false
 };
 
 var showEndGameMenu = function() {
