@@ -12,8 +12,8 @@
         <div id="game-canvas-div"><canvas id="gameCanvas"></canvas></div>
         <div id="copyright">©2016 Andrew Albers</div>
         <div id="main-div">
-            <input type="button" id="logout-button" style="display: none" onclick="javascript:submitLogout();" value="Logout"></input>
             <div id="lobby-div" style="display: none">
+                <input type="button" id="logout-button" style="display: none" onclick="javascript:submitLogout();" value="Logout"></input>
                 <div id="lobby-settings-div"><table><tr>
                     <td class="sound-button sound-button-on settings-button" onclick="javascript:toggleSound();"></td>
                     <td class="music-button music-button-on settings-button" onclick="javascript:toggleMusic();"></td>
@@ -206,6 +206,7 @@
                         <td id="upkeep-info-res-0" class="res-icon"></td>
                     </tr></table>
                 </div>
+                <div id="info-require-text"></div>
             </div>
             <div id="trade-screen" class="dark-screen" style="display: none"></div>
             <div id="trade-menu-div" class="color-menu" style="display: none">

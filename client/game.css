@@ -507,6 +507,20 @@ li:before {content: "• "; color: black; font-family:Play; font-style: normal; 
 	padding: 0px;
 }
 
+#info-require-text {
+	position: absolute;
+	top: 132px;
+	left: 175px;
+	height: 25px;
+	width: 150px;
+	padding: 0px;
+	vertical-align: middle;
+	text-align: center;
+	color: white;
+	font-weight: bold;
+	font-family: 'Play';
+}
+
 #info-upkeep {
 	position: absolute;
 	top: 132px;

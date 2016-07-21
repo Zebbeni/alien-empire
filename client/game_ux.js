@@ -874,6 +874,7 @@ var showInfoMenu = function(evt, type, id){
 		$('#info-text').css({'line-height': "150%"});
 		$('#info-points').html(STRUCT_REQS[id].points);
 		$('#info-points').show();
+		$('#info-require-text').hide();
 		if ( id == OBJ_MINE ){
 			$('#info-defense').html("∞");
 			$('#info-defense').css({'font-size': "22px", 'padding-top': '0px'});
@@ -903,12 +904,14 @@ var showInfoMenu = function(evt, type, id){
 		var backgroundPos = "0 " + String(-132 * (id + 4)) + "px";
 		$('#info-pic').removeClass().addClass('info-agent-'+ String(id));
 		$('#info-pic').css({"background-position": backgroundPos});
-		$('#build-title').html("Recruit");
+		$('#build-title').html("Requires");
 		$('#info-title').html(AGT_ENGLISH[id]);
 		$('#info-text').html(INFO_TEXT.agent[id].info);
 		$('#info-text').css({'line-height': "130%"});
 		$('#info-points').hide();
 		$('#info-defense').hide();
+		$('#info-require-text').show();
+		$('#info-require-text').html(AGT_REQS[id].STRUCT);
 		for ( var i = 0; i < 6; i++ ){
 			$('#build-info-res-' + i).removeClass("metal-icon water-icon fuel-icon food-icon").addClass('no-icon');
 		}

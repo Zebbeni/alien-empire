@@ -150,8 +150,8 @@ var start_planets = {
 			planet_names.splice(index, 1);
 
 			// generate random resources
-			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].explored = setExploredStatus(i, num_players);
+			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].base = undefined;
 			board.planets[i].fleets = [];
 			board.planets[i].agents = [];
@@ -160,6 +160,14 @@ var start_planets = {
 			board.planets[i].borders = {};
 			board.planets[i].settledBy = [false, false, false, false];
 			board.planets[i].buildableBy = [false, false, false, false];
+		}
+
+		var resourcesOkay = isStartingResourcesOkay(board);
+		while (resourcesOkay == false) {
+			for ( var i = 0; i < board.planets.length; i++) {
+				board.planets[i].resources = generateResources(board.planets[i].w);
+			}
+			resourcesOkay = isStartingResourcesOkay(board);
 		}
 
 		// this must be run after all planets have explored value set
@@ -178,6 +186,25 @@ var setExploredStatus = function( planetid, num_players ) {
 		return false;
 	}
 	return true;
+};
+
+var isStartingResourcesOkay = function( board ) {
+	var resources = [0,0,0,0]
+	for ( var i = 0; i < board.planets.length; i++ ){
+		if (board.planets[i].explored){
+			for (var r = 0; r < board.planets[i].resources.length; r++) {
+				var kind = board.planets[i].resources[r].kind;
+				resources[kind] += 1;
+			}
+		}
+	}
+	for ( var j = 0; j < resources.length; j++ ){
+		if (resources[j] == 0) {
+			console.log("gotta rerandomize resources");
+			return false
+		}
+	}
+	return true
 };
 
 /**

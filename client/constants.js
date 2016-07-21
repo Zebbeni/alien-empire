@@ -3,7 +3,7 @@ var sWid = 212;
 var agtWid = 85;
 var agtSpace = 5;
 
-var FRAMES_PER_SECOND = 30;
+var FRAMES_PER_SECOND = 20;
 
 var offline = false; // checked by loader when creating settings for LoadQueue
 var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
@@ -310,6 +310,17 @@ var STRUCT_REQS = {
 		defense: 3,
 		points: 1
 	}
+};
+
+var AGT_REQS = {
+	1: { STRUCT: "Factory" },
+	2: { STRUCT: "Factory" },
+	3: { STRUCT: "Factory" },
+	4: { STRUCT: "Embassy" },
+	5: { STRUCT: "Embassy" },
+	6: { STRUCT: "Embassy" },
+	7: { STRUCT: "Base" },
+	8: { STRUCT: "Base" },
 };
 
 PLOT_POINTS = 0;

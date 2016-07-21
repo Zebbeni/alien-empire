@@ -132,8 +132,8 @@ button {
 
 #logout-button {
 	position: relative;
-	left: 94%;
-	top: -60px;
+	left: 350px;
+	top: -30px;
 	color: rgb(72, 159, 129);
 	background: rgba(0,0,0,0);
 }
@@ -145,8 +145,8 @@ button {
 #create-game-button {
 	position: relative;
 	float: left;
-	left: 18px;
-	top: 39px;
+	left: 16px;
+	top: 12px;
 	width: 361px;
 	height: 48px;
 	padding: 5px;
@@ -162,8 +162,8 @@ button {
 #resume-game-button {
 	position: relative;
 	float: left;
-	left: 18px;
-	top: 48px;
+	left: 16px;
+	top: 20px;
 	width: 361px;
 	height: 35px;
 	font-weight: 400;
@@ -258,8 +258,8 @@ button {
 
 #games-list-div {
 	float: left;
-	left: 18px;
-	top: 60px;
+	left: 16px;
+	top: 35px;
 	width: 358px;
 	height: 460px;
 }

@@ -41,7 +41,7 @@ var leaveLobby = function() {
  */
 var moveToGame = function( fn ) {
     $('#screen-div').hide();
-    $("#logout-button").transition({top: '-60px'}, 500);
+    $("#logout-button").transition({top: '-30px'}, 500);
     $("#staging-div").transition({top: '45%'}, 1000);
     $("#main-div").transition({opacity: 0.00 }, 1000, function(){
         $('#main-div').hide();
