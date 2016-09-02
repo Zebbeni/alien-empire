@@ -59,12 +59,12 @@ var start_planets = {
 		return points;
 	};
 
-	module.exports.initializePoints = function() {
+	module.exports.initializePoints = function( num_users) {
 		var points = {};
 
-		points[cons.PNT_EXPLORE] = 7;
-		points[cons.PNT_ENVOY] = 3;
-		points[cons.PNT_DESTROY] = 3;
+		points[cons.PNT_EXPLORE] = cons.PNT_AVAIL[cons.PNT_EXPLORE][num_users];
+		points[cons.PNT_ENVOY] = cons.PNT_AVAIL[cons.PNT_ENVOY][num_users];
+		points[cons.PNT_DESTROY] = cons.PNT_AVAIL[cons.PNT_DESTROY][num_users];
 
 		return points;
 	};

@@ -72,6 +72,23 @@
 		PNT_ENVOY : 2,
 		PNT_DESTROY : 3,
 		PNT_TOTAL : 4,
+		PNT_AVAIL : {
+			1: {
+				2: 5,
+				3: 6,
+				4: 7
+			},
+			2: {
+				2: 3,
+				3: 4,
+				4: 5
+			},
+			3: {
+				2: 3,
+				3: 4,
+				4: 5
+			}
+		},
 
 		OBJ_MINE : 1,
 		OBJ_FACTORY : 2,

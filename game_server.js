@@ -18,7 +18,7 @@ var actions = require('./game_actions');
 			resourcePackages: initResourcePackages( num_users ),
 
 			points: board.initializePlayerPoints( num_users ),
-			points_remaining: board.initializePoints(),
+			points_remaining: board.initializePoints( num_users ),
 			points_to_win: points,
 			players: board.createPlayerOrder( user_ids ),
 			round: 0,
