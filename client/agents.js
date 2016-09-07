@@ -4,6 +4,11 @@
  * current planetid (either a number or undefined). 
  */
 
+var FULL_ALPHA = 1.0;
+var HALF_ALPHA = 0.5;
+var SEMI_ALPHA = 0.17;
+var NO_ALPHA = 0.0;
+
 var initAgents = function() {
 
 	//create container to store all agent shapes
@@ -25,29 +30,48 @@ var initAgents = function() {
 		agentContainer.agenttype = agenttype;
 
 		var agentshape = new createjs.Shape();
-		var agentImg = loader.getResult( AGT_IMG[ agenttype ] + player );
-		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, 0, 103, 103);
+		agentshape.name = "agentshape";
+
+		var yOffset = 108 * (agenttype - 1);
+
+		var agentImg = loader.getResult( "agents" + player );
+		agentshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(0, yOffset, 108, 108);
 		agentshape.shadow = new createjs.Shadow("rgba(0,0,0,0.5)", 2, 2, 1);
+		agentshape.x = 0;
+		agentshape.y = -1 * yOffset;
 
-		agentshape.scaleX = 0.85;
-		agentshape.scaleY = 0.85;
+		var darkshape = new createjs.Shape();
+		darkshape.name = "darkshape";
+		darkshape.graphics.beginBitmapFill(agentImg, "no-repeat").drawRect(108, yOffset, 108, 108);
+		darkshape.x = -108;
+		darkshape.y = -1 * yOffset;
+		darkshape.alpha = SEMI_ALPHA;
 
-		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 18px Play", "white");
+		var agenttext = new createjs.Text(AGT_ENGLISH[ agenttype ], "normal 20px Play", "white");
 		agenttext.name = "agenttext";
 		agenttext.textAlign = "center";
-		agenttext.x = 43;
-		agenttext.y = 65;
+		agenttext.x = 55;
+		agenttext.y = 81;
 		agenttext.shadow = new createjs.Shadow("rgba(0,0,0,0.8)", 3, 3, 1);
 
 		agentContainer.visible = false;
 		agentContainer.mouseEnabled = false;
+		agentContainer.used = false;
+
+		var hit = new createjs.Shape();
+		hit.graphics.beginFill("000").drawRect(0,0,108,108);
+		agentContainer.hitArea = hit;
 
 		agentContainer.on("mouseover", function() {
 			selectAgent( this.name );
+			this.getChildByName("darkshape").alpha = this.used ? HALF_ALPHA : NO_ALPHA;
+			this.getChildByName("agentshape").alpha = FULL_ALPHA;
 		});
 
 		agentContainer.on("mouseout", function() {
 			hideSelection();
+			this.getChildByName("darkshape").alpha = this.used ? FULL_ALPHA : SEMI_ALPHA;
+			this.getChildByName("agentshape").alpha = this.used ? NO_ALPHA : FULL_ALPHA;
 		});
 
 		agentContainer.on("click", function() {
@@ -55,9 +79,12 @@ var initAgents = function() {
 		});
 
 		agentContainer.addChild( agentshape );
+		agentContainer.addChild( darkshape );
 		agentContainer.addChild( agenttext );
-
 		agentsContainer.addChild(agentContainer);
+
+		agentContainer.scaleX = 0.81;
+		agentContainer.scaleY = 0.81;
 	}
 
 	board.addChild(agentsContainer);
@@ -98,9 +125,17 @@ var updateAgents = function(planetid) {
 		var newAgentY = tiles[planetid].y + agentsY;
 
 		if( agentContainer.visible ){
-			if ( newAgentX != agentContainer.x || Math.abs(newAgentY - agentContainer.y) < 50 ) {
-				num_objects_moving += 1;
-				createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
+			if ( newAgentX != agentContainer.x || Math.abs(newAgentY - agentContainer.y) > 50 ) {
+				if ( !createjs.Tween.hasActiveTweens(agentContainer) ){
+					num_objects_moving += 1;
+					createjs.Tween.get(agentContainer).to({ x:newAgentX, y:newAgentY}, 500 ).call(handleTweenComplete);
+					playSound("whoosh1", 0.1);
+				}
+			}
+			if ( player == clientTurn && agentContainer.used != agent.used ){
+				agentContainer.getChildByName("darkshape").alpha = agent.used ? FULL_ALPHA : SEMI_ALPHA;
+				agentContainer.getChildByName("agentshape").alpha = this.used ? NO_ALPHA : FULL_ALPHA;
+				agentContainer.used = agent.used;
 			}
 		} 
 		else {
@@ -178,11 +213,11 @@ var handleClickAgent = function( agenttype ) {
 };
 
 var showAgentRetireMenu = function() {
-	$('#agent-retire-div')[0].style.visibility = "visible";
+	$('#agent-retire-div').show();
 };
 
 var hideAgentRetireMenu = function() {
-	$('#agent-retire-div')[0].style.visibility = "hidden";
+	$('#agent-retire-div').hide();
 };
 
 var updateAgentRetireMenu = function( agenttype ){
@@ -191,16 +226,16 @@ var updateAgentRetireMenu = function( agenttype ){
 	var planetid = agent.planetid;
 	var planet = clientGame.game.board.planets[planetid];
 	$('#agent-retire-pic').removeClass().addClass('actor-pic actor-agent-' + agenttype);
-	$('#agent-retire-name')[0].innerHTML = AGT_ENGLISH[agenttype];
+	$('#agent-retire-name').html(AGT_ENGLISH[agenttype]);
 	$('#agent-retire-div').addClass('action-div-p' + clientTurn);
-	$('#agent-retire-location')[0].innerHTML = 'Location: ' + planet.name;
+	$('#agent-retire-location').html('Location: ' + planet.name);
 	if (agent.used) {
 		var dest_id = agent.destination;
 		var dest = clientGame.game.board.planets[dest_id].name
-		$('#agent-retire-text')[0].innerHTML = 'Currently on mission to ' + dest;
+		$('#agent-retire-text').html('Currently on mission to ' + dest);
 	}
 	else {
-		$('#agent-retire-text')[0].innerHTML = 'Not on mission';
+		$('#agent-retire-text').html('Not on mission');
 	}
 	$('#agent-retire-button').click( function() { 
 											hideAgentRetireMenu();

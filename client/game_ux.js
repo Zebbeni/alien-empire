@@ -1,62 +1,60 @@
-var DOMimageMap = [
-	{ elmt: '#input-username-div', path: 'login/', img: 'login' },
-	{ elmt: '#text-title-div', path: 'login/', img: 'title'},
-	{ elmt: '#players-time-div', path: 'login/', img: 'players_time' },
-	{ elmt: '#github-div', path: 'login/', img: 'github' },
-	{ elmt: '#lobby-div', path: 'lobby/', img: 'lobby_menu' },
-	{ elmt: '#lobby-title-div', path: 'login/', img: 'title'},
-	{ elmt: '#create-game-button', path: 'lobby/', img: 'createnew_button' },
-	{ elmt: '#resume-game-button', path: 'lobby/', img: 'resume_button' },
-	{ elmt: '.game-button', path: 'lobby/', img: 'joingame_button' },
-	{ elmt: '.send-message-button', path: 'lobby/', img: 'sendmessage_button' },
-	{ elmt: '#staging-div', path: 'staging/', img: 'staging_menu' },
-	{ elmt: '.staging-playernum-button', path: 'staging/', img: 'player_button' },
-	{ elmt: '.staging-playernum-selected', path: 'staging/', img: 'player_button' },
-	{ elmt: '.staging-pointnum-button', path: 'staging/', img: 'point_button' },
-	{ elmt: '.staging-pointnum-selected', path: 'staging/', img: 'point_button' },
-	{ elmt: '#staging-ready-button', path: 'staging/', img: 'ready_button' },
-	{ elmt: '#staging-leave-button', path: 'staging/', img: 'back_button' },
-	{ elmt: '#points-remaining', path: 'interface/', img: 'points_remaining'},
-	{ elmt: '.player-div', path: 'interface/', img: 'player_menu'},
-	{ elmt: '#done-button', path: 'interface/', img: 'end_buttons'},
-	{ elmt: '.player-trade-request-div', path: 'interface/', img: 'request_trade', ext: '.gif'},
-	{ elmt: '.player-start-icon', path: 'interface/', img: 'player_start'},
-	{ elmt: '.metal-icon', path: 'interface/', img: 'res_metal_icon'},
-	{ elmt: '.water-icon', path: 'interface/', img: 'res_water_icon'},
-	{ elmt: '.fuel-icon', path: 'interface/', img: 'res_fuel_icon'},
-	{ elmt: '.food-icon', path: 'interface/', img: 'res_food_icon'},
-	{ elmt: '.points-icon', path: 'interface/', img: 'points_icon'},
-	{ elmt: '.color-menu', path: 'interface/', img: 'menus_p', player: true},
-	{ elmt: '#trade-button', path: 'interface/', img: 'trade_button'},
-	{ elmt: '.trade-arrow-up', path: 'interface/', img: 'trade_arrow_button'},
-	{ elmt: '.trade-arrow-down', path: 'interface/', img: 'trade_arrow_button'},
-	{ elmt: '.trade-radio-button', path: 'interface/', img: 'trade_radio_button'},
-	{ elmt: '#trade-button-yes', path: 'interface/', img: 'color_buttons'},
-	{ elmt: '#trade-button-no', path: 'interface/', img: 'color_buttons'},
-	{ elmt: '.action-button', path: 'interface/', img: 'color_buttons'},
-	{ elmt: '.action-menu', path: 'interface/', img: 'action_menu'},
-	{ elmt: '.mission-arrow', path: 'interface/', img: 'mission_arrows'},
-	{ elmt: '.actor-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
-	{ elmt: '#info-pic', path: 'interface/', img: 'agents_structures', ext: '.jpg'},
-	{ elmt: '#info-points', path: 'interface/', img: 'points'},
-	{ elmt: '#info-defense', path: 'interface/', img: 'defense'},
-	{ elmt: '.fourtoone-button', path: 'interface/', img: '4to1_button'},
-	{ elmt: '.respkg-collect-div', path: 'interface/', img: 'collect_menu'},
-	{ elmt: '.respkg-upkeep-div', path: 'interface/', img: 'upkeep_menu'},
-	{ elmt: '.respkg-arrow-div', path: 'interface/', img: 'resources_arrow', ext: '.gif'},
-	{ elmt: '.struct-button', path: 'interface/', img: 'struct_buttons_p', player: true},
-	{ elmt: '.confirm-button', path: 'interface/', img: 'confirm_buttons'},
-	{ elmt: '.cancel-button', path: 'interface/', img: 'confirm_buttons'},
-	{ elmt: '#agent-button-explorer', path: 'interface/', img: 'agentexplorer_button'},
-	{ elmt: '#agent-button-miner', path: 'interface/', img: 'agentminer_button'},
-	{ elmt: '#agent-button-surveyor', path: 'interface/', img: 'agentsurveyor_button'},
-	{ elmt: '#agent-button-ambassador', path: 'interface/', img: 'agentambassador_button'},
-	{ elmt: '#agent-button-envoy', path: 'interface/', img: 'agentenvoy_button'},
-	{ elmt: '#agent-button-spy', path: 'interface/', img: 'agentspy_button'},
-	{ elmt: '#agent-button-smuggler', path: 'interface/', img: 'agentsmuggler_button'},
-	{ elmt: '#agent-button-sabateur', path: 'interface/', img: 'agentsabateur_button'},
-	{ elmt: '#game-end-menu', path: 'interface/', img: 'end_game_menu'}
-];
+var imgPx = '2x_';
+
+var DOMimageMap = {
+	'#input-username-div': { path: 'login/', img: 'login' },
+	'#text-title-div': { path: 'login/', img: 'title'},
+	'#players-time-div': { path: 'login/', img: 'players_time' },
+	'#github-div': { path: 'login/', img: 'github' },
+	'#lobby-div': { path: 'lobby/', img: 'lobby_menu_v2' },
+	'#lobby-title-div': { path: 'login/', img: 'title'},
+	'#create-game-button': { path: 'lobby/', img: 'createnew_button' },
+	'#resume-game-button': { path: 'lobby/', img: 'resume_button' },
+	'.game-button': { path: 'lobby/', img: 'joingame_button' },
+	'.send-message-button': { path: 'lobby/', img: 'sendmessage_button' },
+	'#staging-div': { path: 'staging/', img: 'staging_menu' },
+	'.staging-playernum-button': { path: 'staging/', img: 'player_button' },
+	'.staging-playernum-selected': { path: 'staging/', img: 'player_button' },
+	'.staging-pointnum-button': { path: 'staging/', img: 'point_button' },
+	'.staging-pointnum-selected': { path: 'staging/', img: 'point_button' },
+	'#staging-ready-button': { path: 'staging/', img: 'ready_button' },
+	'#staging-leave-button': { path: 'staging/', img: 'back_button' },
+	'#points-remaining': { path: 'interface/', img: 'points_remaining'},
+	'.player-div': { path: 'interface/', img: 'player_menu'},
+	'#done-button': { path: 'interface/', img: 'end_buttons'},
+	'.player-trade-request-div': { path: 'interface/', img: 'request_trade', ext: '.gif'},
+	'.player-start-icon': { path: 'interface/', img: 'player_start'},
+	'.metal-icon': { path: 'interface/', img: 'res_metal_icon'},
+	'.water-icon': { path: 'interface/', img: 'res_water_icon'},
+	'.fuel-icon': { path: 'interface/', img: 'res_fuel_icon'},
+	'.food-icon': { path: 'interface/', img: 'res_food_icon'},
+	'.res-icon': { path: 'interface/', img: 'res_icon'},
+	'.points-icon': { path: 'interface/', img: 'points_icon'},
+	'.color-menu': { path: 'interface/', img: 'menus_p', player: true},
+	'#trade-button': { path: 'interface/', img: 'trade_button'},
+	'.trade-arrow-up': { path: 'interface/', img: 'trade_arrow_button'},
+	'.trade-arrow-down': { path: 'interface/', img: 'trade_arrow_button'},
+	'.trade-radio-button': { path: 'interface/', img: 'trade_radio_button'},
+	'#trade-button-yes': { path: 'interface/', img: 'color_buttons'},
+	'#trade-button-no': { path: 'interface/', img: 'color_buttons'},
+	'.action-button': { path: 'interface/', img: 'color_buttons'},
+	'.action-menu': { path: 'interface/', img: 'action_menu'},
+	'.mission-arrow': { path: 'interface/', img: 'mission_arrows'},
+	'.actor-pic': { path: 'interface/', img: 'agents_structures', ext: '.jpg'},
+	'#info-pic': { path: 'interface/', img: 'agents_structures', ext: '.jpg'},
+	'#info-points': { path: 'interface/', img: 'points'},
+	'#info-defense': { path: 'interface/', img: 'defense'},
+	'.fourtoone-button': { path: 'interface/', img: '4to1_button'},
+	'.respkg-collect-div': { path: 'interface/', img: 'collect_menu'},
+	'.respkg-upkeep-div': { path: 'interface/', img: 'upkeep_menu'},
+	'.respkg-arrow-div': { path: 'interface/', img: 'resources_arrow', ext: '.gif'},
+	'.struct-button': { path: 'interface/', img: 'struct_buttons_p', player: true},
+	'.confirm-button': { path: 'interface/', img: 'confirm_buttons'},
+	'.cancel-button': { path: 'interface/', img: 'confirm_buttons'},
+	'.agent-button': { path: 'interface/', img: 'agent_buttons'},
+	'.settings-button': { path: 'interface/', img: 'settings_buttons'},
+	'.pending-action-stat-div': {path: 'interface/', img: 'pending_action'},
+	'#game-end-menu': { path: 'interface/', img: 'end_game_menu'}
+};
 
 $.fn.preload = function() {
 	this.each(function(){
@@ -78,6 +76,7 @@ var createInterface = function() {
 	createBottomBarMenus();
 	createRoundMenu();
 	createActionMenu();
+	setInterfaceImages();
 }
 /**
  * Updates menus and board interactivity when a game action occurs.
@@ -118,41 +117,13 @@ var updateInterface = function() {
 	updateResourcePkgMenu();
 	updateResourceAnimations();
 
-	setInterfaceImages();
-
 	if (clientGame.game.isEnded){
 		showEndGameMenu();
 	}
 };
 
-var clickBuildButton = function() {
-	if ( clientGame.game.round != 0 ) {
-		updateBoardInteractivity();
-		$('#recruit-buttons-div')[0].style.visibility = "hidden";
-	}
-};
-
-var clickRecruitButton = function() {
-	if ( clientGame.game.round != 0 ) {
-		updateBoardInteractivity();
-		$('#build-buttons-div')[0].style.visibility = "hidden";
-	}
-};
-
-/**
- * Simple function, hides a menu with a given id if visible, makes
- * it visible if it's hidden
- */
-var toggleMenu = function( menuid, val ) {
-	if ( val == MENU_ON || (val != MENU_OFF && $(menuid)[0].style.visibility == "hidden" )) {
-		$(menuid)[0].style.visibility = "visible";  
-	}
-	else {
-		$(menuid)[0].style.visibility = "hidden";
-	}
-};
-
 var clickStructureButton = function( objecttype ){
+	playSound('click1', 0.1);
 	if ( clientGame.game.phase == PHS_BUILD ) {
 		setPendingAction( ACT_BUILD );
 		setPendingObject(objecttype);
@@ -162,6 +133,7 @@ var clickStructureButton = function( objecttype ){
 };
 
 var clickAgentButton = function( agenttype ){
+	playSound('click1', 0.1);
 	if ( clientGame.game.phase == PHS_BUILD ) {
 		setPendingAction( ACT_RECRUIT );
 		setPendingAgent(agenttype);
@@ -175,7 +147,7 @@ var hideYourTurnMenu = function() {
 	$('#done-button').off();
 	$('#done-button').attr('value', 'Waiting');
 	$("#your-turn-div").transition({ opacity: 0.00, top: "28%"}, 500, function(){
-		$('#your-turn-div')[0].style.visibility = "hidden";
+		$('#your-turn-div').hide();
 	});
 };
 
@@ -189,7 +161,7 @@ var displayConfirmMenu = function() {
 	}
 	else {
 		displayConfirmMessage();
-		$('#confirm-action-div')[0].style.visibility = "visible";
+		$('#confirm-action-div').show();
 		$("#confirm-action-div").transition({ opacity: 1.00, top: "40%"}, 500 );
 	}
 };
@@ -197,7 +169,7 @@ var displayConfirmMenu = function() {
 var hideConfirmMenu = function() {
 	$("#confirm-action-div").transition({ opacity: 0.00, top: "38%"}, 500, 
 		function(){
-			$('#confirm-action-div')[0].style.visibility = "hidden";
+			$('#confirm-action-div').hide();
 		});
 };
 
@@ -367,18 +339,18 @@ var displayConfirmMessage = function() {
 			break;
 	}
 
-	$('#your-action-message-div')[0].innerHTML = message;
+	$('#your-action-message-div').html(message);
 };
 
 var displayIncludeSmugglerMenu = function(){
-	$('#include-smuggler-div')[0].style.visibility = "visible";
+	$('#include-smuggler-div').show();
 	$("#include-smuggler-div").transition({ opacity: 1.00, top: "40%"}, 500 );	
 };
 
 var hideIncludeSmugglerMenu = function() {
 	$("#include-smuggler-div").transition({ opacity: 0.00, top: "38%"}, 500, 
 		function(){
-			$('#include-smuggler-div')[0].style.visibility = "hidden";
+			$('#include-smuggler-div').hide();
 		});
 };
 
@@ -406,11 +378,13 @@ var includeSmuggler = function( include ){
 };
 
 var confirmPendingAction = function() {
+	playSound("click1", 0.1);
 	hideConfirmMenu();
 	submitAction();
 };
 
 var cancelPendingAction = function() {
+	playSound("click1", 0.1);
 	if(clientGame.game.round != 0 && clientGame.game.phase != PHS_MISSIONS) {
 		clearPendingAction();
 		updateBoardInteractivity();
@@ -561,10 +535,10 @@ var buildChatMessage = function( msg, messages, m) {
  * Display your turn menu (and fades back out after a few seconds)
  */
 var displayEndTurn = function() {
-	$('#your-turn-div')[0].style.visibility = "visible";
-	$('#done-button')[0].style.visibility = "visible";
+	$('#your-turn-div').show();
 	$('#done-button').attr('value', 'End Turn');
 	$('#done-button').off().click(function(){
+		playSound('musicbox2', 0.1);
 		if ( clientGame.game.phase != PHS_PLACING ) {
 			submitTurnDone();
 		}
@@ -572,7 +546,7 @@ var displayEndTurn = function() {
 	$('#done-button').removeClass().addClass('end-turn-button');
 	$("#your-turn-div").transition({ opacity: 1.00, top: "30%"}, 500, function() {
 		$("#your-turn-div").delay(3000).transition({ opacity: 0.00, top: "28%"}, 500, function(){
-			$('#your-turn-div')[0].style.visibility = "hidden";
+			$('#your-turn-div').hide();
 		});
 	});
 };
@@ -586,7 +560,7 @@ var displayCancelAction = function() {
 };
 
 var createTurnHelpMessage = function() {
-	$('#pending-action-div')[0].style.visibility = "visible";
+	$('#pending-action-div').show();
 };
 
 var updateTurnHelpMessage = function() {
@@ -660,7 +634,7 @@ var updateTurnHelpMessage = function() {
 		$('#pending-action-div').hide();
 	}
 	else {
-		$('#pending-action-div')[0].innerHTML = message;
+		$('#pending-action-div').html(message);
 		$('#pending-action-div').css({opacity: 0.0});
 		$('#pending-action-div').show();
 		$('#pending-action-div').transition({opacity: 1.0}, 500, function(){
@@ -671,15 +645,25 @@ var updateTurnHelpMessage = function() {
 	    	}, 2500);
 		});
 	}
+};
 
-	
+showPhaseExplain = function(evt){
+	var left = String(evt.pageX - 150) + "px";
+	var top = String(evt.pageY + 5) + "px";
+	$('#phase-explain-div').css({"left": left, "top": top});
+	$('#phase-explain-div').html(PHS_EXPLAIN[clientGame.game.phase]);
+	$('#phase-explain-div').show();
+};
+
+hidePhaseExplain = function(evt){
+	$('#phase-explain-div').hide();
 };
 
 var updatePointsRemainingMenu = function() {
 	var points_remaining = clientGame.game.points_remaining;
-	$('#points-remaining-explore')[0].innerHTML = points_remaining[PNT_EXPLORE];
-	$('#points-remaining-envoy')[0].innerHTML = points_remaining[PNT_ENVOY];
-	$('#points-remaining-destroy')[0].innerHTML = points_remaining[PNT_DESTROY];
+	$('#points-remaining-explore').html(points_remaining[PNT_EXPLORE]);
+	$('#points-remaining-envoy').html(points_remaining[PNT_ENVOY]);
+	$('#points-remaining-destroy').html(points_remaining[PNT_DESTROY]);
 };
 
 /**
@@ -700,24 +684,29 @@ var createPlayerStatsMenus = function() {
 		var points = clientGame.game.points[i];
 
 		innerHTML += '<div class="player-id-div">' + username + '</div>';
-		innerHTML += '<div class="player-trade-request-div" onclick="javascript:drawTradeMenu(' + i + ')">Requesting Trade</div>';
+		innerHTML += '<div class="player-stat-flags-div">';
+		innerHTML += '<div class="player-trade-request-div" '
+				   + 'style="display: none" '
+				   + 'onclick="javascript:drawTradeMenu(' + i + ')">'
+				   + 'Requests Trade</div>';
+		innerHTML += '<div class="pending-action-stat-div" onmouseover=""></div>'
+		innerHTML += '</div>';
 		innerHTML += '<div class="player-points-div"></div>';
-		innerHTML += '<div class="player-start-icon"></div>';
+		innerHTML += '<div class="player-start-icon" style="display: none"></div>';
 		innerHTML += '<div class="player-stats-div">';
 		
 		innerHTML += '<table class="player-stats-table"><tr>';
-		innerHTML += '<td class="metal-icon"></td>';
-		innerHTML += '<td class="water-icon"></td>';
-		innerHTML += '<td class="fuel-icon"></td>';
-		innerHTML += '<td class="food-icon"></td>';
+		innerHTML += '<td class="res-icon metal-icon"></td>';
+		innerHTML += '<td class="res-icon water-icon"></td>';
+		innerHTML += '<td class="res-icon fuel-icon"></td>';
+		innerHTML += '<td class="res-icon food-icon"></td>';
 
 		innerHTML += '</tr></table>';
 		innerHTML += '</div>';
 		innerHTML += '</div>';
 	}
 
-	$('#players-wrapper-div')[0].innerHTML = innerHTML;
-	$('#players-wrapper-div')[0].style.visibility = "visible";
+	$('#players-wrapper-div').html(innerHTML);
 };
 
 var createActionMenu = function() {
@@ -747,27 +736,89 @@ var updatePlayerStatsMenus = function() {
 		var resources = clientGame.game.resources[i];
 		var points = clientGame.game.points[i];
 
-		$(playerDiv).find('.metal-icon')[0].innerHTML = resources[RES_METAL];
-		$(playerDiv).find('.water-icon')[0].innerHTML = resources[RES_WATER];
-		$(playerDiv).find('.fuel-icon')[0].innerHTML = resources[RES_FUEL];
-		$(playerDiv).find('.food-icon')[0].innerHTML = resources[RES_FOOD];
-		$(playerDiv).find('.player-points-div')[0].innerHTML = points[PNT_TOTAL];
+		$(playerDiv).find('.metal-icon').html(resources[RES_METAL]);
+		$(playerDiv).find('.water-icon').html(resources[RES_WATER]);
+		$(playerDiv).find('.fuel-icon').html(resources[RES_FUEL]);
+		$(playerDiv).find('.food-icon').html(resources[RES_FOOD]);
+		$(playerDiv).find('.player-points-div').html(points[PNT_TOTAL]);
 
 		if ( i != clientTurn 
 			 && clientGame.game.trades[i] != undefined
 			 && clientGame.game.trades[i].offered_to.indexOf(clientTurn) != -1
 			 && clientGame.game.trades[i].declined.indexOf(clientTurn) == -1 ) {
-			$(playerDiv).find('.player-trade-request-div')[0].style.visibility = "visible";
+			$(playerDiv).find('.player-trade-request-div').show();
+			$(playerDiv).find('.player-stat-flags-div').addClass('trade-flag-on');
 		}
 		else {
-			$(playerDiv).find('.player-trade-request-div')[0].style.visibility = "hidden";
+			$(playerDiv).find('.player-trade-request-div').hide();
+			$(playerDiv).find('.player-stat-flags-div').removeClass('trade-flag-on');
 		}
 
 		if ( i == clientGame.game.playerOffset ){
-			$(playerDiv).find('.player-start-icon')[0].style.visibility = "visible";
+			$(playerDiv).find('.player-start-icon').show();
 		}
 		else {
-			$(playerDiv).find('.player-start-icon')[0].style.visibility = "hidden";
+			$(playerDiv).find('.player-start-icon').hide();
+		}
+
+		var pendingFlag = $(playerDiv).find('.player-stat-flags-div').find('.pending-action-stat-div');
+		pendingFlag.off().mouseenter( function(event){
+			showPhaseExplain(event);
+		});
+		pendingFlag.mouseleave( function(event){
+			hidePhaseExplain(event);
+		});
+		switch(clientGame.game.phase) {
+			case PHS_PLACING:
+				if (clientGame.game.playerTurn == i){
+					pendingFlag.show();
+					pendingFlag.html('Placing starting mine...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_MISSIONS:
+				pendingFlag.hide();
+				break;
+			case PHS_RESOURCE:
+				if ( !clientGame.game.phaseDone[i] ){
+					pendingFlag.show();
+					pendingFlag.html('Collecting Resources...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_UPKEEP:
+				if ( !clientGame.game.phaseDone[i] ){
+					pendingFlag.show();
+					pendingFlag.html('Paying Upkeep...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_BUILD:
+				if (clientGame.game.playerTurn == i){
+					pendingFlag.show();
+					pendingFlag.html('Building & Recruiting...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			case PHS_ACTIONS:
+				if (clientGame.game.playerTurn == i){
+					pendingFlag.show();
+					pendingFlag.html('Launching Actions...');
+				}
+				else {
+					pendingFlag.hide();
+				}
+				break;
+			default:
+				break;
 		}
 	}
 };
@@ -785,7 +836,7 @@ var updateBottomBarMenus = function() {
 };
 
 var showIllegalMenu = function( response ){
-	$('#illegal-menu-div')[0].innerHTML = response;
+	$('#illegal-menu-div').html(response);
 	$('#illegal-menu-div').css({opacity: 0});
 	$('#illegal-menu-div').show();
 	$('#illegal-menu-div').transition({opacity: 1}, 500, function(){
@@ -805,66 +856,68 @@ var showInfoMenu = function(evt, type, id){
 	var left = String(evt.pageX - 400) + "px";
 	var top = String(evt.pageY - 190) + "px";
 	$('#info-div').css({"bottom": "150px", "left": left, "top": top});
-	$('#upkeep-title')[0].innerHTML = "Upkeep";
+	$('#upkeep-title').html("Upkeep");
 
 	var tds = ["metal-icon", "water-icon", "fuel-icon", "food-icon"];
 	var buildHTML = '<table><tr>';
 	var upkeepHTML = '<table><tr>';
+
+	playSound("plink", 0.05);
 	
 	if ( type == "structure"){
 		var backgroundPos = "0 " + String(-132 * (id - 1)) + "px";
 		$('#info-pic').removeClass().addClass('info-struct-'+ String(id));
 		$('#info-pic').css({"background-position": backgroundPos});
-		$('#build-title')[0].innerHTML = "Build";
-		$('#info-title')[0].innerHTML = OBJ_ENGLISH[id];
-		$('#info-text')[0].innerHTML = INFO_TEXT.structure[id].info;
+		$('#build-title').html("Build");
+		$('#info-title').html(OBJ_ENGLISH[id]);
+		$('#info-text').html(INFO_TEXT.structure[id].info);
 		$('#info-text').css({'line-height': "150%"});
-		$('#info-points')[0].innerHTML = STRUCT_REQS[id].points;
+		$('#info-points').html(STRUCT_REQS[id].points);
 		$('#info-points').show();
+		$('#info-require-text').hide();
 		if ( id == OBJ_MINE ){
-			$('#info-defense')[0].innerHTML = "∞";
+			$('#info-defense').html("∞");
 			$('#info-defense').css({'font-size': "22px", 'padding-top': '0px'});
 		}
 		else {
-			$('#info-defense')[0].innerHTML = String(STRUCT_REQS[id].defense) + "|6";
+			$('#info-defense').html(String(STRUCT_REQS[id].defense) + "|6");
 			$('#info-defense').css({'font-size': "15px", 'padding-top': '4px'});
 		}
 		$('#info-defense').show();
 		var count = 0;
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 			for ( var r = 0; r < STRUCT_REQS[id].build[i]; r++ ){
-				buildHTML += '<td class="' +  tds[i] + '"></td>';
+				$('#build-info-res-' + count).removeClass("metal-icon water-icon fuel-icon food-icon no-icon").addClass(tds[i]);
 				count += 1;
 			}
-			for ( var r = 0; r < STRUCT_REQS[id].upkeep[i]; r++ ){
-				upkeepHTML += '<td class="' + tds[i] + '"></td>';
+			if ( STRUCT_REQS[id].upkeep[i] > 0 ){
+				$('#upkeep-info-res-' + 0).removeClass("metal-icon water-icon fuel-icon food-icon no-icon").addClass(tds[i]);
 			}
 		}
 		for ( var i = count; i < 6; i++){
-			buildHTML += '<td width="25px"></td>';
+			$('#build-info-res-' + i).removeClass("metal-icon water-icon fuel-icon food-icon").addClass('no-icon');
 		}
 		if ( id == OBJ_MINE ){
-			upkeepHTML += '<td width="25px" class="nocost-td">--</td><td></td>';
+			$('#upkeep-info-res-' + 0).removeClass("metal-icon water-icon fuel-icon food-icon").addClass('no-icon');
 		}
 	} else if (type == "agent"){
 		var backgroundPos = "0 " + String(-132 * (id + 4)) + "px";
 		$('#info-pic').removeClass().addClass('info-agent-'+ String(id));
 		$('#info-pic').css({"background-position": backgroundPos});
-		$('#build-title')[0].innerHTML = "Recruit";
-		$('#info-title')[0].innerHTML = AGT_ENGLISH[id];
-		$('#info-text')[0].innerHTML = INFO_TEXT.agent[id].info;
+		$('#build-title').html("Requires");
+		$('#info-title').html(AGT_ENGLISH[id]);
+		$('#info-text').html(INFO_TEXT.agent[id].info);
 		$('#info-text').css({'line-height': "130%"});
 		$('#info-points').hide();
 		$('#info-defense').hide();
-		buildHTML += '<td class="nocost-td">No Cost</td>'
-		upkeepHTML += '<td class="food-icon"></td>';
+		$('#info-require-text').show();
+		$('#info-require-text').html(AGT_REQS[id].STRUCT);
+		for ( var i = 0; i < 6; i++ ){
+			$('#build-info-res-' + i).removeClass("metal-icon water-icon fuel-icon food-icon").addClass('no-icon');
+		}
+		$('#upkeep-info-res-' + 0).removeClass("metal-icon water-icon fuel-icon no-icon").addClass('food-icon');
 	}
-	buildHTML += '</tr></table>';
-	upkeepHTML += '</tr></table>';
-	$('#info-build')[0].innerHTML = buildHTML;
-	$('#info-upkeep')[0].innerHTML = upkeepHTML;
 	$('#info-div').show();
-	setInterfaceImages();
 };
 
 var hideInfoMenu = function() {
@@ -873,76 +926,52 @@ var hideInfoMenu = function() {
 
 var createStructuresMenu = function() {
 	var innerHTML = '';
-
 	innerHTML += '<div id="structures-menu-title" class="menu-title">Structures</div>';
-	innerHTML += '<div id="struct-mines-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-fleets-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-factories-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-embassies-div"><table class="struct-table">'
-					+ '</table></div>';
-	innerHTML += '<div id="struct-base-div"></div>';
-
-	$('#structures-menu-div')[0].innerHTML = innerHTML;
-
-	updateStructuresMenu();
-};
-
-var updateStructuresMenu = function() {
-
-	var structures = clientGame.game.structures[clientTurn];
-
-	var innerHTML = '<tr>';
-	for ( var i = 0; i < 4; i++ ){
-		innerHTML += (i < structures[OBJ_MINE] ? 
-				  '<td><input type="button" class="struct-button struct-mine-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_MINE);"></input></td>':
-				  '<td width="34px" height="34px"></td>');
+	innerHTML += '<div id="struct-mines-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_MINE].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_MINE + '-' + i + '"'
+					+ 'class="struct-button struct-mine-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_MINE);">'
+				    + '</input></td>';
 	}
-	innerHTML += '</tr>';
-	$('#struct-mines-div').find('.struct-table').html(innerHTML);
-
-	innerHTML = '<tr>';
-	for ( var i = 0; i < 3; i++ ){
-		innerHTML += (i < structures[OBJ_FLEET] ? 
-				  '<td><input type="button" class="struct-button struct-fleet-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_FLEET);" '
-				  // + 'onmouseenter="javascript:showInfoMenu();" '
-				  // + 'onmouseout="javascript:hideInfoMenu();" '
-				  + '></input></td>':
-				  '<td width="42px" height="33px"></td>');
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-fleets-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_FLEET].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_FLEET + '-' + i + '"'
+					+ 'class="struct-button struct-fleet-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_FLEET);">'
+				    + '</input></td>';
 	}
-	innerHTML += '</tr>';
-	$('#struct-fleets-div').find('.struct-table').html(innerHTML);
-
-	innerHTML = '<tr>';
-	for ( var i = 0; i < 3; i++ ){
-		innerHTML += (i < structures[OBJ_FACTORY] ? 
-				  '<td><input type="button" class="struct-button struct-factory-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);"></input></td>':
-				  '<td width="34px" height="50px"></td>');
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-factories-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_FACTORY].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_FACTORY + '-' + i + '"'
+					+ 'class="struct-button struct-factory-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_FACTORY);">'
+				    + '</input></td>';
 	}
-	innerHTML += '</tr>'
-	$('#struct-factories-div').find('.struct-table').html(innerHTML);
-
-	innerHTML = '<tr>';
-	for ( var i = 0; i < 5; i++ ){
-		innerHTML += (i < structures[OBJ_EMBASSY] ? 
-				  '<td><input type="button" class="struct-button struct-embassy-button"'
-				  + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);"></input></td>':
-				  '<td width="37px" height="50px"></td>');
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-embassies-div"><table class="struct-table"><tr>';
+	for ( var i = 0; i < STRUCT_REQS[OBJ_EMBASSY].max; i++ ){
+		innerHTML += '<td><input type="button" '
+					+ 'id="button-' + OBJ_EMBASSY + '-' + i + '"'
+					+ 'class="struct-button struct-embassy-button"'
+				    + 'onclick="javascript:clickStructureButton(OBJ_EMBASSY);">'
+				    + '</input></td>';
 	}
-	innerHTML += '</tr>'
-	$('#struct-embassies-div').find('.struct-table').html(innerHTML);
+	innerHTML += '</tr></table></div>';
+	innerHTML += '<div id="struct-base-div"><input type="button" '
+				+ 'id="button-' + OBJ_BASE + '"'
+				+ 'class="struct-button struct-base-button"'
+			    + 'onclick="javascript:clickStructureButton(OBJ_BASE);">'
+			    + '</input></div>';
 
-	innerHTML = (structures[OBJ_BASE] > 0 ? 
-			  '<input type="button" class="struct-button struct-base-button"'
-			  + 'onclick="javascript:clickStructureButton(OBJ_BASE);"></input>':
-			  '');
-	$('#struct-base-div').html(innerHTML);
+	$('#structures-menu-div').html(innerHTML);
 
+	// do this with a for loop
 	$('.struct-mine-button').mouseenter(function(event){
 		showInfoMenu(event, "structure", OBJ_MINE);
 	});
@@ -968,18 +997,58 @@ var updateStructuresMenu = function() {
 	});
 };
 
-var createAgentsMenu = function() {
-	var innerHTML = '<div id="agents-menu-title" class="menu-title">Agents</div>';
-	innerHTML += '<table id="agents-table"></table>';
+var updateStructuresMenu = function() {
 
-	$('#agents-menu-div')[0].innerHTML = innerHTML;
+	var structures = clientGame.game.structures[clientTurn];
+	if ( structures != undefined ){
+		for ( var i = 0; i < STRUCT_REQS[OBJ_MINE].max; i++ ){
+			if ( i < structures[OBJ_MINE] ){
+				$('#button-' + OBJ_MINE + '-' + i).removeClass('mine-button-used');
+			}
+			else {
+				$('#button-' + OBJ_MINE + '-' + i).addClass('mine-button-used');
+			}
+		}
 
-	updateAgentsMenu();
+		for ( var i = 0; i < STRUCT_REQS[OBJ_FLEET].max; i++ ){
+			if ( i < structures[OBJ_FLEET] ){
+				$('#button-' + OBJ_FLEET + '-' + i).removeClass('fleet-button-used');
+			}
+			else {
+				$('#button-' + OBJ_FLEET + '-' + i).addClass('fleet-button-used');
+			}
+		}
+
+		for ( var i = 0; i < STRUCT_REQS[OBJ_FACTORY].max; i++ ){
+			if (i < structures[OBJ_FACTORY] ) {
+				$('#button-' + OBJ_FACTORY + '-' + i).removeClass('factory-button-used');
+			}
+			else {
+				$('#button-' + OBJ_FACTORY + '-' + i).addClass('factory-button-used');
+			}
+		}
+
+		for ( var i = 0; i < STRUCT_REQS[OBJ_EMBASSY].max; i++ ){
+			if (i < structures[OBJ_EMBASSY] ){
+				$('#button-' + OBJ_EMBASSY + '-' + i).removeClass('embassy-button-used');
+			}
+			else {
+				$('#button-' + OBJ_EMBASSY + '-' + i).addClass('embassy-button-used');
+			}
+		}
+
+		if ( structures[OBJ_BASE] > 0 ){
+			$('#button-' + OBJ_BASE).removeClass('base-button-used');
+		}
+		else {
+			$('#button-' + OBJ_BASE).addClass('base-button-used');
+		}
+	}
 };
 
-var updateAgentsMenu = function() {
-	var innerHTML = '<tr>';
-
+var createAgentsMenu = function() {
+	var innerHTML = '<div id="agents-menu-title" class="menu-title">Agents</div>';
+	innerHTML += '<table id="agents-table"><tr>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-explorer" '
 				+ 'onclick="javascript:clickAgentButton(AGT_EXPLORER);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-miner" '
@@ -988,9 +1057,7 @@ var updateAgentsMenu = function() {
 				+ 'onclick="javascript:clickAgentButton(AGT_SURVEYOR);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-smuggler" '
 				+ 'onclick="javascript:clickAgentButton(AGT_SMUGGLER);"></input></td>';
-
 	innerHTML += '</tr><tr>';
-
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-ambassador" '
 				+ 'onclick="javascript:clickAgentButton(AGT_AMBASSADOR);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-envoy" '
@@ -999,11 +1066,11 @@ var updateAgentsMenu = function() {
 				+ 'onclick="javascript:clickAgentButton(AGT_SPY);"></input></td>';
 	innerHTML += '<td><input type="button" class="agent-button" id="agent-button-sabateur" '
 				+ 'onclick="javascript:clickAgentButton(AGT_SABATEUR);"></input></td>';
+	innerHTML += '</tr></table>';
 
-	innerHTML += '</tr>';
+	$('#agents-menu-div').html(innerHTML);
 
-	$('#agents-table').html(innerHTML);
-
+	// you can set all these with a for loop
 	$('#agent-button-explorer').mouseenter(function(event){
 		showInfoMenu(event, "agent", AGT_EXPLORER);
 	});
@@ -1041,12 +1108,48 @@ var updateAgentsMenu = function() {
 	});
 };
 
+var updateAgentsMenu = function() {
+	if ( clientGame.game != undefined 
+		 && clientGame.game.board != undefined
+		 && clientGame.game.board.agents != undefined ){
+
+		for ( var agt = AGT_EXPLORER; agt <= AGT_SABATEUR; agt++){
+			var agentid = String(clientTurn) + String(agt);
+			var agent = clientGame.game.board.agents[agentid];
+			var status = agent.status;
+			if ( status == AGT_STATUS_ON || status == AGT_STATUS_DEAD ){
+				$('#agent-button-' + AGT_IMG[agt]).addClass('agent-off');
+				if ( status == AGT_STATUS_DEAD ) {
+					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'retired');
+				}
+				else if ( status == AGT_STATUS_ON ){
+					$('#agent-button-' + AGT_IMG[agt]).attr('value', 'active');
+				}
+			}
+			else if ( isAgentAvailableToRecruit(agt) == false ) {
+				$('#agent-button-' + AGT_IMG[agt]).addClass('agent-off');
+			}
+			else {
+				$('#agent-button-' + AGT_IMG[agt]).removeClass('agent-off');
+			}
+		}
+	}
+};
+
+var isAgentAvailableToRecruit = function( agt ){
+	var objecttype = AGT_REQS[agt].objecttype;
+	if (clientGame.game.structures[clientTurn][objecttype] < STRUCT_REQS[objecttype].max) {
+		return true
+	}
+	return false
+};
+
 var showEndGameMenu = function() {
 	$('#game-end-div').css({opacity: '0.0'});
 	$('#game-end-menu').css({opacity: '0.0'});
 	var winner = clientGame.game.winner
 	$('#winner-div').css({opacity: '0.0', color: color[winner]});
-	$('#winner-div')[0].innerHTML = getUsername(winner) + " Wins!";
+	$('#winner-div').html(getUsername(winner) + " Wins!");
 	$('#game-end-div').show();
 	$('#game-end-div').transition({opacity: 0.0}, 500, function(){
 		$('#game-end-div').transition({opacity: 1.0}, 500, function(){
@@ -1085,19 +1188,19 @@ var plotEndGame = function(type){
 
 var createRoundMenu = function() {
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
-		$('#phase-td' + i)[0].innerHTML = PHS_ENGLISH[i];
+		$('#phase-td' + i).html(PHS_ENGLISH[i]);
 	};
 };
 
 var updateRoundMenu = function() {
 
 	if (clientGame.game.phase == PHS_PLACING){
-		$('#round-td')[0].innerHTML = PHS_ENGLISH[PHS_PLACING];
-		$('#round-td').css({background: "rgba(255, 255, 100, 0.5"});
+		$('#round-td').html(PHS_ENGLISH[PHS_PLACING]);
+		$('#round-td').addClass('phase-td-current');
 	}
 	else {
-		$('#round-td')[0].innerHTML = 'Round ' + clientGame.game.round;
-		$('#round-td').css({background: "none"});
+		$('#round-td').html('Round ' + clientGame.game.round);
+		$('#round-td').removeClass('phase-td-current');
 	}
 
 	for (var i = PHS_MISSIONS; i <= PHS_ACTIONS; i++){
@@ -1112,6 +1215,8 @@ var updateRoundMenu = function() {
 
 var updatePhaseMenus = function() {
 
+	var prevShowing = $('#missions-phase-div').is(":visible");
+
 	$('#missions-phase-div').hide();
 	$('#resource-phase-div').hide();
 	$('#upkeep-phase-div').hide();
@@ -1119,6 +1224,9 @@ var updatePhaseMenus = function() {
 	switch(clientGame.game.phase) {
 		case PHS_MISSIONS:
 			updateMissionsMenu(undefined, undefined);
+			if ( !prevShowing ){
+				playSound("flutter2", 0.2);
+			}
 			$('#missions-phase-div').show();
 			break;
 		case PHS_RESOURCE:
@@ -1129,6 +1237,9 @@ var updatePhaseMenus = function() {
 			break;
 		default:
 			break;
+	}
+	if ( prevShowing && $('#missions-phase-div').is(":visible") == false){
+		playSound("flutter1", 0.2);
 	}
 };
 
@@ -1196,21 +1307,23 @@ var updateMissionsMenu = function(round, index) {
 	$('#mission-button-2').hide();
 	$('#mission-button-3').hide();
 
-	$('#mission-name')[0].innerHTML = 'Round ' + String(missionRound + 2);
+	$('#mission-name').html('Round ' + String(missionRound + 2));
+
+	// if no missions to resolve this round
 	if ( missionRound <= 0 || missions[missionRound].length == 0) {
 		$('#mission-agent-div').removeClass().addClass('actor-pic actor-struct-1');
-		$('#mission-location')[0].innerHTML = '- - -';
-		$('#mission-label')[0].innerHTML = 'Mission';
-		$('#mission-text')[0].innerHTML = 'No missions to resolve this round';
+		$('#mission-location').html('- - -');
+		$('#mission-label').html('Mission');
+		$('#mission-text').html('No missions to resolve this round');
 		if ( nowRound == clientGame.game.round && nowIndex == clientGame.game.missionindex ){
 			$('#mission-button-3').show();
 			$('#mission-button-3').attr('value', 'Okay');
 			$('#mission-button-3').off().click( function() {
+				playSound("click1", 0.1);
 				submitMissionsViewed();
 			});
 		}
 	}
-
 	else {
 		var mission = missions[ missionRound ][ missionindex ];
 		var player = mission.player;
@@ -1221,9 +1334,9 @@ var updateMissionsMenu = function(round, index) {
 		var message = "";
 		var picClass = 'actor-agent-' + agenttype;
 		$('#mission-agent-div').removeClass().addClass('actor-pic ' + picClass);
-		$('#mission-location')[0].innerHTML = AGT_ENGLISH[agenttype] + ' to ' + planetname;
-		$('#mission-label')[0].innerHTML = 'Mission (' + String( missionindex + 1 ) 
-										    + ' of ' + missions[missionRound].length + ')';
+		$('#mission-location').html(AGT_ENGLISH[agenttype] + ' to ' + planetname);
+		$('#mission-label').html('Mission (' + String( missionindex + 1 ) 
+										    + ' of ' + missions[missionRound].length + ')');
 		$('#mission-div').removeClass().addClass('action-menu mission-div-p' + player);
 		$('#mission-name').attr('value', AGT_ENGLISH[agenttype]);
 		$('#mission-button-3').hide(); // Hide the view all missions button by default
@@ -1271,13 +1384,14 @@ var updateMissionsMenu = function(round, index) {
 				message = name + mission.result;
 			}
 
-			$('#mission-text')[0].innerHTML = message;
+			$('#mission-text').html(message);
 
 			if ( nowIndex == clientGame.game.missionindex && nowRound == clientGame.game.round ) {
 				if ( clientGame.game.missionViewed[clientTurn] == false ) {
 					$('#mission-button-3').show();
 					$('#mission-button-3').attr('value', 'Okay');
 					$('#mission-button-3').off().click( function() {
+						playSound("click1", 0.1);
 						viewMissionAction();
 					});
 				}
@@ -1298,29 +1412,32 @@ var updateMissionsMenu = function(round, index) {
 				}
 				else {
 					$('#missions-phase-div').show();
-					$('#mission-text')[0].innerHTML = "Mission pending. Would you like to block this mission?";
+					$('#mission-text').html("Mission pending. Would you like to block this mission?");
 					$('#mission-button-1').attr('value', 'Block');
 					$('#mission-button-1').show();
 					$('#mission-button-1').off().click( function() {
+						playSound("click1", 0.1);
 						blockMissionAction(true);
 					});
 					if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
-						$('#mission-text')[0].innerHTML = "Mission Pending. Use a spy eye to block or collect resources from this mission?";
+						$('#mission-text').html("Mission Pending. Use a spy eye to block or collect resources from this mission?");
 						$('#mission-button-2').attr('value', 'Collect');
 						$('#mission-button-2').show();
 						$('#mission-button-2').off().click( function() {
+							playSound("click1", 0.1);
 							blockMissionAction(null);
 						});
 					}
 					$('#mission-button-3').attr('value', 'Allow');
 					$('#mission-button-3').show();
 					$('#mission-button-3').off().click( function() {
+						playSound("click1", 0.1);
 						blockMissionAction( false );
 					});
 				}
 			}
 			else {
-				$('#mission-text')[0].innerHTML = "Mission pending, waiting on spy actions...";
+				$('#mission-text').html("Mission pending, waiting on spy actions...");
 			}
 		}
 
@@ -1328,7 +1445,7 @@ var updateMissionsMenu = function(round, index) {
 		else if ( mission.waitingOnResolve ) {
 			// and if this is actually this client's mission
 			if ( clientTurn != player ) {
-				$('#mission-text')[0].innerHTML = "Mission pending";
+				$('#mission-text').html("Mission pending");
 			}
 			else {
 				setPendingAction( ACT_MISSION_RESOLVE );
@@ -1378,7 +1495,7 @@ var updateMissionsMenu = function(round, index) {
 						default:
 							break;
 					}
-					$('#mission-text')[0].innerHTML = messageHtml;
+					$('#mission-text').html(messageHtml);
 					$('#mission-button-3').show();
 					$('#mission-button-3').attr('value', 'Done');
 					$('#mission-button-3').off().click( function() {
@@ -1386,9 +1503,6 @@ var updateMissionsMenu = function(round, index) {
 					});
 				}
 			}
-		}
-		else {
-
 		}
 	}
 };
@@ -1409,12 +1523,14 @@ var viewMissionAction = function() {
 };
 
 var showActionMenu = function() {
-	$('#action-div')[0].style.visibility = "visible";
+	playSound("flutter2", 0.05);
+	$('#action-div').show();
 };
 
 var hideActionMenu = function() {
-	$('#action-div')[0].style.visibility = "hidden";
-	$('#action-button-1')[0].style.visibility = "hidden";
+	playSound("flutter1", 0.05);
+	$('#action-div').hide();
+	$('#action-button-1').hide();
 };
 
 var cancelAction = function() {
@@ -1432,42 +1548,47 @@ var updateActionMenu = function( actortype, id ){
 	if ( actortype == 'agent' ){
 		picClass += 'agent-' + pendingAction.agenttype;
 		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
-		$('#action-name')[0].innerHTML = AGT_ENGLISH[id];
+		$('#action-name').html(AGT_ENGLISH[id]);
 
 		var agentid = String(clientTurn) + String(id);
 		var planetid = clientGame.game.board.agents[agentid].planetid;
 		var agent = clientGame.game.board.agents[agentid];
 		locationText += clientGame.game.board.planets[planetid].name;
-		$('#action-location')[0].innerHTML = locationText;
-		$('#action-label')[0].innerHTML = 'Mission';
+		$('#action-location').html(locationText);
+		$('#action-label').html('Mission');
 
 		if ( agent.used == true ){
 			if (agent.destination != undefined){
 				var planetname = clientGame.game.board.planets[agent.destination].name;
-				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' is on mission to ' + planetname;
+				$('#action-text').html(AGT_ENGLISH[id] + ' is on mission to ' + planetname);
 			}
 			else {
-				$('#action-text')[0].innerHTML = AGT_ENGLISH[id] + ' already moved this turn';
+				$('#action-text').html(AGT_ENGLISH[id] + ' already moved this turn');
 			}
+			$('#action-button-1').hide();
+			$('#action-button-2').hide();
+			$('#action-button-3').attr('value', 'Close');
 		}
 		else {
-			$('#action-text')[0].innerHTML = INFO_TEXT.agent[id].action;
+			$('#action-text').html(INFO_TEXT.agent[id].action);
+			$('#action-button-1').attr('value', 'Move');
+			$('#action-button-1').show();
+			$('#action-button-1').off().click( function() {
+												hideActionMenu();
+												setPendingAction( ACT_MOVE_AGENT );
+												updateBoardInteractivity();
+												updateTurnHelpMessage();
+											} );
+			$('#action-button-2').attr('value', 'Mission');
+			$('#action-button-2').show();
+			$('#action-button-2').off().click( function() { 
+												hideActionMenu();
+												setPendingAction( ACT_LAUNCH_MISSION );
+												updateBoardInteractivity();
+												updateTurnHelpMessage();
+											} );
 		}
-		$('#action-button-1').attr('value', 'Move');
-		$('#action-button-1')[0].style.visibility = "visible";
-		$('#action-button-1').off().click( function() { 
-											hideActionMenu();
-											setPendingAction( ACT_MOVE_AGENT );
-											updateBoardInteractivity();
-											updateTurnHelpMessage();
-										} );
-		$('#action-button-2').attr('value', 'Mission');
-		$('#action-button-2').off().click( function() { 
-											hideActionMenu();
-											setPendingAction( ACT_LAUNCH_MISSION );
-											updateBoardInteractivity();
-											updateTurnHelpMessage();
-										} );
+
 	}
 	else if ( actortype == 'fleet'){
 		picClass += 'struct-' + OBJ_FLEET;
@@ -1475,51 +1596,94 @@ var updateActionMenu = function( actortype, id ){
 		if ( pendingAction.actiontype != ACT_BASE_ATTACK 
 			 && pendingAction.actiontype != ACT_FLEET_ATTACK) {
 			
-			$('#action-name')[0].innerHTML = OBJ_ENGLISH[OBJ_FLEET];
+			$('#action-name').html(OBJ_ENGLISH[OBJ_FLEET]);
 
 			var planetid = pendingAction.planetid;
 			locationText += clientGame.game.board.planets[planetid].name;
-			$('#action-location')[0].innerHTML = locationText;
-			$('#action-label')[0].innerHTML = 'Action';
-			$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_FLEET].action;
+			$('#action-location').html(locationText);
+			$('#action-label').html('Action');
+			$('#action-text').html(INFO_TEXT.structure[OBJ_FLEET].action);
 
 			$('#action-button-1').attr('value', 'Move');
-			$('#action-button-1')[0].style.visibility = "visible";
+			$('#action-button-1').show();
 			$('#action-button-1').off().click( function() { 
 												hideActionMenu();
 												setPendingAction( ACT_FLEET_MOVE );
 												updateBoardInteractivity();
-												// updateTurnHelpMessage();
 											} );
 			$('#action-button-2').attr('value', 'Attack');
+			$('#action-button-2').show();
 			$('#action-button-2').off().click( function() { 
 												hideActionMenu();
 												setPendingAction( ACT_FLEET_ATTACK );
 												updateBoardInteractivity();
-												// updateTurnHelpMessage();
 											} );
 		}
 	}
 	else if ( actortype == 'base'){
 		picClass += 'struct-' + OBJ_BASE;
 		$('#actor-div').removeClass().addClass('actor-pic ' + picClass);
-		$('#action-name')[0].innerHTML = OBJ_ENGLISH[OBJ_BASE];
+		$('#action-name').html(OBJ_ENGLISH[OBJ_BASE]);
 
 		var planetid = pendingAction.planetid;
 		locationText += clientGame.game.board.planets[planetid].name;
-		$('#action-location')[0].innerHTML = locationText;
-		$('#action-label')[0].innerHTML = 'Action';
-		$('#action-text')[0].innerHTML = INFO_TEXT.structure[OBJ_BASE].action;
+		$('#action-location').html(locationText);
+		$('#action-label').html('Action');
+		$('#action-text').html(INFO_TEXT.structure[OBJ_BASE].action);
 
-		$('#action-button-1')[0].style.visibility = "hidden";
+		$('#action-button-1').hide();
 		$('#action-button-2').prop('value', 'Attack');
+		$('#action-button-2').show();
 		$('#action-button-2').off().click( function() { 
 											hideActionMenu();
 											setPendingAction( ACT_BASE_ATTACK );
 											updateBoardInteractivity();
-											// updateTurnHelpMessage();
-										} );
+		} );
 	}
+};
+
+var initSettingsButtons = function(){
+	$('.settings-button').each(function(){
+		$( this ).click( function(){
+			playSound('click1', 0.1);
+		});
+		$( this ).hover( function(){
+			playSound('plink', 0.05);
+		});
+	});
+};
+
+var toggleRules = function(){
+	if ($('#rules-div').is(":visible") ){
+		$('#rules-div').hide();
+		playSound("flit", 0.2);
+	}
+	else {
+		$('#rules-div').show();
+		playSound("flit", 0.2);
+	}
+};
+
+var updateSoundButton = function(){
+	$('.sound-button').each(function(){
+		if (SOUND_ON){
+			$( this ).removeClass('sound-button-off').addClass('sound-button-on');
+		}
+		else {
+			$( this ).removeClass('sound-button-on').addClass('sound-button-off');
+		}
+	});
+};
+
+var updateMusicButton = function(){
+	$('.music-button').each(function(){
+		if (MUSIC_ON){
+			$( this ).removeClass('music-button-off').addClass('music-button-on');
+		}
+		else {
+			$( this ).removeClass('music-button-on').addClass('music-button-off');
+		}
+	});
 };
 
 /** 
@@ -1530,16 +1694,18 @@ var updateActionMenu = function( actortype, id ){
  */
 var setInterfaceImages = function() {
 
-	var px = window.devicePixelRatio > 1.0 ? '2x_' : '1x_';
+	imgPx = window.devicePixelRatio > 1.0 ? '2x_' : '1x_';
 
-	for (var i = 0; i < DOMimageMap.length; i++){
-		var element = DOMimageMap[i];
-
-		var name = element.elmt;
-		var img = element.img;
-		var player = element.player ? String(clientTurn) : '';
-		var path = s3url + element.path + px + img + player;
-		var ext = element.ext == undefined ? '.png' : element.ext;
-		$( name ).css("background-image", 'url(' + path + ext + ')');
+	for (var name in DOMimageMap){
+		setInterfaceImage(name);
 	}
+};
+
+var setInterfaceImage = function(name) {
+	var element = DOMimageMap[name];
+	var img = element.img;
+	var player = element.player ? String(clientTurn) : '';
+	var path = s3url + element.path + imgPx + img + player;
+	var ext = element.ext == undefined ? '.png' : element.ext;
+	$( name ).css("background-image", 'url(' + path + ext + ')');
 };

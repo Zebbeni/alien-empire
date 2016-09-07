@@ -19,6 +19,7 @@ var initFleets = function() {
 		fleetshape.fleetid = fleetid;
 
 		var fleetimage = new createjs.Shape();
+		fleetimage.name = 'fleetimage';
 		var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
 		fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(416, 100, 84, 68);
 		fleetimage.x = -416;
@@ -27,8 +28,15 @@ var initFleets = function() {
 
 		fleetshape.visible = false;
 		fleetshape.mouseEnabled = true;
+
+		var hit = new createjs.Shape();
+		hit.graphics.beginFill("000").drawRect(0,0,84,68);
+		fleetshape.hitArea = hit;
+
 		fleetshape.scaleX = 0.75;
 		fleetshape.scaleY = 0.75;
+
+		fleetshape.used = false;
 
 		fleetshape.on("mouseover", function() {
 			selectFleet( this.name );
@@ -65,11 +73,11 @@ var updateFleets = function(planetid) {
 
 	switch (planet.w) {
 		case 1:
-			fleetsX = tiles[planetid].x + 225;
+			fleetsX = tiles[planetid].x + 205;
 			fleetsY = tiles[planetid].y + 5;
 			break;
 		case 2:
-			fleetsX = tiles[planetid].x + 420;
+			fleetsX = tiles[planetid].x + 400;
 			fleetsY = tiles[planetid].y + 35;
 			break;
 		}
@@ -82,21 +90,46 @@ var updateFleets = function(planetid) {
 
 		var fleetid = planet.fleets[i];
 		var fleetshape = fleetsContainer.getChildByName( OBJ_ENGLISH[OBJ_FLEET] + fleetid );
+		var fleet = fleets[fleetid];
 
-		if( fleets[fleetid].planetid == planetid ){
+		if( fleet.planetid == planetid ){
 
 			placeY = fleetsY + ( rowNum * yDist );
 			placeX = fleetsX + xOffset + (xDist * rowIndex);
+
+			if ( fleetshape.visible ){
+				if ( fleetshape.used != fleet.used ){
+
+					var fleetimage = fleetshape.getChildByName('fleetimage');
+					var fleetImg = loader.getResult( 'structures' + String(fleet.player) );
+					fleetimage.graphics.clear();
+
+					if ( fleet.used ){
+						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(1000, 100, 84, 68);
+						fleetimage.x = -1000;
+						fleetimage.y = -100;
+					} else {
+						fleetimage.graphics.beginBitmapFill(fleetImg, "no-repeat").drawRect(416, 100, 84, 68);
+						fleetimage.x = -416;
+						fleetimage.y = -100;
+					}
+					
+					fleetshape.used = fleet.used;
+				}
+			}
 
 			if ( !fleetshape.visible ) {
 				fleetshape.x = placeX;
 				fleetshape.y = placeY;
 				fadeIn(fleetshape, 500, true);
 			}
-			else if ( placeX != fleetshape.x || placeY != fleetshape.y ){
+			else if ( (placeX != fleetshape.x || placeY != fleetshape.y) && !createjs.Tween.hasActiveTweens(fleetshape)) {
 				// we do something very similar to this in a few different places. Ought to move to animations.js
 				num_objects_moving += 1;
-				createjs.Tween.get(fleetshape).to({ x:placeX, y:placeY}, 500 ).call(handleTweenComplete);
+				createjs.Tween.get(fleetshape).to({ x:placeX, y:placeY}, 1500 ).call(handleTweenComplete);
+				if ( Math.abs(placeX - fleetshape.x) > 100 || Math.abs(placeY - fleetshape.y) > 100 ){
+					playSound("whoosh2", 0.1);
+				}
 			}
 
 			if ( (rowIndex + 1) % rowLength == 0){

@@ -38,6 +38,7 @@ socket.on('user logout', function(users, newMsg) {
 });
 
 socket.on('new chat message', function(newMsg) {
+    // playLobbySound("chime", 0.1);
     updateLobby(false, newMsg, false);
 });
 
@@ -59,19 +60,23 @@ socket.on('user joined game', function(users, game) {
 
 // This should only get sent to users in the correct staging room.
 socket.on('room user joined staging', function(players, newMsg) {
+    // playLobbySound("chime", 0.1);
     updateGameStage(players, newMsg, false);
 });
 
 socket.on('room user ready staging', function(ready) {
+    // playLobbySound("click1", 0.1);
     updateGameStage(false, false, ready);
 });
 
 socket.on('room requested players changed', function(newMsg, requested, ready) {
+    // playLobbySound("click1", 0.1);
     clientGame.requestedPlayers = requested;
     updateGameStage(false, newMsg, ready);
 });
 
 socket.on('room requested points changed', function(newMsg, requested, ready) {
+    // playLobbySound("click1", 0.1);
     clientGame.requestedPoints = requested;
     updateGameStage(false, newMsg, ready);
 });

@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>Alien Empire | Game</title>
+        <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="custom.css" />
         <link rel="stylesheet" type="text/css" href="game.css" />
-        <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
         <link rel="shortcut icon" href="https://s3-us-west-2.amazonaws.com/alien-empire/login/favicon.ico" type="image/x-icon" />
         <link href='https://fonts.googleapis.com/css?family=Play:400,700|Cinzel+Decorative:400,700' rel='stylesheet' type='text/css'>
     </head>
@@ -12,8 +12,12 @@
         <div id="game-canvas-div"><canvas id="gameCanvas"></canvas></div>
         <div id="copyright">©2016 Andrew Albers</div>
         <div id="main-div">
-            <input type="button" id="logout-button" style="visibility: hidden" onclick="javascript:submitLogout();" value="Logout"></input>
-            <div id="lobby-div" style="visibility: hidden">
+            <div id="lobby-div" style="display: none">
+                <input type="button" id="logout-button" style="display: none" onclick="javascript:submitLogout();" value="Logout"></input>
+                <div id="lobby-settings-div"><table><tr>
+                    <td class="sound-button sound-button-on settings-button" onclick="javascript:toggleSound();"></td>
+                    <td class="music-button music-button-on settings-button" onclick="javascript:toggleMusic();"></td>
+                </tr></table></div>
                 <div id="lobby-title-div"></div>
                 <div id="users-wrapper-div">
                     <div id="users-scroll"></div>
@@ -35,8 +39,8 @@
                     </div>
                 </div>
             </div>
-            <div id="screen-div" style="visibility: hidden"></div>
-            <div id="staging-div" style="visibility: hidden">
+            <div id="screen-div" style="display: none"></div>
+            <div id="staging-div" style="display: none">
                 <div id="staging-inner-div">
                     <div id="staging-messages-div">
                     </div>
@@ -51,8 +55,8 @@
                         <input type="button" class="staging-playernum-button" value="2" onclick="javascript:submitStagingNumPlayers(2);"/>
                     </div>
                     <div id="staging-pointnum-div">
-                        <input type="button" class="staging-pointnum-button" value="14" onclick="javascript:submitStagingPoints(14);"/>
                         <input type="button" class="staging-pointnum-button" value="12" onclick="javascript:submitStagingPoints(12);"/>
+                        <input type="button" class="staging-pointnum-button" value="11" onclick="javascript:submitStagingPoints(11);"/>
                         <input type="button" class="staging-pointnum-button" value="10" onclick="javascript:submitStagingPoints(10);"/>
                     </div>
                     <input type="button" id="staging-ready-button" value="Ready" onclick="javascript:submitStagingReady();"></input>
@@ -73,16 +77,11 @@
             <div id="github-div" onclick="location.href='https://github.com/Zebbeni/alien-empire'"></div>
         </div>
         <div id="game-interface-div" style="display: none">
-            <div id="your-turn-div" style="visibility: hidden">
+            <div id="your-turn-div" style="display: none">
                 <div id="your-turn-message-div">Your turn!</div>
             </div>
             <div id="players-wrapper-div"></div>
-            <div id="pending-action-div" style="visibility: hidden"></div>
-            <div id="resourcepackages-div" style="visibility: hidden">
-                <div class="respkg-arrow-div"></div>
-                <div class="respkg-upkeep-div"></div>
-                <div class="respkg-collect-div"></div>
-            </div>
+            <div id="pending-action-div" style="display: none"></div>
             <div id="bottom-bar-div">
                 <div id="structures-menu-div" class="color-menu"></div>
                 <div id="agents-menu-div" class="color-menu"></div>
@@ -93,6 +92,11 @@
                         <input type="text" id="game-chat-input" placeholder="Type a message here!" autocomplete="off" autofocus></input>
                     </form>
                 </div>
+            </div>
+            <div id="resourcepackages-div">
+                <div class="respkg-arrow-div"></div>
+                <div class="respkg-upkeep-div"></div>
+                <div class="respkg-collect-div"></div>
             </div>
             <div id="points-remaining">
                 <div id="points-remaining-explore">9</div>
@@ -137,7 +141,7 @@
             </div>
             <div id="resource-phase-div" class="phase-div" style="display: none"></div>
             <div id="upkeep-phase-div" class="phase-div" style="display: none"></div>
-            <div id="agent-retire-div" class="action-menu" style="visibility: hidden">
+            <div id="agent-retire-div" class="action-menu" style="display: none">
                 <div id="agent-retire-name" class="action-name"></div>
                 <div id="agent-retire-location" class="action-location"></div>
                 <div id="agent-retire-label" class="action-label">Status</div>
@@ -146,7 +150,7 @@
                 <input type="button" id="agent-retire-button" class="action-button button-2 button-yellow" value="Retire"></input>
                 <input type="button" id="agent-cancel-button" class="action-button button-3 button-red" value="Cancel" onclick="javascript:hideAgentRetireMenu();"></input>
             </div>
-            <div id="action-div" class="action-menu" style="visibility: hidden">
+            <div id="action-div" class="action-menu" style="display: none">
                 <div id="action-name" class="action-name"></div>
                 <div id="action-location" class="action-location"></div>
                 <div id="action-label" class="action-label"></div>
@@ -156,19 +160,28 @@
                 <input type="button" class="action-button button-2 button-blue" id="action-button-2"></input>
                 <input type="button" class="action-button button-3 button-red" id="action-button-3" value="Cancel" onclick="javascript:cancelAction();"></input>
             </div>
-            <div id="confirm-action-div" style="visibility: hidden">
+            <div id="confirm-action-div" style="display: none">
                 <div id="your-action-message-div"></div>
                 <div id="action-confirm-button-wrapper">
                     <input type="button" id="action-confirm-button" class="confirm-button" value="✓" onclick="javascript:confirmPendingAction();"></input>
                     <input type="button" id="action-cancel-button" class="cancel-button" value="✕" onclick="javascript:cancelPendingAction();"></input>
                 </div>
             </div>
-            <div id="include-smuggler-div" style="visibility: hidden">
+            <div id="include-smuggler-div" style="display: none">
                 <div id="include-smuggler-message-div">Include smuggler on this mission?</div>
                 <div id="include-smuggler-button-wrapper">
                     <input type="button" id="smuggler-confirm-button" class="confirm-button" value="✓" onclick="javascript:includeSmuggler(true);"></input>
                     <input type="button" id="smuggler-cancel-button" class="cancel-button" value="✕" onclick="javascript:includeSmuggler(false);"></input>
                 </div>
+            </div>
+            <div id="settings-div">
+                <table>
+                    <tr><td class="rules-button settings-button" onclick="javascript:toggleRules();"></td></tr>
+                    <tr><td class="zoomin-button settings-button" onclick="javascript:zoomBoard(0.05);"></td></tr>
+                    <tr><td class="zoomout-button settings-button" onclick="javascript:zoomBoard(-0.05);"></td></tr>
+                    <tr><td class="sound-button sound-button-on settings-button" onclick="javascript:toggleSound();"></td></tr>
+                    <tr><td class="music-button music-button-on settings-button" onclick="javascript:toggleMusic();"></td></tr>
+                </table>
             </div>
             <div id="info-div" class="color-menu" style="display: none">
                 <div id="info-title" class="menu-title"></div>
@@ -178,11 +191,25 @@
                 <div id="info-points"></div>
                 <div id="build-title" class="menu-title"></div>
                 <div id="upkeep-title" class="menu-title"></div>
-                <div id="info-build"></div>
-                <div id="info-upkeep">Upkeep</div>
+                <div id="info-build">
+                    <table><tr>
+                        <td id="build-info-res-0" class="res-icon"></td>
+                        <td id="build-info-res-1" class="res-icon"></td>
+                        <td id="build-info-res-2" class="res-icon"></td>
+                        <td id="build-info-res-3" class="res-icon"></td>
+                        <td id="build-info-res-4" class="res-icon"></td>
+                        <td id="build-info-res-5" class="res-icon"></td>
+                    </tr></table>
+                </div>
+                <div id="info-upkeep">
+                    <table><tr>
+                        <td id="upkeep-info-res-0" class="res-icon"></td>
+                    </tr></table>
+                </div>
+                <div id="info-require-text"></div>
             </div>
-            <div id="trade-screen" class="dark-screen" style="visibility: hidden"></div>
-            <div id="trade-menu-div" class="color-menu" style="visibility: hidden">
+            <div id="trade-screen" class="dark-screen" style="display: none"></div>
+            <div id="trade-menu-div" class="color-menu" style="display: none">
                 <div id="trade-menu-title" class="menu-title">Trade</div>
                 <div id="player-trade-div"><table id="player-trade-table">
                     <tr>
@@ -192,10 +219,10 @@
                         <td class="trade-arrow-up" onclick="javascript:handletradeArrow('player',3,1);"></td>
                     </tr>
                     <tr>
-                        <td class="metal-icon" id="player-trade-res0"></td>
-                        <td class="water-icon" id="player-trade-res1"></td>
-                        <td class="fuel-icon" id="player-trade-res2"></td>
-                        <td class="food-icon" id="player-trade-res3"></td>
+                        <td class="res-icon metal-icon" id="player-trade-res0"></td>
+                        <td class="res-icon water-icon" id="player-trade-res1"></td>
+                        <td class="res-icon fuel-icon" id="player-trade-res2"></td>
+                        <td class="res-icon food-icon" id="player-trade-res3"></td>
                     </tr>
                     <tr>
                         <td class="trade-arrow-down" onclick="javascript:handletradeArrow('player',0,-1);"></td>
@@ -212,10 +239,10 @@
                         <td class="trade-arrow-up" onclick="javascript:handletradeArrow('opponent',3,1);"></td>
                     </tr>
                     <tr>
-                        <td class="metal-icon" id="opponent-trade-res0"></td>
-                        <td class="water-icon" id="opponent-trade-res1"></td>
-                        <td class="fuel-icon" id="opponent-trade-res2"></td>
-                        <td class="food-icon" id="opponent-trade-res3"></td>
+                        <td class="res-icon metal-icon" id="opponent-trade-res0"></td>
+                        <td class="res-icon water-icon" id="opponent-trade-res1"></td>
+                        <td class="res-icon fuel-icon" id="opponent-trade-res2"></td>
+                        <td class="res-icon food-icon" id="opponent-trade-res3"></td>
                     </tr>
                     <tr>
                         <td class="trade-arrow-down" onclick="javascript:handletradeArrow('opponent',0,-1);"></td>
@@ -228,6 +255,10 @@
                 <input type="button" id="trade-button-yes"></input>
                 <input type="button" id="trade-button-no" onclick="javascript:hideTradeMenu();"></input>
             </div>
+            <div id="rules-div" style="display: none">
+                <iframe id="rules-iframe" onclick="javascript:toggleRules();" src="https://s3-us-west-2.amazonaws.com/alien-empire/interface/AlienEmpireRules.html"></iframe>
+            </div>
+            <div id="phase-explain-div" style="display: none"></div>
             <div id="illegal-menu-div" onclick="javascript:hideIllegalMenu();"></div>
             <div id="game-end-div" style="display: none">
                 <div class="dark-screen"></div>
@@ -253,6 +284,7 @@
         <script src="jquery.transit.min.js"></script>
         <script src="jquery.flot.js"></script>
         <script src="constants.js"></script>
+        <script src="sound.js"></script>
         <script src="script.js"></script>
         <script src="staging.js"></script>
         <script src="from_socket_events.js"></script>

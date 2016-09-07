@@ -18,7 +18,7 @@ var displayStagingPlayers = function() {
         stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
 
     }
-    $('#staging-users-div')[0].innerHTML = stagingPlayersHtml;
+    $('#staging-users-div').html(stagingPlayersHtml);
 };
 
 var initializeGameStage = function(game) {

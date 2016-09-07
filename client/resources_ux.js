@@ -3,64 +3,72 @@
  * menu items in game ux 
  */
 
-// var collectedPkgs = []; // indexes of package collections the ux has animated
+var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
 
 var createResourcesMenu = function() {
 	
 	var innerHTML = '<div id="resources-menu-title" class="menu-title">Resources</div>';
 	clientGame.game.collectedPkgs = []; // indices of packages the ux has animated
 
-	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
-
 	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 		
 		table = '<table class="fourtoone-menu-table" cellspacing="0">';
+		// create 4 to 1 menu
 		for ( var j = RES_METAL; j <= RES_FOOD; j++){
 			if ( i != j ){
-				table += '<td width="25px" height="25px"><input type="button" class="res-icon-button ' + icons[j] + '" onclick="javascript:tradeFourToOne(' + i + ',' + j + ')"></input></td>';
+				table += '<td width="25px" height="25px"><input type="button" '
+					   + 'class="res-icon ' + icons[j] + ' ' 
+					   + icons[j] + '-button" '
+					   + 'onclick="javascript:tradeFourToOne(' + i + ',' + j + ')"></input></td>';
 			}
 		}
-		table += '</table>'
+		table += '</table>';
 		
 		innerHTML += '<div class="resource-div" id="resource-div' + i + '">'
 				   + '<div class="gain-div"></div><div class="loss-div"></div>'
-				   + '<table class="resource-table" cellspacing="0"></table>'
-				   + '<input type="button" class="fourtoone-button" value="4 to 1" onclick="javascript:toggleFourToOneMenu(' + i + ');"></input>'
-				   + '<div id="res-change' + i + '" class="res-change"></div>'
-				   + '<div id="fourtoone-menu' + i + '" class="fourtoone-menu">' + table + '</div>'
-				   + '</div>';
+				   + '<table class="resource-table" cellspacing="0"><tr>';
+
+		for ( var n = 1; n <= 10; n++){
+			innerHTML += '<td id="res-table-icon-' + i + 'n' + n + '" '
+						+ 'class="res-icon no-icon"></td>';
+		}
+		innerHTML += '</tr></table>';
+		innerHTML += '<input type="button" class="fourtoone-button" '
+				   + 'value="4 to 1" '
+				   + 'onclick="javascript:toggleFourToOneMenu(' + i + ');">'
+				   + '</input>'
+		innerHTML += '<div id="res-change' + i + '" class="res-change"></div>';
+		innerHTML += '<div id="fourtoone-menu' + i + '" class="fourtoone-menu">'
+		           + table + '</div></div>';
 	}
 
-	innerHTML += '<input type="button" id="trade-button" value="Trade" onclick="javascript:drawTradeMenu(null);"></input>';
+	innerHTML += '<input type="button" id="trade-button" value="Trade" '
+			   + 'onclick="javascript:drawTradeMenu(null);"></input>';
 
-	$('#resources-menu-div')[0].innerHTML = innerHTML;
-
-	updateResourcesMenu();
+	$('#resources-menu-div').html(innerHTML);
 };
 
 var updateResourcesMenu = function() {
 
-	var icons = ['metal-icon', 'water-icon', 'fuel-icon', 'food-icon'];
 	var collect = clientGame.game.resourceCollect[clientTurn];
 	var upkeep = clientGame.game.resourceUpkeep[clientTurn];
 
-	for ( var i = 0; i <= RES_FOOD; i++ ){
+	for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
 
 		var resourceDiv = '#resource-div' + i;
-		$(resourceDiv).find('.gain-div')[0].innerHTML = '+' + collect[i];
-		$(resourceDiv).find('.loss-div')[0].innerHTML = '-' + upkeep[i];
+		$(resourceDiv).find('.gain-div').html('+' + collect[i]);
+		$(resourceDiv).find('.loss-div').html('-' + upkeep[i]);
 
 		var resources = clientGame.game.resources[clientTurn];
-		var innerHTML = '<tr>';
-		for ( var n = 0; n < 10; n++ ) {
-			innerHTML += (n < resources[i] ? 
-						  '<td class="' + icons[i] + '"></td>':
-						  '<td width="25px" height="25px"></td>');
-
+		for ( var n = 1; n <= 10; n++ ) {
+			var restd = '#res-table-icon-' + i + 'n' + n;
+			if ( n <= resources[i] ) {
+				$(restd).removeClass('no-icon').addClass(icons[i]);
+			}
+			else {
+				$(restd).removeClass(icons[i]).addClass('no-icon');
+			}
 		}
-		innerHTML += '</tr>';
-
-		$(resourceDiv).find('.resource-table').html(innerHTML);
 	}
 };
 
@@ -84,7 +92,6 @@ var updateResourcePkgMenu = function() {
 				 	  && !allValuesEqualTo(pkg.resources, 0) ) ) ) {
 
 			message = pkg.message;
-
 			pkg_id = 'respk-collect-id' + count;
 
 			if (pkg.pkgtype == PKG_UPKEEP) {
@@ -116,18 +123,15 @@ var updateResourcePkgMenu = function() {
 					+ '<table class="respkg-resources-table">';
 
 			for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-				var icon_class = RES_ENGLISH[i] + '-icon';
-
 				html += '<tr class="respkg-num-tr">'
 						+ '<td class="respkg-num-td ' + td_class + '">' 
 						+ sign + String(Math.abs(pkg.resources[i])) 
 						+ '</td>'
-						+ '<td class="' + icon_class + '" ></td>'
+						+ '<td class="res-icon ' + icons[i] + '" ></td>'
 						+ '</tr>';
 			}
 
 			html += '</table></div></div></div>';
-
 			count += 1;
 		}
 
@@ -144,15 +148,19 @@ var updateResourcePkgMenu = function() {
 		}
 	}
 
-	$('#resourcepackages-div')[0].innerHTML = html;
+	$('#resourcepackages-div').html(html);
 
 	for ( var c = 0; c < count; c++ ){
 		var xpos = c * 70;
 		$('#respk-collect-id' + c).css({left: xpos});
 	}
 
-	$('#resourcepackages-div')[0].style.visibility = "visible";
+	$('#resourcepackages-div').show();
 
+	setInterfaceImage('.respkg-collect-div');
+	setInterfaceImage('.respkg-upkeep-div');
+	setInterfaceImage('.respkg-arrow-div');
+	setInterfaceImage('.res-icon');
 };
 
 var allValuesEqualTo = function(array, val) {
@@ -186,6 +194,10 @@ var animateResourceChange = function( pkg ) {
 	var clientResources = clientGame.game.resources[clientTurn];
 	var sign = "+";
 
+	if ( pkg.pkgtype != PKG_BUILD ){
+		playSound("chirp1", 0.1);
+	}
+
 	if (pkg.pkgtype == PKG_UPKEEP || pkg.pkgtype ==  PKG_BUILD) {
 		sign = "-";
 		$('.res-change').each( function() {
@@ -206,9 +218,9 @@ var animateResourceChange = function( pkg ) {
 
 		$('#res-change' + i).text(value);
 		$('#res-change' + i).css({left: leftpos, top: "0px", opacity: "1.00"});
-		$('#res-change' + i)[0].style.visibility = "visible";
+		$('#res-change' + i).show();
 		$('#res-change' + i).transition({ opacity: 0.00, top: "-15px"}, 2000, function(){
-			$( this )[0].style.visibility = "hidden";
+			$( this ).hide();
 		});
 	}
 };
@@ -227,9 +239,10 @@ var tradeFourToOne = function( paykind, getkind ){
 };
 
 var toggleFourToOneMenu = function( res ){
+	playSound("click1", 0.1);
 	for ( var i = RES_METAL; i <= RES_FOOD; i++){
 		if ( i == res){
-			if ( $('#fourtoone-menu' + i)[0].style.visibility == "visible"){
+			if ( $('#fourtoone-menu' + i).is(":visible") ){
 				hideFourToOneMenu( i );
 			}
 			else {
@@ -243,15 +256,13 @@ var toggleFourToOneMenu = function( res ){
 };
 
 var hideFourToOneMenu = function( res ){
-	if ( $('#fourtoone-menu' + res)[0].style.visibility == "visible"){
-		$('#fourtoone-menu' + res).transition({ opacity: 0.00}, 250, function(){
-			$( this )[0].style.visibility = "hidden";
-		});
-	}
+	$('#fourtoone-menu' + res).transition({ opacity: 0.00}, 250, function(){
+		$( this ).hide();
+	});
 };
 
 var showFourToOneMenu = function( res ){
-	$('#fourtoone-menu' + res)[0].style.visibility = "visible";
+	$('#fourtoone-menu' + res).show();
 	$('#fourtoone-menu' + res).transition({ opacity: 1.00}, 250);
 };
 
@@ -266,10 +277,10 @@ var drawTradeMenu = function(player) {
 		allowTradeMenuChanges('auto');
 
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-			$('#player-trade-res' + i)[0].innerHTML = 0;
-			$('#opponent-trade-res' + i)[0].innerHTML = 0;
+			$('#player-trade-res' + i).html(0);
+			$('#opponent-trade-res' + i).html(0);
 		}
-		var playersHtml = "<table><tr>";
+		var playersHtml = '<table id="trade-radio-table"><tr>';
 		for ( var p = 0; p < 4; p++ ){
 			if ( p < clientGame.game.players.length ){
 				if ( p != clientTurn){
@@ -282,7 +293,7 @@ var drawTradeMenu = function(player) {
 			}
 		}
 		playersHtml += "</tr></table>";
-		$('#trade-offers-div')[0].innerHTML = playersHtml;
+		$('#trade-offers-div').html(playersHtml);
 		$('#trade-button-yes').prop('value', 'Submit Request');
 		$('#trade-button-yes').css('pointer-events', 'auto');
 		$('#trade-button-yes').off().click( function() { 
@@ -318,7 +329,7 @@ var drawTradeMenu = function(player) {
 			var checker = setInterval( function(){ 
 				var trade = clientGame.game.trades[clientTurn];
 				if (trade == undefined) {
-					hideTradeMenu();
+					hideTradeMenu(false);
 					clearInterval(checker);
 				}
 				else if ( trade.offered_to.length == trade.declined.length ){
@@ -332,7 +343,7 @@ var drawTradeMenu = function(player) {
 			if (clientGame.game.trades[clientTurn] != undefined){
 				submitTradeCancel(); 
 			}
-			hideTradeMenu();
+			hideTradeMenu(true);
 		});
 	}
 	else {
@@ -343,8 +354,8 @@ var drawTradeMenu = function(player) {
 		var offered_to = trade.offered_to;
 
 		for ( var i = RES_METAL; i <= RES_FOOD; i++ ){
-			$('#player-trade-res' + i)[0].innerHTML = requester_resources[i];
-			$('#opponent-trade-res' + i)[0].innerHTML = opponent_resources[i];
+			$('#player-trade-res' + i).html(requester_resources[i]);
+			$('#opponent-trade-res' + i).html(opponent_resources[i]);
 		}
 		var playersHtml = "<table><tr>";
 		for ( var p = 0; p < 4; p++ ){
@@ -365,22 +376,22 @@ var drawTradeMenu = function(player) {
 			}
 		}
 		playersHtml += "</tr></table>";
-		$('#trade-offers-div')[0].innerHTML = playersHtml;
+		$('#trade-offers-div').html(playersHtml);
 		$('#trade-button-yes').prop('value', 'Accept Trade');
 		$('#trade-button-yes').css('pointer-events', 'auto');
 		$('#trade-button-yes').off().click( function() { 
 			submitTradeAccept(player);
-			hideTradeMenu();
+			hideTradeMenu(false);
 		});
 		$('#trade-button-no').prop('value', 'Decline');
 		$('#trade-button-no').off().click( function() { 
 			submitTradeDecline(player);
-			hideTradeMenu();
+			hideTradeMenu(true);
 		});
 
 		allowTradeMenuChanges('none');
 	}
-	setInterfaceImages();
+	setInterfaceImage('.trade-radio-button');
 	showTradeMenu();
 };
 
@@ -399,33 +410,36 @@ var allowTradeMenuChanges = function( val ){
 };
 
 var handletradeArrow = function(player, res, val){
-	createjs.Sound.play("click1");
+	playSound("click1", 0.1);
 	var value = parseInt($('#' + player + '-trade-res' + res)[0].innerHTML, 10);
 	if ( value + val <= 9 && value + val >= 0){
-		$('#' + player + '-trade-res' + res)[0].innerHTML = value + val;
+		$('#' + player + '-trade-res' + res).html(value + val);
 	}
 };
 
 var toggleTradeRadio = function( player ){
-	createjs.Sound.play("click2");
+	playSound("click1", 0.1);
 	$('#trade-radio-button' + player).toggleClass('radio-on');
 	$('#trade-radio-button' + player).toggleClass('radio-off');
 };
 
 var showTradeMenu = function() {
-	createjs.Sound.play("click2");
-	$('#trade-menu-div')[0].style.visibility = "visible";
-	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 1000);
+	playSound("flutter2", 0.2);
+	$('#trade-menu-div').show();
+	$('#trade-menu-div').transition({ opacity: 1.00, top: "40%" }, 500);
 	$('#trade-menu-div').css();
-	$('#trade-screen')[0].style.visibility = "visible";
-	$('#trade-screen').transition({ opacity: 1.00 }, 1000);
+	$('#trade-screen').show();
+	$('#trade-screen').transition({ opacity: 1.00 }, 500);
 };
 
-var hideTradeMenu = function() {
-	$('#trade-menu-div').transition({opacity: 0.00,top: "38%"}, 1000,function(){
-		$( this )[0].style.visibility = "hidden";
+var hideTradeMenu = function(doSound) {
+	if ( doSound ){
+		playSound("flutter1", 0.2);
+	}
+	$('#trade-menu-div').transition({opacity: 0.00,top: "38%"}, 500,function(){
+		$( this ).hide();
 	});
-	$('#trade-screen').transition({ opacity: 0.00}, 1000, function(){
-		$( this )[0].style.visibility = "hidden";
+	$('#trade-screen').transition({ opacity: 0.00}, 500, function(){
+		$( this ).hide();
 	});
 };

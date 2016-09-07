@@ -1,5 +1,8 @@
 var loader;
+var lobbyloader;
+
 var is_all_loaded = false;
+var is_lobby_loaded = false;
 
 var loadProgress, loadProgressLabel, loadProgressBar;
 var loadingColor = "rgb(131, 203, 180)";
@@ -8,7 +11,7 @@ var load_assets = function() {
 
 	if (!is_all_loaded){
 
-		manifest = [
+		var manifest = [
 			{src: s3url + "game/metal.png", id: "metal"},
 			{src: s3url + "game/water.png", id: "water"},
 			{src: s3url + "game/fuel.png", id: "fuel"},
@@ -62,51 +65,32 @@ var load_assets = function() {
 			{src: s3url + "game/fleet_green.png", id: "fleet2"},
 			{src: s3url + "game/fleet_yellow.png", id: "fleet3"},
 
-			{src: s3url + "game/explorer_red.png", id: "explorer0"},
-			{src: s3url + "game/explorer_blue.png", id: "explorer1"},
-			{src: s3url + "game/explorer_green.png", id: "explorer2"},
-			{src: s3url + "game/explorer_yellow.png", id: "explorer3"},
-
-			{src: s3url + "game/miner_red.png", id: "miner0"},
-			{src: s3url + "game/miner_blue.png", id: "miner1"},
-			{src: s3url + "game/miner_green.png", id: "miner2"},
-			{src: s3url + "game/miner_yellow.png", id: "miner3"},
-
-			{src: s3url + "game/surveyor_red.png", id: "surveyor0"},
-			{src: s3url + "game/surveyor_blue.png", id: "surveyor1"},
-			{src: s3url + "game/surveyor_green.png", id: "surveyor2"},
-			{src: s3url + "game/surveyor_yellow.png", id: "surveyor3"},
-
-			{src: s3url + "game/ambassador_red.png", id: "ambassador0"},
-			{src: s3url + "game/ambassador_blue.png", id: "ambassador1"},
-			{src: s3url + "game/ambassador_green.png", id: "ambassador2"},
-			{src: s3url + "game/ambassador_yellow.png", id: "ambassador3"},
-
-			{src: s3url + "game/envoy_red.png", id: "envoy0"},
-			{src: s3url + "game/envoy_blue.png", id: "envoy1"},
-			{src: s3url + "game/envoy_green.png", id: "envoy2"},
-			{src: s3url + "game/envoy_yellow.png", id: "envoy3"},
-
-			{src: s3url + "game/spy_red.png", id: "spy0"},
-			{src: s3url + "game/spy_blue.png", id: "spy1"},
-			{src: s3url + "game/spy_green.png", id: "spy2"},
-			{src: s3url + "game/spy_yellow.png", id: "spy3"},
-
-			{src: s3url + "game/smuggler_red.png", id: "smuggler0"},
-			{src: s3url + "game/smuggler_blue.png", id: "smuggler1"},
-			{src: s3url + "game/smuggler_green.png", id: "smuggler2"},
-			{src: s3url + "game/smuggler_yellow.png", id: "smuggler3"},
-
-			{src: s3url + "game/sabateur_red.png", id: "sabateur0"},
-			{src: s3url + "game/sabateur_blue.png", id: "sabateur1"},
-			{src: s3url + "game/sabateur_green.png", id: "sabateur2"},
-			{src: s3url + "game/sabateur_yellow.png", id: "sabateur3"},
+			{src: s3url + "game/agent_tokens_p0.png", id: "agents0"},
+			{src: s3url + "game/agent_tokens_p1.png", id: "agents1"},
+			{src: s3url + "game/agent_tokens_p2.png", id: "agents2"},
+			{src: s3url + "game/agent_tokens_p3.png", id: "agents3"},
 
 			{src: s3url + "game/explosion_sprite.png", id: "explosion_sprite"},
 			{src: s3url + "game/shield_sprite.png", id: "shield_sprite"},
 
 			{src: s3url + "sounds/click1.ogg", id:"click1"},
-			{src: s3url + "sounds/click2.ogg", id:"click2"}
+			{src: s3url + "sounds/click2.ogg", id:"click2"},
+			{src: s3url + "sounds/flutter1.ogg", id:"flutter1"},
+			{src: s3url + "sounds/flutter2.ogg", id:"flutter2"},
+			{src: s3url + "sounds/flutter3.ogg", id:"flutter3"},
+			{src: s3url + "sounds/plink.ogg", id: "plink"},
+			{src: s3url + "sounds/whoosh1.ogg", id:"whoosh1"},
+			{src: s3url + "sounds/whoosh2.ogg", id:"whoosh2"},
+			{src: s3url + "sounds/choral.ogg", id:"choral"},
+			{src: s3url + "sounds/chirp1.ogg", id:"chirp1"},
+			{src: s3url + "sounds/flit.ogg", id:"flit"},
+			{src: s3url + "sounds/explosion.ogg", id: "explosion"},
+			{src: s3url + "sounds/shield.ogg", id: "shield"},
+			// {src: s3url + "sounds/strings.ogg", id:"strings"},
+			// {src: s3url + "sounds/wave.ogg", id:"wave"},
+			{src: s3url + "sounds/chime.ogg", id:"chime"},
+			{src: s3url + "sounds/musicbox1.ogg", id:"musicbox1"},
+			{src: s3url + "sounds/musicbox2.ogg", id:"musicbox2"}
 
 		];
 
@@ -182,4 +166,40 @@ var handleComplete = function() {
 	stage.removeChild(loadProgress);
 	submitLoadingDone();
 	stage.update();
+
+	// playMusic("choral", 0.2, 60000);
+};
+
+var loadLobby = function(){
+	if (!is_lobby_loaded){
+		var manifest = [
+			{src: s3url + "sounds/click1.ogg", id:"click1"},
+			{src: s3url + "sounds/flutter1.ogg", id:"flutter1"},
+			{src: s3url + "sounds/flutter2.ogg", id:"flutter2"},
+			{src: s3url + "sounds/choral.ogg", id:"choral"},
+			{src: s3url + "sounds/chime.ogg", id:"chime"},
+			{src: s3url + "sounds/flit.ogg", id:"flit"}
+		];
+
+		lobbyloader = new createjs.LoadQueue(true, null, true);
+		
+		if (offline) {
+			lobbyloader = new createjs.LoadQueue(false);
+		}
+
+		createjs.Sound.alternateExtensions = ["mp3"];
+		lobbyloader.installPlugin(createjs.Sound);
+
+		lobbyloader.addEventListener("complete", handleLobbyLoadComplete);
+		lobbyloader.loadManifest(manifest, true);
+
+		is_lobby_loaded = true;
+	}
+	else {
+		handleLobbyLoadComplete();
+	}
+};
+
+var handleLobbyLoadComplete = function(){
+	playMusic("choral", 0.15, 30903);
 };
