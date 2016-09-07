@@ -4,14 +4,14 @@ var moveToLogin = function() {
     $('#login-div').show();
     $('#input-username').focus();
     $('#login-div').transition({opacity: 1.0}, 2000);
-    $('#login-center-div').transition({top: '40%'}, 2000);
+    // $('#login-center-div').transition({top: '40%'}, 2000);
 };
 
 var leaveLogin = function() {
     $('#login-div').transition({opacity: 0.0}, 500, function() {
         $('#login-div').hide();
     });
-    $('#login-center-div').transition({top: '38%'}, 500);
+    // $('#login-center-div').transition({top: '38%'}, 500);
 };
 
 var moveToLobby = function() {
