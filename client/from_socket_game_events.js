@@ -1,6 +1,5 @@
 // This should only get sent to users in the correct staging room.
 socket.on('new game message', function(newMsg) {
-    // playLobbySound("chime", 0.1);
     if ( clientGame.status == GAME_STAGING) {
         updateGameStage(false, newMsg);
     } 
@@ -10,11 +9,16 @@ socket.on('new game message', function(newMsg) {
 });
 
 socket.on('room game starting', function(gameInfo) {
-    // playLobbySound("chime", 0.1);
     updateClientGame( gameInfo );
     addProgressBar();
     moveToGame( load_assets );
+});
 
+socket.on('reconnect', function(gameInfo) {
+    clientGame = gameInfo;
+    updateClientGame( gameInfo );
+    addProgressBar();
+    moveToGame( load_assets );
 });
 
 /**
@@ -22,7 +26,6 @@ socket.on('room game starting', function(gameInfo) {
  * message. Sends current game object to client
  */
 socket.on('loading done', function(content) {
-    
     updateClientGame( content )
 	createAll();
     updateAll();
@@ -42,6 +45,10 @@ socket.on( 'game event', function(content, msg) {
 });
 
 socket.on('room user left game', function(msg) {
+    updateGameMessages( msg );
+});
+
+socket.on('room user reconnected', function(msg) {
     updateGameMessages( msg );
 });
 

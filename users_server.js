@@ -7,7 +7,7 @@ var staging = require('./server_staging');
  * functions related to user connections and related messages
  */
 
-var login = function(socket, users, messages, gamesInfo, name, fn) {
+var login = function(socket, io, users, messages, gamesInfo, name, fn) {
 	socket.join('lobby');
 
 	fn('received login');
@@ -34,6 +34,7 @@ var login = function(socket, users, messages, gamesInfo, name, fn) {
 			newUser = users[u];
 
 			is_existing_user = true;
+			existing_user_id = u;
 
 			break;
 		}
@@ -70,7 +71,24 @@ var login = function(socket, users, messages, gamesInfo, name, fn) {
 												// debug(data); 
 											}
 		);
+
 		socket.broadcast.to('lobby').emit('user login', users, newMsg);
+
+		if (is_existing_user) {
+			gameid = helpers.findGameToReconnect(existing_user_id, gamesInfo);
+			if ( gameid != -1 ) {
+				gameInfo = gamesInfo[gameid];
+				console.log(gameInfo);
+				socket.join( gameInfo.room );
+				socket.emit('reconnect', gameInfo);
+				var newMsg = helpers.addGameMessage( gamesInfo[gameid],
+													 cons.MSG_SERVER,
+													 name + " reconnected");
+				io.in(gameInfo.room).emit(
+									'room user reconnected', 
+									newMsg );
+			}
+		}
 	}
 };
 
