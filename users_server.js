@@ -136,6 +136,13 @@ var disconnect = function(socket, io, users, messages, gamesInfo) {
 			// otherwise, if game running, allow user to reconnect
 			else if (gameInfo.status == cons.GAME_PROGRESS) {
 				// in the meantime, alert users that one player is gone
+
+				var newMsg = helpers.addGameMessage( gamesInfo[gameid],
+													 cons.MSG_SERVER,
+													 username + " disconnected");
+				io.in(gameInfo.room).emit(
+									'room user left game', 
+									newMsg );
 			}
 		}
 	}

@@ -63,7 +63,7 @@ var userCreateGame = function(socket, io, users, gamesInfo) {
 	var gameid = gamesInfo.length;
 	var gameInfo = {
 					gameid: gameid,
-					status: 1, // 0: CLOSED, 1: STAGING: 2: INGAME
+					status: cons.GAME_STAGING, // 0: CLOSED, 1: STAGING: 2: PROGRESS
 					players: [],
 					ready: [],
 					room: roomId,
@@ -143,7 +143,7 @@ var setUserReady = function(socket, io, users, gamesInfo, fn) {
 	// START game if all players in staging are now ready
 	if ( allPlayersReady( gamesInfo[gameid] ) && allRequestedHere( gamesInfo[gameid]) ) {
 
-		gamesInfo[gameid].status = 2;
+		gamesInfo[gameid].status = cons.GAME_PROGRESS;
 		gamesInfo[gameid].game = game_server.initializeGame( gamesInfo[gameid].players, gameid, gamesInfo[gameid].requestedPoints );
 
 		io.in('lobby').emit('game starting', users, gamesInfo[gameid]);

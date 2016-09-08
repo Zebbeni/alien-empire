@@ -41,6 +41,9 @@ socket.on( 'game event', function(content, msg) {
     checkAndPlayAnimations( msg );
 });
 
+socket.on('room user left game', function(msg) {
+    updateGameMessages( msg );
+});
 
 socket.on('game end', function(content, msg) {
 
