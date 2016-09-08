@@ -166,8 +166,6 @@ var handleComplete = function() {
 	stage.removeChild(loadProgress);
 	submitLoadingDone();
 	stage.update();
-
-	// playMusic("choral", 0.2, 60000);
 };
 
 var loadLobby = function(){
