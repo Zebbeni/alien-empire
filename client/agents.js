@@ -174,14 +174,12 @@ var updateAgentsInteractivity = function() {
 	switch ( clientGame.game.phase ) {
 		case PHS_UPKEEP:
 		case PHS_ACTIONS:
-			mouseOnAgents( true );
-			break;
 		case PHS_PLACING:
 		case PHS_MISSIONS:
 		case PHS_RESOURCE:
 		case PHS_BUILD:
 		default:
-			mouseOnAgents( false );
+			mouseOnAgents( true );
 			break;
 	}
 };
@@ -208,6 +206,7 @@ var handleClickAgent = function( agenttype ) {
 			showActionMenu();
 			break;
 		default:
+			// TODO: Show info menu
 			break;
 	}
 };
