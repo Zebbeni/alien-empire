@@ -46,7 +46,6 @@ var DOMimageMap = {
 	'.fourtoone-button': { path: 'interface/', img: '4to1_button'},
 	'.respkg-collect-div': { path: 'interface/', img: 'collect_menu'},
 	'.respkg-upkeep-div': { path: 'interface/', img: 'upkeep_menu'},
-	'.respkg-arrow-div': { path: 'interface/', img: 'resources_arrow', ext: '.gif'},
 	'.struct-button': { path: 'interface/', img: 'struct_buttons_p', player: true},
 	'.confirm-button': { path: 'interface/', img: 'confirm_buttons'},
 	'.cancel-button': { path: 'interface/', img: 'confirm_buttons'},
@@ -1558,8 +1557,12 @@ var updateActionMenu = function( actortype, id ){
 		$('#action-label').html('Mission');
 
 		if ( agent.used == true ){
+
+            var planet = clientGame.game.board.planets[agent.destination];
+            var sectorname = sectors.charAt( pendingAction.planetid );
+            var planetname = planet.explored ? planet.name : "Sector " + sectorname;
+
 			if (agent.destination != undefined){
-				var planetname = clientGame.game.board.planets[agent.destination].name;
 				$('#action-text').html(AGT_ENGLISH[id] + ' is on mission to ' + planetname);
 			}
 			else {

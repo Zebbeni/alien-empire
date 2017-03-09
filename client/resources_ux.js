@@ -113,7 +113,6 @@ var updateResourcePkgMenu = function() {
 					+ 'id="' + pkg_id + '"' + '>'
 					+ '<div class="respkg-notification-div">'
 					+ '<div class="respkg-message-div">' + message + '</div>'
-					+ '<div class="respkg-arrow-div"></div>'
 					+ '</div>';
 			
 			html += '<div class="respkg-clickable-div" '
@@ -159,7 +158,6 @@ var updateResourcePkgMenu = function() {
 
 	setInterfaceImage('.respkg-collect-div');
 	setInterfaceImage('.respkg-upkeep-div');
-	setInterfaceImage('.respkg-arrow-div');
 	setInterfaceImage('.res-icon');
 };
 

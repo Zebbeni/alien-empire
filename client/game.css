@@ -1340,7 +1340,7 @@ li:before {content: "• "; color: black; font-family:Play; font-style: normal; 
 
 .respkg-message-div {
 	position: absolute;
-	bottom: 40px;
+	bottom: 5px;
 	left: 0px;
 	width: 68px;
 	height: 36px;
@@ -1348,14 +1348,6 @@ li:before {content: "• "; color: black; font-family:Play; font-style: normal; 
 	font-size: 10pt;
 	font-weight: bold;
 	text-align: center;
-}
-
-.respkg-arrow-div {
-	position: absolute;
-	left: 16px;
-	bottom: 0px;
-	width: 33px;
-	height: 40px;
 }
 
 .respkg-clickable-div {
