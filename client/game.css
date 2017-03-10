@@ -656,7 +656,7 @@ li:before {content: "• "; color: black; font-family:Play; font-style: normal; 
 }
 
 .player-trade-request-div:hover {
-	background-position: -222px 0;
+	background-position: -223px 0;
 	cursor: pointer;
 }
 
