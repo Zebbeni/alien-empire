@@ -175,6 +175,7 @@ var updateAgentsInteractivity = function() {
 		case PHS_UPKEEP:
 		case PHS_ACTIONS:
 			mouseOnAgents( true );
+			break;
 		case PHS_PLACING:
 		case PHS_MISSIONS:
 		case PHS_RESOURCE:
