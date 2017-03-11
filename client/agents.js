@@ -174,12 +174,13 @@ var updateAgentsInteractivity = function() {
 	switch ( clientGame.game.phase ) {
 		case PHS_UPKEEP:
 		case PHS_ACTIONS:
+			mouseOnAgents( true );
 		case PHS_PLACING:
 		case PHS_MISSIONS:
 		case PHS_RESOURCE:
 		case PHS_BUILD:
 		default:
-			mouseOnAgents( true );
+			mouseOnAgents( false );
 			break;
 	}
 };
