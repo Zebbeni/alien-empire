@@ -111,9 +111,7 @@ var resetMissionSpied = function( game ) {
 var findGameToReconnect = function(u, gamesInfo){
 	for ( var i = 0; i < gamesInfo.length; i++ ){
 		gameInfo = gamesInfo[i];
-		if ( gameInfo.ready.indexOf(u) != -1 && 
-			 gameInfo.status == cons.GAME_PROGRESS ) {
-			
+		if ( gameInfo.ready.indexOf(u) != -1 && !gameInfo.game.isEnded ) {
 			return i;
 		}
 	}
