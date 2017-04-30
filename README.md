@@ -3,10 +3,9 @@ A multiplayer boardgame using Node.js, Socket.io and CreateJS
 - Testing Appspot: [http://alien-empire.com/](http://alien-empire-48927.onmodulus.net/)
 
 ## Running locally
-1. >> git checkout local (the local branch has all master code + changes to run locally)
-2. >> npm install
-3. >> node app.js
-4. In browser, navigate to localhost:8080
+    git checkout local (the local branch has all master code + changes to run locally)
+    npm install
+    node app.js
  - Use multiple browsers or multiple incognito tabs to simulate multiple users
 
 ## Game rules
