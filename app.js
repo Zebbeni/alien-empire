@@ -22,7 +22,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('login', function(name, fn) {
 
 		console.log(name + " logged in");
-		users_server.login(socket, users, messages, gamesInfo, name, fn);
+		users_server.login(socket, io, users, messages, gamesInfo, name, fn);
 
 	});
 

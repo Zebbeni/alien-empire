@@ -675,7 +675,7 @@ var createPlayerStatsMenus = function() {
 
 	var innerHTML = "";
 
-	for ( var i = 0; i < clientGame.players.length; i++ ) {
+	for ( var i = 0; i < clientGame.game.players.length; i++ ) {
 
 		innerHTML += '<div id="player-div' + i + '" class="player-div" style="bottom: 100px">';
 
@@ -715,7 +715,7 @@ var createActionMenu = function() {
 
 var updatePlayerStatsMenus = function() {
 
-	var numPlayers = clientGame.players.length;
+	var numPlayers = clientGame.game.players.length;
 	var inc = (100.0 / numPlayers) / 2.0;
 	
 	var spacing = 5;
@@ -727,7 +727,7 @@ var updatePlayerStatsMenus = function() {
 	$('#players-wrapper-div').css({ width: wrapperWid, 
 									'margin-left': wrapperMargin });
 
-	for ( var i = 0; i < clientGame.players.length; i++ ) {
+	for ( var i = 0; i < clientGame.game.players.length; i++ ) {
 		var left = playerDivWid * i + "px";
 
 		$('#player-div' + i).css({left: left });

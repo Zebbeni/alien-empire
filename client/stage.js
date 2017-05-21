@@ -83,7 +83,7 @@ var init_background = function() {
 	stage.addChild(background);
 
 	backLoader = new createjs.LoadQueue(false);
-	backLoader.loadFile({src: s3url + "images/space_background_black.jpg", id: "space_background"});
+	backLoader.loadFile({src: s3url + "images/space_background.jpg", id: "space_background"});
 	
 	backLoader.addEventListener("complete", drawBackground);
 

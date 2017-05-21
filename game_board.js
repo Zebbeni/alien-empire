@@ -199,7 +199,7 @@ var isStartingResourcesOkay = function( board ) {
 		}
 	}
 	for ( var j = 0; j < resources.length; j++ ){
-		if (resources[j] == 0) {
+		if (resources[j] < 2) {
 			console.log("gotta rerandomize resources");
 			return false
 		}
