@@ -23,14 +23,19 @@ var addPlayerToReady = function(gameInfo, userid) {
 	return false;
 };
 
-var removeUserFromStaging = function(gameInfo, user) {
+var removeUserFromStaging = function(gameInfo, user, users) {
 	var index = gameInfo.players.indexOf(user.userid);
 
 	if (index != -1) {
-
+		var numHumanPlayers = 0;
 		gameInfo.players.splice(index, 1);
-
-		if (gameInfo.players.length == 0) {
+		for (var p = 0; p < gameInfo.players.length; p++) {
+			var userId = gameInfo.players[p];
+			if (!users[userId].isComputer) {
+				numHumanPlayers += 1;
+			}
+		}
+		if (numHumanPlayers == 0) {
 			gameInfo.status = cons.GAME_CLOSED;
 		}
 
@@ -156,7 +161,7 @@ var setUserReady = function(socket, io, users, gamesInfo, fn) {
 var userLeaveStaging = function(socket, io, users, gamesInfo, gameid) {
 	var gameInfo = gamesInfo[gameid];
 
-	removeUserFromStaging(gamesInfo[gameid], users[socket.userid]);
+	removeUserFromStaging(gamesInfo[gameid], users[socket.userid], users);
 	removePlayerFromReady(gamesInfo[gameid], socket.userid);
 
 	socket.leave(gameInfo.room);
