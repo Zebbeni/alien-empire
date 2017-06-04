@@ -3,7 +3,11 @@ socket.on('connect', function() {
 });
 
 socket.on('login failed already logged in', function(username) {
-    alert('this user has already logged in');
+    alert('user ' + username + ' is already logged in');
+});
+
+socket.on('login failed computer user', function(username) {
+   alert('username ' + username + ' taken by a computer player');
 });
 
 // Get starting arrays of users, messages, and games. Draw lobby
@@ -35,6 +39,10 @@ socket.on('user login', function( users, newMsg) {
 
 socket.on('user logout', function(users, newMsg) {
     updateLobby(users, newMsg, false);
+});
+
+socket.on('new computer user', function(users, newMsg) {
+    updateLobby(users, false, false);
 });
 
 socket.on('new chat message', function(newMsg) {

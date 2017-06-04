@@ -18,7 +18,7 @@ var displayStagingPlayers = function() {
 
             stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
         } else {
-            var divClass = '<div class="staging-user-list-add-ai-div">';
+            var divClass = '<div class="staging-user-list-add-ai-div" onclick="submitStagingAddComputer()">';
 
             stagingPlayersHtml += divClass + "+ Add Computer</div>";
         }

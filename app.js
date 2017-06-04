@@ -79,6 +79,13 @@ io.sockets.on('connection', function(socket) {
 
 	});
 
+	socket.on('add computer staging', function(gameid, fn) {
+
+        console.log(socket.name + " added a computer player");
+        staging.userAddNewComputerPlayer(socket, io, users, gamesInfo, gameid, users_server, messages);
+
+	});
+
 	socket.on('request num players staging', function( gameid, num ){
 
 		console.log(socket.name + " changed num players to " + num);
