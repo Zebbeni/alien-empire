@@ -9,6 +9,7 @@ var io = require('./node_modules/socket.io').listen(server);
 
 var game_server = require('./game_server');
 var users_server = require('./users_server');
+var ai_server = require('./ai_server');
 var staging = require('./server_staging');
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
@@ -154,5 +155,8 @@ app.get('/', function (req, res) {
 server.listen(process.env.PORT || '8080', '0.0.0.0', function() {
   console.log('App listening at http://%s:%s', server.address().address, server.address().port);
   console.log("Press Ctrl+C to quit.");
+  var AiInterval = setInterval(function() {
+  	ai_server.doAiCycle(gamesInfo, users);
+  }, 4000);
 });
 // [END server]
