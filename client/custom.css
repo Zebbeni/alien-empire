@@ -459,14 +459,14 @@ button {
 	width: 65%;
 }
 
-.user-list-div, .self-list-div, .staging-user-list-div, .staging-user-ready-list-div {
+.user-list-div, .self-list-div, .staging-user-list-div, .staging-user-ready-list-div, .staging-user-list-add-ai-div {
 	overflow: hidden;
 	height: 22px;
 	border-radius: 0px;
 	font-weight: bold;
 }
 
-.staging-user-list-div, .staging-user-ready-list-div {
+.staging-user-list-div, .staging-user-ready-list-div, .staging-user-list-add-ai-div {
 	width: 130px;
 }
 
@@ -476,6 +476,15 @@ button {
 
 .staging-user-ready-list-div {
 	color: #a2e482;
+}
+
+.staging-user-list-add-ai-div {
+	color: #9d9d9d;
+}
+
+.staging-user-list-add-ai-div:hover {
+	color: #a6e1ec;
+	cursor: pointer;
 }
 
 .user-list-div {
