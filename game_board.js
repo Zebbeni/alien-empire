@@ -139,6 +139,7 @@ var start_planets = {
 						"Emesekel", "Mah", "Tassian", "Zolea"];
 
 		for ( var i = 0; i < board.planets.length; i++) {
+			board.planets[i].planetid = i; // each planet knows its own index
 			// pick random planet art index
 			var index = Math.floor(Math.random() * planet_art.length);
 			board.planets[i].art = planet_art[ index ];
