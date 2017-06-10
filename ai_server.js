@@ -44,6 +44,9 @@ var createAiGameAction = function(game, playerIndex) {
         case cons.PHS_PLACING:
             action = createAiPlaceAction(game, playerIndex);
             break;
+        case cons.PHS_RESOURCE:
+            action = createAiCollectResourcesAction(game, playerIndex);
+            break;
         default:
             break;
     }
@@ -58,6 +61,13 @@ var createAiPlaceAction = function(game, playerIndex) {
             return planet.explored;
         });
         // places a mine on the first free resource square it finds
+        // TODO:
+        // Improvements...
+        //                 randomly sort explored planets first
+        //                 randomly sort resources first
+        // Better Improvements...
+        //                 check current collection / upkeep numbers,
+        //                 look for resource types most lacking
         for (var p = 0; p < explored.length; p++) {
             var resources = explored[p].resources;
             for (var r = 0; r < resources.length; r++) {
@@ -71,6 +81,25 @@ var createAiPlaceAction = function(game, playerIndex) {
                     };
                 }
             }
+        }
+    }
+    return null;
+};
+
+var createAiCollectResourcesAction = function(game, playerIndex) {
+    console.log('creating ai collect action');
+    // TODO:
+    // Fix...
+    //                      This should instead return a createAi4to1Action
+    //                      if too many resources to collect the package
+    var resource_pkgs = game.resourcePackages[playerIndex];
+    for (var i = 0; i < resource_pkgs.length; i++) {
+        if (!resource_pkgs[i].collected) {
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_COLLECT_RESOURCES,
+                pkgindex: i
+            };
         }
     }
     return null;
