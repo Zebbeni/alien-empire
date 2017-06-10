@@ -1,5 +1,6 @@
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
+var gamedata = require('./game_data');
 
 var doAiCycle = function(io, game_server, gamesInfo, users, aiIndex) {
     for (var gameid = 0; gameid < gamesInfo.length; gameid++) {
@@ -69,7 +70,7 @@ var createAiGameAction = function(game, playerIndex) {
 
 var createAiPlaceAction = function(game, playerIndex) {
     console.log('creating ai place action');
-    if (game.playerTurn == playerIndex) {
+    if (gamedata.isPlayerIndexTurn(game, playerIndex)) {
         var planets = game.board.planets;
         var explored = planets.filter(function(planet) {
             return planet.explored;
@@ -146,7 +147,7 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
 };
 
 var createAiBuildPhaseAction = function(game, playerIndex) {
-    if (game.playerTurn == playerIndex) {
+    if (gamedata.isPlayerIndexTurn(game, playerIndex)) {
         return {
             player: playerIndex,
             actiontype: cons.ACT_TURN_DONE
@@ -156,7 +157,7 @@ var createAiBuildPhaseAction = function(game, playerIndex) {
 };
 
 var createAiActionPhaseAction = function(game, playerIndex) {
-    if (game.playerTurn == playerIndex) {
+    if (gamedata.isPlayerIndexTurn(game, playerIndex)) {
         return {
             player: playerIndex,
             actiontype: cons.ACT_TURN_DONE
@@ -166,17 +167,16 @@ var createAiActionPhaseAction = function(game, playerIndex) {
 };
 
 var createAiMissionsPhaseAction = function(game, playerIndex) {
-    // let's create a 'getCurrentMission' function to do this
-    var missionIndex = game.missionindex;
-    var missionRound = game.round - 2;
-    if (game.missions[missionRound] && game.missions[missionRound][missionIndex]) {
-        var mission = game.missions[missionRound][missionIndex];
+    // let's create a 'getCurrentMission' function to do these lines.
+    // (We do the same thing in game_actions)
+    var mission = gamedata.getCurrentMission(game);
+    if (mission) {
         if (mission.resolution.resolved) {
             if (!game.missionViewed[playerIndex]) {
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_MISSION_VIEWED,
-                    choice: missionIndex
+                    choice: gamedata.getCurrentMissionIndex(game)
                 };
             }
         } else {

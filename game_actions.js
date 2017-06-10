@@ -5,6 +5,7 @@
 
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
+var gamedata = require('./game_data');
 
 (function() {
 
@@ -19,22 +20,21 @@ var helpers = require('./game_helpers');
 	 * @return [sockets to update, event type, game object]
 	 */
 	module.exports.resolveTurnDone = function( action, game ) {
-		if ( game.playerTurn != action.player ){
+		if ( gamedata.isPlayerIndexTurn(game, action.player)) {
+            updateTurn( game );
+            return {
+                to: cons.EVENT_ALL,
+                evnt: 'game event',
+                content: {
+                    game: game
+                }
+            };
+		} else {
 			return {
-					to: cons.EVENT_ONE,
-					evnt: 'illegal action',
-					content: "it is not your turn"
-				};
-		}
-		else { // increment round round
-			updateTurn( game );
-			return {
-					to: cons.EVENT_ALL,
-					evnt: 'game event',
-					content: {
-						game: game
-					}
-				};
+				to: cons.EVENT_ONE,
+				evnt: 'illegal action',
+				content: "it is not your turn"
+			};
 		}
 	};
 
@@ -215,7 +215,7 @@ var applyBuildAction = function( action, game ) {
 				 response: "This action must be done during the build phase" };
 	}
 
-	if ( game.playerTurn != player ) {
+	if ( !gamedata.isPlayerIndexTurn(game, player) ) {
 		return { isIllegal: true,
 				 response: "This action must be done during your turn" };
 	}
@@ -1115,9 +1115,7 @@ var applyBlockMission = function( action, game ){
 
 	var player = action.player;
 	var choice = action.choice;
-	var index = game.missionindex;
-	var round = game.round - 2;
-	var mission = game.missions[round][index];
+	var mission = gamedata.getCurrentMission(game);
 	var planetid = mission.planetTo;
 
 	if ( game.missionSpied[ player ] != null ){
@@ -1131,7 +1129,7 @@ var applyBlockMission = function( action, game ){
 	if ( choice == null && game.board.planets[planetid].spyeyes[player] > 0 ) {
 
 		game.board.planets[planetid].spyeyes[player] -= 1;
-		game.missions[round][ index ].collectors.push( player );
+		mission.collectors.push( player );
 	}
 
 	// choice is true if player has chosen to block the mission
@@ -1139,10 +1137,10 @@ var applyBlockMission = function( action, game ){
 
 		game.missionSpied[ player ] = true;
 
-		game.missions[round][ index ].resolution.blocked = true;
-		game.missions[round][ index ].resolution.blockedBy = player;
-		game.missions[round][ index ].resolution.resolved = true;
-		game.board.planets[planetid].spyeyes[player] -= 1;
+        mission.resolution.blocked = true;
+        mission.resolution.blockedBy = player;
+        mission.resolution.resolved = true;
+        mission.spyeyes[player] -= 1;
 
 		helpers.resetMissionSpied(game);
 	}
@@ -1155,7 +1153,7 @@ var applyBlockMission = function( action, game ){
 			 && game.missionSpied.indexOf(null) == -1) {
 
 			// set flag letting player know they need to resolve this mission
-			game.missions[round][ index ].waitingOnResolve = true;
+            mission.waitingOnResolve = true;
 
 			switch (mission.agenttype) {
 				
@@ -1175,7 +1173,7 @@ var applyBlockMission = function( action, game ){
 						var planetname = planet.name;
 						var result = " discovered " + planetname;
 						result += " and earned " + points + " points,";
-						game.missions[round][index].result = result;
+                        mission.result = result;
 					}
 
 					var is_unreserved = false;
@@ -1189,7 +1187,7 @@ var applyBlockMission = function( action, game ){
 
 					// Add flag if player has no remaining options 
 					if ( !is_unreserved ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.resolution.nochoice = true;
 					}
 					break;
 
@@ -1198,7 +1196,7 @@ var applyBlockMission = function( action, game ){
 					var planet = game.board.planets[planetid];
 					// Add flag if player has no remaining options
 					if ( !planet.settledBy[mission.player] ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.resolution.nochoice = true;
 					}
 
 					break;
@@ -1221,7 +1219,7 @@ var applyBlockMission = function( action, game ){
 					}	
 
 					if ( !hasEmbassy ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.resolution.nochoice = true;
 					}
 					break;
 
@@ -1268,7 +1266,7 @@ var applyBlockMission = function( action, game ){
 					}
 
 					if ( !possibleTarget ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.resolution.nochoice = true;
 					}
 
 					break;
