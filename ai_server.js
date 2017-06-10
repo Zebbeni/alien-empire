@@ -70,15 +70,10 @@ var createAiGameAction = function(game, playerIndex) {
 
 var createAiPlaceAction = function(game, playerIndex) {
     console.log('creating ai place action');
-    var bestAction = null;
-    if (gamedata.isPlayerIndexTurn(game, playerIndex)) {
-        var planets = game.board.planets;
-        var explored = planets.filter(function(planet) {
-            return planet.explored;
-        });
-        bestAction = createBestMinePlacementAction(game, explored, playerIndex, cons.ACT_PLACE);
+    if (gamedata.isPlayerTurn(game, playerIndex)) {
+        return createBestMineBuildAction(game, playerIndex, cons.ACT_PLACE);
     }
-    return bestAction;
+    return null;
 };
 
 var createAiCollectResourcesAction = function(game, playerIndex) {
@@ -125,17 +120,22 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
 };
 
 var createAiBuildPhaseAction = function(game, playerIndex) {
-    if (gamedata.isPlayerIndexTurn(game, playerIndex)) {
-        return {
-            player: playerIndex,
-            actiontype: cons.ACT_TURN_DONE
-        };
+    if (gamedata.isPlayerTurn(game, playerIndex)) {
+        var action = createBestBuildAction(game, playerIndex);
+        if (action) {
+            return action;
+        } else {
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_TURN_DONE
+            };
+        }
     }
     return null;
 };
 
 var createAiActionPhaseAction = function(game, playerIndex) {
-    if (gamedata.isPlayerIndexTurn(game, playerIndex)) {
+    if (gamedata.isPlayerTurn(game, playerIndex)) {
         return {
             player: playerIndex,
             actiontype: cons.ACT_TURN_DONE
@@ -189,20 +189,28 @@ var createAiBlockMissionAction = function(game, playerIndex, mission) {
     };
 };
 
-// go through a list of (assumed buildable) planets and create an action
-// of the given action type to build a mine on the best available resource
-var createBestMinePlacementAction = function(game, planets, playerIndex, actionType) {
+// create an action of the given action type to build a mine on the best available resource
+var createBestMineBuildAction = function(game, playerIndex, actionType) {
     var action = null;
+    // check if can afford first
+    if (actionType != cons.ACT_PLACE) {
+        if (!gamedata.playerCanBuild(game, playerIndex, cons.OBJ_MINE)) {
+            return null;
+        }
+    }
+    var planets = game.board.planets.filter(function(planet) {
+        return planet.explored && (actionType == cons.ACT_PLACE || planet.buildableBy[playerIndex]);
+    });
     shuffle(planets);  // shuffle to eliminate being biased to first spots
-    var derivatives = gamedata.getResourceDerivatives(game, playerIndex);
+    var futures = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, cons.OBJ_MINE);
     var greatestNeedFound = 1000; // (greater needs are lower numbers)
     for (var p = 0; p < planets.length; p++) {
         var resources = planets[p].resources;
         for (var r = 0; r < resources.length; r++) {
             if (!resources[r].structure) {
                 var kind = resources[r].kind;
-                if (derivatives[kind] < greatestNeedFound) {
-                    greatestNeedFound = derivatives[kind];
+                if (futures[kind] < greatestNeedFound) {
+                    greatestNeedFound = futures[kind];
                     action = {
                         player: playerIndex,
                         actiontype: actionType,
@@ -213,6 +221,49 @@ var createBestMinePlacementAction = function(game, planets, playerIndex, actionT
                 }
             }
         }
+    }
+    return action;
+};
+
+// randomly chooses to try building either an embassy or factory. returns build action if possible
+var createBestTier2BuildAction = function(game, playerIndex) {
+    var action = null;
+    var objtype = Math.random() * 2 > 1 ? cons.OBJ_FACTORY : cons.OBJ_EMBASSY;
+    if (gamedata.playerCanBuild(game, playerIndex, objtype)) {
+        var planets = game.board.planets.filter(function (planet) {
+            return planet.settledBy[playerIndex];
+        });
+        shuffle(planets);  // shuffle to eliminate being biased to first spots
+        var futures = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, objtype);
+        var greatestNeedFound = 1000; // (greater needs are lower numbers)
+        for (var p = 0; p < planets.length; p++) {
+            var resources = planets[p].resources;
+            for (var r = 0; r < resources.length; r++) {
+                var structure = resources[r].structure;
+                if (structure && structure.player == playerIndex && structure.kind == cons.OBJ_MINE) {
+                    var kind = resources[r].kind;
+                    if (futures[kind] < greatestNeedFound) {
+                        greatestNeedFound = futures[kind];
+                        action = {
+                            player: playerIndex,
+                            actiontype: cons.ACT_BUILD,
+                            objecttype: objtype,
+                            resourceid: r,
+                            planetid: planets[p].planetid
+                        };
+                    }
+                }
+            }
+        }
+    }
+    return action;
+};
+
+var createBestBuildAction = function(game, playerIndex) {
+    // try to build a mine first.
+    var action = createBestMineBuildAction(game, playerIndex, cons.ACT_BUILD);
+    if (action == null) {
+        action = createBestTier2BuildAction(game, playerIndex);
     }
     return action;
 };

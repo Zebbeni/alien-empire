@@ -20,7 +20,7 @@ var gamedata = require('./game_data');
 	 * @return [sockets to update, event type, game object]
 	 */
 	module.exports.resolveTurnDone = function( action, game ) {
-		if ( gamedata.isPlayerIndexTurn(game, action.player)) {
+		if ( gamedata.isPlayerTurn(game, action.player)) {
             updateTurn( game );
             return {
                 to: cons.EVENT_ALL,
@@ -215,7 +215,7 @@ var applyBuildAction = function( action, game ) {
 				 response: "This action must be done during the build phase" };
 	}
 
-	if ( !gamedata.isPlayerIndexTurn(game, player) ) {
+	if ( !gamedata.isPlayerTurn(game, player) ) {
 		return { isIllegal: true,
 				 response: "This action must be done during your turn" };
 	}
@@ -255,7 +255,7 @@ var applyBuildAction = function( action, game ) {
 		}
 	}
 
-	if ( !hasEnoughToBuild( player, objecttype, game ) ) {
+	if ( !gamedata.playerCanBuild(game, player, objecttype) ) {
 	
 		return { isIllegal: true,
 				 response: "You do not have enough resources to build a new " 
@@ -2127,20 +2127,6 @@ var preProcessMission = function( game ){
 		agent.used = false;
 		agent.destination = undefined;
 	}
-};
-
-var hasEnoughToBuild = function( player, objecttype, game ) {
-	var requirements = cons.STRUCT_REQS[objecttype].build;
-
-	for (var res in requirements) {
-		if ( game.resources[player][res] < requirements[res] ) {
-
-			return false;
-
-		}
-	}
-
-	return true;
 };
 
 var payToBuild = function( player, objecttype, game) {
