@@ -70,41 +70,44 @@ var createAiGameAction = function(game, playerIndex) {
 
 var createAiPlaceAction = function(game, playerIndex) {
     console.log('creating ai place action');
+    var bestAction = null;
     if (gamedata.isPlayerIndexTurn(game, playerIndex)) {
         var planets = game.board.planets;
         var explored = planets.filter(function(planet) {
             return planet.explored;
         });
-        // places a mine on the first free resource square it finds
-        // TODO:
-        // Improvements...
+        shuffle(explored);
+        // TODO FEATURE:
         //                 randomly sort explored planets first
         //                 randomly sort resources first
-        // Better Improvements...
-        //                 check current collection / upkeep numbers,
-        //                 look for resource types most lacking
+        var derivatives = gamedata.getResourceDerivatives(game, playerIndex);
+        var greatestNeedFound = 1000; // (greater needs are lower numbers)
+        var bestAction = null;
         for (var p = 0; p < explored.length; p++) {
             var resources = explored[p].resources;
             for (var r = 0; r < resources.length; r++) {
                 if (!resources[r].structure) {
-                    return {
-                        player: playerIndex,
-                        actiontype: cons.ACT_PLACE,
-                        objecttype: cons.OBJ_MINE,
-                        resourceid: r,
-                        planetid: explored[p].planetid
-                    };
+                    var kind = resources[r].kind;
+                    if (derivatives[kind] < greatestNeedFound) {
+                        greatestNeedFound = derivatives[kind];
+                        bestAction = {
+                            player: playerIndex,
+                            actiontype: cons.ACT_PLACE,
+                            objecttype: cons.OBJ_MINE,
+                            resourceid: r,
+                            planetid: explored[p].planetid
+                        };
+                    }
                 }
             }
         }
     }
-    return null;
+    return bestAction;
 };
 
 var createAiCollectResourcesAction = function(game, playerIndex) {
     console.log('creating ai collect action');
-    // TODO:
-    // Fix...
+    // TODO FIX:
     //          This should instead return a createAi4to1Action
     //          if too many resources to collect the package
     var resource_pkgs = game.resourcePackages[playerIndex];
@@ -123,11 +126,10 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
 
 var createAiUpkeepPhaseAction = function(game, playerIndex) {
     console.log('creating ai pay upkeep action');
-    // TODO:
-    // Fix...
+    // TODO FIX:
     //          This should check if upkeep can be paid and
     //          remove appropriate agents / structures if not
-    // Improvement...
+    // TODO FEATURE:
     //          This should consider retiring agents even if
     //          it *can* pay upkeep for them
     var resource_pkgs = game.resourcePackages[playerIndex];
@@ -166,9 +168,16 @@ var createAiActionPhaseAction = function(game, playerIndex) {
     return null;
 };
 
+// Creates an AI action for the mission resolve phase
+// If there is a current mission pending:
+//   If it is resolved but not viewed:
+//     ACT_MISSION_VIEWED
+//   If it is not resolved:
+//     If AI has not responded with spy action:
+//       ACT_BLOCK_MISSION (true or false)
+//     Else IF it is AI's mission:
+//        Create Mission Resolve Action
 var createAiMissionsPhaseAction = function(game, playerIndex) {
-    // let's create a 'getCurrentMission' function to do these lines.
-    // (We do the same thing in game_actions)
     var mission = gamedata.getCurrentMission(game);
     if (mission) {
         if (mission.resolution.resolved) {
@@ -182,22 +191,41 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
         } else {
             if (mission.waitingOnResolve) {
                 if (mission.player == playerIndex) {
-                    // TODO: create resolve mission action
+                    // TODO FEATURE: create resolve mission action
                 }
             } else {
                 if (game.missionSpied[playerIndex] == null) {
-                    // TODO: create resolve spy action if player has spy eyes
-                    return {
-                        player: playerIndex,
-                        actiontype: cons.ACT_BLOCK_MISSION,
-                        choice: false
-                    };
+                    return createAiBlockMissionAction(game, playerIndex, mission);
                 }
             }
         }
     }
     return null;
 };
+
+// Creates an AI action to either allow, block, or collect from a mission
+// TODO FEATURE: add logic to block or collect if AI player has spy eyes
+var createAiBlockMissionAction = function(game, playerIndex, mission) {
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_BLOCK_MISSION,
+        choice: false
+    };
+};
+
+/**
+ * Shuffles array in place.
+ * @param {Array} a items The array containing the items.
+ */
+function shuffle(a) {
+    var j, x, i;
+    for (i = a.length; i; i--) {
+        j = Math.floor(Math.random() * i);
+        x = a[i - 1];
+        a[i - 1] = a[j];
+        a[j] = x;
+    }
+}
 
 (function() {
     module.exports = {
