@@ -47,6 +47,18 @@ var createAiGameAction = function(game, playerIndex) {
         case cons.PHS_RESOURCE:
             action = createAiCollectResourcesAction(game, playerIndex);
             break;
+        case cons.PHS_UPKEEP:
+            action = createAiUpkeepPhaseAction(game, playerIndex);
+            break;
+        case cons.PHS_BUILD:
+            action = createAiBuildPhaseAction(game, playerIndex);
+            break;
+        case cons.PHS_ACTIONS:
+            action = createAiActionPhaseAction(game, playerIndex);
+            break;
+        case cons.PHS_MISSIONS:
+            action = createAiMissionsPhaseAction(game, playerIndex);
+            break;
         default:
             break;
     }
@@ -90,16 +102,97 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
     console.log('creating ai collect action');
     // TODO:
     // Fix...
-    //                      This should instead return a createAi4to1Action
-    //                      if too many resources to collect the package
+    //          This should instead return a createAi4to1Action
+    //          if too many resources to collect the package
     var resource_pkgs = game.resourcePackages[playerIndex];
     for (var i = 0; i < resource_pkgs.length; i++) {
-        if (!resource_pkgs[i].collected) {
+        var pkg = resource_pkgs[i];
+        if (!pkg.collected && pkg.pkgtype != cons.PKG_UPKEEP) {
             return {
                 player: playerIndex,
                 actiontype: cons.ACT_COLLECT_RESOURCES,
                 pkgindex: i
             };
+        }
+    }
+    return null;
+};
+
+var createAiUpkeepPhaseAction = function(game, playerIndex) {
+    console.log('creating ai pay upkeep action');
+    // TODO:
+    // Fix...
+    //          This should check if upkeep can be paid and
+    //          remove appropriate agents / structures if not
+    // Improvement...
+    //          This should consider retiring agents even if
+    //          it *can* pay upkeep for them
+    var resource_pkgs = game.resourcePackages[playerIndex];
+    for (var i = 0; i < resource_pkgs.length; i++) {
+        var pkg = resource_pkgs[i];
+        if (pkg.pkgtype == cons.PKG_UPKEEP) {
+            if (!pkg.collected && !pkg.cancelled) {
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_PAY_UPKEEP,
+                    pkgindex: i
+                };
+            }
+        }
+    }
+    return null;
+};
+
+var createAiBuildPhaseAction = function(game, playerIndex) {
+    if (game.playerTurn == playerIndex) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_TURN_DONE
+        };
+    }
+    return null;
+};
+
+var createAiActionPhaseAction = function(game, playerIndex) {
+    if (game.playerTurn == playerIndex) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_TURN_DONE
+        };
+    }
+    return null;
+};
+
+var createAiMissionsPhaseAction = function(game, playerIndex) {
+    // let's create a 'getCurrentMission' function to do this
+    var missionIndex = game.missionindex;
+    var missionRound = game.round - 2;
+    var mission = game.missions[missionRound][missionIndex];
+    // if mission is resolved and player hasn't viewed, do view action
+    if (mission) {
+        if (mission.resolution.resolved) {
+            if (!game.missionViewed[playerIndex]) {
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_MISSION_VIEWED,
+                    choice: missionIndex
+                };
+            }
+        } else {
+            if (mission.waitingOnResolve) {
+                if (mission.player == playerIndex) {
+                    // TODO: create resolve mission action
+                }
+            } else {
+                if (game.missionSpied[playerIndex] == null) {
+                    // TODO: create resolve spy action if player has spy eyes
+                    return {
+                        player: playerIndex,
+                        actiontype: cons.ACT_BLOCK_MISSION,
+                        choice: false
+                    };
+                }
+            }
         }
     }
     return null;
