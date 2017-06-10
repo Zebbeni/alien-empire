@@ -76,31 +76,7 @@ var createAiPlaceAction = function(game, playerIndex) {
         var explored = planets.filter(function(planet) {
             return planet.explored;
         });
-        shuffle(explored);
-        // TODO FEATURE:
-        //                 randomly sort explored planets first
-        //                 randomly sort resources first
-        var derivatives = gamedata.getResourceDerivatives(game, playerIndex);
-        var greatestNeedFound = 1000; // (greater needs are lower numbers)
-        var bestAction = null;
-        for (var p = 0; p < explored.length; p++) {
-            var resources = explored[p].resources;
-            for (var r = 0; r < resources.length; r++) {
-                if (!resources[r].structure) {
-                    var kind = resources[r].kind;
-                    if (derivatives[kind] < greatestNeedFound) {
-                        greatestNeedFound = derivatives[kind];
-                        bestAction = {
-                            player: playerIndex,
-                            actiontype: cons.ACT_PLACE,
-                            objecttype: cons.OBJ_MINE,
-                            resourceid: r,
-                            planetid: explored[p].planetid
-                        };
-                    }
-                }
-            }
-        }
+        bestAction = createBestMinePlacementAction(game, explored, playerIndex, cons.ACT_PLACE);
     }
     return bestAction;
 };
@@ -211,6 +187,34 @@ var createAiBlockMissionAction = function(game, playerIndex, mission) {
         actiontype: cons.ACT_BLOCK_MISSION,
         choice: false
     };
+};
+
+// go through a list of (assumed buildable) planets and create an action
+// of the given action type to build a mine on the best available resource
+var createBestMinePlacementAction = function(game, planets, playerIndex, actionType) {
+    var action = null;
+    shuffle(planets);  // shuffle to eliminate being biased to first spots
+    var derivatives = gamedata.getResourceDerivatives(game, playerIndex);
+    var greatestNeedFound = 1000; // (greater needs are lower numbers)
+    for (var p = 0; p < planets.length; p++) {
+        var resources = planets[p].resources;
+        for (var r = 0; r < resources.length; r++) {
+            if (!resources[r].structure) {
+                var kind = resources[r].kind;
+                if (derivatives[kind] < greatestNeedFound) {
+                    greatestNeedFound = derivatives[kind];
+                    action = {
+                        player: playerIndex,
+                        actiontype: actionType,
+                        objecttype: cons.OBJ_MINE,
+                        resourceid: r,
+                        planetid: planets[p].planetid
+                    };
+                }
+            }
+        }
+    }
+    return action;
 };
 
 /**
