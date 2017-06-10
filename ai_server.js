@@ -1,14 +1,16 @@
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
 
-var doAiCycle = function(io, game_server, gamesInfo, users) {
+var doAiCycle = function(io, game_server, gamesInfo, users, aiIndex) {
     for (var gameid = 0; gameid < gamesInfo.length; gameid++) {
         if (gamesInfo[gameid].status == cons.GAME_PROGRESS) {
             var game = gamesInfo[gameid].game;
             for (var p = 0; p < game.players.length; p++){
-                var userid = game.players[p];
-                if (users[userid].isComputer) {
-                    doAIGameAction(io, game_server, gamesInfo, gameid, users, userid);
+                if (p == aiIndex) {
+                    var userid = game.players[p];
+                    if (users[userid].isComputer) {
+                        doAIGameAction(io, game_server, gamesInfo, gameid, users, userid);
+                    }
                 }
             }
         }
@@ -167,9 +169,8 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
     // let's create a 'getCurrentMission' function to do this
     var missionIndex = game.missionindex;
     var missionRound = game.round - 2;
-    var mission = game.missions[missionRound][missionIndex];
-    // if mission is resolved and player hasn't viewed, do view action
-    if (mission) {
+    if (game.missions[missionRound] && game.missions[missionRound][missionIndex]) {
+        var mission = game.missions[missionRound][missionIndex];
         if (mission.resolution.resolved) {
             if (!game.missionViewed[playerIndex]) {
                 return {

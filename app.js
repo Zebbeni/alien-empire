@@ -155,8 +155,10 @@ app.get('/', function (req, res) {
 server.listen(process.env.PORT || '8080', '0.0.0.0', function() {
   console.log('App listening at http://%s:%s', server.address().address, server.address().port);
   console.log("Press Ctrl+C to quit.");
+  var aiIndex = 0;
   var AiInterval = setInterval(function() {
-  	ai_server.doAiCycle(io, game_server, gamesInfo, users);
-  }, 3000);
+  	aiIndex = (aiIndex + 1) % 4;
+  	ai_server.doAiCycle(io, game_server, gamesInfo, users, aiIndex);
+  }, 500);
 });
 // [END server]
