@@ -579,12 +579,10 @@ var applyPayUpkeep = function( action, game ){
 	resources = resource_pkg.resources;
 	pkgtype = resource_pkg.pkgtype;
 
-	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
-		if ( game.resources[player][i] - resources[i] < 0){
-			return { isIllegal: true,
-				 	 response: "You do not have enough resources to pay upkeep"
-			};
-		}
+	if (!gamedata.playerCanPay(game, player, resources)){
+        return { isIllegal: true,
+            response: "You do not have enough resources to pay upkeep"
+        };
 	}
 
 	payPlayerUpkeep(player, resources, game);

@@ -99,7 +99,8 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
     console.log('creating ai pay upkeep action');
     // TODO FIX:
     //          This should check if upkeep can be paid and
-    //          remove appropriate agents / structures if not
+    //          4 to 1 if possible, or remove appropriate
+    //          agents / structures if not
     // TODO FEATURE:
     //          This should consider retiring agents even if
     //          it *can* pay upkeep for them
@@ -108,11 +109,21 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
         var pkg = resource_pkgs[i];
         if (pkg.pkgtype == cons.PKG_UPKEEP) {
             if (!pkg.collected && !pkg.cancelled) {
-                return {
-                    player: playerIndex,
-                    actiontype: cons.ACT_PAY_UPKEEP,
-                    pkgindex: i
-                };
+                if (gamedata.playerCanPay(game, playerIndex, pkg.resources)) {
+                    return {
+                        player: playerIndex,
+                        actiontype: cons.ACT_PAY_UPKEEP,
+                        pkgindex: i
+                    };
+                } else {
+                    var action = createAi4To1Action(game, playerIndex);
+                    if (action != null) {
+                        return action;
+                    } else {
+                        action = createAiRemoveToPayAction(game, playerIndex, pkg.resources);
+                        return action;
+                    }
+                }
             }
         }
     }
@@ -124,12 +135,15 @@ var createAiBuildPhaseAction = function(game, playerIndex) {
         var action = createBestBuildAction(game, playerIndex);
         if (action) {
             return action;
-        } else {
-            return {
-                player: playerIndex,
-                actiontype: cons.ACT_TURN_DONE
-            };
         }
+        action = createAi4To1Action(game, playerIndex);
+        if (action) {
+            return action;
+        }
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_TURN_DONE
+        };
     }
     return null;
 };
@@ -266,6 +280,58 @@ var createBestBuildAction = function(game, playerIndex) {
         action = createBestTier2BuildAction(game, playerIndex);
     }
     return action;
+};
+
+// creates a 4 to 1 action to convert the highest future resource type
+// into the lowest future type (if possible). Otherwise, returns null.
+var createAi4To1Action = function(game, playerIndex) {
+    var futures = gamedata.getResourceFutures(game, playerIndex);
+    // get resource type of highest future
+    var highestFutureResource = -999;
+    var surplusResourceType = 0;
+    var lowestFutureResource = 999;
+    var deficitResourceType = 0;
+    for (var r = 0; r < futures.length; r++) {
+        if (futures[r] > highestFutureResource) {
+            highestFutureResource = futures[r];
+            surplusResourceType = r;
+        }
+        if (futures[r] < lowestFutureResource) {
+            lowestFutureResource = futures[r];
+            deficitResourceType = r;
+        }
+    }
+    if (game.resources[playerIndex][surplusResourceType] >= 4) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
+            paytype: surplusResourceType,
+            gettype: deficitResourceType
+        }
+    }
+    return null;
+};
+
+// creates a remove or retire action to bring down costs to pay a
+// given list of resources
+var createAiRemoveToPayAction = function(game, playerIndex, resources) {
+    var typeToEliminate = cons.RES_METAL;
+    for (var r = 0; r < resources.length; r++) {
+        if (game.resources[playerIndex][r] - resources[r] < 0) {
+            typeToEliminate = r;
+            break;
+        }
+    }
+    var unitsToRemove = gamedata.getUnitsRequiringUpkeep(game, playerIndex, typeToEliminate);
+    shuffle(unitsToRemove);
+    // TODO FIX: This currently assumes not a base, agent, or fleet
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_REMOVE,
+        planetid: unitsToRemove[0].planetId,
+        objecttype: unitsToRemove[0].objectType,
+        resourceid: unitsToRemove[0].resourceId
+    }
 };
 
 /**
