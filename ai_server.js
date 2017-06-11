@@ -24,11 +24,13 @@ var doAIGameAction = function(io, game_server, gamesInfo, gameid, users, userid)
     var action = createAiGameAction(game, playerIndex);
 
     if (action) {
-        console.log("Computer player " + users[userid].name + " requesting a game action");
+        console.log("Computer " + users[userid].name + " requesting action:");
+        console.log(action)
         var response = game_server.resolveAction(action, gamesInfo[gameid]);
 
         if (response.to == cons.EVENT_ONE) {
-            console.log('computer action response: ' + response.response);
+            console.log('computer action response:');
+            console.log(response);
         }
         else if (response.to == cons.EVENT_ALL) {
             var newMsg = helpers.addGameActionMessage(gamesInfo[gameid],
@@ -42,13 +44,15 @@ var doAIGameAction = function(io, game_server, gamesInfo, gameid, users, userid)
 // return an action for the computer player to request
 // or return null if no action appropriate.
 var createAiGameAction = function(game, playerIndex) {
-    var action = null;
+    var action = createAiCollectResourcesAction(game, playerIndex);
+    if (action) {
+        return action;
+    }
+    // TODO FEATURE: Also have computer look for trades before
+    // moving on to normal activities
     switch(game.phase) {
         case cons.PHS_PLACING:
             action = createAiPlaceAction(game, playerIndex);
-            break;
-        case cons.PHS_RESOURCE:
-            action = createAiCollectResourcesAction(game, playerIndex);
             break;
         case cons.PHS_UPKEEP:
             action = createAiUpkeepPhaseAction(game, playerIndex);
@@ -78,13 +82,15 @@ var createAiPlaceAction = function(game, playerIndex) {
 
 var createAiCollectResourcesAction = function(game, playerIndex) {
     console.log('creating ai collect action');
-    // TODO FIX:
-    //          This should instead return a createAi4to1Action
-    //          if too many resources to collect the package
     var resource_pkgs = game.resourcePackages[playerIndex];
     for (var i = 0; i < resource_pkgs.length; i++) {
         var pkg = resource_pkgs[i];
         if (!pkg.collected && pkg.pkgtype != cons.PKG_UPKEEP) {
+            if (!gamedata.playerCanCollect(game, playerIndex, pkg.resources)){
+                console.log('doing a 4 to 1 action');
+                return createAi4To1Action(game, playerIndex);
+            }
+            console.log('collecting resources action');
             return {
                 player: playerIndex,
                 actiontype: cons.ACT_COLLECT_RESOURCES,
@@ -221,7 +227,7 @@ var createBestMineBuildAction = function(game, playerIndex, actionType) {
     for (var p = 0; p < planets.length; p++) {
         var resources = planets[p].resources;
         for (var r = 0; r < resources.length; r++) {
-            if (!resources[r].structure) {
+            if (!resources[r].structure && (resources[r].reserved == undefined || resources[r].reserved == playerIndex)) {
                 var kind = resources[r].kind;
                 if (futures[kind] < greatestNeedFound) {
                     greatestNeedFound = futures[kind];
@@ -301,7 +307,22 @@ var createAi4To1Action = function(game, playerIndex) {
             deficitResourceType = r;
         }
     }
+    console.log('creating 4 to 1 action. futures:');
+    console.log(futures);
+    console.log('resources:');
+    console.log(game.resources[playerIndex]);
+    console.log('highestFutureResource: ' + highestFutureResource);
+    console.log('surplusResourceType: ' + surplusResourceType);
+    console.log('lowestFutureResource: ' + lowestFutureResource);
+    console.log('deficitResourceType: ' + deficitResourceType);
     if (game.resources[playerIndex][surplusResourceType] >= 4) {
+        console.log('4 to 1 action:');
+        console.log({
+            player: playerIndex,
+            actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
+            paytype: surplusResourceType,
+            gettype: deficitResourceType
+        });
         return {
             player: playerIndex,
             actiontype: cons.ACT_TRADE_FOUR_TO_ONE,

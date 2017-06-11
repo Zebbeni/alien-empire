@@ -516,8 +516,10 @@ var applyRemoveAction = function( action, game ) {
 	}
 
 	if (structure.player != player){
+		console.log('trying to remove another player structure:');
+		console.log(structure);
 		return { isIllegal: true,
-				 response: "You cannot remove another player's structure." };
+				 response: "You cannot remove another player's structure."};
 	}
 
 	if (objecttype != cons.OBJ_BASE && structure.kind != objecttype){

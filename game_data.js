@@ -23,8 +23,8 @@ var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
                     var structure = resources[r].structure;
                     if (structure && structure.player == playerIndex) {
                         if (cons.STRUCT_REQS[structure.kind].upkeep[resType] > 0) {
-                            units.append({
-                                planetId: p,
+                            units.push({
+                                planetId: settled[p].planetid,
                                 resourceId: r,
                                 objectType: structure.kind
                             });
@@ -64,11 +64,11 @@ var getResourceFutures = function(game, playerIndex) {
     var current = game.resources[playerIndex];
     var collect = game.resourceCollect[playerIndex];
     var upkeep = game.resourceUpkeep[playerIndex];
-    var derivatives = [0, 0, 0, 0];
-    for (var r = 0; r < current.length; r++) {
-        derivatives[r] = current[r] + 2 * (collect[r] - upkeep[r]);
+    var futures = [0, 0, 0, 0];
+    for (var r = 0; r < futures.length; r++) {
+        futures[r] = current[r] + 2 * (collect[r] - upkeep[r]);
     }
-    return derivatives;
+    return futures;
 };
 
 // returns resource futures in 2 rounds considering the impact of purchasing
@@ -106,8 +106,18 @@ var playerCanBuild = function(game, playerIndex, objecttype) {
 
 // return true if player can pay the given list of resources
 var playerCanPay = function(game, playerIndex, resources) {
-    for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
-        if ( game.resources[playerIndex][i] < resources[i]){
+    for (var r = 0; r < resources.length; r++){
+        if ( game.resources[playerIndex][r] < resources[r]){
+            return false;
+        }
+    }
+    return true;
+};
+
+// return true if player can collect the given list of resources
+var playerCanCollect = function(game, playerIndex, resources) {
+    for (var r = 0; r < resources.length; r++){
+        if ( game.resources[playerIndex][r] + resources[r] > 10){
             return false;
         }
     }
@@ -125,6 +135,7 @@ var playerCanPay = function(game, playerIndex, resources) {
         getUnitsRequiringUpkeep: getUnitsRequiringUpkeep,
         isPlayerTurn: isPlayerIndexTurn,
         playerCanBuild: playerCanBuild,
+        playerCanCollect: playerCanCollect,
         playerCanPay: playerCanPay,
         playerHasStructureInInventory: playerHasStructureInInventory
     }
