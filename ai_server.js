@@ -156,6 +156,14 @@ var createAiBuildPhaseAction = function(game, playerIndex) {
 
 var createAiActionPhaseAction = function(game, playerIndex) {
     if (gamedata.isPlayerTurn(game, playerIndex)) {
+        var action = createBestBaseAction(game, playerIndex);
+        if (action) {
+            return action;
+        }
+        action = createBestFleetAction(game, playerIndex);
+        if (action) {
+            return action;
+        }
         return {
             player: playerIndex,
             actiontype: cons.ACT_TURN_DONE
@@ -281,8 +289,7 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.settledBy[playerIndex] && !planet.base;
             });
-            var planetIndex = Math.floor(Math.random() * planets.length);
-            var planet = planets[planetIndex];
+            var planet = getRandomItem(planets);
             return {
                 player: playerIndex,
                 actiontype: cons.ACT_BUILD,
@@ -340,7 +347,7 @@ var createBestRecruitAction = function(game, playerIndex) {
         if (gamedata.playerCanRecruit(game, playerIndex, agentTypes[i])) {
             var objecttype = cons.AGT_OBJTYPE[agenttype];
             if (objecttype == cons.OBJ_BASE) {
-                var planet = getBasePlanet(game, playerIndex);
+                var planet = gamedata.getBasePlanet(game, playerIndex);
                 if (planet) {
                     return {
                         player: playerIndex,
@@ -351,21 +358,89 @@ var createBestRecruitAction = function(game, playerIndex) {
                 }
             } else if (objecttype == cons.OBJ_FACTORY) {
                 var planets = gamedata.getFactoryPlanets(game, playerIndex, objecttype);
-                var planetIndex = Math.floor(Math.random() * planets.length);
+                var planet = getRandomItem(planets);
                 return {
                         player: playerIndex,
                         actiontype: cons.ACT_RECRUIT,
                         agenttype: agenttype,
-                        planetid: planets[planetIndex].planetid
+                        planetid: planet.planetid
                 };
             } else if (objecttype == cons.OBJ_EMBASSY) {
                 var planets = gamedata.getEmbassyPlanets(game, playerIndex, objecttype);
-                var planetIndex = Math.floor(Math.random() * planets.length);
+                var planet = getRandomItem(planets);
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_RECRUIT,
                     agenttype: agenttype,
-                    planetid: planets[planetIndex].planetid
+                    planetid: planet.planetid
+                };
+            }
+        }
+    }
+    return null;
+};
+
+var createBestFleetAction = function(game, playerIndex) {
+    var fleets = gamedata.getActiveFleets(game, playerIndex);
+    if (fleets && fleets.length > 0) {
+        var unusedFleets = fleets.filter(function (fleet) {
+            return fleet.used == false;
+        });
+        if (unusedFleets && unusedFleets.length > 0) {
+            var fleet = unusedFleets[0];
+            var planet = game.board.planets[fleet.planetid];
+            // filter out all mines from attack targets
+            var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet);
+            if (attackTargets.length > 0) {
+                var nonMineTargets = attackTargets.filter(function (target) {
+                    return cons.STRUCT_REQS[target.objecttype].defense < 6;
+                });
+                if (nonMineTargets.length > 0) {
+                    var attackItem = getRandomItem(nonMineTargets);
+                    return {
+                        player: playerIndex,
+                        actiontype: cons.ACT_FLEET_ATTACK,
+                        targetid: fleet.fleetid,
+                        targetPlayer: attackItem.targetPlayer,
+                        choice: attackItem.choice,
+                        objecttype: attackItem.objecttype,
+                        planetid: fleet.planetid
+                    };
+                }
+                // if no targets, try moving to an adjacent planet
+                var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, fleet.planetid);
+                if (adjacentPlanets.length > 0) {
+                    choicePlanet = getRandomItem(adjacentPlanets);
+                    return {
+                        player: playerIndex,
+                        actiontype: cons.ACT_FLEET_MOVE,
+                        targetid: fleet.fleetid,
+                        planetid: choicePlanet.planetid
+                    };
+                }
+            }
+        }
+    }
+    return null;
+};
+
+var createBestBaseAction = function(game, playerIndex) {
+    var basePlanet = gamedata.getBasePlanet(game, playerIndex);
+    if (basePlanet && basePlanet.base.used == false) {
+        var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, basePlanet);
+        if (attackTargets && attackTargets.length > 0) {
+            var nonFleetTargets = attackTargets.filter(function (target) {
+                return target.objecttype == cons.OBJ_FLEET;
+            });
+            if (nonFleetTargets && nonFleetTargets.length > 0) {
+                var attackItem = getRandomItem(attackTargets);
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_BASE_ATTACK,
+                    targetPlayer: attackItem.targetPlayer,
+                    objecttype: attackItem.objecttype,
+                    choice: attackItem.choice,
+                    planetid: basePlanet.planetid
                 };
             }
         }
@@ -414,8 +489,7 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
         }
     }
     var unitsToRemove = gamedata.getUnitsRequiringUpkeep(game, playerIndex, typeToEliminate);
-    var indexToRemove = Math.floor(Math.random() * unitsToRemove.length);
-    var unitToRemove = unitsToRemove[indexToRemove];
+    var unitToRemove = getRandomItem(unitsToRemove);
     if (unitToRemove.agenttype) {
         return {
             player: playerIndex,
@@ -435,23 +509,27 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
         return {
             player: playerIndex,
             actiontype: cons.ACT_REMOVE,
-            planetid: unitToRemove.planetId,
-            objecttype: cons.OBJ_BASE
+            planetid: unitToRemove.planetid,
+            objecttype: cons.OBJ_BASE,
+            resourceid: cons.RES_NONE
         }
     }
     return {
         player: playerIndex,
         actiontype: cons.ACT_REMOVE,
-        planetid: unitToRemove.planetId,
+        planetid: unitToRemove.planetid,
         objecttype: unitToRemove.objectType,
         resourceid: unitToRemove.resourceId
     }
 };
 
-/**
- * Shuffles array in place.
- * @param {Array} a items The array containing the items.
- */
+// Returns random item from array
+function getRandomItem(a) {
+    var index = Math.floor(Math.random() * a.length);
+    return a[index];
+}
+
+// Shuffles array in place
 function shuffle(a) {
     var j, x, i;
     for (i = a.length; i; i--) {

@@ -19,6 +19,34 @@ var getActiveAgents = function(game, playerIndex) {
     });
 };
 
+// Returns all explored adjacent planets to the given planetid
+var getAdjacentExploredPlanets = function(game, planetid) {
+    var adjacents = game.board.planets;
+    if (adjacents && adjacents.length > 0) {
+        return adjacents.filter(function (planet) {
+            return (planet.explored && planetid in planet.borders);
+        });
+    }
+    return null;
+};
+
+// Returns all explored adjacent planets to the given planetid
+var getAdjacentUnblockedPlanets = function(game, planetid) {
+    var adjacentExplored = getAdjacentExploredPlanets(game, planetid);
+    if (adjacentExplored && adjacentExplored.length > 0) {
+        return adjacentExplored.filter(function (adjacent) {
+            return adjacent.borders[planetid] != cons.BRD_BLOCKED;
+        });
+    }
+    return null;
+};
+
+var getAdjacentUnexploredPlanets = function(game, planetid) {
+    return game.board.planets.filter(function(planet) {
+        return planet.explored == false;
+    });
+};
+
 // return list of objects containing information about all units
 // requiring the given resource for upkeep
 var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
@@ -36,7 +64,7 @@ var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
                     if (structure && structure.player == playerIndex) {
                         if (cons.STRUCT_REQS[structure.kind].upkeep[resType] > 0) {
                             units.push({
-                                planetId: settled[p].planetid,
+                                planetid: settled[p].planetid,
                                 resourceId: r,
                                 objectType: structure.kind
                             });
@@ -46,19 +74,8 @@ var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
             }
             return units;
         case cons.RES_FUEL:
-            var fleets = [];
-            for (var f = 0; f < cons.NUM_FLEETS; f++){
-                var fleetid = String(playerIndex) + String(f);
-                var fleet = game.board.fleets[fleetid];
-                if (fleet.planetid != undefined) {
-                    fleets.push({
-                        fleetid: fleetid,
-                        planetid: fleet.planetid,
-                        objecttype: cons.OBJ_FLEET
-                    });
-                }
-            }
-            if (fleets.length > 0) {
+            var fleets = getActiveFleets(game, playerIndex);
+            if (fleets && fleets.length > 0) {
                 return fleets;
             }
             var basePlanet = getBasePlanet(game, playerIndex);
@@ -74,7 +91,7 @@ var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
 };
 
 var getBasePlanet = function(game, playerIndex) {
-    for (var p = 0; p > game.board.planets.length; p++) {
+    for (var p = 0; p < game.board.planets.length; p++) {
         var base = game.board.planets[p].base;
         if (base && base.player == playerIndex) {
             return game.board.planets[p];
@@ -109,6 +126,24 @@ var getPlanetsWithResourceStructure = function(game, playerIndex, objecttype) {
     return returnList;
 };
 
+// return list of active fleets on board of given player
+getActiveFleets = function(game, playerIndex) {
+    var fleets = [];
+    for (var f = 0; f < cons.NUM_FLEETS; f++){
+        var fleetid = String(playerIndex) + String(f);
+        var fleet = game.board.fleets[fleetid];
+        if (fleet.planetid != undefined) {
+            fleets.push({
+                fleetid: fleetid,
+                planetid: fleet.planetid,
+                objecttype: cons.OBJ_FLEET,
+                used: fleet.used
+            });
+        }
+    }
+    return fleets;
+};
+
 // return current mission pending resolution
 var getCurrentMission = function(game) {
     var missionIndex = game.missionindex;
@@ -122,6 +157,43 @@ var getCurrentMission = function(game) {
 // return index of current mission pending resolution
 var getCurrentMissionIndex = function(game) {
     return game.missionindex;
+};
+
+// return list of information on enemy structures on given planet
+// looks for structures that do NOT belong to the given player
+var getEnemyStructuresOnPlanet = function(game, playerIndex, planet) {
+    var enemies = [];
+    var resources = planet.resources;
+    for (var r = 0; r < resources.length; r++) {
+        var structure = resources[r].structure;
+        if (structure && structure.player != playerIndex) {
+            enemies.push({
+                targetPlayer: structure.player,
+                choice: r,
+                objecttype: structure.kind
+            });
+        }
+    }
+    var fleets = planet.fleets
+    for (var f = 0; f < fleets.length; f++) {
+        var fleetid = fleets[f];
+        var fleet = game.board.fleets[fleetid];
+        if (fleet.player != playerIndex) {
+            enemies.push({
+                targetPlayer: fleet.player,
+                choice: fleetid,
+                objecttype: cons.OBJ_FLEET
+            });
+        }
+    }
+    if (planet.base && planet.base.player != playerIndex) {
+        enemies.push({
+            targetPlayer: planet.base.player,
+            choice: null,
+            objecttype: cons.OBJ_BASE
+        });
+    }
+    return enemies;
 };
 
 // creates a list of resources the given player will have in 2 rounds given
@@ -208,7 +280,12 @@ var playerCanRecruit = function(game, playerIndex, agenttype) {
 (function() {
     module.exports = {
         getActiveAgents: getActiveAgents,
+        getActiveFleets: getActiveFleets,
+        getAdjacentExploredPlanets: getAdjacentExploredPlanets,
+        getAdjacentUnblockedPlanets: getAdjacentUnblockedPlanets,
+        getAdjacentUnexploredPlanets: getAdjacentUnexploredPlanets,
         getBasePlanet: getBasePlanet,
+        getEnemyStructuresOnPlanet: getEnemyStructuresOnPlanet,
         getCurrentMission: getCurrentMission,
         getCurrentMissionIndex: getCurrentMissionIndex,
         getEmbassyPlanets: getEmbassyPlanets,
