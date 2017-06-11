@@ -164,6 +164,10 @@ var createAiActionPhaseAction = function(game, playerIndex) {
         if (action) {
             return action;
         }
+        action = createBestAgentAction(game, playerIndex);
+        if (action) {
+            return action;
+        }
         return {
             player: playerIndex,
             actiontype: cons.ACT_TURN_DONE
@@ -376,6 +380,16 @@ var createBestRecruitAction = function(game, playerIndex) {
                 };
             }
         }
+    }
+    return null;
+};
+
+var createBestAgentAction = function(game, playerIndex) {
+    var agents = gamedata.getActiveAgents(game, playerIndex);
+    if (agents && agents.length > 0) {
+        unusedAgents = agents.filter(function() {
+
+        });
     }
     return null;
 };

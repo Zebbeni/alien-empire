@@ -1670,34 +1670,40 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
 	
 	var mission;
 
-	for ( var r = game.round - 1; r > 0; r-- ) {
+	for ( var r = game.round; r > 0; r-- ) {
 
-		for ( var m = 0; m < game.missions[r].length; m++ ) {
+		if (game.missions[r] && game.missions[r].length > 0) {
 
-			mission = game.missions[r][m];
+            for (var m = 0; m < game.missions[r].length; m++) {
 
-			if ( mission.player == player && mission.agenttype == agenttype ){
-				
-				if ( mission.resolution.resolved == false ) {
+                mission = game.missions[r][m];
 
-					mission.resolution.resolved = true;
-				
-					// TODO: this should eventually allow 
-					//       for different resolution reasons
-					mission.resolution.agentmia = true;
-				}
+				// set unresolved missions to resolved (mia) if using agenttype
+                if (mission.player == player && mission.resolution.resolved == false) {
 
-				var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
-				var smuggler = game.board.agents[ smugglerid ];
-				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON) {
-					game.board.agents[ smugglerid ].used = false;
-					game.board.agents[ smugglerid ].missionround = undefined;
-					game.board.agents[ smugglerid ].destination = undefined;
-				}
+                	if (mission.agenttype == agenttype) {
 
-				return;
-			}	
-		}
+						mission.resolution.resolved = true;
+						// TODO: this should eventually allow
+						//       for different resolution reasons
+						mission.resolution.agentmia = true;
+
+                        var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+                        var smuggler = game.board.agents[smugglerid];
+                        if (mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON) {
+                            game.board.agents[smugglerid].used = false;
+                            game.board.agents[smugglerid].missionround = undefined;
+                            game.board.agents[smugglerid].destination = undefined;
+                        }
+                        return;
+                    }
+                    else if (mission.useSmuggler && agenttype == cons.AGT_SMUGGLER) {
+						mission.useSmuggler = false;
+						return;
+					}
+                }
+            }
+        }
 	}
 };
 
