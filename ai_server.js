@@ -246,46 +246,74 @@ var createBestMineBuildAction = function(game, playerIndex, actionType) {
 };
 
 // randomly chooses to try building either an embassy or factory. returns build action if possible
-var createBestTier2BuildAction = function(game, playerIndex) {
+var createBestBuildActionOfType = function(game, playerIndex, objType) {
     var action = null;
-    var objtype = Math.random() * 2 > 1 ? cons.OBJ_FACTORY : cons.OBJ_EMBASSY;
-    if (gamedata.playerCanBuild(game, playerIndex, objtype)) {
-        var planets = game.board.planets.filter(function (planet) {
-            return planet.settledBy[playerIndex];
-        });
-        shuffle(planets);  // shuffle to eliminate being biased to first spots
-        var futures = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, objtype);
-        var greatestNeedFound = 1000; // (greater needs are lower numbers)
-        for (var p = 0; p < planets.length; p++) {
-            var resources = planets[p].resources;
-            for (var r = 0; r < resources.length; r++) {
-                var structure = resources[r].structure;
-                if (structure && structure.player == playerIndex && structure.kind == cons.OBJ_MINE) {
-                    var kind = resources[r].kind;
-                    if (futures[kind] < greatestNeedFound) {
-                        greatestNeedFound = futures[kind];
-                        action = {
-                            player: playerIndex,
-                            actiontype: cons.ACT_BUILD,
-                            objecttype: objtype,
-                            resourceid: r,
-                            planetid: planets[p].planetid
-                        };
+    // if object in inventory and if player has required resources
+    if (gamedata.playerCanBuild(game, playerIndex, objType)) {
+        var futures = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, objType);
+        if (objType == cons.OBJ_FACTORY || objType == cons.OBJ_EMBASSY) {
+            var planets = game.board.planets.filter(function (planet) {
+                return planet.settledBy[playerIndex];
+            });
+            shuffle(planets);  // shuffle to eliminate being biased to first spots
+            var greatestNeedFound = 1000; // (greater needs are lower numbers)
+            for (var p = 0; p < planets.length; p++) {
+                var resources = planets[p].resources;
+                for (var r = 0; r < resources.length; r++) {
+                    var structure = resources[r].structure;
+                    if (structure && structure.player == playerIndex && structure.kind == cons.OBJ_MINE) {
+                        var kind = resources[r].kind;
+                        if (futures[kind] < greatestNeedFound) {
+                            greatestNeedFound = futures[kind];
+                            action = {
+                                player: playerIndex,
+                                actiontype: cons.ACT_BUILD,
+                                objecttype: objType,
+                                resourceid: r,
+                                planetid: planets[p].planetid
+                            };
+                        }
                     }
                 }
             }
+            return action;
+        } else if (objType == cons.OBJ_BASE) {
+            var planets = game.board.planets.filter(function (planet) {
+                return planet.settledBy[playerIndex];
+            });
+        } else if (objType == cons.OBJ_FLEET) {
+            var planets = game.board.planets.filter(function (planet) {
+                return planet.base.player == playerIndex;
+            });
+            if (planets.length > 0) {
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_BUILD,
+                    objecttype: cons.OBJ_FLEET,
+                    planetid: planets[0].planetid
+                };
+            }
         }
     }
-    return action;
+    return null;
 };
 
 var createBestBuildAction = function(game, playerIndex) {
     // try to build a mine first.
     var action = createBestMineBuildAction(game, playerIndex, cons.ACT_BUILD);
-    if (action == null) {
-        action = createBestTier2BuildAction(game, playerIndex);
+    if (action) {
+        return action;
     }
-    return action;
+    // otherwise, attempt to build one of these, prioritized randomly
+    var buildTypes = [cons.OBJ_FACTORY, cons.OBJ_EMBASSY, cons.OBJ_BASE, cons.OBJ_FLEET];
+    shuffle(buildTypes);
+    for (var i = 0; i < buildTypes.length; i++){
+        action = createBestBuildActionOfType(game, playerIndex, buildTypes[i]);
+        if (action) {
+            return action;
+        }
+    }
+    return null;
 };
 
 // creates a 4 to 1 action to convert the highest future resource type
@@ -297,7 +325,7 @@ var createAi4To1Action = function(game, playerIndex) {
     var surplusResourceType = 0;
     var lowestFutureResource = 999;
     var deficitResourceType = 0;
-    for (var r = 0; r < futures.length; r++) {
+    for (var r = 0; r < 4; r++) {
         if (futures[r] > highestFutureResource) {
             highestFutureResource = futures[r];
             surplusResourceType = r;
@@ -307,22 +335,7 @@ var createAi4To1Action = function(game, playerIndex) {
             deficitResourceType = r;
         }
     }
-    console.log('creating 4 to 1 action. futures:');
-    console.log(futures);
-    console.log('resources:');
-    console.log(game.resources[playerIndex]);
-    console.log('highestFutureResource: ' + highestFutureResource);
-    console.log('surplusResourceType: ' + surplusResourceType);
-    console.log('lowestFutureResource: ' + lowestFutureResource);
-    console.log('deficitResourceType: ' + deficitResourceType);
     if (game.resources[playerIndex][surplusResourceType] >= 4) {
-        console.log('4 to 1 action:');
-        console.log({
-            player: playerIndex,
-            actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
-            paytype: surplusResourceType,
-            gettype: deficitResourceType
-        });
         return {
             player: playerIndex,
             actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
@@ -344,14 +357,15 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
         }
     }
     var unitsToRemove = gamedata.getUnitsRequiringUpkeep(game, playerIndex, typeToEliminate);
-    shuffle(unitsToRemove);
+    var indexToRemove = Math.floor(Math.random() * unitsToRemove.length);
+    var unitToRemove = unitsToRemove[indexToRemove];
     // TODO FIX: This currently assumes not a base, agent, or fleet
     return {
         player: playerIndex,
         actiontype: cons.ACT_REMOVE,
-        planetid: unitsToRemove[0].planetId,
-        objecttype: unitsToRemove[0].objectType,
-        resourceid: unitsToRemove[0].resourceId
+        planetid: unitToRemove.planetId,
+        objecttype: unitToRemove.objectType,
+        resourceid: unitToRemove.resourceId
     }
 };
 
