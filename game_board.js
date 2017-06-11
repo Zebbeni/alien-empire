@@ -230,6 +230,10 @@ var generateResources = function( size ) {
  * Initializes fleets object which will contain all fleet objects
  * Each fleet is identifiable by an attribute name defined by the 
  * player it belongs to and a number between 0 and NUM_FLEETS
+ *
+ * TODO: This is the absolute worst way of organizing this. Refactor
+ *       in the future to be an array of lists so you can access fleets
+ *       by saying game.board.fleets[player][index] like a sane person
  */
 var initializeFleets = function(num_players) {
 	var fleets = {};

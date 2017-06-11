@@ -34,7 +34,30 @@ var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
             }
             return units;
         case cons.RES_FUEL:
-            return [];
+            var fleets = [];
+            for (var f = 0; f < cons.NUM_FLEETS; f++){
+                var fleetid = String(playerIndex) + String(f);
+                var fleet = game.board.fleets[fleetid];
+                if (fleet.planetid != undefined) {
+                    fleets.push({
+                        fleetid: fleetid,
+                        planetid: fleet.planetid,
+                        objecttype: cons.OBJ_FLEET
+                    });
+                }
+            }
+            if (fleets.length > 0) {
+                return fleets;
+            }
+            for (var p = 0; p > game.board.planets.length; p++) {
+                var base = game.board.planets[p].base;
+                if (base && base.player == playerIndex) {
+                    return [{
+                        planetid: planetid,
+                        objecttype: cons.OBJ_BASE
+                    }];
+                }
+            }
         case cons.RES_FOOD:
             return getActiveAgents(game, playerIndex);
         default:

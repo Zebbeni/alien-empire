@@ -468,7 +468,6 @@ var applyRetireAction = function( action, game ){
 var applyRemoveFleet = function( action, game ) {
 
 	var planetid = action.planetid;
-	var objecttype = action.objecttype;
 	var fleetid = action.targetid;
 	var player = action.player;
 

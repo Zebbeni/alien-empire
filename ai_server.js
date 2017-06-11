@@ -279,11 +279,19 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             return action;
         } else if (objType == cons.OBJ_BASE) {
             var planets = game.board.planets.filter(function (planet) {
-                return planet.settledBy[playerIndex];
+                return planet.settledBy[playerIndex] && !planet.base;
             });
+            var planetIndex = Math.floor(Math.random() * planets.length);
+            var planet = planets[planetIndex];
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_BUILD,
+                objecttype: cons.OBJ_BASE,
+                planetid: planet.planetid
+            }
         } else if (objType == cons.OBJ_FLEET) {
             var planets = game.board.planets.filter(function (planet) {
-                return planet.base.player == playerIndex;
+                return planet.base && planet.base.player == playerIndex;
             });
             if (planets.length > 0) {
                 return {
@@ -359,7 +367,23 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
     var unitsToRemove = gamedata.getUnitsRequiringUpkeep(game, playerIndex, typeToEliminate);
     var indexToRemove = Math.floor(Math.random() * unitsToRemove.length);
     var unitToRemove = unitsToRemove[indexToRemove];
-    // TODO FIX: This currently assumes not a base, agent, or fleet
+    // TODO FIX: This currently assumes not an agent
+    if (unitToRemove.objecttype == cons.OBJ_FLEET) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_REMOVE_FLEET,
+            planetid: unitToRemove.planetid,
+            objecttype: cons.OBJ_FLEET,
+            targetid: unitToRemove.fleetid
+        }
+    } else if (unitToRemove.objecttype == cons.OBJ_BASE) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_REMOVE,
+            planetid: unitToRemove.planetId,
+            objecttype: cons.OBJ_BASE
+        }
+    }
     return {
         player: playerIndex,
         actiontype: cons.ACT_REMOVE,
