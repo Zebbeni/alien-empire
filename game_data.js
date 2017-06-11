@@ -4,7 +4,19 @@
 var cons = require('./server_constants');
 
 var getActiveAgents = function(game, playerIndex) {
-    return [];
+    agents = [];
+    for (var a = cons.AGT_EXPLORER; a <= cons.AGT_SABATEUR; a++){
+        var agentid = String(playerIndex) + String(a);
+        var agent = game.board.agents[agentid];
+        agents.push({
+            agentid: agentid,
+            agenttype: a,
+            status: agent.status
+        });
+    }
+    return agents.filter(function(agent) {
+       return agent.status == cons.AGT_STATUS_ON;
+    });
 };
 
 // return list of objects containing information about all units
@@ -49,20 +61,52 @@ var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
             if (fleets.length > 0) {
                 return fleets;
             }
-            for (var p = 0; p > game.board.planets.length; p++) {
-                var base = game.board.planets[p].base;
-                if (base && base.player == playerIndex) {
-                    return [{
-                        planetid: planetid,
-                        objecttype: cons.OBJ_BASE
-                    }];
-                }
-            }
+            var basePlanet = getBasePlanet(game, playerIndex);
+            return [{
+                planetid: basePlanet.planetid,
+                objecttype: cons.OBJ_BASE
+            }];
         case cons.RES_FOOD:
             return getActiveAgents(game, playerIndex);
         default:
             return [];
     }
+};
+
+var getBasePlanet = function(game, playerIndex) {
+    for (var p = 0; p > game.board.planets.length; p++) {
+        var base = game.board.planets[p].base;
+        if (base && base.player == playerIndex) {
+            return game.board.planets[p];
+        }
+    }
+    return null;
+};
+
+var getEmbassyPlanets = function(game, playerIndex) {
+    return getPlanetsWithResourceStructure(game, playerIndex, cons.OBJ_EMBASSY);
+};
+
+var getFactoryPlanets = function(game, playerIndex) {
+    return getPlanetsWithResourceStructure(game, playerIndex, cons.OBJ_FACTORY);
+};
+
+var getPlanetsWithResourceStructure = function(game, playerIndex, objecttype) {
+    var planets = game.board.planets.filter(function(planet) {
+        return planet.settledBy[playerIndex];
+    });
+    var returnList = [];
+    for (var p = 0; p < planets.length; p++) {
+        var resources = planets[p].resources;
+        for (var r = 0; r < resources.length; r++) {
+            var structure = resources[r].structure;
+            if (structure && structure.player == playerIndex && structure.kind == objecttype) {
+                returnList.push(planets[p]);
+                break;
+            }
+        }
+    }
+    return returnList;
 };
 
 // return current mission pending resolution
@@ -114,6 +158,10 @@ var playerHasStructureInInventory = function(game, playerIndex, objectype) {
     return game.structures[playerIndex][objectype] > 0;
 };
 
+var playerHasStructureOnBoard = function(game, playerIndex, objecttype) {
+    return game.structures[playerIndex][objecttype] < cons.STRUCT_REQS[objecttype].max;
+};
+
 // return true if player has an object of the given type in
 // inventory AND has resources required to build it.
 var playerCanBuild = function(game, playerIndex, objecttype) {
@@ -147,12 +195,24 @@ var playerCanCollect = function(game, playerIndex, resources) {
     return true;
 };
 
+var playerCanRecruit = function(game, playerIndex, agenttype) {
+    var agent = game.board.agents[String(playerIndex) + String(agenttype)];
+    if (agent.status == cons.AGT_STATUS_OFF) {
+        var objecttype = cons.AGT_OBJTYPE[agenttype];
+        return playerHasStructureOnBoard(game, playerIndex, objecttype);
+    }
+    return false;
+};
+
 
 (function() {
     module.exports = {
         getActiveAgents: getActiveAgents,
+        getBasePlanet: getBasePlanet,
         getCurrentMission: getCurrentMission,
         getCurrentMissionIndex: getCurrentMissionIndex,
+        getEmbassyPlanets: getEmbassyPlanets,
+        getFactoryPlanets: getFactoryPlanets,
         getResourceFutures: getResourceFutures,
         getResourceFuturesWithNewStructure: getResourceFuturesWithNewStructure,
         getUnitsRequiringUpkeep: getUnitsRequiringUpkeep,
@@ -160,6 +220,7 @@ var playerCanCollect = function(game, playerIndex, resources) {
         playerCanBuild: playerCanBuild,
         playerCanCollect: playerCanCollect,
         playerCanPay: playerCanPay,
+        playerCanRecruit: playerCanRecruit,
         playerHasStructureInInventory: playerHasStructureInInventory
     }
 }());

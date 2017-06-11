@@ -103,10 +103,6 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
 
 var createAiUpkeepPhaseAction = function(game, playerIndex) {
     console.log('creating ai pay upkeep action');
-    // TODO FIX:
-    //          This should check if upkeep can be paid and
-    //          4 to 1 if possible, or remove appropriate
-    //          agents / structures if not
     // TODO FEATURE:
     //          This should consider retiring agents even if
     //          it *can* pay upkeep for them
@@ -139,6 +135,10 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
 var createAiBuildPhaseAction = function(game, playerIndex) {
     if (gamedata.isPlayerTurn(game, playerIndex)) {
         var action = createBestBuildAction(game, playerIndex);
+        if (action) {
+            return action;
+        }
+        action = createBestRecruitAction(game, playerIndex);
         if (action) {
             return action;
         }
@@ -324,6 +324,55 @@ var createBestBuildAction = function(game, playerIndex) {
     return null;
 };
 
+var createBestRecruitAction = function(game, playerIndex) {
+    // don't consider recruiting if food resources are already negative
+    var futures = gamedata.getResourceFutures(game, playerIndex);
+    if (futures[cons.RES_FOOD] < 0) {
+        return null;
+    }
+    // otherwise, attempt to build one of these, prioritized randomly
+    var agentTypes = [cons.AGT_AMBASSADOR, cons.AGT_SPY, cons.AGT_ENVOY,
+                      cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_SURVEYOR,
+                      cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
+    shuffle(agentTypes);
+    for (var i = 0; i < agentTypes.length; i++){
+        var agenttype = agentTypes[i];
+        if (gamedata.playerCanRecruit(game, playerIndex, agentTypes[i])) {
+            var objecttype = cons.AGT_OBJTYPE[agenttype];
+            if (objecttype == cons.OBJ_BASE) {
+                var planet = getBasePlanet(game, playerIndex);
+                if (planet) {
+                    return {
+                        player: playerIndex,
+                        actiontype: cons.ACT_RECRUIT,
+                        agenttype: agenttype,
+                        planetid: planet.planetid
+                    }
+                }
+            } else if (objecttype == cons.OBJ_FACTORY) {
+                var planets = gamedata.getFactoryPlanets(game, playerIndex, objecttype);
+                var planetIndex = Math.floor(Math.random() * planets.length);
+                return {
+                        player: playerIndex,
+                        actiontype: cons.ACT_RECRUIT,
+                        agenttype: agenttype,
+                        planetid: planets[planetIndex].planetid
+                };
+            } else if (objecttype == cons.OBJ_EMBASSY) {
+                var planets = gamedata.getEmbassyPlanets(game, playerIndex, objecttype);
+                var planetIndex = Math.floor(Math.random() * planets.length);
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_RECRUIT,
+                    agenttype: agenttype,
+                    planetid: planets[planetIndex].planetid
+                };
+            }
+        }
+    }
+    return null;
+};
+
 // creates a 4 to 1 action to convert the highest future resource type
 // into the lowest future type (if possible). Otherwise, returns null.
 var createAi4To1Action = function(game, playerIndex) {
@@ -367,8 +416,14 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
     var unitsToRemove = gamedata.getUnitsRequiringUpkeep(game, playerIndex, typeToEliminate);
     var indexToRemove = Math.floor(Math.random() * unitsToRemove.length);
     var unitToRemove = unitsToRemove[indexToRemove];
-    // TODO FIX: This currently assumes not an agent
-    if (unitToRemove.objecttype == cons.OBJ_FLEET) {
+    if (unitToRemove.agenttype) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_RETIRE,
+            agenttype: unitToRemove.agenttype
+        };
+    }
+    else if (unitToRemove.objecttype == cons.OBJ_FLEET) {
         return {
             player: playerIndex,
             actiontype: cons.ACT_REMOVE_FLEET,
