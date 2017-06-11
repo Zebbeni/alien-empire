@@ -199,7 +199,6 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
         } else {
             if (mission.waitingOnResolve) {
                 if (mission.player == playerIndex) {
-                    // TODO FEATURE: create resolve mission action
                     return createAiResolveMissionAction(game, playerIndex, mission);
                 }
             } else {
@@ -215,10 +214,42 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
 // Creates an AI action to either allow, block, or collect from a mission
 // TODO FEATURE: add logic to block or collect if AI player has spy eyes
 var createAiBlockMissionAction = function(game, playerIndex, mission) {
+    var choice = false;
+    if (mission.player != playerIndex) {
+        // decide what action to take if spyeye here
+        var planet = game.board.planets[mission.planetTo];
+        if (planet.spyeyes[playerIndex] > 0) {
+            switch (mission.agenttype){
+                case cons.AGT_SABATEUR:
+                case cons.AGT_SMUGGLER:
+                    // block if settled by player
+                    if (planet.settledBy[playerIndex]) {
+                        choice = true;
+                    }
+                    break;
+                case cons.AGT_AMBASSADOR:
+                case cons.AGT_SPY:
+                case cons.AGT_SURVEYOR:
+                    // Block 1/2 of the time, otherwise allow
+                    choice = Math.random() * 2 < 1 ? true : false;
+                    break;
+                case cons.AGT_MINER:
+                case cons.AGT_ENVOY:
+                    // Collect 1/2 of the time, otherwise Block
+                    choice = Math.random() * 2 < 1 ? true : null;
+                    break;
+                case cons.AGT_EXPLORER:
+                    choice = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
     return {
         player: playerIndex,
         actiontype: cons.ACT_BLOCK_MISSION,
-        choice: false
+        choice: choice
     };
 };
 
@@ -294,12 +325,14 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.settledBy[playerIndex] && !planet.base;
             });
-            var planet = getRandomItem(planets);
-            return {
-                player: playerIndex,
-                actiontype: cons.ACT_BUILD,
-                objecttype: cons.OBJ_BASE,
-                planetid: planet.planetid
+            if (planets && planets.length > 0) {
+                var planet = getRandomItem(planets);
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_BUILD,
+                    objecttype: cons.OBJ_BASE,
+                    planetid: planet.planetid
+                };
             }
         } else if (objType == cons.OBJ_FLEET) {
             var planets = game.board.planets.filter(function (planet) {
@@ -343,7 +376,7 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_EXPLORER];
+    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
@@ -384,7 +417,7 @@ var createBestRecruitAction = function(game, playerIndex) {
 };
 
 var createBestAgentAction = function(game, playerIndex) {
-    var agentPriority = [cons.AGT_EXPLORER];
+    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_SPY];
     var agents = gamedata.getActiveAgents(game, playerIndex);
     if (agents && agents.length > 0) {
         var unusedAgents = agents.filter(function(agent) {
@@ -397,6 +430,8 @@ var createBestAgentAction = function(game, playerIndex) {
                         switch (unusedAgents[u].agenttype) {
                             case cons.AGT_EXPLORER:
                                 return createBestExplorerAction(game, playerIndex, unusedAgents[u]);
+                            case cons.AGT_SPY:
+                                return createBestSpyAction(game, playerIndex, unusedAgents[u]);
                             default:
                                 break;
                         }
@@ -447,6 +482,20 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
         planetid: agentInfo.planetid
     };
 };
+
+var createBestSpyAction = function(game, playerIndex, agentInfo) {
+    var chosenPlanet = game.board.planets[agentInfo.planetid];
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    if (unblockedAdjacent && unblockedAdjacent.length > 0) {
+        chosenPlanet = getRandomItem(unblockedAdjacent);
+    }
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_LAUNCH_MISSION,
+        agenttype: cons.AGT_SPY,
+        planetid: chosenPlanet.planetid
+    };
+}
 
 var createBestFleetAction = function(game, playerIndex) {
     var fleets = gamedata.getActiveFleets(game, playerIndex);
@@ -623,8 +672,16 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
             // if no resources can be reserved, resolve with undefined
             return {
                 player: playerIndex,
+                agenttype: agenttype,
                 actiontype: cons.ACT_MISSION_RESOLVE,
                 resourceid: undefined,
+                planetid: planetid
+            };
+        case cons.AGT_SPY:
+            return {
+                player: playerIndex,
+                agenttype: agenttype,
+                actiontype: cons.ACT_MISSION_RESOLVE,
                 planetid: planetid
             };
         default:

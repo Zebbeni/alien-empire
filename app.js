@@ -159,6 +159,6 @@ server.listen(process.env.PORT || '8080', '0.0.0.0', function() {
   var AiInterval = setInterval(function() {
   	aiIndex = (aiIndex + 1) % 4;
   	ai_server.doAiCycle(io, game_server, gamesInfo, users, aiIndex);
-  }, 500);
+  }, 400);
 });
 // [END server]

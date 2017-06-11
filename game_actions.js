@@ -1137,7 +1137,7 @@ var applyBlockMission = function( action, game ){
         mission.resolution.blocked = true;
         mission.resolution.blockedBy = player;
         mission.resolution.resolved = true;
-        mission.spyeyes[player] -= 1;
+        game.board.planets[planetid].spyeyes[player] -= 1;
 
 		helpers.resetMissionSpied(game);
 	}
