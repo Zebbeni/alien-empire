@@ -11,7 +11,9 @@ var getActiveAgents = function(game, playerIndex) {
         agents.push({
             agentid: agentid,
             agenttype: a,
-            status: agent.status
+            status: agent.status,
+            used: agent.used,
+            planetid: agent.planetid
         });
     }
     return agents.filter(function(agent) {
@@ -21,13 +23,9 @@ var getActiveAgents = function(game, playerIndex) {
 
 // Returns all explored adjacent planets to the given planetid
 var getAdjacentExploredPlanets = function(game, planetid) {
-    var adjacents = game.board.planets;
-    if (adjacents && adjacents.length > 0) {
-        return adjacents.filter(function (planet) {
-            return (planet.explored && planetid in planet.borders);
-        });
-    }
-    return null;
+    return game.board.planets.filter(function (planet) {
+        return (planet.explored && planetid in planet.borders);
+    });
 };
 
 // Returns all explored adjacent planets to the given planetid
@@ -43,7 +41,7 @@ var getAdjacentUnblockedPlanets = function(game, planetid) {
 
 var getAdjacentUnexploredPlanets = function(game, planetid) {
     return game.board.planets.filter(function(planet) {
-        return planet.explored == false;
+        return planet.explored == false && planetid in planet.borders;
     });
 };
 

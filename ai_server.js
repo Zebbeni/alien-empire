@@ -200,6 +200,7 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
             if (mission.waitingOnResolve) {
                 if (mission.player == playerIndex) {
                     // TODO FEATURE: create resolve mission action
+                    return createAiResolveMissionAction(game, playerIndex, mission);
                 }
             } else {
                 if (game.missionSpied[playerIndex] == null) {
@@ -342,9 +343,7 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_AMBASSADOR, cons.AGT_SPY, cons.AGT_ENVOY,
-                      cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_SURVEYOR,
-                      cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
+    var agentTypes = [cons.AGT_EXPLORER];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
@@ -385,13 +384,68 @@ var createBestRecruitAction = function(game, playerIndex) {
 };
 
 var createBestAgentAction = function(game, playerIndex) {
+    var agentPriority = [cons.AGT_EXPLORER];
     var agents = gamedata.getActiveAgents(game, playerIndex);
     if (agents && agents.length > 0) {
-        unusedAgents = agents.filter(function() {
-
+        var unusedAgents = agents.filter(function(agent) {
+            return agent.used == false;
         });
+        if (unusedAgents && unusedAgents.length > 0) {
+            for (var a = 0; a < agentPriority.length; a++) {
+                for (var u = 0; u < unusedAgents.length; u++) {
+                    if (unusedAgents[u].agenttype == agentPriority[a]) {
+                        switch (unusedAgents[u].agenttype) {
+                            case cons.AGT_EXPLORER:
+                                return createBestExplorerAction(game, playerIndex, unusedAgents[u]);
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+        }
     }
     return null;
+};
+
+var createBestExplorerAction = function(game, playerIndex, agentInfo) {
+    var unexploredAdjacent = gamedata.getAdjacentUnexploredPlanets(game, agentInfo.planetid);
+    if (unexploredAdjacent && unexploredAdjacent.length > 0) {
+        var chosenPlanet;
+        var unexploredLarge = unexploredAdjacent.filter(function(planet) {
+            return planet.w == 2;
+        });
+        if (unexploredLarge && unexploredLarge.length > 0) {
+            chosenPlanet = getRandomItem(unexploredLarge);
+        } else {
+            chosenPlanet = getRandomItem(unexploredAdjacent);
+        }
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_LAUNCH_MISSION,
+            agenttype: cons.AGT_EXPLORER,
+            planetid: chosenPlanet.planetid
+        };
+    }
+    // try moving to an adjancent planet if no adjacent unexplored planets
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    if (unblockedAdjacent && unblockedAdjacent.length > 0) {
+        var chosenPlanet = getRandomItem(unblockedAdjacent);
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_MOVE_AGENT,
+            agenttype: cons.AGT_EXPLORER,
+            planetid: chosenPlanet.planetid
+        };
+    }
+    // if no other options, just explore current planet
+    // TODO FEATURE: Check if Smuggler is here and unused. If so, create mission to blocked planet
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_LAUNCH_MISSION,
+        agenttype: cons.AGT_EXPLORER,
+        planetid: agentInfo.planetid
+    };
 };
 
 var createBestFleetAction = function(game, playerIndex) {
@@ -443,11 +497,11 @@ var createBestBaseAction = function(game, playerIndex) {
     if (basePlanet && basePlanet.base.used == false) {
         var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, basePlanet);
         if (attackTargets && attackTargets.length > 0) {
-            var nonFleetTargets = attackTargets.filter(function (target) {
+            var fleetTargets = attackTargets.filter(function (target) {
                 return target.objecttype == cons.OBJ_FLEET;
             });
-            if (nonFleetTargets && nonFleetTargets.length > 0) {
-                var attackItem = getRandomItem(attackTargets);
+            if (fleetTargets && fleetTargets.length > 0) {
+                var attackItem = getRandomItem(fleetTargets);
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_BASE_ATTACK,
@@ -535,6 +589,48 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
         objecttype: unitToRemove.objectType,
         resourceid: unitToRemove.resourceId
     }
+};
+
+var createAiResolveMissionAction = function(game, playerIndex, mission) {
+    var agenttype = mission.agenttype;
+    var planetid = mission.planetTo;
+    var planet = game.board.planets[planetid];
+    switch (agenttype) {
+        case cons.AGT_EXPLORER:
+            var action = null;
+            var futures = gamedata.getResourceFutures(game, playerIndex);
+            var resources = planet.resources;
+            var greatestNeedFound = 1000; // (greater needs are lower numbers)
+            for (var r = 0; r < resources.length; r++) {
+                var resource = resources[r];
+                if (!resource.structure && resource.reserved == undefined) {
+                    var kind = resource.kind;
+                    if (futures[kind] < greatestNeedFound) {
+                        greatestNeedFound = futures[kind];
+                        action = {
+                            player: playerIndex,
+                            agenttype: agenttype,
+                            actiontype: cons.ACT_MISSION_RESOLVE,
+                            resourceid: r,
+                            planetid: planetid
+                        };
+                    }
+                }
+            }
+            if (action) {
+                return action;
+            }
+            // if no resources can be reserved, resolve with undefined
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_MISSION_RESOLVE,
+                resourceid: undefined,
+                planetid: planetid
+            };
+        default:
+            break;
+    }
+    return null;
 };
 
 // Returns random item from array

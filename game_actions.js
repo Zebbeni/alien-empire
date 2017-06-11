@@ -738,8 +738,6 @@ var applyTradeDecline = function( action, game ){
 
 	game.trades[requester].declined.push(opponent);
 
-	var offered_to = game.trades[requester].offered_to;
-
 	return { isIllegal: false };
 };
 
