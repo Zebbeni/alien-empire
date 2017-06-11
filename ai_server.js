@@ -188,7 +188,7 @@ var createAiActionPhaseAction = function(game, playerIndex) {
 var createAiMissionsPhaseAction = function(game, playerIndex) {
     var mission = gamedata.getCurrentMission(game);
     if (mission) {
-        if (mission.resolution.resolved) {
+        if (mission.resolution.resolved || mission.resolution.nochoice || mission.resolution.agentmia) {
             if (!game.missionViewed[playerIndex]) {
                 return {
                     player: playerIndex,
@@ -325,7 +325,7 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.settledBy[playerIndex] && !planet.base;
             });
-            if (planets && planets.length > 0) {
+            if (hasContent(planets)) {
                 var planet = getRandomItem(planets);
                 return {
                     player: playerIndex,
@@ -338,7 +338,7 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.base && planet.base.player == playerIndex;
             });
-            if (planets.length > 0) {
+            if (hasContent(planets)) {
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_BUILD,
@@ -376,7 +376,7 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY];
+    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_SABATEUR];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
@@ -417,7 +417,10 @@ var createBestRecruitAction = function(game, playerIndex) {
 };
 
 var createBestAgentAction = function(game, playerIndex) {
-    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_SPY];
+    // listing priority helps prevent players blocking a border
+    // before their own agent gets through, or destroying a target embassy
+    // before their envoy reaches it
+    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_SABATEUR];
     var agents = gamedata.getActiveAgents(game, playerIndex);
     if (agents && agents.length > 0) {
         var unusedAgents = agents.filter(function(agent) {
@@ -432,6 +435,8 @@ var createBestAgentAction = function(game, playerIndex) {
                                 return createBestExplorerAction(game, playerIndex, unusedAgents[u]);
                             case cons.AGT_SPY:
                                 return createBestSpyAction(game, playerIndex, unusedAgents[u]);
+                            case cons.AGT_SABATEUR:
+                                return createBestSabateurAction(game, playerIndex, unusedAgents[u]);
                             default:
                                 break;
                         }
@@ -450,7 +455,7 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
         var unexploredLarge = unexploredAdjacent.filter(function(planet) {
             return planet.w == 2;
         });
-        if (unexploredLarge && unexploredLarge.length > 0) {
+        if (hasContent(unexploredLarge)) {
             chosenPlanet = getRandomItem(unexploredLarge);
         } else {
             chosenPlanet = getRandomItem(unexploredAdjacent);
@@ -464,7 +469,7 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
     }
     // try moving to an adjancent planet if no adjacent unexplored planets
     var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
-    if (unblockedAdjacent && unblockedAdjacent.length > 0) {
+    if (hasContent(unblockedAdjacent)) {
         var chosenPlanet = getRandomItem(unblockedAdjacent);
         return {
             player: playerIndex,
@@ -486,7 +491,7 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
 var createBestSpyAction = function(game, playerIndex, agentInfo) {
     var chosenPlanet = game.board.planets[agentInfo.planetid];
     var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
-    if (unblockedAdjacent && unblockedAdjacent.length > 0) {
+    if (hasContent(unblockedAdjacent)) {
         chosenPlanet = getRandomItem(unblockedAdjacent);
     }
     return {
@@ -495,24 +500,40 @@ var createBestSpyAction = function(game, playerIndex, agentInfo) {
         agenttype: cons.AGT_SPY,
         planetid: chosenPlanet.planetid
     };
-}
+};
+
+// TODO FEATURE: Check through planets and players for best place to attack
+var createBestSabateurAction = function(game, playerIndex, agentInfo) {
+    var unblockedPlanets = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    // default to current planet if all adjacent planets are blocked
+    var chosenPlanet = game.board.planets[agentInfo.planetid];
+    if (hasContent(unblockedPlanets)) {
+        chosenPlanet = getRandomItem(unblockedPlanets);
+    }
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_LAUNCH_MISSION,
+        agenttype: cons.AGT_SABATEUR,
+        planetid: chosenPlanet.planetid
+    };
+};
 
 var createBestFleetAction = function(game, playerIndex) {
     var fleets = gamedata.getActiveFleets(game, playerIndex);
-    if (fleets && fleets.length > 0) {
+    if (hasContent(fleets)) {
         var unusedFleets = fleets.filter(function (fleet) {
             return fleet.used == false;
         });
-        if (unusedFleets && unusedFleets.length > 0) {
+        if (hasContent(unusedFleets)) {
             var fleet = unusedFleets[0];
             var planet = game.board.planets[fleet.planetid];
             // filter out all mines from attack targets
             var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet);
-            if (attackTargets.length > 0) {
+            if (hasContent(attackTargets)) {
                 var nonMineTargets = attackTargets.filter(function (target) {
                     return cons.STRUCT_REQS[target.objecttype].defense < 6;
                 });
-                if (nonMineTargets.length > 0) {
+                if (hasContent(nonMineTargets)) {
                     var attackItem = getRandomItem(nonMineTargets);
                     return {
                         player: playerIndex,
@@ -526,7 +547,7 @@ var createBestFleetAction = function(game, playerIndex) {
                 }
                 // if no targets, try moving to an adjacent planet
                 var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, fleet.planetid);
-                if (adjacentPlanets.length > 0) {
+                if (hasContent(adjacentPlanets)) {
                     choicePlanet = getRandomItem(adjacentPlanets);
                     return {
                         player: playerIndex,
@@ -545,11 +566,11 @@ var createBestBaseAction = function(game, playerIndex) {
     var basePlanet = gamedata.getBasePlanet(game, playerIndex);
     if (basePlanet && basePlanet.base.used == false) {
         var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, basePlanet);
-        if (attackTargets && attackTargets.length > 0) {
+        if (hasContent(attackTargets)) {
             var fleetTargets = attackTargets.filter(function (target) {
                 return target.objecttype == cons.OBJ_FLEET;
             });
-            if (fleetTargets && fleetTargets.length > 0) {
+            if (hasContent(fleetTargets)) {
                 var attackItem = getRandomItem(fleetTargets);
                 return {
                     player: playerIndex,
@@ -684,6 +705,27 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 actiontype: cons.ACT_MISSION_RESOLVE,
                 planetid: planetid
             };
+        case cons.AGT_SABATEUR:
+            var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet);
+            if (hasContent(attackTargets)) {
+                var attackItem = getRandomItem(attackTargets);
+                return {
+                    player: playerIndex,
+                    agenttype: agenttype,
+                    actiontype: cons.ACT_MISSION_RESOLVE,
+                    targetPlayer: attackItem.targetPlayer,
+                    choice: attackItem.choice,
+                    resourceid: attackItem.choice,
+                    objecttype: attackItem.objecttype,
+                    planetid: planetid
+                };
+            }
+            return {
+                player: playerIndex,
+                agenttype: agenttype,
+                actiontype: cons.ACT_MISSION_RESOLVE,
+                planetid: planetid
+            };
         default:
             break;
     }
@@ -694,6 +736,11 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
 function getRandomItem(a) {
     var index = Math.floor(Math.random() * a.length);
     return a[index];
+}
+
+// Returns true if an array is not null and has > 0 item
+function hasContent(a) {
+    return a && a.length > 0;
 }
 
 // Shuffles array in place

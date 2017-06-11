@@ -1285,6 +1285,9 @@ var applyBlockMission = function( action, game ){
 
 var applyMissionResolve = function( action, game ){
 
+	console.log('server, trying to resolve mission');
+	console.log(action);
+
 	var player = action.player;
 	var choice = action.choice;
 	var agenttype = action.agenttype;
