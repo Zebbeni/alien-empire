@@ -376,7 +376,7 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_SABATEUR];
+    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_SABATEUR, cons.AGT_ENVOY];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
@@ -420,7 +420,7 @@ var createBestAgentAction = function(game, playerIndex) {
     // listing priority helps prevent players blocking a border
     // before their own agent gets through, or destroying a target embassy
     // before their envoy reaches it
-    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_SABATEUR];
+    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_ENVOY, cons.AGT_SPY, cons.AGT_SABATEUR];
     var agents = gamedata.getActiveAgents(game, playerIndex);
     if (agents && agents.length > 0) {
         var unusedAgents = agents.filter(function(agent) {
@@ -435,6 +435,8 @@ var createBestAgentAction = function(game, playerIndex) {
                                 return createBestExplorerAction(game, playerIndex, unusedAgents[u]);
                             case cons.AGT_SPY:
                                 return createBestSpyAction(game, playerIndex, unusedAgents[u]);
+                            case cons.AGT_ENVOY:
+                                return createBestEnvoyAction(game, playerIndex, unusedAgents[u]);
                             case cons.AGT_SABATEUR:
                                 return createBestSabateurAction(game, playerIndex, unusedAgents[u]);
                             default:
@@ -498,6 +500,21 @@ var createBestSpyAction = function(game, playerIndex, agentInfo) {
         player: playerIndex,
         actiontype: cons.ACT_LAUNCH_MISSION,
         agenttype: cons.AGT_SPY,
+        planetid: chosenPlanet.planetid
+    };
+};
+
+// TODO FEATURE: Check through planets for best place to send envoy
+var createBestEnvoyAction = function(game, playerIndex, agentInfo) {
+    var chosenPlanet = game.board.planets[agentInfo.planetid];
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    if (hasContent(unblockedAdjacent)) {
+        chosenPlanet = getRandomItem(unblockedAdjacent);
+    }
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_LAUNCH_MISSION,
+        agenttype: cons.AGT_ENVOY,
         planetid: chosenPlanet.planetid
     };
 };
@@ -699,6 +716,7 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 planetid: planetid
             };
         case cons.AGT_SPY:
+        case cons.AGT_ENVOY:
             return {
                 player: playerIndex,
                 agenttype: agenttype,
