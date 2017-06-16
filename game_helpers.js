@@ -102,10 +102,12 @@ var clearPhaseDone = function( game ){
 	}
 };
 
-var resetMissionSpied = function( game ) {
-	for ( var i = 0; i < game.missionSpied.length; i++ ){
-		game.missionSpied[i] = null;
+var initializeSpyActions = function( game ) {
+	var spyActions = [];
+	for ( var i = 0; i < game.players.length; i++ ){
+		spyActions.push(cons.SPY_ACT_NULL);
 	}
+	return spyActions;
 };
 
 var findGameToReconnect = function(u, gamesInfo){
@@ -128,7 +130,7 @@ var findGameToReconnect = function(u, gamesInfo){
 		addResourcePackage: addResourcePackage,
 		addLobbyMessage: addLobbyMessage,
 		clearPhaseDone: clearPhaseDone,
-		resetMissionSpied: resetMissionSpied,
+        initializeSpyActions: initializeSpyActions,
 		findGameToReconnect: findGameToReconnect,
 	}
 }());

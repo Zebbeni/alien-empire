@@ -1136,10 +1136,7 @@ var applyBlockMission = function( action, game ){
 
         mission.resolution.blocked = true;
         mission.resolution.blockedBy = player;
-        mission.resolution.resolved = true;
         game.board.planets[planetid].spyeyes[player] -= 1;
-
-		helpers.resetMissionSpied(game);
 	}
 
 	else {
@@ -1297,6 +1294,9 @@ var applyMissionResolve = function( action, game ){
 	var round = game.round - 2;
 	var mission = game.missions[ round ][ index ];
 
+	console.log('server, mission object:');
+	console.log(mission);
+
 	var agent = game.board.agents[ agentid ];
 	var planets = game.board.planets;
 
@@ -1308,20 +1308,22 @@ var applyMissionResolve = function( action, game ){
 
 	if ( mission.planetTo != planetid ||  mission.agenttype != agenttype ){
 		// don't return illegal if on a different mission but do not proceed either
+		console.log('! Rejected resolve, planetTo: ' + mission.planetTo + ', planetid: ' + planetid, 'm.agenttype: ' + mission.agenttype +  ', agenttype: ' + agenttype);
 		return { isDuplicate: false };
 	}
 
 	if ( game.missionSpied.indexOf( null ) != -1 ) {
 		// Do not return illegal if not all spies have come in yet
 		// but do not update the game state
+		console.log('! Rejected resolve: not all spy actions in');
 		return { isDuplicate: false };
 	}
 
-	else if ( game.missions[round][index].resolution.nochoice ) {
+	if ( mission.resolution.nochoice || mission.resolution.blocked ) {
 		moveAgent( game, agentid, planetid );
 	}
 
-	else if ( !game.missions[round][ index ].resolution.agentmia ) {
+	else if ( !mission.resolution.agentmia ) {
 
 		// THIS is where we should actually apply the agent mission logic
 		// depending on the type of agent

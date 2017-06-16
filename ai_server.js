@@ -73,7 +73,6 @@ var createAiGameAction = function(game, playerIndex) {
 };
 
 var createAiPlaceAction = function(game, playerIndex) {
-    console.log('creating ai place action');
     if (gamedata.isPlayerTurn(game, playerIndex)) {
         return createBestMineBuildAction(game, playerIndex, cons.ACT_PLACE);
     }
@@ -81,16 +80,13 @@ var createAiPlaceAction = function(game, playerIndex) {
 };
 
 var createAiCollectResourcesAction = function(game, playerIndex) {
-    console.log('creating ai collect action');
     var resource_pkgs = game.resourcePackages[playerIndex];
     for (var i = 0; i < resource_pkgs.length; i++) {
         var pkg = resource_pkgs[i];
         if (!pkg.collected && pkg.pkgtype != cons.PKG_UPKEEP) {
             if (!gamedata.playerCanCollect(game, playerIndex, pkg.resources)){
-                console.log('doing a 4 to 1 action');
                 return createAi4To1Action(game, playerIndex);
             }
-            console.log('collecting resources action');
             return {
                 player: playerIndex,
                 actiontype: cons.ACT_COLLECT_RESOURCES,
@@ -187,25 +183,25 @@ var createAiActionPhaseAction = function(game, playerIndex) {
 //        Create Mission Resolve Action
 var createAiMissionsPhaseAction = function(game, playerIndex) {
     var mission = gamedata.getCurrentMission(game);
+    var missionIndex = gamedata.getCurrentMissionIndex(game);
     if (mission) {
-        if (mission.resolution.resolved || mission.resolution.nochoice || mission.resolution.agentmia) {
+        if (game.missionSpied[playerIndex] == null) {
+            console.log('-- player ' + playerIndex + ' spying (t/f) on mission ' + missionIndex + ' --');
+            return createAiBlockMissionAction(game, playerIndex, mission);
+        }
+        if (mission.resolution.resolved) {
             if (!game.missionViewed[playerIndex]) {
+                console.log('-- player ' + playerIndex + ' viewing mission ' + missionIndex + ' --');
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_MISSION_VIEWED,
-                    choice: gamedata.getCurrentMissionIndex(game)
+                    choice: missionIndex
                 };
             }
-        } else {
-            if (mission.waitingOnResolve) {
-                if (mission.player == playerIndex) {
-                    return createAiResolveMissionAction(game, playerIndex, mission);
-                }
-            } else {
-                if (game.missionSpied[playerIndex] == null) {
-                    return createAiBlockMissionAction(game, playerIndex, mission);
-                }
-            }
+        }
+        if (mission.waitingOnResolve && mission.player == playerIndex) {
+            console.log('-- player ' + playerIndex + ' resolving mission ' + missionIndex + ' --');
+            return createAiResolveMissionAction(game, playerIndex, mission);
         }
     }
     return null;
@@ -219,6 +215,7 @@ var createAiBlockMissionAction = function(game, playerIndex, mission) {
         // decide what action to take if spyeye here
         var planet = game.board.planets[mission.planetTo];
         if (planet.spyeyes[playerIndex] > 0) {
+            choice = true;
             switch (mission.agenttype){
                 case cons.AGT_SABATEUR:
                 case cons.AGT_SMUGGLER:
@@ -376,7 +373,8 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_SABATEUR, cons.AGT_ENVOY];
+    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_ENVOY, cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
+    agentTypes = [cons.AGT_ENVOY, cons.AGT_SPY];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
@@ -420,7 +418,7 @@ var createBestAgentAction = function(game, playerIndex) {
     // listing priority helps prevent players blocking a border
     // before their own agent gets through, or destroying a target embassy
     // before their envoy reaches it
-    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_ENVOY, cons.AGT_SPY, cons.AGT_SABATEUR];
+    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_ENVOY, cons.AGT_SMUGGLER, cons.AGT_SPY, cons.AGT_SABATEUR];
     var agents = gamedata.getActiveAgents(game, playerIndex);
     if (agents && agents.length > 0) {
         var unusedAgents = agents.filter(function(agent) {
@@ -439,6 +437,8 @@ var createBestAgentAction = function(game, playerIndex) {
                                 return createBestEnvoyAction(game, playerIndex, unusedAgents[u]);
                             case cons.AGT_SABATEUR:
                                 return createBestSabateurAction(game, playerIndex, unusedAgents[u]);
+                            case cons.AGT_SMUGGLER:
+                                return createBestSmugglerAction(game, playerIndex, unusedAgents[u]);
                             default:
                                 break;
                         }
@@ -531,6 +531,21 @@ var createBestSabateurAction = function(game, playerIndex, agentInfo) {
         player: playerIndex,
         actiontype: cons.ACT_LAUNCH_MISSION,
         agenttype: cons.AGT_SABATEUR,
+        planetid: chosenPlanet.planetid
+    };
+};
+
+// TODO FEATURE: Check through planets for best place to send smuggler
+var createBestSmugglerAction = function(game, playerIndex, agentInfo) {
+    var chosenPlanet = game.board.planets[agentInfo.planetid];
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    if (hasContent(unblockedAdjacent)) {
+        chosenPlanet = getRandomItem(unblockedAdjacent);
+    }
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_LAUNCH_MISSION,
+        agenttype: cons.AGT_SMUGGLER,
         planetid: chosenPlanet.planetid
     };
 };
@@ -715,14 +730,6 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 resourceid: undefined,
                 planetid: planetid
             };
-        case cons.AGT_SPY:
-        case cons.AGT_ENVOY:
-            return {
-                player: playerIndex,
-                agenttype: agenttype,
-                actiontype: cons.ACT_MISSION_RESOLVE,
-                planetid: planetid
-            };
         case cons.AGT_SABATEUR:
             var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet);
             if (hasContent(attackTargets)) {
@@ -738,6 +745,15 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                     planetid: planetid
                 };
             }
+            return {
+                player: playerIndex,
+                agenttype: agenttype,
+                actiontype: cons.ACT_MISSION_RESOLVE,
+                planetid: planetid
+            };
+        case cons.AGT_SPY:
+        case cons.AGT_ENVOY:
+        case cons.AGT_SMUGGLER:
             return {
                 player: playerIndex,
                 agenttype: agenttype,

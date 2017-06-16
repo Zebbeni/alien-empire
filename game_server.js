@@ -85,10 +85,10 @@ var initPlayerResources = function( num_users ) {
 
 		resources.push( {} );
 
-		resources[i][cons.RES_METAL] = 8;
-		resources[i][cons.RES_WATER] = 8;
-		resources[i][cons.RES_FUEL] = 8;
-		resources[i][cons.RES_FOOD] = 8;
+		resources[i][cons.RES_METAL] = 4;
+		resources[i][cons.RES_WATER] = 4;
+		resources[i][cons.RES_FUEL] = 4;
+		resources[i][cons.RES_FOOD] = 4;
 	}
 	
 	return resources;

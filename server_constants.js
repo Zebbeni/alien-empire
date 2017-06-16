@@ -205,7 +205,13 @@
 				max: 3,
 				defense: 3
 			}
-		}
+		},
+
+        // null if spy action not taken yet
+		SPY_ACT_NULL: 1,
+		SPY_ACT_ALLOW: 2,
+        SPY_ACT_BLOCK: 3,
+		SPY_ACT_COLLECT: 4
 	};
 
 }());
