@@ -376,7 +376,7 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_SABATEUR, cons.AGT_ENVOY];
+    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SABATEUR, cons.AGT_ENVOY];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
