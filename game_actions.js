@@ -1063,15 +1063,15 @@ var applyLaunchMission = function( action, game ) {
 	var newMission = {
 						player: player,
 						agenttype: agenttype,
+						index: game.missions[game.round].length,
 						planetTo: planetid,
 						planetFrom: agent.planetid,
 						useSmuggler: action.usesmuggler,
 						result: "Mission pending...",
-						resolution: {
-							resolved: false,
-							blocked: undefined,
-							blockedBy: undefined,
-						} // object with details of how mission was completed
+						status: cons.MISSION_UNRESOLVED,
+						blockers: [], // list of players who blocked mission
+						viewed: helpers.initializeViewed(game),
+        				spyActions: helpers.initializeSpyActions(game)
 					};
 
 	if ( agenttype == cons.AGT_MINER || agenttype == cons.AGT_ENVOY ){

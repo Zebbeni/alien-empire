@@ -118,6 +118,18 @@
 		PKG_UPKEEP : 7,
 		PKG_BUILD: 8,
 
+		// mission statuses
+		MISSION_UNRESOLVED: 1, // unresolved until spies done or some other resolution condition met
+        MISSION_PENDING_CHOICE: 2, // set if mission requires player choice (after spies)
+        MISSION_COMPLETE: 3, // success after spies done and (if applicable) player's choice processed
+
+        // all below statuses indicate a mission failure of some kind
+        MISSION_BLOCKED_SPY: 4,
+        MISSION_BLOCKED_NO_FLY: 5,
+        MISSION_CANCELLED_NO_AGENT: 6,
+        MISSION_RESOLVED_NO_TARGET: 7,
+        MISSION_RESOLVED_NO_CHOICE: 8,
+
 		OBJ_VALUE : {
 			1: 0,
 			2: 1,

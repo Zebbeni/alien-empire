@@ -102,6 +102,8 @@ var clearPhaseDone = function( game ){
 	}
 };
 
+// TODO: combine this, initializeViewed and several others
+// into one generic function like 'initPlayerLengthList()'
 var initializeSpyActions = function( game ) {
 	var spyActions = [];
 	for ( var i = 0; i < game.players.length; i++ ){
@@ -110,12 +112,19 @@ var initializeSpyActions = function( game ) {
 	return spyActions;
 };
 
+var initializeViewed = function( game ) {
+	var viewed = [];
+	for ( var i = 0; i < game.players.length; i++ ){
+		viewed.push(false);
+	}
+	return viewed;
+};
+
 var findGameToReconnect = function(u, gamesInfo){
 	for ( var i = 0; i < gamesInfo.length; i++ ){
 		gameInfo = gamesInfo[i];
 		if ( gameInfo.ready.indexOf(u) != -1 && 
 			 gameInfo.status == cons.GAME_PROGRESS ) {
-			
 			return i;
 		}
 	}
@@ -131,6 +140,7 @@ var findGameToReconnect = function(u, gamesInfo){
 		addLobbyMessage: addLobbyMessage,
 		clearPhaseDone: clearPhaseDone,
         initializeSpyActions: initializeSpyActions,
+        initializeViewed: initializeViewed,
 		findGameToReconnect: findGameToReconnect,
 	}
 }());
