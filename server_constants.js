@@ -123,7 +123,7 @@
         MISSION_PENDING_CHOICE: 2, // set if mission requires player choice (after spies)
         MISSION_COMPLETE: 3, // success after spies done and (if applicable) player's choice processed
 
-        // all below statuses indicate a mission failure of some kind
+		// all below statuses indicate a mission failure of some kind
         MISSION_BLOCKED_SPY: 4,
         MISSION_BLOCKED_NO_FLY: 5,
         MISSION_CANCELLED_NO_AGENT: 6,

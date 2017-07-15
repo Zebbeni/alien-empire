@@ -1049,6 +1049,12 @@ var applyLaunchMission = function( action, game ) {
 			};
 		}
 
+        if ( agenttype == cons.AGT_SMUGGLER ) {
+            return { isIllegal: true,
+                response: "Smugglers cannot smuggle their own missions"
+            };
+        }
+
 		if ( smuggler.planetid != agent.planetid ) {
 			return { isIllegal: true,
 				 	 response: "Your smuggler must be on the same planet as your mission agent"
