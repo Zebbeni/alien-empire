@@ -1076,7 +1076,7 @@ var applyLaunchMission = function( action, game ) {
 						result: "Mission pending...",
 						status: cons.MISSION_UNRESOLVED,
 						blockers: [], // list of players who blocked mission
-						viewed: helpers.initializeViewed(game),
+						viewers: helpers.initializeViewed(game),
         				spyActions: helpers.initializeSpyActions(game)
 					};
 
@@ -1121,39 +1121,48 @@ var applyBlockMission = function( action, game ){
 	var mission = gamedata.getCurrentMission(game);
 	var planetid = mission.planetTo;
 
-	if ( game.missionSpied[ player ] != null ){
+	if ( mission.spyActions[ player ] != cons.SPY_ACT_NULL ){
 		// Do not return illegal, but also do not change game state
 		return { isDuplicate: false }; 
 	}
 
-	// choice is null if spying player wants to collect resources from mission
+
+
+    if (choice == cons.SPY_ACT_BLOCK || choice == cons.SPY_ACT_COLLECT) {
+		if ( game.board.planets[planetid].spyeyes[player] <= 0 ) {
+			return { isIllegal: true,
+				response: "You have no spy markers to block a mission here"
+			};
+		}
+    }
+
 	// this should update their spy eyes and opponent's mission info before
 	// falling through to resolve as a non-blocked mission
-	if ( choice == null && game.board.planets[planetid].spyeyes[player] > 0 ) {
+	if ( choice == cons.SPY_ACT_COLLECT && game.board.planets[planetid].spyeyes[player] > 0 ) {
 
 		game.board.planets[planetid].spyeyes[player] -= 1;
 		mission.collectors.push( player );
 	}
 
 	// choice is true if player has chosen to block the mission
-	if ( choice == true && game.board.planets[planetid].spyeyes[player] > 0 ){
+	if ( choice == cons.SPY_ACT_BLOCK && game.board.planets[planetid].spyeyes[player] > 0 ){
 
-		game.missionSpied[ player ] = true;
-
-        mission.resolution.blocked = true;
-        mission.resolution.blockedBy = player;
+		mission.spyActions[player] = cons.SPY_ACT_BLOCK;
+        mission.status = cons.MISSION_BLOCKED_SPY;
+        mission.blockers.push(player);
         game.board.planets[planetid].spyeyes[player] -= 1;
 	}
 
 	else {
 
-		game.missionSpied[ player ] = false;
+		mission.spyActions[ player ] = cons.SPY_ACT_ALLOW;
 
-		if ( game.missionSpied.indexOf(true) == -1 
-			 && game.missionSpied.indexOf(null) == -1) {
+		// If all player responses are in with no blockers...
+		if ( mission.spyActions.indexOf(cons.SPY_ACT_BLOCK) == -1
+			 && mission.spyActions.indexOf(cons.SPY_ACT_NULL) == -1) {
 
 			// set flag letting player know they need to resolve this mission
-            mission.waitingOnResolve = true;
+            mission.status = cons.MISSION_PENDING_CHOICE;
 
 			switch (mission.agenttype) {
 				
@@ -1187,7 +1196,7 @@ var applyBlockMission = function( action, game ){
 
 					// Add flag if player has no remaining options 
 					if ( !is_unreserved ) {
-                        mission.resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 					break;
 
@@ -1196,7 +1205,7 @@ var applyBlockMission = function( action, game ){
 					var planet = game.board.planets[planetid];
 					// Add flag if player has no remaining options
 					if ( !planet.settledBy[mission.player] ) {
-                        mission.resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 
 					break;
@@ -1219,7 +1228,7 @@ var applyBlockMission = function( action, game ){
 					}	
 
 					if ( !hasEmbassy ) {
-                        mission.resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 					break;
 
@@ -1266,7 +1275,7 @@ var applyBlockMission = function( action, game ){
 					}
 
 					if ( !possibleTarget ) {
-                        mission.resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 
 					break;
@@ -1274,12 +1283,6 @@ var applyBlockMission = function( action, game ){
 				default:
 					break;
 			}
-		}
-
-		if (choice == true) {
-			return { isIllegal: true,
-				 response: "You have no spy markers to block a mission here"
-			};
 		}
 	}
 
@@ -1296,6 +1299,7 @@ var applyMissionResolve = function( action, game ){
 	var agenttype = action.agenttype;
 	var agentid = String(player) + String(agenttype);
 	var planetid = action.planetid;
+	// TODO: create a getCurrentMission helper function to do these three lines
 	var index = game.missionindex;
 	var round = game.round - 2;
 	var mission = game.missions[ round ][ index ];
@@ -1318,18 +1322,18 @@ var applyMissionResolve = function( action, game ){
 		return { isDuplicate: false };
 	}
 
-	if ( game.missionSpied.indexOf( null ) != -1 ) {
+	if ( mission.spyActions.indexOf(cons.SPY_ACT_NULL) != -1 ) {
 		// Do not return illegal if not all spies have come in yet
 		// but do not update the game state
 		console.log('! Rejected resolve: not all spy actions in');
 		return { isDuplicate: false };
 	}
 
-	if ( mission.resolution.nochoice || mission.resolution.blocked ) {
+	if ( mission.status == cons.MISSION_RESOLVED_NO_CHOICE || mission.status == cons.MISSION_BLOCKED_SPY ) {
 		moveAgent( game, agentid, planetid );
 	}
 
-	else if ( !mission.resolution.agentmia ) {
+	else if ( mission.status != cons.MISSION_CANCELLED_NO_AGENT ) {
 
 		// THIS is where we should actually apply the agent mission logic
 		// depending on the type of agent
@@ -1603,8 +1607,7 @@ var applyMissionResolve = function( action, game ){
 		}
 	}
 	
-	game.missions[round][ index ].resolution.resolved = true;
-	helpers.resetMissionSpied( game );
+	game.missions[round][ index ].status = cons.MISSION_COMPLETE;
 
 	return { isIllegal: false };
 };
@@ -1613,6 +1616,7 @@ var applyMissionViewed = function( action, game ){
 	var player = action.player;
 	var index = action.choice;
 	var round = game.round - 2;
+	var mission = gamedata.getCurrentMission(game);
 
 	if ( index != game.missionindex) {
 		// don't return illegal if on a different mission
@@ -1620,14 +1624,10 @@ var applyMissionViewed = function( action, game ){
 		return { isDuplicate: false };
 	}
 
-	game.missionViewed[ player ] = true;
+	mission.viewers[ player ] = true;
 
 	// if all players have viewed missions 
-	if ( game.missionViewed.indexOf( false ) == -1 ){
-
-		for ( var i = 0; i < game.missionViewed.length; i++ ){
-			game.missionViewed[i] = false;
-		}
+	if ( mission.viewers.indexOf( false ) == -1 ){
 
 		updateMissionIndex( game, round );
 	}
@@ -1688,14 +1688,12 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
                 mission = game.missions[r][m];
 
 				// set unresolved missions to resolved (mia) if using agenttype
-                if (mission.player == player && mission.resolution.resolved == false) {
+                if (mission.player == player && mission.status == cons.MISSION_UNRESOLVED) {
 
                 	if (mission.agenttype == agenttype) {
-
-						mission.resolution.resolved = true;
-						// TODO: this should eventually allow
-						//       for different resolution reasons
-						mission.resolution.agentmia = true;
+                        // TODO: this should eventually allow
+                        //       for different resolution reasons
+						mission.status = cons.MISSION_CANCELLED_NO_AGENT;
 
                         var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
                         var smuggler = game.board.agents[smugglerid];
@@ -2117,7 +2115,7 @@ var preProcessMission = function( game ){
 		var agent = game.board.agents[ agentid ];
 		var hasSmuggler = false;
 
-		if ( mission.resolution.resolved != true ) {
+		if ( mission.status == cons.MISSION_UNRESOLVED ) {
 
 			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
 				hasSmuggler = true;
@@ -2129,8 +2127,7 @@ var preProcessMission = function( game ){
 			
 			if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
 				if (!hasSmuggler){
-					game.missions[round][ index ].resolution.noflyblocked = true;
-					game.missions[round][ index ].resolution.resolved = true;
+					game.missions[round][ index ].status == cons.MISSION_BLOCKED_NO_FLY;
 				}
 			}
 			else {

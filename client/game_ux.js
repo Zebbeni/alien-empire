@@ -1342,22 +1342,31 @@ var updateMissionsMenu = function(round, index) {
 		$('#mission-button-3').hide(); // Hide the view all missions button by default
 
 		// if mission has been resolved
-		if ( mission.resolution.resolved == true ) {
+		if ( mission.status != MISSION_UNRESOLVED && mission.status != MISSION_PENDING_CHOICE ) {
 			// display mission resolution message (eg. no-fly zones placed on __)
 			$('#missions-phase-div').show();
 
-			if ( mission.resolution.blocked ) {
-				var blocker = mission.resolution.blockedBy;
-				var blockerid = clientGame.game.players[blocker];
-				message = "Mission blocked by " + all_users[blockerid].name;
+			if ( mission.status == MISSION_BLOCKED_SPY ) {
+				var blockers = mission.blockers;
+				var blockerNames = blockers.map(function(id){
+					return all_users[clientGame.game.players[id]].name;
+				});
+				// TODO: Make some 'writeList' function to handle stuff like this. This is ugly.
+				if (blockers.length == 1) {
+                    message = "Mission blocked by " + blockerNames[0];
+				} else if (blockers.length == 2) {
+                    message = "Mission blocked by " + blockerNames[0] + " and " + blockerNames[1];
+                } else if (blockers.length == 3) {
+                    message = "Mission blocked by " + blockerNames[0] + ", " + blockerNames[1] + ", and " + blockerNames[2];
+                }
 			}
-			else if ( mission.resolution.agentmia ){
-				message = "Agent no longer on board to complete mission";
+			else if ( mission.status == MISSION_CANCELLED_NO_AGENT ){
+				message = "Agent removed from board before mission completed";
 			}
-			else if ( mission.resolution.noflyblocked ){
+			else if ( mission.status == MISSION_BLOCKED_NO_FLY ){
 				message = "Agent blocked by no fly zone";
 			}
-			else if ( mission.resolution.nochoice ){
+			else if ( mission.status == MISSION_RESOLVED_NO_CHOICE ){
 				switch ( agenttype ){
 					case AGT_EXPLORER:
 						message = "Mission resolved,"
@@ -1368,8 +1377,7 @@ var updateMissionsMenu = function(round, index) {
 									+ " no occupied resources to collect here";
 						break;
 					case AGT_ENVOY:
-						message = "Mission resolved,"
-									" has no embassy on this planet";
+						message = "Mission resolved but no points or resources gained. No embassies here.";
 						break;
 					case AGT_SABATEUR:
 						message = "Mission resolved,"
@@ -1387,7 +1395,7 @@ var updateMissionsMenu = function(round, index) {
 			$('#mission-text').html(message);
 
 			if ( nowIndex == clientGame.game.missionindex && nowRound == clientGame.game.round ) {
-				if ( clientGame.game.missionViewed[clientTurn] == false ) {
+				if ( mission.viewers[clientTurn] == false ) {
 					$('#mission-button-3').show();
 					$('#mission-button-3').attr('value', 'Okay');
 					$('#mission-button-3').off().click( function() {
@@ -1396,19 +1404,19 @@ var updateMissionsMenu = function(round, index) {
 					});
 				}
 			}
-		} 
+		}
 
 		// otherwise, if not all spies have resolved
-		else if ( clientGame.game.missionSpied.indexOf(null) != -1 ) {
+		else if ( mission.spyActions.indexOf(SPY_ACT_NULL) != -1 ) {
 			// if player hasn't responded with a spy action yet
-			if ( clientGame.game.missionSpied[ clientTurn ] == null ) {
+			if ( mission.spyActions[ clientTurn ] == SPY_ACT_NULL ) {
 				// automatically allow if this is client's own mission
 				if ( clientTurn == player ){
-					blockMissionAction( false );
+					blockMissionAction( SPY_ACT_ALLOW );
 				} 
 				// automatically allow if client has no spies here
 				else if ( clientGame.game.board.planets[mission.planetTo].spyeyes[clientTurn] <= 0 ) {
-					blockMissionAction( false );
+					blockMissionAction( SPY_ACT_ALLOW );
 				}
 				else {
 					$('#missions-phase-div').show();
@@ -1417,7 +1425,7 @@ var updateMissionsMenu = function(round, index) {
 					$('#mission-button-1').show();
 					$('#mission-button-1').off().click( function() {
 						playSound("click1", 0.1);
-						blockMissionAction(true);
+						blockMissionAction(SPY_ACT_BLOCK);
 					});
 					if ( agenttype == AGT_MINER || agenttype == AGT_ENVOY ) {
 						$('#mission-text').html("Mission Pending. Use a spy eye to block or collect resources from this mission?");
@@ -1425,14 +1433,14 @@ var updateMissionsMenu = function(round, index) {
 						$('#mission-button-2').show();
 						$('#mission-button-2').off().click( function() {
 							playSound("click1", 0.1);
-							blockMissionAction(null);
+							blockMissionAction(SPY_ACT_COLLECT);
 						});
 					}
 					$('#mission-button-3').attr('value', 'Allow');
 					$('#mission-button-3').show();
 					$('#mission-button-3').off().click( function() {
 						playSound("click1", 0.1);
-						blockMissionAction( false );
+						blockMissionAction( SPY_ACT_ALLOW );
 					});
 				}
 			}
@@ -1442,7 +1450,7 @@ var updateMissionsMenu = function(round, index) {
 		}
 
 		// if all clients have responded with spy actions
-		else if ( mission.waitingOnResolve ) {
+		else {
 			// and if this is actually this client's mission
 			if ( clientTurn != player ) {
 				$('#mission-text').html("Mission pending");
@@ -1460,7 +1468,7 @@ var updateMissionsMenu = function(round, index) {
 				// if mission type would normally require some extra decision
 				// (eg. select resource) and no remaining legal options exist
 				// just submit a generic resolution to the server
-				else if ( mission.resolution.nochoice ) {
+				else if ( mission.status == MISSION_RESOLVED_NO_CHOICE ) {
 					submitAction();
 				}
 				// otherwise, show help message (with done button)

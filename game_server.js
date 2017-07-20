@@ -30,8 +30,6 @@ var actions = require('./game_actions');
 			playerOffset: 0,
 			missions: {},
 			missionindex: 0,
-			missionSpied: board.initializeUserArray( num_users, null ),
-			missionViewed: board.initializeUserArray( num_users, false ),
 			secondmines: false,
 			board: board.initializeBoard( num_users ),
 			stats: { points: initStats(num_users) },
@@ -85,10 +83,10 @@ var initPlayerResources = function( num_users ) {
 
 		resources.push( {} );
 
-		resources[i][cons.RES_METAL] = 4;
-		resources[i][cons.RES_WATER] = 4;
-		resources[i][cons.RES_FUEL] = 4;
-		resources[i][cons.RES_FOOD] = 4;
+		resources[i][cons.RES_METAL] = 2;
+		resources[i][cons.RES_WATER] = 2;
+		resources[i][cons.RES_FUEL] = 2;
+		resources[i][cons.RES_FOOD] = 2;
 	}
 	
 	return resources;

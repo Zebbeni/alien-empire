@@ -60,6 +60,17 @@ var PKG_SMUGGLER = 6;
 var PKG_UPKEEP = 7;
 var PKG_BUILD = 8;
 
+// mission statuses
+var MISSION_UNRESOLVED = 1; // unresolved until spies done or some other resolution condition met
+var MISSION_PENDING_CHOICE = 2; // set if mission requires player choice (after spies)
+var MISSION_COMPLETE = 3; // success after spies done and (if applicable) player's choice processed
+
+// all below statuses indicate a mission failure of some kind
+var MISSION_BLOCKED_SPY = 4;
+var MISSION_BLOCKED_NO_FLY = 5;
+var MISSION_CANCELLED_NO_AGENT = 6;
+var MISSION_RESOLVED_NO_CHOICE = 7;
+
 // Border status constants
 var BRD_UNEXPLORED = 0;
 var BRD_OPEN = 1;
@@ -116,6 +127,11 @@ var AGT_SABATEUR = 8;
 var AGT_STATUS_OFF = 0;
 var AGT_STATUS_ON = 1;
 var AGT_STATUS_DEAD = 2;
+
+var SPY_ACT_NULL = 1;
+var SPY_ACT_ALLOW = 2;
+var SPY_ACT_BLOCK = 3;
+var SPY_ACT_COLLECT = 4
 
 var AGT_IMG = {
 					1: "explorer",

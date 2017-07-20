@@ -98,7 +98,6 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
 };
 
 var createAiUpkeepPhaseAction = function(game, playerIndex) {
-    console.log('creating ai pay upkeep action');
     // TODO FEATURE:
     //          This should consider retiring agents even if
     //          it *can* pay upkeep for them
@@ -185,12 +184,12 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
     var mission = gamedata.getCurrentMission(game);
     var missionIndex = gamedata.getCurrentMissionIndex(game);
     if (mission) {
-        if (game.missionSpied[playerIndex] == null) {
+        if (mission.spyActions[playerIndex] == cons.SPY_ACT_NULL) {
             console.log('-- player ' + playerIndex + ' spying (t/f) on mission ' + missionIndex + ' --');
             return createAiBlockMissionAction(game, playerIndex, mission);
         }
-        if (mission.resolution.resolved) {
-            if (!game.missionViewed[playerIndex]) {
+        if (mission.status != cons.MISSION_UNRESOLVED && mission.status != cons.MISSION_PENDING_CHOICE) {
+            if (mission.viewers[playerIndex] == false) {
                 console.log('-- player ' + playerIndex + ' viewing mission ' + missionIndex + ' --');
                 return {
                     player: playerIndex,
@@ -199,7 +198,7 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
                 };
             }
         }
-        if (mission.waitingOnResolve && mission.player == playerIndex) {
+        if (mission.status == cons.MISSION_PENDING_CHOICE && mission.player == playerIndex) {
             console.log('-- player ' + playerIndex + ' resolving mission ' + missionIndex + ' --');
             return createAiResolveMissionAction(game, playerIndex, mission);
         }
@@ -210,33 +209,31 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
 // Creates an AI action to either allow, block, or collect from a mission
 // TODO FEATURE: add logic to block or collect if AI player has spy eyes
 var createAiBlockMissionAction = function(game, playerIndex, mission) {
-    var choice = false;
+    var choice = cons.SPY_ACT_ALLOW;
     if (mission.player != playerIndex) {
         // decide what action to take if spyeye here
         var planet = game.board.planets[mission.planetTo];
         if (planet.spyeyes[playerIndex] > 0) {
-            choice = true;
             switch (mission.agenttype){
                 case cons.AGT_SABATEUR:
                 case cons.AGT_SMUGGLER:
                     // block if settled by player
                     if (planet.settledBy[playerIndex]) {
-                        choice = true;
+                        choice = cons.SPY_ACT_BLOCK;
                     }
                     break;
                 case cons.AGT_AMBASSADOR:
                 case cons.AGT_SPY:
                 case cons.AGT_SURVEYOR:
                     // Block 1/2 of the time, otherwise allow
-                    choice = Math.random() * 2 < 1 ? true : false;
+                    if (Math.random() * 2 < 1) {
+                        choice = cons.SPY_ACT_BLOCK;
+                    }
                     break;
                 case cons.AGT_MINER:
                 case cons.AGT_ENVOY:
                     // Collect 1/2 of the time, otherwise Block
-                    choice = Math.random() * 2 < 1 ? true : null;
-                    break;
-                case cons.AGT_EXPLORER:
-                    choice = false;
+                    choice = Math.random() * 2 < 1 ? cons.SPY_ACT_COLLECT : cons.SPY_ACT_BLOCK;
                     break;
                 default:
                     break;
@@ -355,6 +352,7 @@ var createBestBuildAction = function(game, playerIndex) {
         return action;
     }
     // otherwise, attempt to build one of these, prioritized randomly
+    // TODO: Order these in priority according to ai strategy
     var buildTypes = [cons.OBJ_FACTORY, cons.OBJ_EMBASSY, cons.OBJ_BASE, cons.OBJ_FLEET];
     shuffle(buildTypes);
     for (var i = 0; i < buildTypes.length; i++){
@@ -374,7 +372,6 @@ var createBestRecruitAction = function(game, playerIndex) {
     }
     // otherwise, attempt to build one of these, prioritized randomly
     var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_ENVOY, cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
-    agentTypes = [cons.AGT_ENVOY, cons.AGT_SPY];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
@@ -624,20 +621,23 @@ var createAi4To1Action = function(game, playerIndex) {
     var futures = gamedata.getResourceFutures(game, playerIndex);
     // get resource type of highest future
     var highestFutureResource = -999;
-    var surplusResourceType = 0;
+    var surplusResourceType = -1;
     var lowestFutureResource = 999;
-    var deficitResourceType = 0;
+    var deficitResourceType = 999;
     for (var r = 0; r < 4; r++) {
-        if (futures[r] > highestFutureResource) {
-            highestFutureResource = futures[r];
-            surplusResourceType = r;
+        // only consider surpluses if they can be 4 to 1 'd
+        if (game.resources[playerIndex][r] >= 4) {
+            if (futures[r] > highestFutureResource) {
+                highestFutureResource = futures[r];
+                surplusResourceType = r;
+            }
         }
         if (futures[r] < lowestFutureResource) {
             lowestFutureResource = futures[r];
             deficitResourceType = r;
         }
     }
-    if (game.resources[playerIndex][surplusResourceType] >= 4) {
+    if (surplusResourceType != -1) {
         return {
             player: playerIndex,
             actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
