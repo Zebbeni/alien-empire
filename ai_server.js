@@ -371,7 +371,8 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_SPY, cons.AGT_ENVOY, cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
+    // TODO:
+    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_SPY, cons.AGT_ENVOY, cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
@@ -415,7 +416,7 @@ var createBestAgentAction = function(game, playerIndex) {
     // listing priority helps prevent players blocking a border
     // before their own agent gets through, or destroying a target embassy
     // before their envoy reaches it
-    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_ENVOY, cons.AGT_SMUGGLER, cons.AGT_SPY, cons.AGT_SABATEUR];
+    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_ENVOY, cons.AGT_SMUGGLER, cons.AGT_SPY, cons.AGT_SABATEUR];
     var agents = gamedata.getActiveAgents(game, playerIndex);
     if (agents && agents.length > 0) {
         var unusedAgents = agents.filter(function(agent) {
@@ -428,6 +429,8 @@ var createBestAgentAction = function(game, playerIndex) {
                         switch (unusedAgents[u].agenttype) {
                             case cons.AGT_EXPLORER:
                                 return createBestExplorerAction(game, playerIndex, unusedAgents[u]);
+                            case cons.AGT_MINER:
+                                return createBestMinerAction(game, playerIndex, unusedAgents[u]);
                             case cons.AGT_SPY:
                                 return createBestSpyAction(game, playerIndex, unusedAgents[u]);
                             case cons.AGT_ENVOY:
@@ -448,7 +451,7 @@ var createBestAgentAction = function(game, playerIndex) {
 };
 
 var createBestExplorerAction = function(game, playerIndex, agentInfo) {
-    var unexploredAdjacent = gamedata.getAdjacentUnexploredPlanets(game, agentInfo.planetid);
+    var unexploredAdjacent = gamedata.getAdjacentUnexploredPlanets(game, agentInfo.planetid, false);
     if (unexploredAdjacent && unexploredAdjacent.length > 0) {
         var chosenPlanet;
         var unexploredLarge = unexploredAdjacent.filter(function(planet) {
@@ -467,7 +470,7 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
         };
     }
     // try moving to an adjancent planet if no adjacent unexplored planets
-    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, false);
     if (hasContent(unblockedAdjacent)) {
         var chosenPlanet = getRandomItem(unblockedAdjacent);
         return {
@@ -487,9 +490,28 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
     };
 };
 
+// TODO FEATURE: Check through planets for settled planet with best resource to collect
+var createBestMinerAction = function(game, playerIndex, agentInfo) {
+    var chosenPlanet = game.board.planets[agentInfo.planetid];
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, true);
+    var settledPlanets = unblockedAdjacent.filter(function (planet) {
+        return (planet.settledBy[playerIndex]);
+    });
+    // default to current planet if all adjacent planets are blocked
+    if (hasContent(settledPlanets)) {
+        chosenPlanet = getRandomItem(settledPlanets);
+    }
+    return {
+        player: playerIndex,
+        actiontype: cons.ACT_LAUNCH_MISSION,
+        agenttype: cons.AGT_MINER,
+        planetid: chosenPlanet.planetid
+    };
+};
+
 var createBestSpyAction = function(game, playerIndex, agentInfo) {
     var chosenPlanet = game.board.planets[agentInfo.planetid];
-    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, true);
     if (hasContent(unblockedAdjacent)) {
         chosenPlanet = getRandomItem(unblockedAdjacent);
     }
@@ -504,7 +526,7 @@ var createBestSpyAction = function(game, playerIndex, agentInfo) {
 // TODO FEATURE: Check through planets for best place to send envoy
 var createBestEnvoyAction = function(game, playerIndex, agentInfo) {
     var chosenPlanet = game.board.planets[agentInfo.planetid];
-    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid);
+    var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, true);
     if (hasContent(unblockedAdjacent)) {
         chosenPlanet = getRandomItem(unblockedAdjacent);
     }
@@ -717,6 +739,36 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                             planetid: planetid
                         };
                     }
+                }
+            }
+            if (action) {
+                return action;
+            }
+            // if no resources can be reserved, resolve with undefined
+            return {
+                player: playerIndex,
+                agenttype: agenttype,
+                actiontype: cons.ACT_MISSION_RESOLVE,
+                resourceid: undefined,
+                planetid: planetid
+            };
+        case cons.AGT_MINER:
+            var action = null;
+            var futures = gamedata.getResourceFutures(game, playerIndex);
+            var playerResources = gamedata.getPlayerResourcesOnPlanet(game, playerIndex, planet);
+            var greatestNeedFound = 1000; // (greater needs are lower numbers)
+            for (var r = 0; r < playerResources.length; r++) {
+                var resourceInfo = playerResources[r];
+                var resourceKind = resourceInfo.resourceKind;
+                if (futures[resourceKind] < greatestNeedFound) {
+                    greatestNeedFound = futures[resourceKind];
+                    action = {
+                        player: playerIndex,
+                        agenttype: agenttype,
+                        actiontype: cons.ACT_MISSION_RESOLVE,
+                        resourceid: resourceInfo.resourceIndex,
+                        planetid: planetid
+                    };
                 }
             }
             if (action) {

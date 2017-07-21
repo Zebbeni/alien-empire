@@ -22,15 +22,19 @@ var getActiveAgents = function(game, playerIndex) {
 };
 
 // Returns all explored adjacent planets to the given planetid
-var getAdjacentExploredPlanets = function(game, planetid) {
-    return game.board.planets.filter(function (planet) {
+var getAdjacentExploredPlanets = function(game, planetid, includeSelf) {
+    var planetsToReturn = game.board.planets.filter(function (planet) {
         return (planet.explored && planetid in planet.borders);
     });
+    if (includeSelf) {
+        planetsToReturn.push(game.board.planets[planetid]);
+    }
+    return planetsToReturn;
 };
 
 // Returns all explored adjacent planets to the given planetid
-var getAdjacentUnblockedPlanets = function(game, planetid) {
-    var adjacentExplored = getAdjacentExploredPlanets(game, planetid);
+var getAdjacentUnblockedPlanets = function(game, planetid, includeSelf) {
+    var adjacentExplored = getAdjacentExploredPlanets(game, planetid, includeSelf);
     if (adjacentExplored && adjacentExplored.length > 0) {
         return adjacentExplored.filter(function (adjacent) {
             return adjacent.borders[planetid] != cons.BRD_BLOCKED;
@@ -39,10 +43,14 @@ var getAdjacentUnblockedPlanets = function(game, planetid) {
     return null;
 };
 
-var getAdjacentUnexploredPlanets = function(game, planetid) {
-    return game.board.planets.filter(function(planet) {
+var getAdjacentUnexploredPlanets = function(game, planetid, includeSelf) {
+    var planetsToReturn = game.board.planets.filter(function(planet) {
         return planet.explored == false && planetid in planet.borders;
     });
+    if (includeSelf) {
+        planetsToReturn.push(game.board.planets[planetid]);
+    }
+    return planetsToReturn;
 };
 
 // return list of objects containing information about all units
@@ -194,6 +202,26 @@ var getEnemyStructuresOnPlanet = function(game, playerIndex, planet) {
     return enemies;
 };
 
+// return list of information on the occupied resources on a given
+// planet for a given playerIndex
+var getPlayerResourcesOnPlanet = function(game, playerIndex, planet) {
+    var resources = planet.resources;
+    var playerResources = [];
+    for (var r = 0; r < resources.length; r++) {
+        var structure = resources[r].structure;
+        if (structure && structure.player == playerIndex) {
+            playerResources.push({
+                resourceIndex: r,
+                resourceNum: resources[r].num,
+                resourceKind: resources[r].kind,
+                structureKind: structure.kind,
+                choice: r
+            });
+        }
+    }
+    return playerResources;
+};
+
 // creates a list of resources the given player will have in 2 rounds given
 // current collection & upkeep rates.
 // Returns (current + 2 * (collect - upkeep)) for each resource type
@@ -284,6 +312,7 @@ var playerCanRecruit = function(game, playerIndex, agenttype) {
         getAdjacentUnexploredPlanets: getAdjacentUnexploredPlanets,
         getBasePlanet: getBasePlanet,
         getEnemyStructuresOnPlanet: getEnemyStructuresOnPlanet,
+        getPlayerResourcesOnPlanet: getPlayerResourcesOnPlanet,
         getCurrentMission: getCurrentMission,
         getCurrentMissionIndex: getCurrentMissionIndex,
         getEmbassyPlanets: getEmbassyPlanets,
