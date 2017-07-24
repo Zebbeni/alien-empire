@@ -53,6 +53,14 @@ var getAdjacentUnexploredPlanets = function(game, planetid, includeSelf) {
     return planetsToReturn;
 };
 
+var getAdjacentSettledPlanets = function(game, planetid, playerIndex, includeSelf) {
+    var planetsToReturn = getAdjacentExploredPlanets(game, planetid, includeSelf);
+    planetsToReturn = planetsToReturn.filter(function(planet){
+       return planet.settledBy[playerIndex] == true;
+    });
+    return planetsToReturn;
+};
+
 // return list of objects containing information about all units
 // requiring the given resource for upkeep
 var getUnitsRequiringUpkeep = function(game, playerIndex, resType) {
@@ -310,6 +318,7 @@ var playerCanRecruit = function(game, playerIndex, agenttype) {
         getAdjacentExploredPlanets: getAdjacentExploredPlanets,
         getAdjacentUnblockedPlanets: getAdjacentUnblockedPlanets,
         getAdjacentUnexploredPlanets: getAdjacentUnexploredPlanets,
+        getAdjacentSettledPlanets: getAdjacentSettledPlanets,
         getBasePlanet: getBasePlanet,
         getEnemyStructuresOnPlanet: getEnemyStructuresOnPlanet,
         getPlayerResourcesOnPlanet: getPlayerResourcesOnPlanet,
