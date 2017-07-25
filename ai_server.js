@@ -371,7 +371,7 @@ var createBestRecruitAction = function(game, playerIndex) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
-    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_SURVEYOR, cons.AGT_SPY, cons.AGT_ENVOY, cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
+    var agentTypes = [cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_SURVEYOR, cons.AGT_SPY, cons.AGT_ENVOY, cons.AGT_AMBASSADOR, cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
     // TODO: prioritize according to a specific ai strategy, not randomly.
     shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
@@ -416,7 +416,7 @@ var createBestAgentAction = function(game, playerIndex) {
     // listing priority helps prevent players blocking a border
     // before their own agent gets through, or destroying a target embassy
     // before their envoy reaches it
-    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_ENVOY, cons.AGT_SMUGGLER, cons.AGT_SPY, cons.AGT_SABATEUR, cons.AGT_SURVEYOR];
+    var agentPriority = [cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_ENVOY, cons.AGT_SMUGGLER, cons.AGT_SPY, cons.AGT_SABATEUR, cons.AGT_SURVEYOR, cons.AGT_AMBASSADOR];
     var agents = gamedata.getActiveAgents(game, playerIndex);
     if (agents && agents.length > 0) {
         var unusedAgents = agents.filter(function(agent) {
@@ -441,6 +441,8 @@ var createBestAgentAction = function(game, playerIndex) {
                                 return createBestSmugglerAction(game, playerIndex, unusedAgents[u]);
                             case cons.AGT_SURVEYOR:
                                 return createBestSurveyorAction(game, playerIndex, unusedAgents[u]);
+                            case cons.AGT_AMBASSADOR:
+                                return createBestAmbassadorAction(game, playerIndex, unusedAgents[u]);
                             default:
                                 break;
                         }
@@ -550,6 +552,46 @@ var createBestEnvoyAction = function(game, playerIndex, agentInfo) {
             agenttype: cons.AGT_ENVOY,
             planetid: chosenPlanet.planetid
         }
+    }
+};
+
+var createBestAmbassadorAction = function(game, playerIndex, agentInfo) {
+    var chosenPlanet = null;
+    var settledPlanets = gamedata.getAdjacentSettledPlanets(game, agentInfo.planetid, playerIndex, true);
+    var numMostStructures = 0;
+    for (var p = 0; p < settledPlanets.length; p++) {
+        var numStructuresHere = gamedata.getNumStructuresOnPlanet(settledPlanets[p], playerIndex);
+        if (numStructuresHere > numMostStructures) {
+            numMostStructures = numStructuresHere;
+            chosenPlanet = settledPlanets[p];
+        }
+    }
+    // only send on mission to planets with at least 2 of own structure
+    if (numMostStructures >= 2) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_LAUNCH_MISSION,
+            agenttype: cons.AGT_AMBASSADOR,
+            planetid: chosenPlanet.planetid
+        };
+    }
+    // move to random location if no good locations to launch ambassador mission
+    var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, false);
+    if (hasContent(adjacentPlanets)) {
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_MOVE_AGENT,
+            agenttype: cons.AGT_AMBASSADOR,
+            planetid: getRandomItem(adjacentPlanets).planetid
+        }
+    } else {
+        // if impossible to move agent, send on mission to own planet
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_LAUNCH_MISSION,
+            agenttype: cons.AGT_AMBASSADOR,
+            planetid: agentInfo.planetid
+        };
     }
 };
 
@@ -849,8 +891,7 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 planetid: planetid
             };
         case cons.AGT_SURVEYOR:
-            var action = null;
-            var futures = gamedata.getResourceFutures(game, playerIndex);
+            // TODO: Prioritize resources with mines over resources with embassies or factories
             var choice = [];
             var playerResources = gamedata.getPlayerResourcesOnPlanet(game, playerIndex, planet);
             for (var r = 0; r < playerResources.length; r++) {
@@ -860,6 +901,22 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 }
             }
             // if no resources can be reserved, resolve with undefined
+            return {
+                player: playerIndex,
+                agenttype: agenttype,
+                actiontype: cons.ACT_MISSION_RESOLVE,
+                choice: choice,
+                planetid: planetid
+            };
+        case cons.AGT_AMBASSADOR:
+            var choice = [];
+            var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, planetid, false);
+            shuffle(adjacentPlanets); // pick random borders to block TODO: this could be smarter
+            for (var p = 0; p < adjacentPlanets.length; p++) {
+                if (choice.length < 2) {
+                    choice.push(adjacentPlanets[p].planetid);
+                }
+            }
             return {
                 player: playerIndex,
                 agenttype: agenttype,

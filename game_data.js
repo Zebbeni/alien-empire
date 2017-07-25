@@ -54,11 +54,34 @@ var getAdjacentUnexploredPlanets = function(game, planetid, includeSelf) {
 };
 
 var getAdjacentSettledPlanets = function(game, planetid, playerIndex, includeSelf) {
-    var planetsToReturn = getAdjacentExploredPlanets(game, planetid, includeSelf);
+    var planetsToReturn = getAdjacentUnblockedPlanets(game, planetid, includeSelf);
     planetsToReturn = planetsToReturn.filter(function(planet){
        return planet.settledBy[playerIndex] == true;
     });
     return planetsToReturn;
+};
+
+// return number of structures player has on a given planet
+var getNumStructuresOnPlanet = function(planet, playerIndex) {
+    var numStructuresHere = 0;
+    if (planet.base && planet.base.player == playerIndex) {
+        numStructuresHere++;
+    }
+    var fleets = planet.fleets;
+    for (var f = 0; f < fleets.length; f++) {
+        var fleetid = fleets[f];
+        var fleet = game.board.fleets[fleetid];
+        if (fleet.player == playerIndex) {
+            numStructuresHere++;
+        }
+    }
+    var resources = planet.resources;
+    for (var r = 0; r < resources.length; r++) {
+        if (resources[r].structure && resources[r].structure.player == playerIndex) {
+            numStructuresHere++;
+        }
+    }
+    return numStructuresHere;
 };
 
 // return list of objects containing information about all units
@@ -319,6 +342,7 @@ var playerCanRecruit = function(game, playerIndex, agenttype) {
         getAdjacentUnblockedPlanets: getAdjacentUnblockedPlanets,
         getAdjacentUnexploredPlanets: getAdjacentUnexploredPlanets,
         getAdjacentSettledPlanets: getAdjacentSettledPlanets,
+        getNumStructuresOnPlanet: getNumStructuresOnPlanet,
         getBasePlanet: getBasePlanet,
         getEnemyStructuresOnPlanet: getEnemyStructuresOnPlanet,
         getPlayerResourcesOnPlanet: getPlayerResourcesOnPlanet,
