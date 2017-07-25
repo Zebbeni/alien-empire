@@ -62,7 +62,7 @@ var getAdjacentSettledPlanets = function(game, planetid, playerIndex, includeSel
 };
 
 // return number of structures player has on a given planet
-var getNumStructuresOnPlanet = function(planet, playerIndex) {
+var getNumStructuresOnPlanet = function(game, planet, playerIndex) {
     var numStructuresHere = 0;
     if (planet.base && planet.base.player == playerIndex) {
         numStructuresHere++;

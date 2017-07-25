@@ -295,13 +295,18 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             });
             shuffle(planets);  // shuffle to eliminate being biased to first spots
             var greatestNeedFound = 1000; // (greater needs are lower numbers)
+            var onUnsurveyedResource = false; // initialize to false. prioritize first choice on non-bumped resource.
             for (var p = 0; p < planets.length; p++) {
                 var resources = planets[p].resources;
                 for (var r = 0; r < resources.length; r++) {
                     var structure = resources[r].structure;
                     if (structure && structure.player == playerIndex && structure.kind == cons.OBJ_MINE) {
                         var kind = resources[r].kind;
-                        if (futures[kind] < greatestNeedFound) {
+                        if (futures[kind] < greatestNeedFound && (resources[r].num == 1 || !onUnsurveyedResource)) {
+                            if (resources[r].num == 1) {
+                                // set flag so surveyed resources are not chosen over this one.
+                                onUnsurveyedResource = true;
+                            }
                             greatestNeedFound = futures[kind];
                             action = {
                                 player: playerIndex,
@@ -351,9 +356,13 @@ var createBestBuildAction = function(game, playerIndex) {
     if (action) {
         return action;
     }
-    // otherwise, attempt to build one of these, prioritized randomly
+    action = createBestBuildActionOfType(game, playerIndex, cons.OBJ_BASE);
+    if (action) {
+        return action;
+    }
+    // otherwise, attempt to build one of these
     // TODO: Order these in priority according to ai strategy
-    var buildTypes = [cons.OBJ_FACTORY, cons.OBJ_EMBASSY, cons.OBJ_BASE, cons.OBJ_FLEET];
+    var buildTypes = [cons.OBJ_FACTORY, cons.OBJ_EMBASSY, cons.OBJ_FLEET];
     shuffle(buildTypes);
     for (var i = 0; i < buildTypes.length; i++){
         action = createBestBuildActionOfType(game, playerIndex, buildTypes[i]);
@@ -560,7 +569,7 @@ var createBestAmbassadorAction = function(game, playerIndex, agentInfo) {
     var settledPlanets = gamedata.getAdjacentSettledPlanets(game, agentInfo.planetid, playerIndex, true);
     var numMostStructures = 0;
     for (var p = 0; p < settledPlanets.length; p++) {
-        var numStructuresHere = gamedata.getNumStructuresOnPlanet(settledPlanets[p], playerIndex);
+        var numStructuresHere = gamedata.getNumStructuresOnPlanet(game, settledPlanets[p], playerIndex);
         if (numStructuresHere > numMostStructures) {
             numMostStructures = numStructuresHere;
             chosenPlanet = settledPlanets[p];
@@ -744,8 +753,9 @@ var createAi4To1Action = function(game, playerIndex) {
     var lowestFutureResource = 999;
     var deficitResourceType = 999;
     for (var r = 0; r < 4; r++) {
-        // only consider surpluses if they can be 4 to 1 'd
-        if (game.resources[playerIndex][r] >= 4) {
+        // only consider surpluses if they have >=4 resources currently
+        // and won't be negative in 2 rounds if they subtract 4 resources
+        if (game.resources[playerIndex][r] >= 4 && futures[r] >= 4) {
             if (futures[r] > highestFutureResource) {
                 highestFutureResource = futures[r];
                 surplusResourceType = r;
