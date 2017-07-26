@@ -235,17 +235,22 @@ var getEnemyStructuresOnPlanet = function(game, playerIndex, planet) {
 
 // return list of information on the occupied resources on a given
 // planet for a given playerIndex
-var getPlayerResourcesOnPlanet = function(game, playerIndex, planet) {
+var getPlayerResourcesOnPlanet = function(game, playerIndex, planet, countReserved) {
     var resources = planet.resources;
     var playerResources = [];
     for (var r = 0; r < resources.length; r++) {
         var structure = resources[r].structure;
-        if (structure && structure.player == playerIndex) {
+        var reserved = resources[r].reserved;
+        // TODO: it would make more sense to return structure here instead of structureKind
+        // (Then you could combine both cases pretty easily)
+        if ((structure && structure.player == playerIndex)
+            || (countReserved && reserved != undefined && reserved == playerIndex)) {
             playerResources.push({
                 resourceIndex: r,
                 resourceNum: resources[r].num,
                 resourceKind: resources[r].kind,
-                structureKind: structure.kind,
+                reserved: reserved,
+                structure: structure,
                 choice: r
             });
         }

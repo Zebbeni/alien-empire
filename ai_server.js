@@ -289,23 +289,30 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
     // if object in inventory and if player has required resources
     if (gamedata.playerCanBuild(game, playerIndex, objType)) {
         var futures = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, objType);
+        for (var f = 0; f < futures.length; f++) {
+            if (futures[f] < 0) {
+                return null; // don't build something that player cannot afford.
+            }
+        }
         if (objType == cons.OBJ_FACTORY || objType == cons.OBJ_EMBASSY) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.settledBy[playerIndex];
             });
             shuffle(planets);  // shuffle to eliminate being biased to first spots
             var greatestNeedFound = 1000; // (greater needs are lower numbers)
-            var onUnsurveyedResource = false; // initialize to false. prioritize first choice on non-bumped resource.
+            var onSurveyedResource = true; // initialize to false. prioritize first choice on non-bumped resource.
             for (var p = 0; p < planets.length; p++) {
                 var resources = planets[p].resources;
                 for (var r = 0; r < resources.length; r++) {
                     var structure = resources[r].structure;
                     if (structure && structure.player == playerIndex && structure.kind == cons.OBJ_MINE) {
                         var kind = resources[r].kind;
-                        if (futures[kind] < greatestNeedFound && (resources[r].num == 1 || !onUnsurveyedResource)) {
+                        if ((futures[kind] < greatestNeedFound && resources[r].num == 1)
+                            || ( onSurveyedResource && resources[r].num == 1)
+                            || ( onSurveyedResource && futures[kind] < greatestNeedFound) ) {
                             if (resources[r].num == 1) {
                                 // set flag so surveyed resources are not chosen over this one.
-                                onUnsurveyedResource = true;
+                                onSurveyedResource = false;
                             }
                             greatestNeedFound = futures[kind];
                             action = {
@@ -376,7 +383,7 @@ var createBestBuildAction = function(game, playerIndex) {
 var createBestRecruitAction = function(game, playerIndex) {
     // don't consider recruiting if food resources are already negative
     var futures = gamedata.getResourceFutures(game, playerIndex);
-    if (futures[cons.RES_FOOD] < 0) {
+    if (futures[cons.RES_FOOD] <= 0) {
         return null;
     }
     // otherwise, attempt to build one of these, prioritized randomly
@@ -503,13 +510,25 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
     };
 };
 
-// TODO FEATURE: Check through planets for settled planet with best resource to collect
 var createBestMinerAction = function(game, playerIndex, agentInfo) {
     var chosenPlanet = game.board.planets[agentInfo.planetid];
     var settledPlanets = gamedata.getAdjacentSettledPlanets(game, agentInfo.planetid, playerIndex, true);
-    // default to current planet if all adjacent planets are blocked
-    if (hasContent(settledPlanets)) {
-        chosenPlanet = getRandomItem(settledPlanets);
+    var futures = gamedata.getResourceFutures(game, playerIndex);
+    // get resource type of highest future
+    var highestDeficit = 1000; // less means a higher deficit
+    for (var p = 0; p < settledPlanets.length; p++) {
+        var resources = settledPlanets[p].resources;
+        for (var r = 0; r < resources.length; r++) {
+            var structure = resources[r].structure;
+            if (structure && structure.player == playerIndex) {
+                var kind = resources[r].kind;
+                var thisDeficit = futures[kind];
+                if (thisDeficit < highestDeficit) {
+                    highestDeficit = thisDeficit;
+                    chosenPlanet = settledPlanets[p];
+                }
+            }
+        }
     }
     return {
         player: playerIndex,
@@ -641,7 +660,10 @@ var createBestSurveyorAction = function(game, playerIndex, agentInfo) {
         var resources = planet.resources;
         for (var r = 0; r < resources.length; r++) {
             var structure = resources[r].structure;
-            if (structure && structure.player == playerIndex && resources[r].num < 2 ) {
+            if (structure && structure.player == playerIndex && resources[r].num < 2) {
+                return true;
+            }
+            if (resources[r].reserved != undefined && resources[r].reserved == playerIndex) {
                 return true;
             }
         }
@@ -702,17 +724,17 @@ var createBestFleetAction = function(game, playerIndex) {
                         planetid: fleet.planetid
                     };
                 }
-                // if no targets, try moving to an adjacent planet
-                var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, fleet.planetid);
-                if (hasContent(adjacentPlanets)) {
-                    choicePlanet = getRandomItem(adjacentPlanets);
-                    return {
-                        player: playerIndex,
-                        actiontype: cons.ACT_FLEET_MOVE,
-                        targetid: fleet.fleetid,
-                        planetid: choicePlanet.planetid
-                    };
-                }
+            }
+            // if no targets, try moving to an adjacent planet
+            var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, fleet.planetid);
+            if (hasContent(adjacentPlanets)) {
+                choicePlanet = getRandomItem(adjacentPlanets);
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_FLEET_MOVE,
+                    targetid: fleet.fleetid,
+                    planetid: choicePlanet.planetid
+                };
             }
         }
     }
@@ -873,7 +895,7 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
         case cons.AGT_MINER:
             var action = null;
             var futures = gamedata.getResourceFutures(game, playerIndex);
-            var playerResources = gamedata.getPlayerResourcesOnPlanet(game, playerIndex, planet);
+            var playerResources = gamedata.getPlayerResourcesOnPlanet(game, playerIndex, planet, false);
             var greatestNeedFound = 1000; // (greater needs are lower numbers)
             for (var r = 0; r < playerResources.length; r++) {
                 var resourceInfo = playerResources[r];
@@ -901,13 +923,26 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 planetid: planetid
             };
         case cons.AGT_SURVEYOR:
-            // TODO: Prioritize resources with mines over resources with embassies or factories
             var choice = [];
-            var playerResources = gamedata.getPlayerResourcesOnPlanet(game, playerIndex, planet);
+            var playerResources = gamedata.getPlayerResourcesOnPlanet(game, playerIndex, planet, true);
             for (var r = 0; r < playerResources.length; r++) {
-                var resourceNum = playerResources[r].resourceNum;
-                if (resourceNum < 2 && choice.length < 2) {
-                    choice.push(playerResources[r].resourceIndex);
+                if (choice.length < 2) {
+                    var resourceNum = playerResources[r].resourceNum;
+                    var reserved = playerResources[r].reserved;
+                    var structure = playerResources[r].structure;
+                    if ((resourceNum < 2 && structure && structure.kind == cons.OBJ_MINE)
+                        || reserved == playerIndex && !structure) {
+                        choice.push(playerResources[r].resourceIndex);
+                    }
+                }
+            }
+            // try a second pass for resource squares with factories or embassies
+            for (var r = 0; r < playerResources.length; r++) {
+                if (choice.length < 2) {
+                    var resourceNum = playerResources[r].resourceNum;
+                    if (resourceNum < 2) {
+                        choice.push(playerResources[r].resourceIndex);
+                    }
                 }
             }
             // if no resources can be reserved, resolve with undefined
