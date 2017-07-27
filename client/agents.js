@@ -208,6 +208,7 @@ var handleClickAgent = function( agenttype ) {
 			showActionMenu();
 			break;
 		default:
+			// TODO: Show info menu
 			break;
 	}
 };
