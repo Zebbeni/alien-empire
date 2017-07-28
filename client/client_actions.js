@@ -26,6 +26,11 @@ var submitJoinGame = function(gameId) {
     socket_joinGame(gameId);
 };
 
+var submitStagingAddComputer = function() {
+    playSound("click1", 0.05);
+    socket_addComputerStaging();
+}
+
 var submitStagingReady = function(){
     playSound("click1", 0.05);
     socket_readyStaging();

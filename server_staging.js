@@ -8,6 +8,7 @@ var addUserToGame = function(gameInfo, user) {
 	user.gameid = gameInfo.gameid;
 
 	// update gameInfo with new player id
+	// Note: This will be negative if user is a computer player
 	gameInfo.players.push(user.userid);
 
 };
@@ -22,14 +23,19 @@ var addPlayerToReady = function(gameInfo, userid) {
 	return false;
 };
 
-var removeUserFromStaging = function(gameInfo, user) {
+var removeUserFromStaging = function(gameInfo, user, users) {
 	var index = gameInfo.players.indexOf(user.userid);
 
 	if (index != -1) {
-
+		var numHumanPlayers = 0;
 		gameInfo.players.splice(index, 1);
-
-		if (gameInfo.players.length == 0) {
+		for (var p = 0; p < gameInfo.players.length; p++) {
+			var userId = gameInfo.players[p];
+			if (!users[userId].isComputer) {
+				numHumanPlayers += 1;
+			}
+		}
+		if (numHumanPlayers == 0) {
 			gameInfo.status = cons.GAME_CLOSED;
 		}
 
@@ -80,12 +86,12 @@ var userCreateGame = function(socket, io, users, gamesInfo) {
 
 	addUserToGame( gamesInfo[gameid], users[socket.userid] );
 
-	var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
-									 cons.MSG_SERVER, 
-									 "Select the number of players who may join this game. Game begins when all players click Ready.");
-	var newMsg = helpers.addGameMessage( gamesInfo[gameid], 
-									 cons.MSG_SERVER, 
-									 "------------------------------------");
+	helpers.addGameMessage( gamesInfo[gameid],
+							cons.MSG_SERVER,
+							"Select the number of players who may join this game. Game begins when all players click Ready.");
+	helpers.addGameMessage( gamesInfo[gameid],
+							cons.MSG_SERVER,
+							"------------------------------------");
 
 	socket.join( roomId );
 
@@ -155,7 +161,7 @@ var setUserReady = function(socket, io, users, gamesInfo, fn) {
 var userLeaveStaging = function(socket, io, users, gamesInfo, gameid) {
 	var gameInfo = gamesInfo[gameid];
 
-	removeUserFromStaging(gamesInfo[gameid], users[socket.userid]);
+	removeUserFromStaging(gamesInfo[gameid], users[socket.userid], users);
 	removePlayerFromReady(gamesInfo[gameid], socket.userid);
 
 	socket.leave(gameInfo.room);
@@ -177,15 +183,41 @@ var userLeaveStaging = function(socket, io, users, gamesInfo, gameid) {
 	io.in('lobby').emit('user left game', users, gameInfo);
 };
 
+var userAddNewComputerPlayer = function( socket, io, users, gamesInfo, gameid, users_server, messages ) {
+    var gameInfo = gamesInfo[gameid];
+
+    if (isHostUser(gameInfo, socket.userid, users)
+		&& gameInfo.players.length < gameInfo.requestedPlayers
+	) {
+
+        var computerId = users_server.createNewComputerUser(users, cons.USR_STAGING, io, messages);
+        addUserToGame( gamesInfo[gameid], users[computerId] );
+        resetReady(gameInfo, users); // this will also set the new computer player to ready
+
+        // create message
+        var userName = users[socket.userid].name;
+        var computerName = users[computerId].name;
+        var newMsg = helpers.addGameMessage( gamesInfo[gameid],
+            cons.MSG_SERVER,
+            userName + " added a computer player, " + computerName);
+
+        socket.emit('self joined game', users, gameInfo);
+        socket.broadcast.to(gameInfo.room).emit(
+            'room user joined staging',
+            gameInfo.players,
+            newMsg );
+    }
+};
+
 var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gameid, num ) {
 	var gameInfo = gamesInfo[gameid];
 
-	if (gameInfo.players.indexOf(socket.userid) == 0
+	if (isHostUser(gameInfo, socket.userid, users)
 		&& gameInfo.players.length <= num
 		&& gameInfo.requestedPlayers != num ) {
 
 		gameInfo.requestedPlayers = num;
-		gameInfo.ready = []; // reset ready, have users re-click this on a game setup change
+		resetReady(gameInfo, users);
 
 		var username = users[socket.userid].name;
 		var newMsg = helpers.addGameMessage( gamesInfo[gameid],
@@ -201,14 +233,39 @@ var userRequestNumPlayersStaging = function( socket, io, users, gamesInfo, gamei
 	}
 };
 
+var resetReady = function(gameInfo, users) {
+	gameInfo.ready = [];
+	// automatically set computer users to ready.
+	// just reset non-computer players
+	for (var p = 0; p < gameInfo.players.length; p++) {
+		var userId = gameInfo.players[p];
+		if (users[userId].isComputer) {
+			gameInfo.ready.push(userId);
+		}
+	}
+};
+
+// return true if userid is the host of this game
+// ie. if player is the first indexed non-computer player
+var isHostUser = function(gameInfo, userid, users) {
+	for (var p = 0; p < gameInfo.players.length; p++) {
+		var playerUserId = gameInfo.players[p];
+		if (!users[playerUserId].isComputer) {
+			return playerUserId == userid;
+		}
+	}
+	// shouldn't ever hit this. If we do, somehow the user isn't listed as a player
+	return false;
+};
+
 var userRequestNumPointsStaging = function( socket, io, users, gamesInfo, gameid, num ){
 	var gameInfo = gamesInfo[gameid];
 
-	if (gameInfo.players.indexOf(socket.userid) == 0
+	if (isHostUser(gameInfo, socket.userid, users)
 		&& gameInfo.requestedPoints != num ) {
 
 		gameInfo.requestedPoints = num;
-		gameInfo.ready = []; // reset ready, have users re-click this on a game setup change
+		resetReady(gamesInfo[gameid], users);
 
 		var username = users[socket.userid].name;
 		var newMsg = helpers.addGameMessage( gamesInfo[gameid],
@@ -245,6 +302,7 @@ var userReturnGameToLobby = function( socket, io, users, gamesInfo, gameid ){
 		userJoinGame: userJoinGame,
 		setUserReady: setUserReady,
 		userLeaveStaging: userLeaveStaging,
+        userAddNewComputerPlayer: userAddNewComputerPlayer,
 		userRequestNumPlayersStaging: userRequestNumPlayersStaging,
 		userRequestNumPointsStaging: userRequestNumPointsStaging,
 		userReturnGameToLobby: userReturnGameToLobby

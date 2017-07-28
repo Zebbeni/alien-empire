@@ -139,6 +139,7 @@ var start_planets = {
 						"Emesekel", "Mah", "Tassian", "Zolea"];
 
 		for ( var i = 0; i < board.planets.length; i++) {
+			board.planets[i].planetid = i; // each planet knows its own index
 			// pick random planet art index
 			var index = Math.floor(Math.random() * planet_art.length);
 			board.planets[i].art = planet_art[ index ];
@@ -151,7 +152,6 @@ var start_planets = {
 
 			// generate random resources
 			board.planets[i].explored = setExploredStatus(i, num_players);
-			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].base = undefined;
 			board.planets[i].fleets = [];
 			board.planets[i].agents = [];
@@ -162,12 +162,12 @@ var start_planets = {
 			board.planets[i].buildableBy = [false, false, false, false];
 		}
 
-		var resourcesOkay = isStartingResourcesOkay(board);
+		var resourcesOkay = false;
 		while (resourcesOkay == false) {
 			for ( var i = 0; i < board.planets.length; i++) {
 				board.planets[i].resources = generateResources(board.planets[i].w);
 			}
-			resourcesOkay = isStartingResourcesOkay(board);
+			resourcesOkay = isStartingResourcesOkay(board, num_players);
 		}
 
 		// this must be run after all planets have explored value set
@@ -188,7 +188,7 @@ var setExploredStatus = function( planetid, num_players ) {
 	return true;
 };
 
-var isStartingResourcesOkay = function( board ) {
+var isStartingResourcesOkay = function( board, num_players ) {
 	var resources = [0,0,0,0]
 	for ( var i = 0; i < board.planets.length; i++ ){
 		if (board.planets[i].explored){
@@ -199,7 +199,7 @@ var isStartingResourcesOkay = function( board ) {
 		}
 	}
 	for ( var j = 0; j < resources.length; j++ ){
-		if (resources[j] < 2) {
+		if (resources[j] < cons.INITIAL_BOARD_RESOURCES_AVAILABLE[num_players]) {
 			console.log("gotta rerandomize resources");
 			return false
 		}
@@ -229,6 +229,10 @@ var generateResources = function( size ) {
  * Initializes fleets object which will contain all fleet objects
  * Each fleet is identifiable by an attribute name defined by the 
  * player it belongs to and a number between 0 and NUM_FLEETS
+ *
+ * TODO: This is the absolute worst way of organizing this. Refactor
+ *       in the future to be an array of lists so you can access fleets
+ *       by saying game.board.fleets[player][index] like a sane person
  */
 var initializeFleets = function(num_players) {
 	var fleets = {};

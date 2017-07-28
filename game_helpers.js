@@ -102,10 +102,22 @@ var clearPhaseDone = function( game ){
 	}
 };
 
-var resetMissionSpied = function( game ) {
-	for ( var i = 0; i < game.missionSpied.length; i++ ){
-		game.missionSpied[i] = null;
+// TODO: combine this, initializeViewed and several others
+// into one generic function like 'initPlayerLengthList()'
+var initializeSpyActions = function( game ) {
+	var spyActions = [];
+	for ( var i = 0; i < game.players.length; i++ ){
+		spyActions.push(cons.SPY_ACT_NULL);
 	}
+	return spyActions;
+};
+
+var initializeViewed = function( game ) {
+	var viewed = [];
+	for ( var i = 0; i < game.players.length; i++ ){
+		viewed.push(false);
+	}
+	return viewed;
 };
 
 var findGameToReconnect = function(u, gamesInfo){
@@ -113,7 +125,6 @@ var findGameToReconnect = function(u, gamesInfo){
 		gameInfo = gamesInfo[i];
 		if ( gameInfo.ready.indexOf(u) != -1 && 
 			 gameInfo.status == cons.GAME_PROGRESS ) {
-			
 			return i;
 		}
 	}
@@ -128,7 +139,8 @@ var findGameToReconnect = function(u, gamesInfo){
 		addResourcePackage: addResourcePackage,
 		addLobbyMessage: addLobbyMessage,
 		clearPhaseDone: clearPhaseDone,
-		resetMissionSpied: resetMissionSpied,
+        initializeSpyActions: initializeSpyActions,
+        initializeViewed: initializeViewed,
 		findGameToReconnect: findGameToReconnect,
 	}
 }());

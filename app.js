@@ -9,6 +9,7 @@ var io = require('./node_modules/socket.io').listen(server);
 
 var game_server = require('./game_server');
 var users_server = require('./users_server');
+var ai_server = require('./ai_server');
 var staging = require('./server_staging');
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
@@ -76,6 +77,13 @@ io.sockets.on('connection', function(socket) {
 
 		console.log(socket.name + " left staging");
 		staging.userLeaveStaging(socket, io, users, gamesInfo, gameid);
+
+	});
+
+	socket.on('add computer staging', function(gameid, fn) {
+
+        console.log(socket.name + " added a computer player");
+        staging.userAddNewComputerPlayer(socket, io, users, gamesInfo, gameid, users_server, messages);
 
 	});
 
@@ -147,5 +155,10 @@ app.get('/', function (req, res) {
 server.listen(process.env.PORT || '8080', '0.0.0.0', function() {
   console.log('App listening at http://%s:%s', server.address().address, server.address().port);
   console.log("Press Ctrl+C to quit.");
+  var aiIndex = 0;
+  var AiInterval = setInterval(function() {
+  	aiIndex = (aiIndex + 1) % 4;
+  	ai_server.doAiCycle(io, game_server, gamesInfo, users, aiIndex);
+  }, 400);
 });
 // [END server]

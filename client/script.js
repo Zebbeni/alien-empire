@@ -16,21 +16,23 @@ var displayUsers = function() {
     var usersScrollItems = '';
 
     for (var u = 0; u < all_users.length; u++){
-        if ( all_users[u].status == USR_ONLINE 
-             || all_users[u].status == USR_INGAME 
-             || all_users[u].status == USR_STAGING ) {
-         
-            if (u == clientId){
-                usersScrollItems += '<div class="self-list-div">' + all_users[u].name + '</div>';
-            }
-            else if (all_users[u].status == USR_INGAME){
-                usersScrollItems += '<div class="user-list-div user-ingame-list-div">' + all_users[u].name + ' (In Game)</div>';
-            }
-            else if (all_users[u].status == USR_STAGING){
-                usersScrollItems += '<div class="user-list-div user-staging-list-div">' + all_users[u].name + ' (Stage)</div>';
-            }
-            else {
-                usersScrollItems += '<div class="user-list-div">' + all_users[u].name + '</div>';
+        if (!all_users[u].isComputer) {
+            if (all_users[u].status == USR_ONLINE
+                || all_users[u].status == USR_INGAME
+                || all_users[u].status == USR_STAGING) {
+
+                if (u == clientId) {
+                    usersScrollItems += '<div class="self-list-div">' + all_users[u].name + '</div>';
+                }
+                else if (all_users[u].status == USR_INGAME) {
+                    usersScrollItems += '<div class="user-list-div user-ingame-list-div">' + all_users[u].name + ' (In Game)</div>';
+                }
+                else if (all_users[u].status == USR_STAGING) {
+                    usersScrollItems += '<div class="user-list-div user-staging-list-div">' + all_users[u].name + ' (Stage)</div>';
+                }
+                else {
+                    usersScrollItems += '<div class="user-list-div">' + all_users[u].name + '</div>';
+                }
             }
         }
     }

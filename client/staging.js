@@ -3,20 +3,25 @@ var displayStagingPlayers = function() {
     var players = clientGame.players;
     var ready = clientGame.ready;
 
-    for (var u = 0; u < players.length; u++){
+    for (var u = 0; u < clientGame.requestedPlayers; u++){
 
-        var playerid = players[u];
-        var divClass = '<div class="staging-user-list-div">  ';
+        if (u < players.length) {
+            var playerid = players[u];
+            var divClass = '<div class="staging-user-list-div">  ';
 
-        // if user is ready, draw white
-        var index = ready.indexOf(playerid);
+            // if user is ready, draw white
+            var index = ready.indexOf(playerid);
 
-        if (index != -1) {
-            divClass = '<div class="staging-user-ready-list-div">✓ ';
+            if (index != -1) {
+                divClass = '<div class="staging-user-ready-list-div">✓ ';
+            }
+
+            stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
+        } else {
+            var divClass = '<div class="staging-user-list-add-ai-div" onclick="submitStagingAddComputer()">';
+
+            stagingPlayersHtml += divClass + "+ Add Computer</div>";
         }
-
-        stagingPlayersHtml += divClass + all_users[playerid].name + '</div>';
-
     }
     $('#staging-users-div').html(stagingPlayersHtml);
 };

@@ -27,6 +27,12 @@ var socket_joinGame = function(gameId) {
     });
 };
 
+var socket_addComputerStaging = function() {
+    socket.emit('add computer staging', clientGame.gameid, function(data) {
+       console.log('received add computer notification', data);
+    });
+}
+
 var socket_sendGameMessage = function(msg) {
     socket.emit('send game message', msg, function(data) {
         console.log('received staging message', data);

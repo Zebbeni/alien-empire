@@ -5,6 +5,7 @@
 
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
+var gamedata = require('./game_data');
 
 (function() {
 
@@ -19,22 +20,21 @@ var helpers = require('./game_helpers');
 	 * @return [sockets to update, event type, game object]
 	 */
 	module.exports.resolveTurnDone = function( action, game ) {
-		if ( game.playerTurn != action.player ){
+		if ( gamedata.isPlayerTurn(game, action.player)) {
+            updateTurn( game );
+            return {
+                to: cons.EVENT_ALL,
+                evnt: 'game event',
+                content: {
+                    game: game
+                }
+            };
+		} else {
 			return {
-					to: cons.EVENT_ONE,
-					evnt: 'illegal action',
-					content: "it is not your turn"
-				};
-		}
-		else { // increment round round
-			updateTurn( game );
-			return {
-					to: cons.EVENT_ALL,
-					evnt: 'game event',
-					content: {
-						game: game
-					}
-				};
+				to: cons.EVENT_ONE,
+				evnt: 'illegal action',
+				content: "it is not your turn"
+			};
 		}
 	};
 
@@ -215,7 +215,7 @@ var applyBuildAction = function( action, game ) {
 				 response: "This action must be done during the build phase" };
 	}
 
-	if ( game.playerTurn != player ) {
+	if ( !gamedata.isPlayerTurn(game, player) ) {
 		return { isIllegal: true,
 				 response: "This action must be done during your turn" };
 	}
@@ -255,7 +255,7 @@ var applyBuildAction = function( action, game ) {
 		}
 	}
 
-	if ( !hasEnoughToBuild( player, objecttype, game ) ) {
+	if ( !gamedata.playerCanBuild(game, player, objecttype) ) {
 	
 		return { isIllegal: true,
 				 response: "You do not have enough resources to build a new " 
@@ -468,7 +468,6 @@ var applyRetireAction = function( action, game ){
 var applyRemoveFleet = function( action, game ) {
 
 	var planetid = action.planetid;
-	var objecttype = action.objecttype;
 	var fleetid = action.targetid;
 	var player = action.player;
 
@@ -516,8 +515,10 @@ var applyRemoveAction = function( action, game ) {
 	}
 
 	if (structure.player != player){
+		console.log('trying to remove another player structure:');
+		console.log(structure);
 		return { isIllegal: true,
-				 response: "You cannot remove another player's structure." };
+				 response: "You cannot remove another player's structure."};
 	}
 
 	if (objecttype != cons.OBJ_BASE && structure.kind != objecttype){
@@ -579,12 +580,10 @@ var applyPayUpkeep = function( action, game ){
 	resources = resource_pkg.resources;
 	pkgtype = resource_pkg.pkgtype;
 
-	for (var i = cons.RES_METAL; i <= cons.RES_FOOD; i++){
-		if ( game.resources[player][i] - resources[i] < 0){
-			return { isIllegal: true,
-				 	 response: "You do not have enough resources to pay upkeep"
-			};
-		}
+	if (!gamedata.playerCanPay(game, player, resources)){
+        return { isIllegal: true,
+            response: "You do not have enough resources to pay upkeep"
+        };
 	}
 
 	payPlayerUpkeep(player, resources, game);
@@ -738,8 +737,6 @@ var applyTradeDecline = function( action, game ){
 	}
 
 	game.trades[requester].declined.push(opponent);
-
-	var offered_to = game.trades[requester].offered_to;
 
 	return { isIllegal: false };
 };
@@ -1052,6 +1049,12 @@ var applyLaunchMission = function( action, game ) {
 			};
 		}
 
+        if ( agenttype == cons.AGT_SMUGGLER ) {
+            return { isIllegal: true,
+                response: "Smugglers cannot smuggle their own missions"
+            };
+        }
+
 		if ( smuggler.planetid != agent.planetid ) {
 			return { isIllegal: true,
 				 	 response: "Your smuggler must be on the same planet as your mission agent"
@@ -1066,15 +1069,15 @@ var applyLaunchMission = function( action, game ) {
 	var newMission = {
 						player: player,
 						agenttype: agenttype,
+						index: game.missions[game.round].length,
 						planetTo: planetid,
 						planetFrom: agent.planetid,
 						useSmuggler: action.usesmuggler,
 						result: "Mission pending...",
-						resolution: {
-							resolved: false,
-							blocked: undefined,
-							blockedBy: undefined,
-						} // object with details of how mission was completed
+						status: cons.MISSION_UNRESOLVED,
+						blockers: [], // list of players who blocked mission
+						viewers: helpers.initializeViewed(game),
+        				spyActions: helpers.initializeSpyActions(game)
 					};
 
 	if ( agenttype == cons.AGT_MINER || agenttype == cons.AGT_ENVOY ){
@@ -1115,47 +1118,50 @@ var applyBlockMission = function( action, game ){
 
 	var player = action.player;
 	var choice = action.choice;
-	var index = game.missionindex;
-	var round = game.round - 2;
-	var mission = game.missions[round][index];
+	var mission = gamedata.getCurrentMission(game);
 	var planetid = mission.planetTo;
 
-	if ( game.missionSpied[ player ] != null ){
+	if ( mission.spyActions[ player ] != cons.SPY_ACT_NULL ){
 		// Do not return illegal, but also do not change game state
 		return { isDuplicate: false }; 
 	}
 
-	// choice is null if spying player wants to collect resources from mission
+    if (choice == cons.SPY_ACT_BLOCK || choice == cons.SPY_ACT_COLLECT) {
+		if ( game.board.planets[planetid].spyeyes[player] <= 0 ) {
+			return { isIllegal: true,
+				response: "You have no spy markers to block a mission here"
+			};
+		}
+    }
+
 	// this should update their spy eyes and opponent's mission info before
 	// falling through to resolve as a non-blocked mission
-	if ( choice == null && game.board.planets[planetid].spyeyes[player] > 0 ) {
+	if ( choice == cons.SPY_ACT_COLLECT && game.board.planets[planetid].spyeyes[player] > 0 ) {
 
 		game.board.planets[planetid].spyeyes[player] -= 1;
-		game.missions[round][ index ].collectors.push( player );
+		mission.collectors.push( player );
 	}
 
 	// choice is true if player has chosen to block the mission
-	if ( choice == true && game.board.planets[planetid].spyeyes[player] > 0 ){
+	if ( choice == cons.SPY_ACT_BLOCK && game.board.planets[planetid].spyeyes[player] > 0 ){
 
-		game.missionSpied[ player ] = true;
-
-		game.missions[round][ index ].resolution.blocked = true;
-		game.missions[round][ index ].resolution.blockedBy = player;
-		game.missions[round][ index ].resolution.resolved = true;
-		game.board.planets[planetid].spyeyes[player] -= 1;
-
-		helpers.resetMissionSpied(game);
+		mission.spyActions[player] = cons.SPY_ACT_BLOCK;
+        mission.status = cons.MISSION_BLOCKED_SPY;
+        mission.blockers.push(player);
+        game.board.planets[planetid].spyeyes[player] -= 1;
 	}
 
 	else {
 
-		game.missionSpied[ player ] = false;
+		mission.spyActions[ player ] = cons.SPY_ACT_ALLOW;
 
-		if ( game.missionSpied.indexOf(true) == -1 
-			 && game.missionSpied.indexOf(null) == -1) {
+		// If all player responses are in with no blockers...
+		if ( mission.spyActions.indexOf(cons.SPY_ACT_BLOCK) == -1
+			&& mission.spyActions.indexOf(cons.SPY_ACT_NULL) == -1
+			&& mission.status != cons.MISSION_BLOCKED_NO_FLY) {
 
 			// set flag letting player know they need to resolve this mission
-			game.missions[round][ index ].waitingOnResolve = true;
+            mission.status = cons.MISSION_PENDING_CHOICE;
 
 			switch (mission.agenttype) {
 				
@@ -1175,21 +1181,21 @@ var applyBlockMission = function( action, game ){
 						var planetname = planet.name;
 						var result = " discovered " + planetname;
 						result += " and earned " + points + " points,";
-						game.missions[round][index].result = result;
+                        mission.result = result;
 					}
 
 					var is_unreserved = false;
 					var resources = game.board.planets[planetid].resources;
 
 					for ( var i = 0; i < resources.length; i++ ) {
-						if ( resources[i].reserved == undefined ) {
+						if ( resources[i].reserved == undefined && !resources[i].structure ) {
 							is_unreserved = true;
 						}
 					}
 
 					// Add flag if player has no remaining options 
 					if ( !is_unreserved ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 					break;
 
@@ -1198,7 +1204,7 @@ var applyBlockMission = function( action, game ){
 					var planet = game.board.planets[planetid];
 					// Add flag if player has no remaining options
 					if ( !planet.settledBy[mission.player] ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 
 					break;
@@ -1221,7 +1227,7 @@ var applyBlockMission = function( action, game ){
 					}	
 
 					if ( !hasEmbassy ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 					break;
 
@@ -1268,7 +1274,7 @@ var applyBlockMission = function( action, game ){
 					}
 
 					if ( !possibleTarget ) {
-						game.missions[round][index].resolution.nochoice = true;
+                        mission.status = cons.MISSION_RESOLVED_NO_CHOICE;
 					}
 
 					break;
@@ -1277,12 +1283,6 @@ var applyBlockMission = function( action, game ){
 					break;
 			}
 		}
-
-		if (choice == true) {
-			return { isIllegal: true,
-				 response: "You have no spy markers to block a mission here"
-			};
-		}
 	}
 
 	return { isIllegal: false};
@@ -1290,14 +1290,21 @@ var applyBlockMission = function( action, game ){
 
 var applyMissionResolve = function( action, game ){
 
+	console.log('server, trying to resolve mission');
+	console.log(action);
+
 	var player = action.player;
 	var choice = action.choice;
 	var agenttype = action.agenttype;
 	var agentid = String(player) + String(agenttype);
 	var planetid = action.planetid;
+	// TODO: create a getCurrentMission helper function to do these three lines
 	var index = game.missionindex;
 	var round = game.round - 2;
-	var mission = game.missions[ round ][ index ];
+	var mission = gamedata.getCurrentMission(game);
+
+	console.log('server, mission object:');
+	console.log(mission);
 
 	var agent = game.board.agents[ agentid ];
 	var planets = game.board.planets;
@@ -1310,21 +1317,18 @@ var applyMissionResolve = function( action, game ){
 
 	if ( mission.planetTo != planetid ||  mission.agenttype != agenttype ){
 		// don't return illegal if on a different mission but do not proceed either
+		console.log('! Rejected resolve, planetTo: ' + mission.planetTo + ', planetid: ' + planetid, 'm.agenttype: ' + mission.agenttype +  ', agenttype: ' + agenttype);
 		return { isDuplicate: false };
 	}
 
-	if ( game.missionSpied.indexOf( null ) != -1 ) {
+	if ( mission.spyActions.indexOf(cons.SPY_ACT_NULL) != -1 ) {
 		// Do not return illegal if not all spies have come in yet
 		// but do not update the game state
+		console.log('! Rejected resolve: not all spy actions in');
 		return { isDuplicate: false };
-	}
-
-	else if ( game.missions[round][index].resolution.nochoice ) {
+	} else if ( mission.status == cons.MISSION_RESOLVED_NO_CHOICE || mission.status == cons.MISSION_BLOCKED_SPY ) {
 		moveAgent( game, agentid, planetid );
-	}
-
-	else if ( !game.missions[round][ index ].resolution.agentmia ) {
-
+    } else if ( mission.status != cons.MISSION_CANCELLED_NO_AGENT && mission.status != cons.MISSION_BLOCKED_NO_FLY ) {
 		// THIS is where we should actually apply the agent mission logic
 		// depending on the type of agent
 		// we may need to create a switch/case series here sending to 
@@ -1348,7 +1352,7 @@ var applyMissionResolve = function( action, game ){
 					};
 				}
 				
-				game.missions[round][index].result += ' reserved ' + cons.RES_ENGLISH[resource.kind] + ".";
+				mission.result += ' reserved ' + cons.RES_ENGLISH[resource.kind] + ".";
 
 				resource.reserved = player;
 				break;
@@ -1394,7 +1398,7 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				var result = " collected 6 " + cons.RES_ENGLISH[resource_kind] + " resources.";
-				game.missions[round][index].result = result;
+                mission.result = result;
 				break;
 
 			case cons.AGT_SURVEYOR:
@@ -1424,7 +1428,7 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				var result = " increased mining resources on " + planets[planetid].name + ".";
-				game.missions[round][index].result = result;
+                mission.result = result;
 
 				break;
 
@@ -1467,7 +1471,7 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				result += ".";
-				game.missions[round][index].result = result;
+                mission.result = result;
 
 				break;
 
@@ -1480,7 +1484,7 @@ var applyMissionResolve = function( action, game ){
 				if (mission.planetTo != mission.planetFrom){
 					result += ' and ' + planets[mission.planetFrom].name;
 				}
-				game.missions[round][index].result = result + ".";
+                mission.result = result + ".";
 				break;
 
 			case cons.AGT_ENVOY:
@@ -1538,15 +1542,14 @@ var applyMissionResolve = function( action, game ){
 				
 				var result = ' collected ' + num_resources_collected 
 							 + ' resources and gained ' + points + ' point.';
-				game.missions[round][index].result = result;
+                mission.result = result;
 				break;
 
 			case cons.AGT_SABATEUR:
-
 				var objecttype = action.objecttype;
 				var targetPlayer = action.targetPlayer;
 				var idx = action.resourceid;
-				
+
 				if (objecttype == cons.OBJ_FLEET){
 					idx = action.targetid;
 				}
@@ -1560,7 +1563,7 @@ var applyMissionResolve = function( action, game ){
 				action.choice = idx;
 				action.success = true;
 				var result = ' destroyed a ' + cons.OBJ_ENGLISH[objecttype] + ' for ' + points + ' point.';
-				game.missions[round][index].result = result;
+                mission.result = result;
 
 				break;
 
@@ -1588,7 +1591,7 @@ var applyMissionResolve = function( action, game ){
 							'From Smuggler' );
 
 				var result = ' stole ' + num_stolen + ' resources.';
-				game.missions[round][index].result = result;
+                mission.result = result;
 				break;
 
 			default:
@@ -1597,8 +1600,7 @@ var applyMissionResolve = function( action, game ){
 		}
 	}
 	
-	game.missions[round][ index ].resolution.resolved = true;
-	helpers.resetMissionSpied( game );
+	mission.status = cons.MISSION_COMPLETE;
 
 	return { isIllegal: false };
 };
@@ -1607,6 +1609,7 @@ var applyMissionViewed = function( action, game ){
 	var player = action.player;
 	var index = action.choice;
 	var round = game.round - 2;
+	var mission = gamedata.getCurrentMission(game);
 
 	if ( index != game.missionindex) {
 		// don't return illegal if on a different mission
@@ -1614,14 +1617,10 @@ var applyMissionViewed = function( action, game ){
 		return { isDuplicate: false };
 	}
 
-	game.missionViewed[ player ] = true;
+	mission.viewers[ player ] = true;
 
 	// if all players have viewed missions 
-	if ( game.missionViewed.indexOf( false ) == -1 ){
-
-		for ( var i = 0; i < game.missionViewed.length; i++ ){
-			game.missionViewed[i] = false;
-		}
+	if ( mission.viewers.indexOf( false ) == -1 ){
 
 		updateMissionIndex( game, round );
 	}
@@ -1673,34 +1672,38 @@ var findAndSetMissionResolved = function( game, player, agenttype ){
 	
 	var mission;
 
-	for ( var r = game.round - 1; r > 0; r-- ) {
+	for ( var r = game.round; r > 0; r-- ) {
 
-		for ( var m = 0; m < game.missions[r].length; m++ ) {
+		if (game.missions[r] && game.missions[r].length > 0) {
 
-			mission = game.missions[r][m];
+            for (var m = 0; m < game.missions[r].length; m++) {
 
-			if ( mission.player == player && mission.agenttype == agenttype ){
-				
-				if ( mission.resolution.resolved == false ) {
+                mission = game.missions[r][m];
 
-					mission.resolution.resolved = true;
-				
-					// TODO: this should eventually allow 
-					//       for different resolution reasons
-					mission.resolution.agentmia = true;
-				}
+				// set unresolved missions to resolved (mia) if using agenttype
+                if (mission.player == player && mission.status == cons.MISSION_UNRESOLVED) {
 
-				var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
-				var smuggler = game.board.agents[ smugglerid ];
-				if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON) {
-					game.board.agents[ smugglerid ].used = false;
-					game.board.agents[ smugglerid ].missionround = undefined;
-					game.board.agents[ smugglerid ].destination = undefined;
-				}
+                	if (mission.agenttype == agenttype) {
+                        // TODO: this should eventually allow
+                        //       for different resolution reasons
+						mission.status = cons.MISSION_CANCELLED_NO_AGENT;
 
-				return;
-			}	
-		}
+                        var smugglerid = String(player) + String(cons.AGT_SMUGGLER);
+                        var smuggler = game.board.agents[smugglerid];
+                        if (mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON) {
+                            game.board.agents[smugglerid].used = false;
+                            game.board.agents[smugglerid].missionround = undefined;
+                            game.board.agents[smugglerid].destination = undefined;
+                        }
+                        return;
+                    }
+                    else if (mission.useSmuggler && agenttype == cons.AGT_SMUGGLER) {
+						mission.useSmuggler = false;
+						return;
+					}
+                }
+            }
+        }
 	}
 };
 
@@ -2105,7 +2108,7 @@ var preProcessMission = function( game ){
 		var agent = game.board.agents[ agentid ];
 		var hasSmuggler = false;
 
-		if ( mission.resolution.resolved != true ) {
+		if ( mission.status == cons.MISSION_UNRESOLVED ) {
 
 			if ( mission.useSmuggler && smuggler.status == cons.AGT_STATUS_ON ){
 				hasSmuggler = true;
@@ -2117,8 +2120,7 @@ var preProcessMission = function( game ){
 			
 			if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
 				if (!hasSmuggler){
-					game.missions[round][ index ].resolution.noflyblocked = true;
-					game.missions[round][ index ].resolution.resolved = true;
+					game.missions[round][ index ].status = cons.MISSION_BLOCKED_NO_FLY;
 				}
 			}
 			else {
@@ -2129,20 +2131,6 @@ var preProcessMission = function( game ){
 		agent.used = false;
 		agent.destination = undefined;
 	}
-};
-
-var hasEnoughToBuild = function( player, objecttype, game ) {
-	var requirements = cons.STRUCT_REQS[objecttype].build;
-
-	for (var res in requirements) {
-		if ( game.resources[player][res] < requirements[res] ) {
-
-			return false;
-
-		}
-	}
-
-	return true;
 };
 
 var payToBuild = function( player, objecttype, game) {

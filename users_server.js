@@ -13,6 +13,8 @@ var login = function(socket, io, users, messages, gamesInfo, name, fn) {
 	fn('received login');
 
 	var is_existing_user = false;
+	var existing_user_id;
+	var is_computer_user = false;
 	var is_logged_in = false; // set to true if user is already logged in
 	var newUser = null;
 
@@ -21,15 +23,18 @@ var login = function(socket, io, users, messages, gamesInfo, name, fn) {
 		if (users[u].name == name) {
 
 			// check if user already logged in
-			if(users[u].status != cons.USR_OFFLINE) {
+			if(users[u].isComputer) {
+				is_computer_user = true;
+			}
+			else if(users[u].status != cons.USR_OFFLINE) {
 				is_logged_in = true;
+                users[u].status = cons.USR_ONLINE;
 			}
 			else {
 				// set socket's userid only if not already logged in
 				socket.userid = u;
+                users[u].status = cons.USR_ONLINE;
 			}
-
-			users[u].status = cons.USR_ONLINE;
 
 			newUser = users[u];
 
@@ -41,25 +46,19 @@ var login = function(socket, io, users, messages, gamesInfo, name, fn) {
 	}
 
 	if (is_logged_in) {
-		socket.emit('login failed already logged in', socket.name);
-	}
-	else {
+		socket.emit('login failed already logged in', name);
+	} else if (is_computer_user) {
+        socket.emit('login failed computer user', name);
+	} else {
 
 		socket.name = name;
 
 		// Otherwise create a new one and increment num_users
 		if (!is_existing_user) {
 
-			socket.userid = users.length;
+			var userid = createNewUser(users, name, cons.USR_ONLINE, false);
 
-			newUser = {
-						userid: socket.userid,
-						name: name,
-						status: 1, // 0: OFFLINE, 1: LOBBY, 2: STAGING
-						gameid: null // the game id the user is in
-					};
-
-			users.push(newUser);
+			socket.userid = userid;
 		}
 
 		var newMsg = helpers.addLobbyMessage( messages, 
@@ -166,11 +165,46 @@ var disconnect = function(socket, io, users, messages, gamesInfo) {
 	}
 };
 
+var createNewUser = function(users, name, status, isComputer) {
+    var userid = users.length;
+
+	newUser = {
+        userid: userid,
+        name: name,
+        status: status, // 0: OFFLINE, 1: LOBBY, 2: STAGING
+        gameid: null, // the game id the user is in
+		isComputer: isComputer
+    };
+
+    users.push(newUser);
+
+    return userid;
+};
+
+var createNewComputerUser = function(users, status, io, messages) {
+    var name = generateComputerPlayerName(users);
+
+    var newMsg = helpers.addLobbyMessage( messages,
+        								  cons.MSG_SERVER,
+										  "computer user " + name + " added" );
+
+    var newUserId = createNewUser(users, name, status, true);
+
+    io.in('lobby').emit('new computer user', users, newMsg);
+
+    return newUserId;
+};
+
+var generateComputerPlayerName = function(computerUsers) {
+	return "Computer " + computerUsers.length;
+};
+
 (function() { 
 
 	module.exports = {
 		login: login,
 		logout: logout,
+        createNewComputerUser: createNewComputerUser,
 		disconnect: disconnect
 	}
 

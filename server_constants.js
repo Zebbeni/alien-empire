@@ -118,6 +118,17 @@
 		PKG_UPKEEP : 7,
 		PKG_BUILD: 8,
 
+		// mission statuses
+		MISSION_UNRESOLVED: 1, // unresolved until spies done or some other resolution condition met
+        MISSION_PENDING_CHOICE: 2, // set if mission requires player choice (after spies)
+        MISSION_COMPLETE: 3, // success after spies done and (if applicable) player's choice processed
+
+		// all below statuses indicate a mission failure of some kind
+        MISSION_BLOCKED_SPY: 4,
+        MISSION_BLOCKED_NO_FLY: 5,
+        MISSION_CANCELLED_NO_AGENT: 6,
+        MISSION_RESOLVED_NO_CHOICE: 7,
+
 		OBJ_VALUE : {
 			1: 0,
 			2: 1,
@@ -197,15 +208,34 @@
 				build: [3,1,1,1],
 				upkeep: [0,0,1,0],
 				max: 1,
-				defense: 4
+				defense: 3
 			},
 			5: {
 				build: [1,1,1,0],
 				upkeep: [0,0,1,0],
 				max: 3,
-				defense: 3
+				defense: 4
 			}
-		}
+		},
+
+        INITIAL_RESOURCES: {
+			0: 2,
+			1: 2,
+			2: 2,
+			3: 2
+		},
+
+        INITIAL_BOARD_RESOURCES_AVAILABLE: {
+			2: 2,
+			3: 2,
+			4: 3,
+		},
+
+        // null if spy action not taken yet
+		SPY_ACT_NULL: 1,
+		SPY_ACT_ALLOW: 2,
+        SPY_ACT_BLOCK: 3,
+		SPY_ACT_COLLECT: 4
 	};
 
 }());
