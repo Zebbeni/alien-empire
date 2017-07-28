@@ -1126,8 +1126,6 @@ var applyBlockMission = function( action, game ){
 		return { isDuplicate: false }; 
 	}
 
-
-
     if (choice == cons.SPY_ACT_BLOCK || choice == cons.SPY_ACT_COLLECT) {
 		if ( game.board.planets[planetid].spyeyes[player] <= 0 ) {
 			return { isIllegal: true,
@@ -1159,7 +1157,8 @@ var applyBlockMission = function( action, game ){
 
 		// If all player responses are in with no blockers...
 		if ( mission.spyActions.indexOf(cons.SPY_ACT_BLOCK) == -1
-			 && mission.spyActions.indexOf(cons.SPY_ACT_NULL) == -1) {
+			&& mission.spyActions.indexOf(cons.SPY_ACT_NULL) == -1
+			&& mission.status != cons.MISSION_BLOCKED_NO_FLY) {
 
 			// set flag letting player know they need to resolve this mission
             mission.status = cons.MISSION_PENDING_CHOICE;
@@ -1189,7 +1188,7 @@ var applyBlockMission = function( action, game ){
 					var resources = game.board.planets[planetid].resources;
 
 					for ( var i = 0; i < resources.length; i++ ) {
-						if ( resources[i].reserved == undefined ) {
+						if ( resources[i].reserved == undefined && !resources[i].structure ) {
 							is_unreserved = true;
 						}
 					}
@@ -1302,7 +1301,7 @@ var applyMissionResolve = function( action, game ){
 	// TODO: create a getCurrentMission helper function to do these three lines
 	var index = game.missionindex;
 	var round = game.round - 2;
-	var mission = game.missions[ round ][ index ];
+	var mission = gamedata.getCurrentMission(game);
 
 	console.log('server, mission object:');
 	console.log(mission);
@@ -1327,14 +1326,9 @@ var applyMissionResolve = function( action, game ){
 		// but do not update the game state
 		console.log('! Rejected resolve: not all spy actions in');
 		return { isDuplicate: false };
-	}
-
-	if ( mission.status == cons.MISSION_RESOLVED_NO_CHOICE || mission.status == cons.MISSION_BLOCKED_SPY ) {
+	} else if ( mission.status == cons.MISSION_RESOLVED_NO_CHOICE || mission.status == cons.MISSION_BLOCKED_SPY ) {
 		moveAgent( game, agentid, planetid );
-	}
-
-	else if ( mission.status != cons.MISSION_CANCELLED_NO_AGENT ) {
-
+    } else if ( mission.status != cons.MISSION_CANCELLED_NO_AGENT && mission.status != cons.MISSION_BLOCKED_NO_FLY ) {
 		// THIS is where we should actually apply the agent mission logic
 		// depending on the type of agent
 		// we may need to create a switch/case series here sending to 
@@ -1358,7 +1352,7 @@ var applyMissionResolve = function( action, game ){
 					};
 				}
 				
-				game.missions[round][index].result += ' reserved ' + cons.RES_ENGLISH[resource.kind] + ".";
+				mission.result += ' reserved ' + cons.RES_ENGLISH[resource.kind] + ".";
 
 				resource.reserved = player;
 				break;
@@ -1404,7 +1398,7 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				var result = " collected 6 " + cons.RES_ENGLISH[resource_kind] + " resources.";
-				game.missions[round][index].result = result;
+                mission.result = result;
 				break;
 
 			case cons.AGT_SURVEYOR:
@@ -1434,7 +1428,7 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				var result = " increased mining resources on " + planets[planetid].name + ".";
-				game.missions[round][index].result = result;
+                mission.result = result;
 
 				break;
 
@@ -1477,7 +1471,7 @@ var applyMissionResolve = function( action, game ){
 				}
 
 				result += ".";
-				game.missions[round][index].result = result;
+                mission.result = result;
 
 				break;
 
@@ -1490,7 +1484,7 @@ var applyMissionResolve = function( action, game ){
 				if (mission.planetTo != mission.planetFrom){
 					result += ' and ' + planets[mission.planetFrom].name;
 				}
-				game.missions[round][index].result = result + ".";
+                mission.result = result + ".";
 				break;
 
 			case cons.AGT_ENVOY:
@@ -1548,15 +1542,14 @@ var applyMissionResolve = function( action, game ){
 				
 				var result = ' collected ' + num_resources_collected 
 							 + ' resources and gained ' + points + ' point.';
-				game.missions[round][index].result = result;
+                mission.result = result;
 				break;
 
 			case cons.AGT_SABATEUR:
-
 				var objecttype = action.objecttype;
 				var targetPlayer = action.targetPlayer;
 				var idx = action.resourceid;
-				
+
 				if (objecttype == cons.OBJ_FLEET){
 					idx = action.targetid;
 				}
@@ -1570,7 +1563,7 @@ var applyMissionResolve = function( action, game ){
 				action.choice = idx;
 				action.success = true;
 				var result = ' destroyed a ' + cons.OBJ_ENGLISH[objecttype] + ' for ' + points + ' point.';
-				game.missions[round][index].result = result;
+                mission.result = result;
 
 				break;
 
@@ -1598,7 +1591,7 @@ var applyMissionResolve = function( action, game ){
 							'From Smuggler' );
 
 				var result = ' stole ' + num_stolen + ' resources.';
-				game.missions[round][index].result = result;
+                mission.result = result;
 				break;
 
 			default:
@@ -1607,7 +1600,7 @@ var applyMissionResolve = function( action, game ){
 		}
 	}
 	
-	game.missions[round][ index ].status = cons.MISSION_COMPLETE;
+	mission.status = cons.MISSION_COMPLETE;
 
 	return { isIllegal: false };
 };
@@ -2127,7 +2120,7 @@ var preProcessMission = function( game ){
 			
 			if ( game.board.planets[ mission.planetFrom ].borders[ mission.planetTo ] == cons.BRD_BLOCKED ){
 				if (!hasSmuggler){
-					game.missions[round][ index ].status == cons.MISSION_BLOCKED_NO_FLY;
+					game.missions[round][ index ].status = cons.MISSION_BLOCKED_NO_FLY;
 				}
 			}
 			else {

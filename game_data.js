@@ -198,7 +198,8 @@ var getCurrentMissionIndex = function(game) {
 
 // return list of information on enemy structures on given planet
 // looks for structures that do NOT belong to the given player
-var getEnemyStructuresOnPlanet = function(game, playerIndex, planet) {
+// if resourcesOnly set to true, only count resource-collecting structures
+var getEnemyStructuresOnPlanet = function(game, playerIndex, planet, resourcesOnly) {
     var enemies = [];
     var resources = planet.resources;
     for (var r = 0; r < resources.length; r++) {
@@ -207,28 +208,33 @@ var getEnemyStructuresOnPlanet = function(game, playerIndex, planet) {
             enemies.push({
                 targetPlayer: structure.player,
                 choice: r,
+                targetid: null,
                 objecttype: structure.kind
             });
         }
     }
-    var fleets = planet.fleets
-    for (var f = 0; f < fleets.length; f++) {
-        var fleetid = fleets[f];
-        var fleet = game.board.fleets[fleetid];
-        if (fleet.player != playerIndex) {
+    if (resourcesOnly) {
+        var fleets = planet.fleets
+        for (var f = 0; f < fleets.length; f++) {
+            var fleetid = fleets[f];
+            var fleet = game.board.fleets[fleetid];
+            if (fleet.player != playerIndex) {
+                enemies.push({
+                    targetPlayer: fleet.player,
+                    choice: fleetid,
+                    targetid: fleetid,
+                    objecttype: cons.OBJ_FLEET
+                });
+            }
+        }
+        if (planet.base && planet.base.player != playerIndex) {
             enemies.push({
-                targetPlayer: fleet.player,
-                choice: fleetid,
-                objecttype: cons.OBJ_FLEET
+                targetPlayer: planet.base.player,
+                choice: null,
+                targetid: null,
+                objecttype: cons.OBJ_BASE
             });
         }
-    }
-    if (planet.base && planet.base.player != playerIndex) {
-        enemies.push({
-            targetPlayer: planet.base.player,
-            choice: null,
-            objecttype: cons.OBJ_BASE
-        });
     }
     return enemies;
 };

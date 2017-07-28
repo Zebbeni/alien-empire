@@ -85,7 +85,7 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
         var pkg = resource_pkgs[i];
         if (!pkg.collected && pkg.pkgtype != cons.PKG_UPKEEP) {
             if (!gamedata.playerCanCollect(game, playerIndex, pkg.resources)){
-                return createAi4To1Action(game, playerIndex);
+                return createAi4To1Action(game, playerIndex, true);
             }
             return {
                 player: playerIndex,
@@ -113,7 +113,7 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
                         pkgindex: i
                     };
                 } else {
-                    var action = createAi4To1Action(game, playerIndex);
+                    var action = createAi4To1Action(game, playerIndex, false);
                     if (action != null) {
                         return action;
                     } else {
@@ -137,7 +137,7 @@ var createAiBuildPhaseAction = function(game, playerIndex) {
         if (action) {
             return action;
         }
-        action = createAi4To1Action(game, playerIndex);
+        action = createAi4To1Action(game, playerIndex, false);
         if (action) {
             return action;
         }
@@ -210,11 +210,15 @@ var createAiMissionsPhaseAction = function(game, playerIndex) {
 // TODO FEATURE: add logic to block or collect if AI player has spy eyes
 var createAiBlockMissionAction = function(game, playerIndex, mission) {
     var choice = cons.SPY_ACT_ALLOW;
-    if (mission.player != playerIndex) {
+    if (mission.status == cons.MISSION_BLOCKED_NO_FLY
+        || mission.status == cons.MISSION_CANCELLED_NO_AGENT
+        || mission.status == cons.MISSION_RESOLVED_NO_CHOICE) {
+        choice = cons.SPY_ACT_ALLOW;
+    } else if (mission.player != playerIndex) {
         // decide what action to take if spyeye here
         var planet = game.board.planets[mission.planetTo];
         if (planet.spyeyes[playerIndex] > 0) {
-            switch (mission.agenttype){
+            switch (mission.agenttype) {
                 case cons.AGT_SABATEUR:
                 case cons.AGT_SMUGGLER:
                     // block if settled by player
@@ -414,6 +418,18 @@ var createBestRecruitAction = function(game, playerIndex) {
                         planetid: planet.planetid
                 };
             } else if (objecttype == cons.OBJ_EMBASSY) {
+                if (agenttype == cons.AGT_AMBASSADOR) {
+                    var atLeastTwoStructures = false;
+                    for (var p = 0; p < game.board.planets.length; p++) {
+                        if (gamedata.getNumStructuresOnPlanet(game, game.board.planets[p], playerIndex) >= 2) {
+                            atLeastTwoStructures = true;
+                        }
+                    }
+                    if (atLeastTwoStructures == false) {
+                        // don't recruit yet if not worth it
+                        break;
+                    }
+                }
                 var planets = gamedata.getEmbassyPlanets(game, playerIndex, objecttype);
                 var planet = getRandomItem(planets);
                 return {
@@ -572,6 +588,14 @@ var createBestEnvoyAction = function(game, playerIndex, agentInfo) {
             agenttype: cons.AGT_ENVOY,
             planetid: chosenPlanet.planetid
         };
+    } else if (unblockedAdjacent.length == 1) {
+        // send on a mission anyway if the envoy is trapped on a planet without an embassy
+        return {
+            player: playerIndex,
+            actiontype: cons.ACT_LAUNCH_MISSION,
+            agenttype: cons.AGT_ENVOY,
+            planetid: agentInfo.planetid
+        };
     } else {
         var chosenPlanet = getRandomItem(unblockedAdjacent);
         return {
@@ -644,7 +668,16 @@ var createBestSmugglerAction = function(game, playerIndex, agentInfo) {
     var chosenPlanet = game.board.planets[agentInfo.planetid];
     var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, true);
     if (hasContent(unblockedAdjacent)) {
-        chosenPlanet = getRandomItem(unblockedAdjacent);
+        shuffle(unblockedAdjacent);
+        var maxEnemyStructures = 0;
+        for (var p = 0; p < unblockedAdjacent.length; p++) {
+            var planet = unblockedAdjacent[p];
+            var numEnemyStructures = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, true);
+            if (numEnemyStructures > maxEnemyStructures) {
+                maxEnemyStructures = numEnemyStructures;
+                chosenPlanet = planet;
+            }
+        }
     }
     return {
         player: playerIndex,
@@ -707,7 +740,7 @@ var createBestFleetAction = function(game, playerIndex) {
             var fleet = unusedFleets[0];
             var planet = game.board.planets[fleet.planetid];
             // filter out all mines from attack targets
-            var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet);
+            var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, false);
             if (hasContent(attackTargets)) {
                 var nonMineTargets = attackTargets.filter(function (target) {
                     return cons.STRUCT_REQS[target.objecttype].defense < 6;
@@ -744,7 +777,7 @@ var createBestFleetAction = function(game, playerIndex) {
 var createBestBaseAction = function(game, playerIndex) {
     var basePlanet = gamedata.getBasePlanet(game, playerIndex);
     if (basePlanet && basePlanet.base.used == false) {
-        var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, basePlanet);
+        var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, basePlanet, false);
         if (hasContent(attackTargets)) {
             var fleetTargets = attackTargets.filter(function (target) {
                 return target.objecttype == cons.OBJ_FLEET;
@@ -767,7 +800,7 @@ var createBestBaseAction = function(game, playerIndex) {
 
 // creates a 4 to 1 action to convert the highest future resource type
 // into the lowest future type (if possible). Otherwise, returns null.
-var createAi4To1Action = function(game, playerIndex) {
+var createAi4To1Action = function(game, playerIndex, mustDo) {
     var futures = gamedata.getResourceFutures(game, playerIndex);
     // get resource type of highest future
     var highestFutureResource = -999;
@@ -777,7 +810,7 @@ var createAi4To1Action = function(game, playerIndex) {
     for (var r = 0; r < 4; r++) {
         // only consider surpluses if they have >=4 resources currently
         // and won't be negative in 2 rounds if they subtract 4 resources
-        if (game.resources[playerIndex][r] >= 4 && futures[r] >= 4) {
+        if (game.resources[playerIndex][r] >= 4 && (mustDo || futures[r] >= 4)) {
             if (futures[r] > highestFutureResource) {
                 highestFutureResource = futures[r];
                 surplusResourceType = r;
@@ -789,11 +822,13 @@ var createAi4To1Action = function(game, playerIndex) {
         }
     }
     if (surplusResourceType != -1) {
-        return {
-            player: playerIndex,
-            actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
-            paytype: surplusResourceType,
-            gettype: deficitResourceType
+        if (mustDo || futures[surplusResourceType] - 4 >= futures[deficitResourceType] + 1) {
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
+                paytype: surplusResourceType,
+                gettype: deficitResourceType
+            }
         }
     }
     return null;
@@ -923,28 +958,25 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 planetid: planetid
             };
         case cons.AGT_SURVEYOR:
-            var choice = [];
+            var firstChoices = [];
+            var secondChoices = [];
             var playerResources = gamedata.getPlayerResourcesOnPlanet(game, playerIndex, planet, true);
             for (var r = 0; r < playerResources.length; r++) {
-                if (choice.length < 2) {
-                    var resourceNum = playerResources[r].resourceNum;
-                    var reserved = playerResources[r].reserved;
-                    var structure = playerResources[r].structure;
-                    if ((resourceNum < 2 && structure && structure.kind == cons.OBJ_MINE)
-                        || reserved == playerIndex && !structure) {
-                        choice.push(playerResources[r].resourceIndex);
+                var resourceNum = playerResources[r].resourceNum;
+                var structure = playerResources[r].structure;
+                if (resourceNum < 2) {
+                    if (structure && structure.kind == cons.OBJ_MINE) {
+                        firstChoices.push(playerResources[r].resourceIndex);
+                    } else {
+                        secondChoices.push(playerResources[r].resourceIndex);
                     }
                 }
             }
-            // try a second pass for resource squares with factories or embassies
-            for (var r = 0; r < playerResources.length; r++) {
-                if (choice.length < 2) {
-                    var resourceNum = playerResources[r].resourceNum;
-                    if (resourceNum < 2) {
-                        choice.push(playerResources[r].resourceIndex);
-                    }
-                }
+            choice = firstChoices.concat(secondChoices);
+            if (choice.length > 2) {
+                choice = choice.slice(0,2);
             }
+
             // if no resources can be reserved, resolve with undefined
             return {
                 player: playerIndex,
@@ -970,7 +1002,7 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 planetid: planetid
             };
         case cons.AGT_SABATEUR:
-            var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet);
+            var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, false);
             if (hasContent(attackTargets)) {
                 var attackItem = getRandomItem(attackTargets);
                 return {
@@ -978,6 +1010,7 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                     agenttype: agenttype,
                     actiontype: cons.ACT_MISSION_RESOLVE,
                     targetPlayer: attackItem.targetPlayer,
+                    targetid: attackItem.targetid,
                     choice: attackItem.choice,
                     resourceid: attackItem.choice,
                     objecttype: attackItem.objecttype,

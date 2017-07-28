@@ -1418,6 +1418,11 @@ var updateMissionsMenu = function(round, index) {
 				else if ( clientGame.game.board.planets[mission.planetTo].spyeyes[clientTurn] <= 0 ) {
 					blockMissionAction( SPY_ACT_ALLOW );
 				}
+				else if (mission.status == MISSION_BLOCKED_NO_FLY
+						|| mission.status == MISSION_RESOLVED_NO_CHOICE
+						|| mission.status == MISSION_CANCELLED_NO_AGENT) {
+                    blockMissionAction( SPY_ACT_ALLOW );
+				}
 				else {
 					$('#missions-phase-div').show();
 					$('#mission-text').html("Mission pending. Would you like to block this mission?");

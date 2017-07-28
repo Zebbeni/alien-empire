@@ -208,14 +208,27 @@
 				build: [3,1,1,1],
 				upkeep: [0,0,1,0],
 				max: 1,
-				defense: 4
+				defense: 3
 			},
 			5: {
 				build: [1,1,1,0],
 				upkeep: [0,0,1,0],
 				max: 3,
-				defense: 3
+				defense: 4
 			}
+		},
+
+        INITIAL_RESOURCES: {
+			0: 2,
+			1: 2,
+			2: 2,
+			3: 2
+		},
+
+        INITIAL_BOARD_RESOURCES_AVAILABLE: {
+			2: 2,
+			3: 2,
+			4: 3,
 		},
 
         // null if spy action not taken yet

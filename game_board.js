@@ -152,7 +152,6 @@ var start_planets = {
 
 			// generate random resources
 			board.planets[i].explored = setExploredStatus(i, num_players);
-			board.planets[i].resources = generateResources(board.planets[i].w);
 			board.planets[i].base = undefined;
 			board.planets[i].fleets = [];
 			board.planets[i].agents = [];
@@ -163,12 +162,12 @@ var start_planets = {
 			board.planets[i].buildableBy = [false, false, false, false];
 		}
 
-		var resourcesOkay = isStartingResourcesOkay(board);
+		var resourcesOkay = false;
 		while (resourcesOkay == false) {
 			for ( var i = 0; i < board.planets.length; i++) {
 				board.planets[i].resources = generateResources(board.planets[i].w);
 			}
-			resourcesOkay = isStartingResourcesOkay(board);
+			resourcesOkay = isStartingResourcesOkay(board, num_players);
 		}
 
 		// this must be run after all planets have explored value set
@@ -189,7 +188,7 @@ var setExploredStatus = function( planetid, num_players ) {
 	return true;
 };
 
-var isStartingResourcesOkay = function( board ) {
+var isStartingResourcesOkay = function( board, num_players ) {
 	var resources = [0,0,0,0]
 	for ( var i = 0; i < board.planets.length; i++ ){
 		if (board.planets[i].explored){
@@ -200,7 +199,7 @@ var isStartingResourcesOkay = function( board ) {
 		}
 	}
 	for ( var j = 0; j < resources.length; j++ ){
-		if (resources[j] < 2) {
+		if (resources[j] < cons.INITIAL_BOARD_RESOURCES_AVAILABLE[num_players]) {
 			console.log("gotta rerandomize resources");
 			return false
 		}
