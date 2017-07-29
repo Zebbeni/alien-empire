@@ -654,12 +654,19 @@ var applyTradeRequest = function( action, game ){
 		}
 	}
 
+	var time_offered = Date.now() / 1000;
+
 	game.trades[player] = {
+		time_offered: time_offered,
 		requester_resources: requester_resources,
 		opponent_resources: opponent_resources,
 		offered_to: offered_to,
 		declined: []
 	};
+
+	// variable only for ai players to randomize and
+	// spread out trade actions
+	game.time_next_trade_allowed[player] = time_offered + (Math.random() * 30) + 30;
 
 	return { isIllegal: false };
 };
@@ -724,7 +731,7 @@ var applyTradeDecline = function( action, game ){
 	var requester = action.requester;
 	var opponent = action.player;
 
-	if ( game.trades[requester] == undefined ) {
+	if ( !game.trades[requester] ) {
 		return { isIllegal: true,
 				 response: "This trade is no longer available"
 		};

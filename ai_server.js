@@ -10,7 +10,9 @@ var doAiCycle = function(io, game_server, gamesInfo, users, aiIndex) {
                 if (p == aiIndex) {
                     var userid = game.players[p];
                     if (users[userid].isComputer) {
-                        doAIGameAction(io, game_server, gamesInfo, gameid, users, userid);
+                        if (doAIGameAction(io, game_server, gamesInfo, gameid, users, userid)){
+                            return; // only do one user action per ai cycle per game
+                        }
                     }
                 }
             }
@@ -48,8 +50,14 @@ var createAiGameAction = function(game, playerIndex) {
     if (action) {
         return action;
     }
-    // TODO FEATURE: Also have computer look for trades before
-    // moving on to normal activities
+    action = createAiTradeCancelAction(game, playerIndex);
+    if (action) {
+        return action;
+    }
+    action = createAiTradeResponseAction(game, playerIndex); // consider other players' trades
+    if (action) {
+        return action;
+    }
     switch(game.phase) {
         case cons.PHS_PLACING:
             action = createAiPlaceAction(game, playerIndex);
@@ -68,6 +76,9 @@ var createAiGameAction = function(game, playerIndex) {
             break;
         default:
             break;
+    }
+    if (action) {
+        return action;
     }
     return action;
 };
@@ -97,6 +108,157 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
     return null;
 };
 
+// If currently waiting for responses on an offered trade,
+// check if trade should be cancelled and cancel if so.
+// Reasons for cancelling:
+// - Game not in a phase where ai should offer trades
+// - All players declined trade offer
+// - Time for all players to respond has expired
+// - AI player no longer has resources required for trade offer
+var createAiTradeCancelAction = function(game, playerIndex) {
+    if (game.trades[playerIndex]) {
+        var cancelAction = {
+            actiontype: cons.ACT_TRADE_CANCEL,
+            player: playerIndex
+        };
+        if (game.phase != cons.PHS_UPKEEP && game.phase != cons.PHS_BUILD) {
+            // not a good phase for making offers
+            return cancelAction;
+        }
+        var trade = game.trades[playerIndex];
+        if (trade.declined.length == trade.offered_to.length) {
+            // all declined
+            return cancelAction;
+        }
+        if ((Date.now() / 1000) - trade.time_offered > 20) {
+            // time has expired
+            return cancelAction;
+        }
+        for (var r = 0; r < trade.requester_resources.length; r++) {
+            if (game.resources[playerIndex][r] < trade.requester_resources[r]) {
+                // can no longer afford trade
+                return cancelAction;
+            }
+        }
+    }
+    return null;
+};
+
+// look for other players' pending trade requests and accept or decline them
+var createAiTradeResponseAction = function(game, playerIndex) {
+    var playerResources = game.resources[playerIndex];
+    var futures = gamedata.getResourceFutures(game, playerIndex);
+    var futureScore = getResourcesScore(futures);
+    // consider other players' trade offers before offering a new one (if they exist)
+    for (var t = 0; t < game.trades.length; t++) {
+        if (game.trades[t]){
+            var trade = game.trades[t];
+            var offeredToPlayer = trade.offered_to.indexOf(playerIndex) != -1;
+            var declinedByPlayer = trade.declined.indexOf(playerIndex) != -1;
+            var time_since_offer = (Date.now() / 1000) - trade.time_offered;
+            // wait 10 seconds to consider trade to give human players a chance
+            if (offeredToPlayer && !declinedByPlayer && time_since_offer > 10) {
+                var requested = trade.opponent_resources;
+                var offered = trade.requester_resources;
+                var futuresWithTrade = [0,0,0,0];
+                for (var r = 0; r < requested.length; r++) {
+                    // decline if not enough resources to make trade
+                    if (requested[r] > playerResources[r]) {
+                        return {
+                            actiontype: cons.ACT_TRADE_DECLINE,
+                            player: playerIndex,
+                            requester: t
+                        };
+                    }
+                    futuresWithTrade[r] = futures[r] + offered[r] - requested[r];
+                }
+                var futureScoreWithTrade = getResourcesScore(futuresWithTrade);
+                if (futureScoreWithTrade > futureScore) {
+                    return {
+                        actiontype: cons.ACT_TRADE_ACCEPT,
+                        player: playerIndex,
+                        requester: t
+                    };
+                } else {
+                    return {
+                        actiontype: cons.ACT_TRADE_DECLINE,
+                        player: playerIndex,
+                        requester: t
+                    };
+                }
+            }
+        }
+    }
+    return null;
+};
+
+var createAiTradeOfferAction = function(game, playerIndex) {
+    // if player has no pending trade offer and past time allowed for next trade offer
+    // try crafting a new (reasonable) trade offer
+    var noCurrentTradePending = !game.trades[playerIndex];
+    var timeElapsed = game.time_next_trade_allowed[playerIndex] < (Date.now() / 1000);
+    if (noCurrentTradePending && timeElapsed) {
+        var playerResources = game.resources[playerIndex];
+        var futures = gamedata.getResourceFutures(game, playerIndex);
+        var futureScore = getResourcesScore(futures);
+        var minFutureKind = -1;
+        var minFutureNum = 999;
+        for (var r = 0; r < futures.length; r++) {
+            if (futures[r] < minFutureNum) {
+                minFutureKind = r;
+                minFutureNum = futures[r];
+            }
+        }
+
+        var offerContainsResource = false; // flag to indicate offer has at least one resource
+        var bestOffer = [0,0,0,0];
+        var resourceKinds = [cons.RES_METAL, cons.RES_WATER, cons.RES_FUEL, cons.RES_FOOD];
+        shuffle(resourceKinds);
+
+        var futuresWithTrade = futures.slice(); // copy by value
+        futuresWithTrade[minFutureKind] += 1; // assume only trading for 1 of this resource type
+
+        // for each resource kind, (if not the kind the ai player wants)
+        // calculate new potential future score if added to the offered resources.
+        // add to the bestOffer if the package still meets requirements to trade.
+        for (var k = 0; k < resourceKinds.length; k++) {
+            var kind = resourceKinds[k];
+            if (kind != minFutureKind) {
+                for (var r = Math.min(playerResources[kind], 3); r > 0; r--) {
+                    var testFuturesWithTrade = futuresWithTrade.slice(); // copyFuturesWithTrade again
+                    testFuturesWithTrade[kind] -= 1;
+                    var futureScoreWithTrade = getResourcesScore(testFuturesWithTrade);
+                    if (futureScoreWithTrade > futureScore) {
+                        offerContainsResource = true;
+                        bestOffer[kind] += 1;
+                        futuresWithTrade[kind] -= 1;
+                    }
+                }
+            }
+        }
+
+        if (offerContainsResource) {
+            var opponent_resources = [0, 0, 0, 0];
+            opponent_resources[minFutureKind] += 1;
+            var offered_to = [];
+            for (var p = 0; p < game.players.length; p++) {
+                if (p != playerIndex) {
+                    offered_to.push(p);
+                }
+            }
+            return {
+                actiontype: cons.ACT_TRADE_REQUEST,
+                player: playerIndex,
+                requester_resources: bestOffer,
+                opponent_resources: opponent_resources,
+                offered_to: offered_to
+            }
+        }
+
+    }
+    return null;
+};
+
 var createAiUpkeepPhaseAction = function(game, playerIndex) {
     // TODO FEATURE:
     //          This should consider retiring agents even if
@@ -113,12 +275,20 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
                         pkgindex: i
                     };
                 } else {
-                    var action = createAi4To1Action(game, playerIndex, false);
-                    if (action != null) {
-                        return action;
-                    } else {
+                    // fall through to null if waiting on a pending trade offer
+                    if (!game.trades[playerIndex]) {
+                        var action = createAiTradeOfferAction(game, playerIndex);
+                        if (action) {
+                            return action;
+                        }
+                        action = createAi4To1Action(game, playerIndex, false);
+                        if (action) {
+                            return action;
+                        }
                         action = createAiRemoveToPayAction(game, playerIndex, pkg.resources);
-                        return action;
+                        if (action) {
+                            return action;
+                        }
                     }
                 }
             }
@@ -137,14 +307,21 @@ var createAiBuildPhaseAction = function(game, playerIndex) {
         if (action) {
             return action;
         }
-        action = createAi4To1Action(game, playerIndex, false);
-        if (action) {
-            return action;
+        // fall through to null if waiting on a pending trade offer
+        if (!game.trades[playerIndex]) {
+            var action = createAiTradeOfferAction(game, playerIndex);
+            if (action) {
+                return action;
+            }
+            action = createAi4To1Action(game, playerIndex, false);
+            if (action) {
+                return action;
+            }
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_TURN_DONE
+            };
         }
-        return {
-            player: playerIndex,
-            actiontype: cons.ACT_TURN_DONE
-        };
     }
     return null;
 };
@@ -802,6 +979,7 @@ var createBestBaseAction = function(game, playerIndex) {
 // into the lowest future type (if possible). Otherwise, returns null.
 var createAi4To1Action = function(game, playerIndex, mustDo) {
     var futures = gamedata.getResourceFutures(game, playerIndex);
+    var futureScore = getResourcesScore(futures);
     // get resource type of highest future
     var highestFutureResource = -999;
     var surplusResourceType = -1;
@@ -821,8 +999,16 @@ var createAi4To1Action = function(game, playerIndex, mustDo) {
             deficitResourceType = r;
         }
     }
-    if (surplusResourceType != -1) {
-        if (mustDo || futures[surplusResourceType] - 4 >= futures[deficitResourceType] + 1) {
+    if (surplusResourceType != -1 && (mustDo || surplusResourceType != deficitResourceType)) {
+        var isBetterScore = false;
+        if (!mustDo) {
+            var futuresWithTrade = futures.slice();
+            futuresWithTrade[deficitResourceType] += 1;
+            futuresWithTrade[surplusResourceType] -= 4;
+            var futureScoreWithTrade = getResourcesScore(futuresWithTrade);
+            isBetterScore = futureScoreWithTrade > futureScore;
+        }
+        if (mustDo || isBetterScore) {
             return {
                 player: playerIndex,
                 actiontype: cons.ACT_TRADE_FOUR_TO_ONE,
@@ -1037,6 +1223,24 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
     }
     return null;
 };
+
+// calculate a score from a given array of resources
+// score is a sum of the score for each resource R,
+// calculating the area under the a hyperbolic curve
+// Score = (10 * ln(R) + 10) for positive values of R
+// Score = -(10 * ln(-R) + 15) for negative values of R
+function getResourcesScore(resources) {
+    var score = 0;
+    for (var r = 0; r < resources.length; r++) {
+        var R = resources[r];
+        if (R > 0) {
+            score += ((10 * Math.log(R)) + 10);
+        } else if (R < 0) {
+            score -= ((10 * Math.log(-1 * R)) + 20);
+        }
+    }
+    return score;
+}
 
 // Returns random item from array
 function getRandomItem(a) {
