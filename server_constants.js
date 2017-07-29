@@ -235,7 +235,11 @@
 		SPY_ACT_NULL: 1,
 		SPY_ACT_ALLOW: 2,
         SPY_ACT_BLOCK: 3,
-		SPY_ACT_COLLECT: 4
+		SPY_ACT_COLLECT: 4,
+
+		// for generating computer player names
+		GENDER_MALE: 1,
+		GENDER_FEMALE: 2
 	};
 
 }());
