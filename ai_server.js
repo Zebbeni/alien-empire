@@ -104,29 +104,44 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
 var createAiTradeAction = function(game, playerIndex) {
     var action = null;
     var playerResources = game.resources[playerIndex];
+    var futures = gamedata.getResourceFutures(game, playerIndex);
+    var futureScore = getResourcesScore(futures);
     for (var t = 0; t < game.trades.length; t++) {
         if (game.trades[t]){
             var trade = game.trades[t];
             var offeredToPlayer = trade.offered_to.indexOf(playerIndex) != -1;
             var declinedByPlayer = trade.declined.indexOf(playerIndex) != -1;
             var time_since_offer = (Date.now() / 1000) - trade.time_offered;
+            // wait 10 seconds to consider trade to give human players a chance
             if (offeredToPlayer && !declinedByPlayer && time_since_offer > 10) {
-                var requestedResources = trade.opponent_resources;
-                for (var r = 0; r < requestedResources.length; r++) {
-                    if (requestedResources[r] > playerResources[r]) {
+                var requested = trade.opponent_resources;
+                var offered = trade.requester_resources;
+                var futuresWithTrade = [0,0,0,0];
+                for (var r = 0; r < requested.length; r++) {
+                    // decline if not enough resources to make trade
+                    if (requested[r] > playerResources[r]) {
                         return {
                             actiontype: cons.ACT_TRADE_DECLINE,
                             player: playerIndex,
                             requester: t
                         };
                     }
+                    futuresWithTrade[r] = futures[r] + offered[r] - requested[r];
                 }
-                // decline trade offer
-                return {
-                    actiontype: cons.ACT_TRADE_DECLINE,
-                    player: playerIndex,
-                    requester: t
-                };
+                var futureScoreWithTrade = getResourcesScore(futuresWithTrade);
+                if (futureScoreWithTrade > futureScore) {
+                    return {
+                        actiontype: cons.ACT_TRADE_ACCEPT,
+                        player: playerIndex,
+                        requester: t
+                    };
+                } else {
+                    return {
+                        actiontype: cons.ACT_TRADE_DECLINE,
+                        player: playerIndex,
+                        requester: t
+                    };
+                }
             }
         }
     }
@@ -1073,6 +1088,24 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
     }
     return null;
 };
+
+// calculate a score from a given array of resources
+// score is a sum of the score for each resource R,
+// calculating the area under the a hyperbolic curve
+// Score = (10 * ln(R) + 10) for positive values of R
+// Score = -(10 * ln(-R) + 15) for negative values of R
+function getResourcesScore(resources) {
+    var score = 0;
+    for (var r = 0; r < resources.length; r++) {
+        var R = resources[r];
+        if (R > 0) {
+            score += ((10 * Math.log(R)) + 10);
+        } else if (R < 0) {
+            score -= ((10 * Math.log(-1 * R)) + 15);
+        }
+    }
+    return score;
+}
 
 // Returns random item from array
 function getRandomItem(a) {
