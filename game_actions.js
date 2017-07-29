@@ -664,6 +664,10 @@ var applyTradeRequest = function( action, game ){
 		declined: []
 	};
 
+	// variable only for ai players to randomize and
+	// spread out trade actions
+	game.time_next_trade_allowed[player] = time_offered + (Math.random() * 30) + 30;
+
 	return { isIllegal: false };
 };
 

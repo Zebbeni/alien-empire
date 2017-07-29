@@ -26,6 +26,7 @@ var actions = require('./game_actions');
 			phaseDone: board.initializeUserArray( num_users, false ),
 			turn: 0,
 			trades: board.initializeUserArray(num_users, undefined),
+            time_next_trade_allowed: board.initializeUserArray(num_users, (Date.now() / 1000) + 30),
 			playerTurn: 0,
 			playerOffset: 0,
 			missions: {},
