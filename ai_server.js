@@ -48,6 +48,10 @@ var createAiGameAction = function(game, playerIndex) {
     if (action) {
         return action;
     }
+    action = createAiTradeAction(game, playerIndex);
+    if (action) {
+        return action;
+    }
     // TODO FEATURE: Also have computer look for trades before
     // moving on to normal activities
     switch(game.phase) {
@@ -95,6 +99,38 @@ var createAiCollectResourcesAction = function(game, playerIndex) {
         }
     }
     return null;
+};
+
+var createAiTradeAction = function(game, playerIndex) {
+    var action = null;
+    var playerResources = game.resources[playerIndex];
+    for (var t = 0; t < game.trades.length; t++) {
+        if (game.trades[t]){
+            var trade = game.trades[t];
+            var offeredToPlayer = trade.offered_to.indexOf(playerIndex) != -1;
+            var declinedByPlayer = trade.declined.indexOf(playerIndex) != -1;
+            var time_since_offer = (Date.now() / 1000) - trade.time_offered;
+            if (offeredToPlayer && !declinedByPlayer && time_since_offer > 10) {
+                var requestedResources = trade.opponent_resources;
+                for (var r = 0; r < requestedResources.length; r++) {
+                    if (requestedResources[r] > playerResources[r]) {
+                        return {
+                            actiontype: cons.ACT_TRADE_DECLINE,
+                            player: playerIndex,
+                            requester: t
+                        };
+                    }
+                }
+                // decline trade offer
+                return {
+                    actiontype: cons.ACT_TRADE_DECLINE,
+                    player: playerIndex,
+                    requester: t
+                };
+            }
+        }
+    }
+    return action;
 };
 
 var createAiUpkeepPhaseAction = function(game, playerIndex) {

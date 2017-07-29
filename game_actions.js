@@ -654,7 +654,10 @@ var applyTradeRequest = function( action, game ){
 		}
 	}
 
+	var time_offered = Date.now() / 1000;
+
 	game.trades[player] = {
+		time_offered: time_offered,
 		requester_resources: requester_resources,
 		opponent_resources: opponent_resources,
 		offered_to: offered_to,
@@ -724,7 +727,7 @@ var applyTradeDecline = function( action, game ){
 	var requester = action.requester;
 	var opponent = action.player;
 
-	if ( game.trades[requester] == undefined ) {
+	if ( !game.trades[requester] ) {
 		return { isIllegal: true,
 				 response: "This trade is no longer available"
 		};
