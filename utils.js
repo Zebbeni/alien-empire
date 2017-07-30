@@ -12,7 +12,7 @@ var getResourcesScore = function(resources) {
         if (R > 0) {
             score += ((10 * Math.log(R)) + 10);
         } else if (R < 0) {
-            score -= ((10 * Math.log(-1 * R)) + 20);
+            score -= ((10 * Math.log(-1 * R)) + 15);
         }
     }
     return score;
