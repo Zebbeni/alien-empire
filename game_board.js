@@ -4,6 +4,7 @@
  */
 
 var cons = require('./server_constants');
+var utils = require('./utils');
 
 var start_planets = {
 						1: [8, 3, 1],
@@ -120,24 +121,6 @@ var start_planets = {
 		planet_art = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,
 					  17,18,19,20,21,22,23,24,25,26,27,28,29];
 
-		planet_names = ["Ezund", "Azuma", "Friani", "Azonimi", 
-						"Azorsi", "Osuido", "Divyr", "Brie",
-						"Engelina", "Krurn", "Yash", "Crarah",
-						"Omeezah", "Fel", "Albya", "Pewbafel",
-						"Led", "Lah", "Droono", "Thie",
-						"Brund", "Guskulk", "Khey", "Ottaigode",
-						"Maxi", "Rhotode", "Kreek", "Heye",
-						"Flel", "Frunif", "Tain", "Roonoma",
-						"Tafea", "Sler", "Olugong", "Uthejon",
-						"Zah", "Emalel", "Katox", "Adorsea",
-						"Skia", "Shishian", "Attega", "Paria",
-						"Yia", "Thria", "Alongon", "Pomink",
-						"Blave", "Aventea", "Rhotin", "Shral",
-						"Thandoo", "Sponia", "Katyr", "Marjon",
-						"Sombrea", "Godu", "Telbar", "Solian",
-						"Lercia", "Kram", "Enterriune", "Alna",
-						"Emesekel", "Mah", "Tassian", "Zolea"];
-
 		for ( var i = 0; i < board.planets.length; i++) {
 			board.planets[i].planetid = i; // each planet knows its own index
 			// pick random planet art index
@@ -145,10 +128,7 @@ var start_planets = {
 			board.planets[i].art = planet_art[ index ];
 			planet_art.splice(index, 1);
 
-			// pick random planet name index
-			index = Math.floor(Math.random() * planet_names.length);
-			board.planets[i].name = planet_names[ index ];
-			planet_names.splice(index, 1);
+			board.planets[i].name = utils.generatePlanetName();
 
 			// generate random resources
 			board.planets[i].explored = setExploredStatus(i, num_players);
@@ -161,6 +141,9 @@ var start_planets = {
 			board.planets[i].settledBy = [false, false, false, false];
 			board.planets[i].buildableBy = [false, false, false, false];
 		}
+
+		var marjonIndex = Math.floor(Math.random() * board.planets.length);
+		board.planets[marjonIndex].name = 'Marjon';
 
 		var resourcesOkay = false;
 		while (resourcesOkay == false) {

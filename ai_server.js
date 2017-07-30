@@ -1,6 +1,7 @@
 var cons = require('./server_constants');
 var helpers = require('./game_helpers');
 var gamedata = require('./game_data');
+var utils = require('./utils');
 
 var doAiCycle = function(io, game_server, gamesInfo, users, aiIndex) {
     for (var gameid = 0; gameid < gamesInfo.length; gameid++) {
@@ -148,7 +149,7 @@ var createAiTradeCancelAction = function(game, playerIndex) {
 var createAiTradeResponseAction = function(game, playerIndex) {
     var playerResources = game.resources[playerIndex];
     var futures = gamedata.getResourceFutures(game, playerIndex);
-    var futureScore = getResourcesScore(futures);
+    var futureScore = utils.getResourcesScore(futures);
     // consider other players' trade offers before offering a new one (if they exist)
     for (var t = 0; t < game.trades.length; t++) {
         if (game.trades[t]){
@@ -172,7 +173,7 @@ var createAiTradeResponseAction = function(game, playerIndex) {
                     }
                     futuresWithTrade[r] = futures[r] + offered[r] - requested[r];
                 }
-                var futureScoreWithTrade = getResourcesScore(futuresWithTrade);
+                var futureScoreWithTrade = utils.getResourcesScore(futuresWithTrade);
                 if (futureScoreWithTrade > futureScore) {
                     return {
                         actiontype: cons.ACT_TRADE_ACCEPT,
@@ -200,7 +201,7 @@ var createAiTradeOfferAction = function(game, playerIndex) {
     if (noCurrentTradePending && timeElapsed) {
         var playerResources = game.resources[playerIndex];
         var futures = gamedata.getResourceFutures(game, playerIndex);
-        var futureScore = getResourcesScore(futures);
+        var futureScore = utils.getResourcesScore(futures);
         var minFutureKind = -1;
         var minFutureNum = 999;
         for (var r = 0; r < futures.length; r++) {
@@ -213,7 +214,7 @@ var createAiTradeOfferAction = function(game, playerIndex) {
         var offerContainsResource = false; // flag to indicate offer has at least one resource
         var bestOffer = [0,0,0,0];
         var resourceKinds = [cons.RES_METAL, cons.RES_WATER, cons.RES_FUEL, cons.RES_FOOD];
-        shuffle(resourceKinds);
+        utils.shuffle(resourceKinds);
 
         var futuresWithTrade = futures.slice(); // copy by value
         futuresWithTrade[minFutureKind] += 1; // assume only trading for 1 of this resource type
@@ -227,7 +228,7 @@ var createAiTradeOfferAction = function(game, playerIndex) {
                 for (var r = Math.min(playerResources[kind], 3); r > 0; r--) {
                     var testFuturesWithTrade = futuresWithTrade.slice(); // copyFuturesWithTrade again
                     testFuturesWithTrade[kind] -= 1;
-                    var futureScoreWithTrade = getResourcesScore(testFuturesWithTrade);
+                    var futureScoreWithTrade = utils.getResourcesScore(testFuturesWithTrade);
                     if (futureScoreWithTrade > futureScore) {
                         offerContainsResource = true;
                         bestOffer[kind] += 1;
@@ -440,7 +441,7 @@ var createBestMineBuildAction = function(game, playerIndex, actionType) {
     var planets = game.board.planets.filter(function(planet) {
         return planet.explored && (actionType == cons.ACT_PLACE || planet.buildableBy[playerIndex]);
     });
-    shuffle(planets);  // shuffle to eliminate being biased to first spots
+    utils.shuffle(planets);  // shuffle to eliminate being biased to first spots
     var futures = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, cons.OBJ_MINE);
     var greatestNeedFound = 1000; // (greater needs are lower numbers)
     for (var p = 0; p < planets.length; p++) {
@@ -479,7 +480,7 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.settledBy[playerIndex];
             });
-            shuffle(planets);  // shuffle to eliminate being biased to first spots
+            utils.shuffle(planets);  // shuffle to eliminate being biased to first spots
             var greatestNeedFound = 1000; // (greater needs are lower numbers)
             var onSurveyedResource = true; // initialize to false. prioritize first choice on non-bumped resource.
             for (var p = 0; p < planets.length; p++) {
@@ -512,8 +513,8 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.settledBy[playerIndex] && !planet.base;
             });
-            if (hasContent(planets)) {
-                var planet = getRandomItem(planets);
+            if (utils.hasContent(planets)) {
+                var planet = utils.getRandomItem(planets);
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_BUILD,
@@ -525,7 +526,7 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.base && planet.base.player == playerIndex;
             });
-            if (hasContent(planets)) {
+            if (utils.hasContent(planets)) {
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_BUILD,
@@ -551,7 +552,7 @@ var createBestBuildAction = function(game, playerIndex) {
     // otherwise, attempt to build one of these
     // TODO: Order these in priority according to ai strategy
     var buildTypes = [cons.OBJ_FACTORY, cons.OBJ_EMBASSY, cons.OBJ_FLEET];
-    shuffle(buildTypes);
+    utils.shuffle(buildTypes);
     for (var i = 0; i < buildTypes.length; i++){
         action = createBestBuildActionOfType(game, playerIndex, buildTypes[i]);
         if (action) {
@@ -570,7 +571,7 @@ var createBestRecruitAction = function(game, playerIndex) {
     // otherwise, attempt to build one of these, prioritized randomly
     var agentTypes = [cons.AGT_EXPLORER, cons.AGT_MINER, cons.AGT_SURVEYOR, cons.AGT_SPY, cons.AGT_ENVOY, cons.AGT_AMBASSADOR, cons.AGT_SABATEUR, cons.AGT_SMUGGLER];
     // TODO: prioritize according to a specific ai strategy, not randomly.
-    shuffle(agentTypes);
+    utils.shuffle(agentTypes);
     for (var i = 0; i < agentTypes.length; i++){
         var agenttype = agentTypes[i];
         if (gamedata.playerCanRecruit(game, playerIndex, agentTypes[i])) {
@@ -587,7 +588,7 @@ var createBestRecruitAction = function(game, playerIndex) {
                 }
             } else if (objecttype == cons.OBJ_FACTORY) {
                 var planets = gamedata.getFactoryPlanets(game, playerIndex, objecttype);
-                var planet = getRandomItem(planets);
+                var planet = utils.getRandomItem(planets);
                 return {
                         player: playerIndex,
                         actiontype: cons.ACT_RECRUIT,
@@ -608,7 +609,7 @@ var createBestRecruitAction = function(game, playerIndex) {
                     }
                 }
                 var planets = gamedata.getEmbassyPlanets(game, playerIndex, objecttype);
-                var planet = getRandomItem(planets);
+                var planet = utils.getRandomItem(planets);
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_RECRUIT,
@@ -670,10 +671,10 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
         var unexploredLarge = unexploredAdjacent.filter(function(planet) {
             return planet.w == 2;
         });
-        if (hasContent(unexploredLarge)) {
-            chosenPlanet = getRandomItem(unexploredLarge);
+        if (utils.hasContent(unexploredLarge)) {
+            chosenPlanet = utils.getRandomItem(unexploredLarge);
         } else {
-            chosenPlanet = getRandomItem(unexploredAdjacent);
+            chosenPlanet = utils.getRandomItem(unexploredAdjacent);
         }
         return {
             player: playerIndex,
@@ -684,8 +685,8 @@ var createBestExplorerAction = function(game, playerIndex, agentInfo) {
     }
     // try moving to an adjancent planet if no adjacent unexplored planets
     var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, false);
-    if (hasContent(unblockedAdjacent)) {
-        var chosenPlanet = getRandomItem(unblockedAdjacent);
+    if (utils.hasContent(unblockedAdjacent)) {
+        var chosenPlanet = utils.getRandomItem(unblockedAdjacent);
         return {
             player: playerIndex,
             actiontype: cons.ACT_MOVE_AGENT,
@@ -734,8 +735,8 @@ var createBestMinerAction = function(game, playerIndex, agentInfo) {
 var createBestSpyAction = function(game, playerIndex, agentInfo) {
     var chosenPlanet = game.board.planets[agentInfo.planetid];
     var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, true);
-    if (hasContent(unblockedAdjacent)) {
-        chosenPlanet = getRandomItem(unblockedAdjacent);
+    if (utils.hasContent(unblockedAdjacent)) {
+        chosenPlanet = utils.getRandomItem(unblockedAdjacent);
     }
     return {
         player: playerIndex,
@@ -757,8 +758,8 @@ var createBestEnvoyAction = function(game, playerIndex, agentInfo) {
             }
         }
     });
-    if (hasContent(planetsWithEmbassies)) {
-        var chosenPlanet = getRandomItem(planetsWithEmbassies);
+    if (utils.hasContent(planetsWithEmbassies)) {
+        var chosenPlanet = utils.getRandomItem(planetsWithEmbassies);
         return {
             player: playerIndex,
             actiontype: cons.ACT_LAUNCH_MISSION,
@@ -774,7 +775,7 @@ var createBestEnvoyAction = function(game, playerIndex, agentInfo) {
             planetid: agentInfo.planetid
         };
     } else {
-        var chosenPlanet = getRandomItem(unblockedAdjacent);
+        var chosenPlanet = utils.getRandomItem(unblockedAdjacent);
         return {
             player: playerIndex,
             actionttype: cons.ACT_MOVE_AGENT,
@@ -806,12 +807,12 @@ var createBestAmbassadorAction = function(game, playerIndex, agentInfo) {
     }
     // move to random location if no good locations to launch ambassador mission
     var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, false);
-    if (hasContent(adjacentPlanets)) {
+    if (utils.hasContent(adjacentPlanets)) {
         return {
             player: playerIndex,
             actiontype: cons.ACT_MOVE_AGENT,
             agenttype: cons.AGT_AMBASSADOR,
-            planetid: getRandomItem(adjacentPlanets).planetid
+            planetid: utils.getRandomItem(adjacentPlanets).planetid
         }
     } else {
         // if impossible to move agent, send on mission to own planet
@@ -829,8 +830,8 @@ var createBestSabateurAction = function(game, playerIndex, agentInfo) {
     var unblockedPlanets = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, true);
     // default to current planet if all adjacent planets are blocked
     var chosenPlanet = game.board.planets[agentInfo.planetid];
-    if (hasContent(unblockedPlanets)) {
-        chosenPlanet = getRandomItem(unblockedPlanets);
+    if (utils.hasContent(unblockedPlanets)) {
+        chosenPlanet = utils.getRandomItem(unblockedPlanets);
     }
     return {
         player: playerIndex,
@@ -844,8 +845,8 @@ var createBestSabateurAction = function(game, playerIndex, agentInfo) {
 var createBestSmugglerAction = function(game, playerIndex, agentInfo) {
     var chosenPlanet = game.board.planets[agentInfo.planetid];
     var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, true);
-    if (hasContent(unblockedAdjacent)) {
-        shuffle(unblockedAdjacent);
+    if (utils.hasContent(unblockedAdjacent)) {
+        utils.shuffle(unblockedAdjacent);
         var maxEnemyStructures = 0;
         for (var p = 0; p < unblockedAdjacent.length; p++) {
             var planet = unblockedAdjacent[p];
@@ -878,8 +879,8 @@ var createBestSurveyorAction = function(game, playerIndex, agentInfo) {
             }
         }
     });
-    if (hasContent(planetsWithResourcesToBump)) {
-        var chosenPlanet = getRandomItem(planetsWithResourcesToBump);
+    if (utils.hasContent(planetsWithResourcesToBump)) {
+        var chosenPlanet = utils.getRandomItem(planetsWithResourcesToBump);
         return {
             player: playerIndex,
             actiontype: cons.ACT_LAUNCH_MISSION,
@@ -888,8 +889,8 @@ var createBestSurveyorAction = function(game, playerIndex, agentInfo) {
         }
     } else {
         var unblockedAdjacent = gamedata.getAdjacentUnblockedPlanets(game, agentInfo.planetid, false);
-        if (hasContent(unblockedAdjacent)) {
-            var chosenPlanet = getRandomItem(unblockedAdjacent);
+        if (utils.hasContent(unblockedAdjacent)) {
+            var chosenPlanet = utils.getRandomItem(unblockedAdjacent);
             return {
                 player: playerIndex,
                 actiontype: cons.ACT_MOVE_AGENT,
@@ -909,21 +910,21 @@ var createBestSurveyorAction = function(game, playerIndex, agentInfo) {
 
 var createBestFleetAction = function(game, playerIndex) {
     var fleets = gamedata.getActiveFleets(game, playerIndex);
-    if (hasContent(fleets)) {
+    if (utils.hasContent(fleets)) {
         var unusedFleets = fleets.filter(function (fleet) {
             return fleet.used == false;
         });
-        if (hasContent(unusedFleets)) {
+        if (utils.hasContent(unusedFleets)) {
             var fleet = unusedFleets[0];
             var planet = game.board.planets[fleet.planetid];
             // filter out all mines from attack targets
             var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, false);
-            if (hasContent(attackTargets)) {
+            if (utils.hasContent(attackTargets)) {
                 var nonMineTargets = attackTargets.filter(function (target) {
                     return cons.STRUCT_REQS[target.objecttype].defense < 6;
                 });
-                if (hasContent(nonMineTargets)) {
-                    var attackItem = getRandomItem(nonMineTargets);
+                if (utils.hasContent(nonMineTargets)) {
+                    var attackItem = utils.getRandomItem(nonMineTargets);
                     return {
                         player: playerIndex,
                         actiontype: cons.ACT_FLEET_ATTACK,
@@ -937,8 +938,8 @@ var createBestFleetAction = function(game, playerIndex) {
             }
             // if no targets, try moving to an adjacent planet
             var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, fleet.planetid);
-            if (hasContent(adjacentPlanets)) {
-                choicePlanet = getRandomItem(adjacentPlanets);
+            if (utils.hasContent(adjacentPlanets)) {
+                choicePlanet = utils.getRandomItem(adjacentPlanets);
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_FLEET_MOVE,
@@ -955,12 +956,12 @@ var createBestBaseAction = function(game, playerIndex) {
     var basePlanet = gamedata.getBasePlanet(game, playerIndex);
     if (basePlanet && basePlanet.base.used == false) {
         var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, basePlanet, false);
-        if (hasContent(attackTargets)) {
+        if (utils.hasContent(attackTargets)) {
             var fleetTargets = attackTargets.filter(function (target) {
                 return target.objecttype == cons.OBJ_FLEET;
             });
-            if (hasContent(fleetTargets)) {
-                var attackItem = getRandomItem(fleetTargets);
+            if (utils.hasContent(fleetTargets)) {
+                var attackItem = utils.getRandomItem(fleetTargets);
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_BASE_ATTACK,
@@ -979,7 +980,7 @@ var createBestBaseAction = function(game, playerIndex) {
 // into the lowest future type (if possible). Otherwise, returns null.
 var createAi4To1Action = function(game, playerIndex, mustDo) {
     var futures = gamedata.getResourceFutures(game, playerIndex);
-    var futureScore = getResourcesScore(futures);
+    var futureScore = utils.getResourcesScore(futures);
     // get resource type of highest future
     var highestFutureResource = -999;
     var surplusResourceType = -1;
@@ -1005,7 +1006,7 @@ var createAi4To1Action = function(game, playerIndex, mustDo) {
             var futuresWithTrade = futures.slice();
             futuresWithTrade[deficitResourceType] += 1;
             futuresWithTrade[surplusResourceType] -= 4;
-            var futureScoreWithTrade = getResourcesScore(futuresWithTrade);
+            var futureScoreWithTrade = utils.getResourcesScore(futuresWithTrade);
             isBetterScore = futureScoreWithTrade > futureScore;
         }
         if (mustDo || isBetterScore) {
@@ -1042,7 +1043,7 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
         }
     }
     var unitsToRemove = gamedata.getUnitsRequiringUpkeep(game, playerIndex, typeToEliminate);
-    var unitToRemove = getRandomItem(unitsToRemove);
+    var unitToRemove = utils.getRandomItem(unitsToRemove);
     if (unitToRemove.agenttype) {
         return {
             player: playerIndex,
@@ -1174,7 +1175,7 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
         case cons.AGT_AMBASSADOR:
             var choice = [];
             var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, planetid, false);
-            shuffle(adjacentPlanets); // pick random borders to block TODO: this could be smarter
+            utils.shuffle(adjacentPlanets); // pick random borders to block TODO: this could be smarter
             for (var p = 0; p < adjacentPlanets.length; p++) {
                 if (choice.length < 2) {
                     choice.push(adjacentPlanets[p].planetid);
@@ -1189,8 +1190,8 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
             };
         case cons.AGT_SABATEUR:
             var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, false);
-            if (hasContent(attackTargets)) {
-                var attackItem = getRandomItem(attackTargets);
+            if (utils.hasContent(attackTargets)) {
+                var attackItem = utils.getRandomItem(attackTargets);
                 return {
                     player: playerIndex,
                     agenttype: agenttype,
@@ -1223,46 +1224,6 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
     }
     return null;
 };
-
-// calculate a score from a given array of resources
-// score is a sum of the score for each resource R,
-// calculating the area under the a hyperbolic curve
-// Score = (10 * ln(R) + 10) for positive values of R
-// Score = -(10 * ln(-R) + 15) for negative values of R
-function getResourcesScore(resources) {
-    var score = 0;
-    for (var r = 0; r < resources.length; r++) {
-        var R = resources[r];
-        if (R > 0) {
-            score += ((10 * Math.log(R)) + 10);
-        } else if (R < 0) {
-            score -= ((10 * Math.log(-1 * R)) + 20);
-        }
-    }
-    return score;
-}
-
-// Returns random item from array
-function getRandomItem(a) {
-    var index = Math.floor(Math.random() * a.length);
-    return a[index];
-}
-
-// Returns true if an array is not null and has > 0 item
-function hasContent(a) {
-    return a && a.length > 0;
-}
-
-// Shuffles array in place
-function shuffle(a) {
-    var j, x, i;
-    for (i = a.length; i; i--) {
-        j = Math.floor(Math.random() * i);
-        x = a[i - 1];
-        a[i - 1] = a[j];
-        a[j] = x;
-    }
-}
 
 (function() {
     module.exports = {
