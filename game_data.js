@@ -213,7 +213,7 @@ var getEnemyStructuresOnPlanet = function(game, playerIndex, planet, resourcesOn
             });
         }
     }
-    if (resourcesOnly) {
+    if (!resourcesOnly) {
         var fleets = planet.fleets
         for (var f = 0; f < fleets.length; f++) {
             var fleetid = fleets[f];
@@ -284,9 +284,10 @@ var getResourceFuturesWithNewStructure = function(game, playerIndex, objecttype)
     var futures = getResourceFutures(game, playerIndex);
     var build = cons.STRUCT_REQS[objecttype].build;
     var upkeep = cons.STRUCT_REQS[objecttype].upkeep;
-    return futures.map(function (num, idx) {
+    var futuresWithStructure = futures.map(function (num, idx) {
         return num - (build[idx] + 2 * upkeep[idx]);
     });
+    return futuresWithStructure;
 };
 
 // return true if is playerIndex's turn
@@ -307,10 +308,7 @@ var playerHasStructureOnBoard = function(game, playerIndex, objecttype) {
 var playerCanBuild = function(game, playerIndex, objecttype) {
     if (playerHasStructureInInventory(game, playerIndex, objecttype)) {
         var requirements = cons.STRUCT_REQS[objecttype].build;
-        if (!playerCanPay(game, playerIndex, requirements)){
-            return false;
-        }
-        return true;
+        return playerCanPay(game, playerIndex, requirements);
     }
     return false;
 };

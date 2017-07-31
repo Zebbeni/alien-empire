@@ -1185,9 +1185,7 @@ var applyBlockMission = function( action, game ){
 
 						setPlanetExplored( game, planetid );
 						var planet = game.board.planets[planetid];
-						var planetname = planet.name;
-						var result = " discovered " + planetname;
-						result += " and earned " + points + " points,";
+						var result = " discovered a planet and earned " + points + " points,";
                         mission.result = result;
 					}
 
@@ -1436,7 +1434,8 @@ var applyMissionResolve = function( action, game ){
 
 				var result = " increased mining resources on " + planets[planetid].name + ".";
                 mission.result = result;
-
+                // bump number of successful surveyor missions
+				game.num_surveyor_missions[player] += 1;
 				break;
 
 			case cons.AGT_AMBASSADOR:

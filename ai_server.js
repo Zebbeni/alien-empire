@@ -261,14 +261,15 @@ var createAiTradeOfferAction = function(game, playerIndex) {
 };
 
 var createAiUpkeepPhaseAction = function(game, playerIndex) {
-    // TODO FEATURE:
-    //          This should consider retiring agents even if
-    //          it *can* pay upkeep for them
     var resource_pkgs = game.resourcePackages[playerIndex];
     for (var i = 0; i < resource_pkgs.length; i++) {
         var pkg = resource_pkgs[i];
         if (pkg.pkgtype == cons.PKG_UPKEEP) {
             if (!pkg.collected && !pkg.cancelled) {
+                var action = createBestRetireBeforeUpkeepAction(game, playerIndex);
+                if (action) {
+                    return action;
+                }
                 if (gamedata.playerCanPay(game, playerIndex, pkg.resources)) {
                     return {
                         player: playerIndex,
@@ -293,6 +294,56 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
                     }
                 }
             }
+        }
+    }
+    return null;
+};
+
+var createBestRetireBeforeUpkeepAction = function(game, playerIndex) {
+    // remove explorer if all exploration points taken
+    if (game.points[cons.PNT_EXPLORE] <= 0) {
+        var explorer = game.board.agents[String(playerIndex) + String(cons.AGT_EXPLORER)];
+        if (explorer.status == cons.AGT_STATUS_ON) {
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_RETIRE,
+                agenttype: cons.AGT_EXPLORER
+            };
+        }
+    }
+    // remove envoy if all envoy points taken
+    if (game.points[cons.PNT_ENVOY] <= 0) {
+        var envoy = game.board.agents[String(playerIndex) + String(cons.AGT_ENVOY)];
+        if (envoy.status == cons.AGT_STATUS_ON) {
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_RETIRE,
+                agenttype: cons.AGT_ENVOY
+            };
+        }
+    }
+    // remove surveyor after 3 successful surveyor missions completed
+    if (game.num_surveyor_missions[playerIndex] >= 3) {
+        var surveyor = game.board.agents[String(playerIndex) + String(cons.AGT_SURVEYOR)];
+        if (surveyor.status == cons.AGT_STATUS_ON) {
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_RETIRE,
+                agenttype: cons.AGT_SURVEYOR
+            };
+        }
+    }
+    // remove ambassador if no other possible borders to block
+    var ambassador = game.board.agents[String(playerIndex) + String(cons.AGT_SURVEYOR)];
+    if (ambassador.status == cons.AGT_STATUS_ON) {
+        var adjacentUnblocked = gamedata.getAdjacentUnblockedPlanets(game, ambassador.planetid, false);
+        var adjacentUnexplored = gamedata.getAdjacentUnexploredPlanets(game, ambassador.planetid, false);
+        if (!utils.hasContent(adjacentUnblocked) && !utils.hasContent(adjacentUnexplored)) {
+            return {
+                player: playerIndex,
+                actiontype: cons.ACT_RETIRE,
+                agenttype: cons.AGT_AMBASSADOR
+            };
         }
     }
     return null;
@@ -415,7 +466,7 @@ var createAiBlockMissionAction = function(game, playerIndex, mission) {
                 case cons.AGT_MINER:
                 case cons.AGT_ENVOY:
                     // Collect 1/2 of the time, otherwise Block
-                    choice = Math.random() * 2 < 1 ? cons.SPY_ACT_COLLECT : cons.SPY_ACT_BLOCK;
+                    choice = Math.random() < 0.8 ? cons.SPY_ACT_COLLECT : cons.SPY_ACT_BLOCK;
                     break;
                 default:
                     break;
@@ -468,14 +519,15 @@ var createBestMineBuildAction = function(game, playerIndex, actionType) {
 // randomly chooses to try building either an embassy or factory. returns build action if possible
 var createBestBuildActionOfType = function(game, playerIndex, objType) {
     var action = null;
+    var futuresWithStructure = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, objType);
+    var avoidsDeficit = true;
+    for (var f = 0; f < futuresWithStructure.length; f++) {
+        if (futuresWithStructure[f] < 0) {
+            avoidsDeficit = false;
+        }
+    }
     // if object in inventory and if player has required resources
     if (gamedata.playerCanBuild(game, playerIndex, objType)) {
-        var futures = gamedata.getResourceFuturesWithNewStructure(game, playerIndex, objType);
-        for (var f = 0; f < futures.length; f++) {
-            if (futures[f] < 0) {
-                return null; // don't build something that player cannot afford.
-            }
-        }
         if (objType == cons.OBJ_FACTORY || objType == cons.OBJ_EMBASSY) {
             var planets = game.board.planets.filter(function (planet) {
                 return planet.settledBy[playerIndex];
@@ -489,50 +541,78 @@ var createBestBuildActionOfType = function(game, playerIndex, objType) {
                     var structure = resources[r].structure;
                     if (structure && structure.player == playerIndex && structure.kind == cons.OBJ_MINE) {
                         var kind = resources[r].kind;
-                        if ((futures[kind] < greatestNeedFound && resources[r].num == 1)
-                            || ( onSurveyedResource && resources[r].num == 1)
-                            || ( onSurveyedResource && futures[kind] < greatestNeedFound) ) {
-                            if (resources[r].num == 1) {
-                                // set flag so surveyed resources are not chosen over this one.
-                                onSurveyedResource = false;
+                        avoidsDeficit = true;
+                        // futures compensating for whatever extra resource we pick up here
+                        var futuresWithStructureHere = futuresWithStructure.slice();
+                        if (resources[r].num == 1) {
+                            futuresWithStructureHere[kind] += 2;
+                        }
+                        for (var f = 0; f < futuresWithStructureHere.length; f++) {
+                            if (futuresWithStructureHere[f] < 0) {
+                                avoidsDeficit = false;
                             }
-                            greatestNeedFound = futures[kind];
-                            action = {
-                                player: playerIndex,
-                                actiontype: cons.ACT_BUILD,
-                                objecttype: objType,
-                                resourceid: r,
-                                planetid: planets[p].planetid
-                            };
+                        }
+                        if (avoidsDeficit) {
+                            if ((futuresWithStructure[kind] < greatestNeedFound && resources[r].num == 1)
+                                || ( onSurveyedResource && resources[r].num == 1)
+                                || ( onSurveyedResource && futuresWithStructure[kind] < greatestNeedFound)) {
+                                if (resources[r].num == 1) {
+                                    // set flag so surveyed resources are not chosen over this one.
+                                    onSurveyedResource = false;
+                                }
+                                greatestNeedFound = futuresWithStructure[kind];
+                                action = {
+                                    player: playerIndex,
+                                    actiontype: cons.ACT_BUILD,
+                                    objecttype: objType,
+                                    resourceid: r,
+                                    planetid: planets[p].planetid
+                                };
+                            }
                         }
                     }
                 }
             }
             return action;
         } else if (objType == cons.OBJ_BASE) {
-            var planets = game.board.planets.filter(function (planet) {
-                return planet.settledBy[playerIndex] && !planet.base;
-            });
-            if (utils.hasContent(planets)) {
-                var planet = utils.getRandomItem(planets);
-                return {
-                    player: playerIndex,
-                    actiontype: cons.ACT_BUILD,
-                    objecttype: cons.OBJ_BASE,
-                    planetid: planet.planetid
-                };
+            if (avoidsDeficit) {
+                var planets = game.board.planets.filter(function (planet) {
+                    return planet.settledBy[playerIndex] && !planet.base;
+                });
+                if (utils.hasContent(planets)) {
+                    utils.shuffle(planets);
+                    var maxStructuresOnPlanet = 0;
+                    var planet;
+                    for (var p = 0; p < planets.length; p++) {
+                        var numStructures = gamedata.getNumStructuresOnPlanet(game, planets[p], playerIndex);
+                        if (numStructures > maxStructuresOnPlanet) {
+                            planet = planets[p];
+                            maxStructuresOnPlanet = numStructures;
+                        }
+                    }
+                    if (planet) {
+                        return {
+                            player: playerIndex,
+                            actiontype: cons.ACT_BUILD,
+                            objecttype: cons.OBJ_BASE,
+                            planetid: planet.planetid
+                        };
+                    }
+                }
             }
         } else if (objType == cons.OBJ_FLEET) {
-            var planets = game.board.planets.filter(function (planet) {
-                return planet.base && planet.base.player == playerIndex;
-            });
-            if (utils.hasContent(planets)) {
-                return {
-                    player: playerIndex,
-                    actiontype: cons.ACT_BUILD,
-                    objecttype: cons.OBJ_FLEET,
-                    planetid: planets[0].planetid
-                };
+            if (avoidsDeficit) {
+                var planets = game.board.planets.filter(function (planet) {
+                    return planet.base && planet.base.player == playerIndex;
+                });
+                if (utils.hasContent(planets)) {
+                    return {
+                        player: playerIndex,
+                        actiontype: cons.ACT_BUILD,
+                        objecttype: cons.OBJ_FLEET,
+                        planetid: planets[0].planetid
+                    };
+                }
             }
         }
     }
@@ -831,7 +911,15 @@ var createBestSabateurAction = function(game, playerIndex, agentInfo) {
     // default to current planet if all adjacent planets are blocked
     var chosenPlanet = game.board.planets[agentInfo.planetid];
     if (utils.hasContent(unblockedPlanets)) {
-        chosenPlanet = utils.getRandomItem(unblockedPlanets);
+        var maxEnemyStructures = 0;
+        utils.shuffle(unblockedPlanets);
+        for (var p = 0; p < unblockedPlanets.length; p++) {
+            var numEnemyStructures = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, unblockedPlanets[p], false);
+            if (numEnemyStructures > maxEnemyStructures) {
+                chosenPlanet = unblockedPlanets[p];
+                maxEnemyStructures = numEnemyStructures;
+            }
+        }
     }
     return {
         player: playerIndex,
@@ -850,7 +938,8 @@ var createBestSmugglerAction = function(game, playerIndex, agentInfo) {
         var maxEnemyStructures = 0;
         for (var p = 0; p < unblockedAdjacent.length; p++) {
             var planet = unblockedAdjacent[p];
-            var numEnemyStructures = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, true);
+            var enemyStructures = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, true);
+            var numEnemyStructures = enemyStructures.length;
             if (numEnemyStructures > maxEnemyStructures) {
                 maxEnemyStructures = numEnemyStructures;
                 chosenPlanet = planet;
@@ -1029,17 +1118,6 @@ var createAiRemoveToPayAction = function(game, playerIndex, resources) {
         if (game.resources[playerIndex][r] - resources[r] < 0) {
             typeToEliminate = r;
             break;
-        }
-    }
-    // prioritize removing explorer if all exploration points taken
-    if (game.points[cons.PNT_EXPLORE] < 1) {
-        var explorer = game.board.agents[String(playerIndex) + String(cons.AGT_EXPLORER)];
-        if (explorer.status == cons.AGT_STATUS_ON) {
-            return {
-                player: playerIndex,
-                actiontype: cons.ACT_RETIRE,
-                agenttype: cons.AGT_EXPLORER
-            };
         }
     }
     var unitsToRemove = gamedata.getUnitsRequiringUpkeep(game, playerIndex, typeToEliminate);

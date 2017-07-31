@@ -27,6 +27,7 @@ var actions = require('./game_actions');
 			turn: 0,
 			trades: board.initializeUserArray(num_users, undefined),
             time_next_trade_allowed: board.initializeUserArray(num_users, (Date.now() / 1000) + 30),
+            num_surveyor_missions: board.initializeUserArray(num_users, 0),
 			playerTurn: 0,
 			playerOffset: 0,
 			missions: {},

@@ -2,17 +2,17 @@ var cons = require('./server_constants');
 
 // calculate a score from a given array of resources
 // score is a sum of the score for each resource R,
-// calculating the area under the a hyperbolic curve
-// Score = (10 * ln(R) + 10) for positive values of R
-// Score = -(10 * ln(-R) + 15) for negative values of R
+// calculating the area under one of two lines:
+// Score += -(R^2)/2 + 10(R) for positive values of R
+// Score -= (R^2)/3 + 10(|R|) for negative values of R
 var getResourcesScore = function(resources) {
     var score = 0;
     for (var r = 0; r < resources.length; r++) {
         var R = resources[r];
         if (R > 0) {
-            score += ((10 * Math.log(R)) + 10);
+            score += ((R * R / -2) + (10 * R));
         } else if (R < 0) {
-            score -= ((10 * Math.log(-1 * R)) + 15);
+            score -= ((R * R / 3) + (10 * Math.abs(R)));
         }
     }
     return score;
@@ -44,7 +44,7 @@ var generatePlanetName = function() {
     // generate random planet name (pick # word tokens to concatenate)
     var length = 1 + Math.ceil(Math.random() * 2);
     var gender = getRandomItem([cons.GENDER_MALE, cons.GENDER_FEMALE]);
-    var doLastName = Math.random() < 0.2;
+    var doLastName = Math.random() < 0.1;
     var name = generateName(length, doLastName, gender);
     if (Math.random() < 0.1) { // occasionally put a roman numeral at the end
         name += ' ' + getRandomItem(['I','II','III','IV','V','VI','VII','VIII','IIX','IX','X','XI','XII','XIII']);
@@ -53,11 +53,11 @@ var generatePlanetName = function() {
 };
 
 var generateComputerPlayerName = function() {
-    var titlesOfRankMale = ['Admiral','Baron','Chancellor','Count','Emperor','General','King','Prince','Tzar'];
-    var titlesOfRankFemale = ['Admiral','Baroness','Chancellor','Countess','Empress','General','Princess','Queen','Tzarina'];
+    var titlesOfRankMale = ['Admiral','Baron','Chancellor','Count','Emperor','General','King','Lord','Prince','Tzar'];
+    var titlesOfRankFemale = ['Admiral','Baroness','Chancellor','Countess','Empress','General','Lady','Princess','Queen','Tzarina'];
     var gender = getRandomItem([cons.GENDER_FEMALE,cons.GENDER_MALE]);
     var title = gender == cons.GENDER_MALE ? getRandomItem(titlesOfRankMale) : getRandomItem(titlesOfRankFemale);
-    var nameLength = 1 + Math.floor(Math.random() * 3);
+    var nameLength = 1 + Math.round(Math.random() * 2);
     var doLastName = false;
     var name = title + " " + generateName(nameLength, doLastName, gender);
     return name;
