@@ -158,7 +158,7 @@ var createAiTradeResponseAction = function(game, playerIndex) {
             var declinedByPlayer = trade.declined.indexOf(playerIndex) != -1;
             var time_since_offer = (Date.now() / 1000) - trade.time_offered;
             // wait 10 seconds to consider trade to give human players a chance
-            if (offeredToPlayer && !declinedByPlayer && time_since_offer > 10) {
+            if (offeredToPlayer && !declinedByPlayer && time_since_offer > 8) {
                 var requested = trade.opponent_resources;
                 var offered = trade.requester_resources;
                 var futuresWithTrade = [0,0,0,0];
@@ -238,12 +238,18 @@ var createAiTradeOfferAction = function(game, playerIndex) {
             }
         }
 
+        var winningPlayer = gamedata.getWinningPlayerInfo(game, playerIndex);
+        var doExcludeWinningPlayer = false;
+        if (winningPlayer.pointsFromWinning <= 3) {
+            doExcludeWinningPlayer = true;
+        }
+
         if (offerContainsResource) {
             var opponent_resources = [0, 0, 0, 0];
             opponent_resources[minFutureKind] += 1;
             var offered_to = [];
             for (var p = 0; p < game.players.length; p++) {
-                if (p != playerIndex) {
+                if (p != playerIndex && (p != winningPlayer || doExcludeWinningPlayer == false)) {
                     offered_to.push(p);
                 }
             }
@@ -301,7 +307,7 @@ var createAiUpkeepPhaseAction = function(game, playerIndex) {
 
 var createBestRetireBeforeUpkeepAction = function(game, playerIndex) {
     // remove explorer if all exploration points taken
-    if (game.points[cons.PNT_EXPLORE] <= 0) {
+    if (game.points_remaining[cons.PNT_EXPLORE] <= 0) {
         var explorer = game.board.agents[String(playerIndex) + String(cons.AGT_EXPLORER)];
         if (explorer.status == cons.AGT_STATUS_ON) {
             return {
@@ -312,7 +318,7 @@ var createBestRetireBeforeUpkeepAction = function(game, playerIndex) {
         }
     }
     // remove envoy if all envoy points taken
-    if (game.points[cons.PNT_ENVOY] <= 0) {
+    if (game.points_remaining[cons.PNT_ENVOY] <= 0) {
         var envoy = game.board.agents[String(playerIndex) + String(cons.AGT_ENVOY)];
         if (envoy.status == cons.AGT_STATUS_ON) {
             return {
@@ -915,7 +921,7 @@ var createBestSabateurAction = function(game, playerIndex, agentInfo) {
         utils.shuffle(unblockedPlanets);
         for (var p = 0; p < unblockedPlanets.length; p++) {
             var numEnemyStructures = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, unblockedPlanets[p], false);
-            if (numEnemyStructures > maxEnemyStructures) {
+            if (numEnemyStructures.length > maxEnemyStructures) {
                 chosenPlanet = unblockedPlanets[p];
                 maxEnemyStructures = numEnemyStructures;
             }
@@ -1004,31 +1010,66 @@ var createBestFleetAction = function(game, playerIndex) {
             return fleet.used == false;
         });
         if (utils.hasContent(unusedFleets)) {
+            // go after winning player if close to the number of points needed
+            var winningPlayer = gamedata.getWinningPlayerInfo(game, playerIndex);
+            var doTargetWinner = winningPlayer.pointsFromWinning <= 4;
+
             var fleet = unusedFleets[0];
             var planet = game.board.planets[fleet.planetid];
             // filter out all mines from attack targets
-            var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, false);
+            var targets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, false);
+            var attackTargets = targets.filter(function (target) {
+                return cons.STRUCT_REQS[target.objecttype].defense < 6;
+            });
             if (utils.hasContent(attackTargets)) {
-                var nonMineTargets = attackTargets.filter(function (target) {
-                    return cons.STRUCT_REQS[target.objecttype].defense < 6;
-                });
-                if (utils.hasContent(nonMineTargets)) {
-                    var attackItem = utils.getRandomItem(nonMineTargets);
-                    return {
-                        player: playerIndex,
-                        actiontype: cons.ACT_FLEET_ATTACK,
-                        targetid: fleet.fleetid,
-                        targetPlayer: attackItem.targetPlayer,
-                        choice: attackItem.choice,
-                        objecttype: attackItem.objecttype,
-                        planetid: fleet.planetid
-                    };
+                utils.shuffle(attackTargets);
+                // If AI should be targeting the winner and winner has structures here,
+                // only consider those structures
+                if (doTargetWinner) {
+                    var winnerTargets = attackTargets.filter(function(target) {
+                        target.targetPlayer == winningPlayer;
+                    });
+                    if (utils.hasContent(winnerTargets)) {
+                        attackTargets = winnerTargets;
+                    }
                 }
+                var attackItem = utils.getRandomItem(attackTargets);
+                return {
+                    player: playerIndex,
+                    actiontype: cons.ACT_FLEET_ATTACK,
+                    targetid: fleet.fleetid,
+                    targetPlayer: attackItem.targetPlayer,
+                    choice: attackItem.choice,
+                    objecttype: attackItem.objecttype,
+                    planetid: fleet.planetid
+                };
             }
             // if no targets, try moving to an adjacent planet
-            var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, fleet.planetid);
+            var adjacentPlanets = gamedata.getAdjacentUnblockedPlanets(game, fleet.planetid, false);
             if (utils.hasContent(adjacentPlanets)) {
-                choicePlanet = utils.getRandomItem(adjacentPlanets);
+                // if ai should be targeting the winning player, filter only those planets
+                // where this player has structures that can be attacked
+                if (doTargetWinner) {
+                    var winnerPlanets = adjacentPlanets.filter(function(adjacentPlanet) {
+                        return gamedata.getNumStructuresOnPlanet(game, adjacentPlanet, winningPlayer) > 0;
+                    });
+                    if (utils.hasContent(winnerPlanets)) {
+                        adjacentPlanets = winnerPlanets;
+                    }
+                }
+                var choicePlanet = utils.getRandomItem(adjacentPlanets);
+                var maxTargetableStructures = 0;
+                utils.shuffle(adjacentPlanets);
+                for (var p = 0; p < adjacentPlanets.length; p++) {
+                    var enemyStructures = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, adjacentPlanets[p], false);
+                    var targetableStructures = enemyStructures.filter(function(structureInfo) {
+                        return cons.STRUCT_REQS[structureInfo.objecttype].defense < 6;
+                    });
+                    if (targetableStructures.length > maxTargetableStructures) {
+                        maxTargetableStructures = targetableStructures.length;
+                        choicePlanet = adjacentPlanets[p];
+                    }
+                }
                 return {
                     player: playerIndex,
                     actiontype: cons.ACT_FLEET_MOVE,
@@ -1038,6 +1079,8 @@ var createBestFleetAction = function(game, playerIndex) {
             }
         }
     }
+    // TODO: This might result in an infinite loop if fleets cannot move and cannot attack.
+    // TODO: allow to end turn if fleets have no legal option
     return null;
 };
 
@@ -1270,6 +1313,29 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
             var attackTargets = gamedata.getEnemyStructuresOnPlanet(game, playerIndex, planet, false);
             if (utils.hasContent(attackTargets)) {
                 var attackItem = utils.getRandomItem(attackTargets);
+                // If AI should be targeting the winner and winner has structures here,
+                // only consider those structures
+                var winningPlayer = gamedata.getWinningPlayerInfo(game, playerIndex);
+                var targetWinner = false;
+                if (winningPlayer.pointsFromWinning <= 4) {
+                    targetWinner = planet.settledBy[winningPlayer.player];
+                }
+                if (targetWinner) {
+                    attackTargets = attackTargets.filter(function(target) {
+                        target.targetPlayer == winningPlayer;
+                    });
+                }
+                var attackPriority = [cons.OBJ_MINE, cons.OBJ_FACTORY, cons.OBJ_EMBASSY, cons.OBJ_FLEET, cons.OBJ_BASE];
+                var highestPriorityFound = -1;
+                // TODO: prioritize winning player if on this planet
+                for (var a = 0; a < attackTargets.length; a++) {
+                    var objecttype = attackTargets[a];
+                    var thisPriority = attackPriority.indexOf(objecttype);
+                    if (thisPriority > highestPriorityFound) {
+                        attackItem = attackTargets[a];
+                        highestPriorityFound = thisPriority;
+                    }
+                }
                 return {
                     player: playerIndex,
                     agenttype: agenttype,

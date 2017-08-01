@@ -10,9 +10,11 @@ var getResourcesScore = function(resources) {
     for (var r = 0; r < resources.length; r++) {
         var R = resources[r];
         if (R > 0) {
-            score += ((R * R / -2) + (10 * R));
+            // score += ((R * R / -2) + (10 * R));
+            score += (10 * Math.log(Math.abs(R)) + 10);
         } else if (R < 0) {
-            score -= ((R * R / 3) + (10 * Math.abs(R)));
+            // score -= ((R * R / 3) + (10 * Math.abs(R)));
+            score -= (10 * Math.log(-1 * R) + 11);
         }
     }
     return score;
@@ -53,8 +55,8 @@ var generatePlanetName = function() {
 };
 
 var generateComputerPlayerName = function() {
-    var titlesOfRankMale = ['Admiral','Baron','Chancellor','Count','Emperor','General','King','Lord','Prince','Tzar'];
-    var titlesOfRankFemale = ['Admiral','Baroness','Chancellor','Countess','Empress','General','Lady','Princess','Queen','Tzarina'];
+    var titlesOfRankMale = ['Admiral','Baron','Chancellor','Count','Emperor','General','Governor','Imperator','King','Lord','Prince','Tzar'];
+    var titlesOfRankFemale = ['Admiral','Baroness','Chancellor','Countess','Empress','General','Governor','Imperator','Lady','Princess','Queen','Tzarina'];
     var gender = getRandomItem([cons.GENDER_FEMALE,cons.GENDER_MALE]);
     var title = gender == cons.GENDER_MALE ? getRandomItem(titlesOfRankMale) : getRandomItem(titlesOfRankFemale);
     var nameLength = 1 + Math.round(Math.random() * 2);
