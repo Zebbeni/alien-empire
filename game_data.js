@@ -290,6 +290,22 @@ var getResourceFuturesWithNewStructure = function(game, playerIndex, objecttype)
     return futuresWithStructure;
 };
 
+var getWinningPlayerInfo = function(game, playerIndex) {
+    var winningPlayer = -1;
+    var maxScore = -1;
+    for (var p = 0; p < game.points.length; p++ ){
+        if (p != playerIndex && game.points[p][cons.PNT_TOTAL] > maxScore) {
+            winningPlayer = p;
+            maxScore = game.points[p][cons.PNT_TOTAL];
+        }
+    }
+    return {
+        player: winningPlayer,
+        playerPoints: maxScore,
+        pointsFromWinning: game.points_to_win - maxScore
+    };
+};
+
 // return true if is playerIndex's turn
 var isPlayerIndexTurn = function(game, playerIndex) {
     return game.playerTurn == playerIndex;
@@ -362,6 +378,7 @@ var playerCanRecruit = function(game, playerIndex, agenttype) {
         getResourceFutures: getResourceFutures,
         getResourceFuturesWithNewStructure: getResourceFuturesWithNewStructure,
         getUnitsRequiringUpkeep: getUnitsRequiringUpkeep,
+        getWinningPlayerInfo: getWinningPlayerInfo,
         isPlayerTurn: isPlayerIndexTurn,
         playerCanBuild: playerCanBuild,
         playerCanCollect: playerCanCollect,
