@@ -446,7 +446,7 @@ var initNametext = function( planetid ) {
 
 	nametext.alpha = 0.7;
 	nametext.textAlign = "center";
-	nametext.shadow = new createjs.Shadow("rgba(0,0,0,0.3)", 1, 1, 1);
+	nametext.shadow = new createjs.Shadow("rgba(0,0,0,0.7)", 2, 2, 2);
 	nametext.x = ( sWid * planets[planetid].w ) / 2.0;
 	nametext.mouseEnabled = false;
 
@@ -458,6 +458,7 @@ var initNametext = function( planetid ) {
 			nametext.y = 197;
 			break;
 	}
+
 	tiles[planetid].addChild( nametext );
 };
 

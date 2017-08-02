@@ -240,7 +240,7 @@ var createAiTradeOfferAction = function(game, playerIndex) {
 
         var winningPlayer = gamedata.getWinningPlayerInfo(game, playerIndex);
         var doExcludeWinningPlayer = false;
-        if (winningPlayer.pointsFromWinning <= 3) {
+        if (winningPlayer.pointsFromWinning <= 4) {
             doExcludeWinningPlayer = true;
         }
 
@@ -249,7 +249,7 @@ var createAiTradeOfferAction = function(game, playerIndex) {
             opponent_resources[minFutureKind] += 1;
             var offered_to = [];
             for (var p = 0; p < game.players.length; p++) {
-                if (p != playerIndex && (p != winningPlayer || doExcludeWinningPlayer == false)) {
+                if (p != playerIndex && (p != winningPlayer.player || doExcludeWinningPlayer == false)) {
                     offered_to.push(p);
                 }
             }
@@ -1316,18 +1316,16 @@ var createAiResolveMissionAction = function(game, playerIndex, mission) {
                 // If AI should be targeting the winner and winner has structures here,
                 // only consider those structures
                 var winningPlayer = gamedata.getWinningPlayerInfo(game, playerIndex);
-                var targetWinner = false;
                 if (winningPlayer.pointsFromWinning <= 4) {
-                    targetWinner = planet.settledBy[winningPlayer.player];
-                }
-                if (targetWinner) {
-                    attackTargets = attackTargets.filter(function(target) {
-                        target.targetPlayer == winningPlayer;
+                    var winningPlayerTargets = attackTargets.filter(function(target) {
+                        return target.targetPlayer == winningPlayer.player;
                     });
+                    if (utils.hasContent) {
+                        attackTargets = winningPlayerTargets;
+                    }
                 }
                 var attackPriority = [cons.OBJ_MINE, cons.OBJ_FACTORY, cons.OBJ_EMBASSY, cons.OBJ_FLEET, cons.OBJ_BASE];
                 var highestPriorityFound = -1;
-                // TODO: prioritize winning player if on this planet
                 for (var a = 0; a < attackTargets.length; a++) {
                     var objecttype = attackTargets[a];
                     var thisPriority = attackPriority.indexOf(objecttype);

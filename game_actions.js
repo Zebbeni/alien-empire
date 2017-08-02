@@ -1357,7 +1357,7 @@ var applyMissionResolve = function( action, game ){
 					};
 				}
 				
-				mission.result += ' reserved ' + cons.RES_ENGLISH[resource.kind] + ".";
+				mission.result = ' reserved ' + cons.RES_ENGLISH[resource.kind] + ".";
 
 				resource.reserved = player;
 				break;

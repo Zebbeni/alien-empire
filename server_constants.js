@@ -227,8 +227,8 @@
 
         INITIAL_BOARD_RESOURCES_AVAILABLE: {
 			2: 2,
-			3: 2,
-			4: 3,
+			3: 3,
+			4: 4,
 		},
 
         // null if spy action not taken yet

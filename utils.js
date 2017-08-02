@@ -55,8 +55,8 @@ var generatePlanetName = function() {
 };
 
 var generateComputerPlayerName = function() {
-    var titlesOfRankMale = ['Admiral','Baron','Chancellor','Count','Emperor','General','Governor','Imperator','King','Lord','Prince','Tzar'];
-    var titlesOfRankFemale = ['Admiral','Baroness','Chancellor','Countess','Empress','General','Governor','Imperator','Lady','Princess','Queen','Tzarina'];
+    var titlesOfRankMale = ['Admiral','Archbishop','Baron','Chancellor','Count','Emperor','General','Governor','Imperator','King','Lord','Prince','Tzar'];
+    var titlesOfRankFemale = ['Admiral','Archbishop','Baroness','Chancellor','Countess','Empress','General','Governor','Imperator','Lady','Princess','Queen','Tzarina'];
     var gender = getRandomItem([cons.GENDER_FEMALE,cons.GENDER_MALE]);
     var title = gender == cons.GENDER_MALE ? getRandomItem(titlesOfRankMale) : getRandomItem(titlesOfRankFemale);
     var nameLength = 1 + Math.round(Math.random() * 2);
