@@ -131,7 +131,7 @@ var createAiTradeCancelAction = function(game, playerIndex) {
             // all declined
             return cancelAction;
         }
-        if ((Date.now() / 1000) - trade.time_offered > 20) {
+        if ((Date.now() / 1000) - trade.time_offered > 15) {
             // time has expired
             return cancelAction;
         }
