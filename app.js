@@ -152,7 +152,7 @@ app.get('/', function (req, res) {
 
 // [START server]
 /* Start the server */
-server.listen(process.env.PORT || '8080', '172.16.106.2', function() {
+server.listen(process.env.PORT || '8080', '0.0.0.0', function() {
   console.log('App listening at http://%s:%s', server.address().address, server.address().port);
   console.log("Press Ctrl+C to quit.");
   var aiIndex = 0;
