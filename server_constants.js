@@ -241,10 +241,10 @@
 		GENDER_MALE: 1,
 		GENDER_FEMALE: 2,
 
-		COMMON: 1.0,
-		UNCOMMON: 0.1,
-		RARE: 0.01,
-		NEVER: 0.0
+		COMMON: 100,
+		UNCOMMON: 10,
+		RARE: 1,
+		NEVER: 0
 	};
 
 }());
