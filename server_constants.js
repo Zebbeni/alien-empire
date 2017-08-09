@@ -237,9 +237,10 @@
         SPY_ACT_BLOCK: 3,
 		SPY_ACT_COLLECT: 4,
 
-		// for generating computer player names
+		// for generating names
 		GENDER_MALE: 1,
 		GENDER_FEMALE: 2,
+        GENDER_PLANET: 3, // not really a gender, more like a category...
 
 		COMMON: 100,
 		UNCOMMON: 10,
