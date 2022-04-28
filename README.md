@@ -1,6 +1,6 @@
 # Alien Empire | Game
 A multiplayer boardgame using Node.js, Socket.io and CreateJS
-- Testing Appspot: [http://alien-empire.com/](http://alien-empire-48927.onmodulus.net/)
+- Testing Appspot: [http://alien-empire.com/](http://www.alien-empire.com/)
 
 ## Running locally
     npm install
