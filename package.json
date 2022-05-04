@@ -3,7 +3,7 @@
   "description": "A strategy boardgame for web.",
   "author": "Andrew Albers <andrew.albers@gmail.com>",
   "dependencies": {
-    "express": "^4.12.0",
+    "express": "latest",
     "socket.io": "latest"
   },
   "main": "app.js",
@@ -11,6 +11,6 @@
     "start": "node app.js"
   },
   "engines": {
-    "node": "6.11.1"
+    "node": "latest"
   }
 }
