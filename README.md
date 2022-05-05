@@ -1,4 +1,4 @@
-# Alien Empire | Game
+# Alien Empire
 An online multiplayer boardgame using node and createjs
 - Testing Appspot: [http://alien-empire.com/](http://www.alien-empire.com/)
 
