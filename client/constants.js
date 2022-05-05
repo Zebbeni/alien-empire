@@ -5,10 +5,7 @@ var agtSpace = 5;
 
 var FRAMES_PER_SECOND = 20;
 
-var offline = false; // checked by loader when creating settings for LoadQueue
 var s3url = 'https://s3-us-west-2.amazonaws.com/alien-empire/';
-// var offline = true;
-// var s3url = 'images/'; // set s3url to this if testing offline
 
 var DROP_DIST = 50;
 var MOVE_DISTANCE = 200;

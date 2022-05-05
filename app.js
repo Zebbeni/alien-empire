@@ -4,8 +4,11 @@
 var express = require('express');
 var app = express();
 app.use(express.static(__dirname + '/client'));
+// var cors = require('cors');
+// app.use(cors());
+
 var server = require('http').createServer(app);
-var io = require('./node_modules/socket.io').listen(server);
+var io = require('./node_modules/socket.io')(server);
 
 var game_server = require('./game_server');
 var users_server = require('./users_server');
