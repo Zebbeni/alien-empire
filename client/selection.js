@@ -71,7 +71,7 @@ var setSelection = function(x, y) {
  	selection.y = y;
 
  	board.setChildIndex( selection, 
-						 board.getNumChildren() - 1);
+						 board.numChildren - 1);
  	selection.alpha = 1.0;
  	selection.visible = true;
  	// fadeIn(selection, 250, false, true);
@@ -106,7 +106,7 @@ var setPlanetSelection = function( planetid ) {
 	onborder.y = y;
 
 	board.setChildIndex( planetselection, 
-						 board.getNumChildren() - 1);
+						 board.numChildren - 1);
 
 	onborder.visible = true;
 	offborder.visible = false;

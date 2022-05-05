@@ -707,7 +707,7 @@ var drawSpyEyes = function( planetid ) {
 
 		// clear before drawing, we call this function multiple times
 		var spyeyes = tiles[planetid].getChildByName("spyeyes");
-		var num_eyes = spyeyes.getNumChildren();
+		var num_eyes = spyeyes.numChildren;
 
 		for( var e = 0; e < num_eyes; e++ ) {
 			spyeyes.removeChildAt( e );

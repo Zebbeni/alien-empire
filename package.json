@@ -4,7 +4,8 @@
   "author": "Andrew Albers <andrew.albers@gmail.com>",
   "dependencies": {
     "express": "latest",
-    "socket.io": "latest"
+    "socket.io": "latest",
+    "cors": "latest"
   },
   "main": "app.js",
   "scripts": {

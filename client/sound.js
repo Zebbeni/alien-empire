@@ -35,7 +35,7 @@ var toggleMusic = function(){
 	MUSIC_ON = !MUSIC_ON;
 	updateMusicButton();
 	if ( MUSIC_ON ){
-		playMusic("choral", 0.15, 30903);
+		playMusic("strings", 0.15, 30903);
 	}
 	else {
 		musicPlayer.stop();

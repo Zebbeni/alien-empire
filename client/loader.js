@@ -73,42 +73,18 @@ var load_assets = function() {
 			{src: s3url + "game/explosion_sprite.png", id: "explosion_sprite"},
 			{src: s3url + "game/shield_sprite.png", id: "shield_sprite"},
 
-			{src: s3url + "sounds/click1.ogg", id:"click1"},
-			{src: s3url + "sounds/click2.ogg", id:"click2"},
-			{src: s3url + "sounds/flutter1.ogg", id:"flutter1"},
-			{src: s3url + "sounds/flutter2.ogg", id:"flutter2"},
-			{src: s3url + "sounds/flutter3.ogg", id:"flutter3"},
-			{src: s3url + "sounds/plink.ogg", id: "plink"},
-			{src: s3url + "sounds/whoosh1.ogg", id:"whoosh1"},
-			{src: s3url + "sounds/whoosh2.ogg", id:"whoosh2"},
-			{src: s3url + "sounds/choral.ogg", id:"choral"},
-			{src: s3url + "sounds/chirp1.ogg", id:"chirp1"},
-			{src: s3url + "sounds/flit.ogg", id:"flit"},
-			{src: s3url + "sounds/explosion.ogg", id: "explosion"},
-			{src: s3url + "sounds/shield.ogg", id: "shield"},
-			// {src: s3url + "sounds/strings.ogg", id:"strings"},
-			// {src: s3url + "sounds/wave.ogg", id:"wave"},
-			{src: s3url + "sounds/chime.ogg", id:"chime"},
-			{src: s3url + "sounds/musicbox1.ogg", id:"musicbox1"},
-			{src: s3url + "sounds/musicbox2.ogg", id:"musicbox2"}
-
 		];
 
 		for ( var p = 1; p <= 29; p++ ) {
 			manifest.push({src: s3url + "game/planet_" + p + ".png", id: "planet_" + p });
 		}
 
-		loader = new createjs.LoadQueue(true, null, true);
-		
-		if (offline) {
-			loader = new createjs.LoadQueue(false);
-		}
-
-		createjs.Sound.alternateExtensions = ["mp3"];
+        loader = new createjs.LoadQueue(true, null, true);
 		loader.installPlugin(createjs.Sound);
 
 		loader.addEventListener("complete", handleComplete);
 		loader.addEventListener("progress", handleProgress);
+		console.log("loader:", loader);
 		loader.loadManifest(manifest, true);
 
 		is_all_loaded = true;
@@ -171,19 +147,26 @@ var handleComplete = function() {
 var loadLobby = function(){
 	if (!is_lobby_loaded){
 		var manifest = [
+            {src: s3url + "sounds/chime.ogg", id:"chime"},
+            {src: s3url + "sounds/chirp1.ogg", id:"chirp1"},
+            {src: s3url + "sounds/choral.ogg", id:"choral"},
 			{src: s3url + "sounds/click1.ogg", id:"click1"},
+            {src: s3url + "sounds/click2.ogg", id:"click2"},
+            {src: s3url + "sounds/explosion.ogg", id: "explosion"},
+            {src: s3url + "sounds/flit.ogg", id:"flit"},
 			{src: s3url + "sounds/flutter1.ogg", id:"flutter1"},
 			{src: s3url + "sounds/flutter2.ogg", id:"flutter2"},
-			{src: s3url + "sounds/choral.ogg", id:"choral"},
-			{src: s3url + "sounds/chime.ogg", id:"chime"},
-			{src: s3url + "sounds/flit.ogg", id:"flit"}
+            {src: s3url + "sounds/flutter3.ogg", id:"flutter3"},
+            {src: s3url + "sounds/musicbox1.ogg", id:"musicbox1"},
+            {src: s3url + "sounds/musicbox2.ogg", id:"musicbox2"},
+            {src: s3url + "sounds/plink.ogg", id: "plink"},
+            {src: s3url + "sounds/shield.ogg", id: "shield"},
+            {src: s3url + "sounds/strings.ogg", id:"strings"},
+            {src: s3url + "sounds/whoosh1.ogg", id:"whoosh1"},
+            {src: s3url + "sounds/whoosh2.ogg", id:"whoosh2"},
 		];
 
 		lobbyloader = new createjs.LoadQueue(true, null, true);
-		
-		if (offline) {
-			lobbyloader = new createjs.LoadQueue(false);
-		}
 
 		createjs.Sound.alternateExtensions = ["mp3"];
 		lobbyloader.installPlugin(createjs.Sound);
@@ -199,5 +182,5 @@ var loadLobby = function(){
 };
 
 var handleLobbyLoadComplete = function(){
-	playMusic("choral", 0.15, 30903);
+	playMusic("strings", 0.15, 30903);
 };

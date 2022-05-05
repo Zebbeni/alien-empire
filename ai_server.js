@@ -253,6 +253,10 @@ var createAiTradeOfferAction = function(game, playerIndex) {
                     offered_to.push(p);
                 }
             }
+
+            if (offered_to.length === 0) {
+                return null
+            }
             return {
                 actiontype: cons.ACT_TRADE_REQUEST,
                 player: playerIndex,

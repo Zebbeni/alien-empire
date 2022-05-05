@@ -119,7 +119,7 @@ var updateAgents = function(planetid) {
 		var agentContainer = agentsContainer.getChildByName(agentname);
 
 		agentsContainer.setChildIndex( agentContainer, 
-									   agentsContainer.getNumChildren() - 1);
+									   agentsContainer.numChildren - 1);
 
 		var newAgentX = tiles[planetid].x + agentsX;
 		var newAgentY = tiles[planetid].y + agentsY;
