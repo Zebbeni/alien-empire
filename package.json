@@ -5,6 +5,7 @@
   "dependencies": {
     "express": "latest",
     "socket.io": "latest",
+    "socket.io-parser": ">=4.0.5",
     "cors": "latest"
   },
   "main": "app.js",
