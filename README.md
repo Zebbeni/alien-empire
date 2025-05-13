@@ -1,6 +1,6 @@
 # Alien Empire
 An online multiplayer boardgame using node and createjs
-- Testing Appspot: [http://alien-empire.com/](http://www.alien-empire.com/)
+- Testing Appspot: [https://alienempiregame.herokuapp.com](https://alienempiregame.herokuapp.com/)
 
 ![Screenshot](https://s3-us-west-2.amazonaws.com/alien-empire/github/github_image2.jpg "Alien Empire In-Game")
 
